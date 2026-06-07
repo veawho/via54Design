@@ -1,0 +1,42 @@
+# via54Design 日系配色
+# 桜 — 花见，一期一会
+id: sakura-blossom
+name:
+  zh: "桜"
+  en: "Sakura Blossom"
+  ja: "桜"
+metadata:
+  designer: via54
+  dynasty: "平安时代至今"
+  cultural_context: "樱花是日本最核心的文化象征。'花见'(赏樱)是日本最重要的习俗。樱花的特性是绽放时绚烂至极，凋落时毫不犹豫——物哀之美的极致。"
+  philosophy: "一期一会，绚烂而短暂"
+mood: [gentle, romantic, femine, poetic, nostalgic]
+season: spring
+palette:
+  - role: background
+    hex: "#FBF6F0"
+    name_zh: "桜色"
+    cultural_note: "樱花花瓣的淡淡的粉白"
+  - role: text_primary
+    hex: "#3D2B2F"
+    name_zh: "桠色"
+    cultural_note: "樱树老枝的深褐"
+  - role: text_secondary
+    hex: "#8A7378"
+    name_zh: "梅鼠"
+    cultural_note: "带紫调的灰褐"
+  - role: accent
+    hex: "#E8A0B4"
+    name_zh: "薄紅"
+    cultural_note: "淡樱色，八重樱的花瓣色"
+  - role: accent_alt
+    hex: "#C98C9A"
+    name_zh: "中紅"
+    cultural_note: "稍深的樱花色"
+  - role: border
+    hex: "#ECE0D8"
+    name_zh: "白妙"
+    cultural_note: "纯白丝绸的微暖"
+compatibility:
+  layouts: [hero-split-left-image, gallery-waterfall]
+  fonts: [cormorant-elegant, serif-sans-editorial]

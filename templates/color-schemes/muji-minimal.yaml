@@ -1,0 +1,42 @@
+# via54Design 日系配色
+# 無印良品 — 这样就好
+id: muji-minimal
+name:
+  zh: "無印"
+  en: "Muji Minimal"
+  ja: "無印良品"
+metadata:
+  designer: via54 / 田中一光 (Ikko Tanaka) / 原研哉 (Kenya Hara)
+  dynasty: "平成-现代"
+  cultural_context: "無印良品(Muji)创立于1980年，田中一光提出'这样就好'的设计哲学。原研哉任艺术总监后，将'空无'(Emptiness)推向极致。不追求品牌标识，只留下材料和功能本身。"
+  philosophy: "这样就好。空无中蕴含无限。"
+mood: [clean, minimal, functional, calm, pure]
+season: all
+palette:
+  - role: background
+    hex: "#FCFAF5"
+    name_zh: "白"
+    cultural_note: "Muji标志性的白色，空无的起点"
+  - role: text_primary
+    hex: "#2A2A28"
+    name_zh: "黑"
+    cultural_note: "非纯黑，微带暖的漆黑"
+  - role: text_secondary
+    hex: "#8B8780"
+    name_zh: "灰"
+    cultural_note: "Muji商店里最常见的灰色"
+  - role: accent
+    hex: "#B27C5A"
+    name_zh: "亚麻"
+    cultural_note: "未染色的亚麻布料色"
+  - role: accent_alt
+    hex: "#C4BBAF"
+    name_zh: "米"
+    cultural_note: "糙米的暖白"
+  - role: border
+    hex: "#E3DFD8"
+    name_zh: "薄墨"
+    cultural_note: "极淡的灰色边界"
+compatibility:
+  layouts: [gallery-waterfall, hero-split-left-image, editorial-longform]
+  fonts: [system-utility, serif-sans-editorial]

@@ -1,10 +1,20 @@
-feat: one-click deploy + natural language examples
+feat: color system rewrite — 20 palettes with cultural metadata
 
-scripts/setup.sh — 全自动部署 (Go/ffmpeg/Node.js/Playwright)
-scripts/install.sh — AI Agent 一句话部署入口
-  bash <(curl -s .../install.sh) | bash
-  curl -fsSL .../install.sh | bash
+Architecture inspired by zerosoul/chinese-colors (⭐2678), Muji/Shiseido design philosophy:
 
-README.md — 自然语言操作示例 (12个场景)
-  "帮我用 via54Design 做一个暖色编辑风格的页面"
-  "给这个视频配一首科技感 BGM"
+中国传统配色 (8):
+  绛红/松花/萱草/群青/紫檀/月白/秋香/水墨
+  每套含: 朝代、文化典故、哲学理念、中文色名
+
+日系配色 (6):
+  椿(资深堂)/侘寂(千利休)/無印(原研哉)/桜/藍染/琳派(尾形光琳)
+  每套含: 设计流派、历史背景、和色名称
+
+经典配色 (6):
+  Warm Editorial / Dark Terminal / Swiss Mono / Bauhaus / Candy / Cosmic
+
+Schema升级:
+  - palette: [{role, hex, name_zh, cultural_note}] 取代 flat colors map
+  - name: {zh, en, ja} 支持多语言
+  - metadata: {designer, dynasty, cultural_context, philosophy}
+  - mood + season + compatibility tags

@@ -1,0 +1,46 @@
+# via54Design 中国传统配色
+# 紫檀 — 一寸紫檀一寸金
+id: rosewood-noble
+name:
+  zh: "紫檀"
+  en: "Rosewood Noble"
+  ja: "紫檀"
+
+metadata:
+  designer: via54
+  dynasty: "明清 (Ming-Qing)"
+  cultural_context: "紫檀木为明清皇家家具首选材料，'一寸紫檀一寸金'。其色紫中带褐，沉稳高贵。"
+  philosophy: "高贵典雅，含蓄内敛"
+
+mood: [elegant, luxury, calm, sophisticated, femine]
+season: autumn
+
+palette:
+  - role: background
+    hex: "#F8F4EF"
+    name_zh: "藕色"
+    cultural_note: "莲藕般的暖白微粉"
+  - role: text_primary
+    hex: "#2D2326"
+    name_zh: "皂黑"
+    cultural_note: "深紫近黑"
+  - role: text_secondary
+    hex: "#7A6B70"
+    name_zh: "藕荷"
+    cultural_note: "浅紫灰，典雅含蓄"
+  - role: accent
+    hex: "#7A4B5C"
+    name_zh: "紫檀"
+    cultural_note: "檀木的经典紫褐"
+  - role: accent_alt
+    hex: "#C9A88D"
+    name_zh: "香槟"
+    cultural_note: "淡暖棕，过渡色"
+  - role: border
+    hex: "#E6DFD8"
+    name_zh: "牙色"
+    cultural_note: "象牙白带微暖"
+
+compatibility:
+  layouts: [hero-split-left-image, gallery-waterfall]
+  fonts: [cormorant-elegant, serif-sans-editorial]

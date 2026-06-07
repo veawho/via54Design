@@ -1,0 +1,46 @@
+# via54Design 中国传统配色
+# 群青 — 青金石色，敦煌千载
+id: ultramarine-deep
+name:
+  zh: "群青"
+  en: "Ultramarine Deep"
+  ja: "群青"
+
+metadata:
+  designer: via54
+  dynasty: "唐宋 (Tang-Song)"
+  cultural_context: "群青是中国画中最重要的蓝色颜料，源自青金石。敦煌壁画中大量使用。'群青所至，万籁俱寂'。"
+  philosophy: "深邃如海，宁静致远"
+
+mood: [calm, deep, contemplative, noble, serene]
+season: winter
+
+palette:
+  - role: background
+    hex: "#F7F6F2"
+    name_zh: "霜白"
+    cultural_note: "初冬霜雪之白"
+  - role: text_primary
+    hex: "#1B2A3B"
+    name_zh: "黛蓝"
+    cultural_note: "深蓝近黑，远山之色"
+  - role: text_secondary
+    hex: "#5F6D7E"
+    name_zh: "灰蓝"
+    cultural_note: "雨后天际的淡蓝灰"
+  - role: accent
+    hex: "#2E5CB8"
+    name_zh: "群青"
+    cultural_note: "青金石研磨的正蓝，敦煌壁画主色"
+  - role: accent_alt
+    hex: "#8B6B4E"
+    name_zh: "檀木"
+    cultural_note: "老檀木的温润褐"
+  - role: border
+    hex: "#E0DED9"
+    name_zh: "银灰"
+    cultural_note: "淡银灰分割线"
+
+compatibility:
+  layouts: [hero-split-left-image, bento-grid-2x2]
+  fonts: [sans-geometric-tech, cormorant-elegant]

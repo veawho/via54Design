@@ -1,0 +1,46 @@
+# via54Design 中国传统配色
+# 水墨 — 运墨而五色具
+id: ink-wash
+name:
+  zh: "水墨"
+  en: "Ink Wash"
+  ja: "水墨"
+
+metadata:
+  designer: via54
+  dynasty: "唐宋 (Tang-Song)"
+  cultural_context: "水墨画是中国绘画的最高形式。墨分五色：焦、浓、重、淡、清。王维始创水墨山水。"
+  philosophy: "墨分五色，大道至简"
+
+mood: [calm, minimal, zen, powerful, contemplative]
+season: all
+
+palette:
+  - role: background
+    hex: "#F5F0E6"
+    name_zh: "澄心堂纸"
+    cultural_note: "南唐李后主御用宣纸色"
+  - role: text_primary
+    hex: "#1A1A1A"
+    name_zh: "焦墨"
+    cultural_note: "最浓之墨，画眼所在"
+  - role: text_secondary
+    hex: "#6B6B6B"
+    name_zh: "淡墨"
+    cultural_note: "水墨七分淡，朦胧远山"
+  - role: accent
+    hex: "#C43C3A"
+    name_zh: "朱砂印"
+    cultural_note: "中国画上的朱红印章，一点提神"
+  - role: accent_alt
+    hex: "#2A2A2A"
+    name_zh: "浓墨"
+    cultural_note: "五分墨，主笔之用"
+  - role: border
+    hex: "#D9D4CA"
+    name_zh: "清水"
+    cultural_note: "极淡墨痕，若有若无"
+
+compatibility:
+  layouts: [gallery-waterfall, hero-split-left-image]
+  fonts: [cormorant-elegant, system-utility]

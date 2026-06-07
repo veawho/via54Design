@@ -2,7 +2,7 @@ package template
 
 type LayoutTemplate struct {
 	ID       string     `yaml:"id"`
-	Name     string     `yaml:"name"`
+	Name interface{} `yaml:"name"`
 	Version  string     `yaml:"version"`
 	Category string     `yaml:"category"`
 	Tags     []string   `yaml:"tags"`
@@ -26,15 +26,25 @@ type Element struct {
 	Children []Element `yaml:"children,omitempty"`
 }
 
+type PaletteItem struct {
+	Role        string `yaml:"role"`
+	Hex         string `yaml:"hex"`
+	NameZh      string `yaml:"name_zh,omitempty"`
+	CulturalNote string `yaml:"cultural_note,omitempty"`
+}
+
 type ColorSchemeTemplate struct {
 	ID           string            `yaml:"id"`
-	Name         string            `yaml:"name"`
+	Name interface{} `yaml:"name"`
 	Version      string            `yaml:"version"`
 	Tags         []string          `yaml:"tags"`
 	Source       string            `yaml:"source,omitempty"`
-	Colors       map[string]string `yaml:"colors"`
+	Colors       map[string]string `yaml:"colors,omitempty"`
+	Palette      []PaletteItem     `yaml:"palette,omitempty"`
 	When         ColorWhen         `yaml:"when"`
 	CSSVariables string            `yaml:"css_variables,omitempty"`
+	Mood         []string          `yaml:"mood,omitempty"`
+	Season       string            `yaml:"season,omitempty"`
 }
 
 type ColorWhen struct {
@@ -45,7 +55,7 @@ type ColorWhen struct {
 
 type TypographyTemplate struct {
 	ID      string            `yaml:"id"`
-	Name    string            `yaml:"name"`
+	Name interface{} `yaml:"name"`
 	Version string            `yaml:"version"`
 	Tags    []string          `yaml:"tags"`
 	Fonts   map[string]string `yaml:"fonts"`
@@ -67,7 +77,7 @@ type TemplateRegistry struct {
 
 type RegistryEntry struct {
 	ID       string   `yaml:"id"`
-	Name     string   `yaml:"name"`
+	Name interface{} `yaml:"name"`
 	Version  string   `yaml:"version"`
 	Category string   `yaml:"category"`
 	Tags     []string `yaml:"tags"`
@@ -75,7 +85,7 @@ type RegistryEntry struct {
 }
 
 type Combination struct {
-	Name    string   `yaml:"name"`
+	Name interface{} `yaml:"name"`
 	Layout  string   `yaml:"layout"`
 	Color   string   `yaml:"color"`
 	Font    string   `yaml:"font"`

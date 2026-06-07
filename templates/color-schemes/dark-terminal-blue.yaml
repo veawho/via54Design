@@ -1,32 +1,41 @@
-# ─── 元数据 ───
+# via54Design 经典配色
+# Dark Terminal — Linear/Cursor风，近黑+紫蓝强调
 id: dark-terminal-blue
-name: 暗色终端美学 — 近黑+紫蓝强调（Linear/Cursor风）
-version: "1.0.0"
-category: color-scheme/dark
-tags: [dark, terminal, tech, developer, bento, glassmorphism]
-source: "references/design-styles.md — Linear暗色发光+Bento网格 / 终端核软未来"
-contrast_ratio: "13.5:1 ✅"
-
-colors:
-  background: "#08090A"
-  background_alt: "#0B0D14"
-  text_primary: "#F2F0EF"
-  text_secondary: "#8B8B8B"
-  accent: "#5E6AD2"
-  accent_gradient: "#4EA7FC→#B59AFF"
-  border: "#1E1E24"
-  success: "#34D399"
-  error: "#EF4444"
-
-when:
-  brand_tone: [tech, dark, developer, premium, futuristic]
-  audience: [developers, engineers, tech_professionals]
-  suitable_for: [saas, devtool, dashboard, cli_product]
-
-css_variables: |
-  --bg: #08090A;
-  --bg-alt: #0B0D14;
-  --text-primary: #F2F0EF;
-  --text-secondary: #8B8B8B;
-  --accent: #5E6AD2;
-  --border: #1E1E24;
+name:
+  zh: "暗色终端"
+  en: "Dark Terminal"
+  ja: "暗色端末"
+metadata:
+  designer: via54 / Linear / Cursor
+  cultural_context: "Linear的设计语言定义了SaaS暗色模式的标准。近黑底+紫蓝发光的组合来自开发者工具文化。"
+  philosophy: "黑暗中发光，工具即美学"
+mood: [tech, dark, premium, futuristic, precise]
+season: winter
+palette:
+  - role: background
+    hex: "#08090A"
+    name_zh: "漆黑"
+    cultural_note: "近黑非纯黑，微带冷调"
+  - role: text_primary
+    hex: "#E8E8ED"
+    name_zh: "白"
+    cultural_note: "暖白文字，减少眩光"
+  - role: text_secondary
+    hex: "#8B8B9E"
+    name_zh: "灰紫"
+    cultural_note: "低饱和紫灰"
+  - role: accent
+    hex: "#5E6AD2"
+    name_zh: "紫蓝"
+    cultural_note: "Linear标志性品牌色"
+  - role: accent_alt
+    hex: "#4EA7FC"
+    name_zh: "青蓝"
+    cultural_note: "发光渐变起点"
+  - role: border
+    hex: "#1C1C23"
+    name_zh: "深灰"
+    cultural_note: "发丝级分割线"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [sans-geometric-tech, mono-terminal]

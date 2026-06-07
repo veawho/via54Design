@@ -1,30 +1,41 @@
-# ─── 元数据 ───
+# via54Design 经典配色
+# Bauhaus — 三原色+黑白，Khan Academy风
 id: bauhaus-primary
-name: 包豪斯三原色 — 红黄蓝+黑白（Khan Academy风）
-version: "1.0.0"
-category: color-scheme/bauhaus
-tags: [bauhaus, primary, geometric, education, playful, flat]
-source: "references/design-styles.md — 包豪斯几何标志+扁平插画系统 Bauhaus Geometric"
-contrast_ratio: "7.2:1 ✅"
-
-colors:
-  background: "#FFFFFF"
-  text_primary: "#1A1A1A"
-  text_secondary: "#555555"
-  accent_red: "#E63946"
-  accent_yellow: "#FFB703"
-  accent_blue: "#0077B6"
-  border: "#1A1A1A"
-
-when:
-  brand_tone: [playful, educational, geometric, clean, bold]
-  audience: [students, children, families, general]
-  suitable_for: [education, course_landing, infographic, activity_kv]
-
-css_variables: |
-  --bg: #FFFFFF;
-  --text-primary: #1A1A1A;
-  --accent-red: #E63946;
-  --accent-yellow: #FFB703;
-  --accent-blue: #0077B6;
-  --border: #1A1A1A;
+name:
+  zh: "包豪斯"
+  en: "Bauhaus Primary"
+  ja: "バウハウス"
+metadata:
+  designer: via54 / Walter Gropius / Khan Academy
+  cultural_context: "包豪斯学校1919年创立于德国，奠定了现代设计教育的基础。三原色(红黄蓝)+黑白是其核心视觉语言。"
+  philosophy: "形式追随功能。原色即正义。"
+mood: [playful, bold, geometric, educational, modern]
+season: summer
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "白"
+    cultural_note: "白色画布"
+  - role: text_primary
+    hex: "#1A1A1A"
+    name_zh: "黑"
+    cultural_note: "包豪斯核心用色"
+  - role: text_secondary
+    hex: "#666666"
+    name_zh: "灰"
+    cultural_note: "中性灰"
+  - role: accent
+    hex: "#E63946"
+    name_zh: "红"
+    cultural_note: "包豪斯三原色之一，最具冲击力"
+  - role: accent_alt
+    hex: "#FFB703"
+    name_zh: "黄"
+    cultural_note: "包豪斯三原色之一，明快"
+  - role: border
+    hex: "#1A1A1A"
+    name_zh: "黑线"
+    cultural_note: "粗黑边界，包豪斯特征"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [display-sans-bold, sans-geometric-tech]

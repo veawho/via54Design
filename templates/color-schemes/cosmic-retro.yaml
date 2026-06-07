@@ -1,32 +1,41 @@
-# ─── 元数据 ───
+# via54Design 经典配色
+# Cosmic Retro — 黑+奶油+钴蓝，Perplexity Comet风
 id: cosmic-retro
-name: 复古未来太空图录 — 黑+奶油+钴蓝（Perplexity Comet风）
-version: "1.0.0"
-category: color-scheme/cosmic
-tags: [cosmic, retro, futuristic, dark, warm-dark, celestial]
-source: "references/design-styles.md — 复古未来太空图录 Cosmic Retro-Futurism"
-contrast_ratio: "10.2:1 ✅"
-
-colors:
-  background: "#0A0A0A"
-  background_warm: "#F0EAD8"   # 奶油纸白
-  text_primary: "#F0EAD8"
-  text_on_cream: "#0A0A0A"
-  text_secondary: "#A09888"
-  accent: "#2B4F91"            # 钴蓝-孔雀蓝
-  accent_warm: "#C9A84C"       # 暖金
-  border: "#2A2A2A"
-  border_light: "#4A4A4A"
-
-when:
-  brand_tone: [cosmic, retro-future, mysterious, premium, archival]
-  audience: [explorers, knowledge_seekers, design_enthusiasts]
-  suitable_for: [ai_launch, concept_page, countdown, manifesto]
-
-css_variables: |
-  --bg: #0A0A0A;
-  --bg-warm: #F0EAD8;
-  --text-primary: #F0EAD8;
-  --text-on-cream: #0A0A0A;
-  --accent: #2B4F91;
-  --accent-warm: #C9A84C;
+name:
+  zh: "复古未来"
+  en: "Cosmic Retro"
+  ja: "宇宙レトロ"
+metadata:
+  designer: via54 / Perplexity Comet
+  cultural_context: "向太空时代(Space Age)致敬的复古未来主义配色。黑+奶油+钴蓝的组合如同天文图录与《2001太空漫游》的视觉融合。"
+  philosophy: "回望未来的方式，就是仰望星空"
+mood: [cosmic, retro, futuristic, mysterious, premium]
+season: winter
+palette:
+  - role: background
+    hex: "#0A0A0A"
+    name_zh: "宇宙黑"
+    cultural_note: "深空之黑"
+  - role: text_primary
+    hex: "#F0EAD8"
+    name_zh: "星云白"
+    cultural_note: "奶油般的暖白"
+  - role: text_secondary
+    hex: "#A09888"
+    name_zh: "陨石灰"
+    cultural_note: "古老星尘的灰"
+  - role: accent
+    hex: "#2B4F91"
+    name_zh: "钴蓝"
+    cultural_note: "深海与太空之间的蓝"
+  - role: accent_alt
+    hex: "#C9A84C"
+    name_zh: "星金"
+    cultural_note: "恒星的金色"
+  - role: border
+    hex: "#2A2A2A"
+    name_zh: "深灰"
+    cultural_note: "太空舱的分隔线"
+compatibility:
+  layouts: [hero-split-left-image, gallery-waterfall]
+  fonts: [cormorant-elegant, display-sans-bold]

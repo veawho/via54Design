@@ -1,0 +1,46 @@
+# via54Design 中国传统配色
+# 秋香 — 桂花与银杏之间
+id: autumn-fragrance
+name:
+  zh: "秋香"
+  en: "Autumn Fragrance"
+  ja: "秋香"
+
+metadata:
+  designer: via54
+  dynasty: "明 (Ming Dynasty)"
+  cultural_context: "秋香色是秋天的桂花与银杏之色，黄中带绿、绿中透黄。明人尚古拙，文人书房常用色调。"
+  philosophy: "古朴温润，岁月沉香"
+
+mood: [warm, nostalgic, earthy, natural, rustic]
+season: autumn
+
+palette:
+  - role: background
+    hex: "#F5F0E8"
+    name_zh: "宣纸"
+    cultural_note: "古宣纸的暖白，吸墨感"
+  - role: text_primary
+    hex: "#3A3226"
+    name_zh: "墨褐"
+    cultural_note: "旧墨色带褐"
+  - role: text_secondary
+    hex: "#8A7F72"
+    name_zh: "枯茶"
+    cultural_note: "枯叶般的茶色"
+  - role: accent
+    hex: "#9B8B6E"
+    name_zh: "秋香"
+    cultural_note: "银杏与桂花之间的黄绿"
+  - role: accent_alt
+    hex: "#C4A96A"
+    name_zh: "谷黄"
+    cultural_note: "成熟谷物的暖黄"
+  - role: border
+    hex: "#E0D9CE"
+    name_zh: "米黄"
+    cultural_note: "淡米黄分割"
+
+compatibility:
+  layouts: [hero-split-left-image, editorial-longform]
+  fonts: [serif-sans-editorial, serif-longform]

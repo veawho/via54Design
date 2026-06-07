@@ -1,0 +1,46 @@
+# via54Design 中国传统配色
+# 月白 — 雨过天青云破处
+id: moon-white
+name:
+  zh: "月白"
+  en: "Moon White"
+  ja: "月白"
+
+metadata:
+  designer: via54
+  dynasty: "宋 (Song Dynasty)"
+  cultural_context: "月白非纯白，而是月光般的极淡蓝。宋代汝窑'雨过天青云破处，这般颜色做将来'。宋人尚素雅。"
+  philosophy: "素雅空灵，留白之美"
+
+mood: [calm, pure, minimal, poetic, cool]
+season: winter
+
+palette:
+  - role: background
+    hex: "#F0F2F0"
+    name_zh: "月白"
+    cultural_note: "月光之色，极淡蓝白"
+  - role: text_primary
+    hex: "#1A1A1A"
+    name_zh: "墨黑"
+    cultural_note: "浓墨之色"
+  - role: text_secondary
+    hex: "#7B827E"
+    name_zh: "苍灰"
+    cultural_note: "暮色苍茫之灰"
+  - role: accent
+    hex: "#5B7B8C"
+    name_zh: "雨过天青"
+    cultural_note: "宋徽宗梦见的天空色，汝窑经典"
+  - role: accent_alt
+    hex: "#C4BBAF"
+    name_zh: "骨白"
+    cultural_note: "枯骨般的暖灰白"
+  - role: border
+    hex: "#E0E2E0"
+    name_zh: "银丝"
+    cultural_note: "极细银灰分割"
+
+compatibility:
+  layouts: [gallery-waterfall, hero-split-left-image]
+  fonts: [cormorant-elegant, system-utility]

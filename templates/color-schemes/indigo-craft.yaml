@@ -1,0 +1,42 @@
+# via54Design 日系配色
+# 藍染 — 匠人本色，蓝染工艺
+id: indigo-craft
+name:
+  zh: "藍染"
+  en: "Indigo Dye"
+  ja: "藍染"
+metadata:
+  designer: via54
+  dynasty: "江户时代"
+  cultural_context: "蓝染(Indigo Dyeing)是日本最古老的染色工艺之一。江户时代，蓝染成为庶民的衣服颜色。' Japan Blue' 在西方就是靛蓝的代名词。德岛县的阿波蓝最负盛名。"
+  philosophy: "深沉的蓝，匠人的时间"
+mood: [calm, deep, artisan, traditional, masculine]
+season: winter
+palette:
+  - role: background
+    hex: "#F4F0E8"
+    name_zh: "麻"
+    cultural_note: "未染色的麻布本色"
+  - role: text_primary
+    hex: "#1A2833"
+    name_zh: "濃藍"
+    cultural_note: "反复浸染最深之蓝"
+  - role: text_secondary
+    hex: "#4A6072"
+    name_zh: "藍鼠"
+    cultural_note: "蓝灰色的鼠色"
+  - role: accent
+    hex: "#264C7B"
+    name_zh: "藍色"
+    cultural_note: "阿波蓝的经典靛蓝"
+  - role: accent_alt
+    hex: "#7A8B7A"
+    name_zh: "利休茶"
+    cultural_note: "千利休喜爱的绿褐色"
+  - role: border
+    hex: "#D6D4C8"
+    name_zh: "灰藍"
+    cultural_note: "淡蓝灰分割线"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [sans-geometric-tech, mono-terminal]

@@ -1,35 +1,41 @@
-# ─── 元数据 ───
+# via54Design 经典配色
+# Candy Duolingo — 绿+黄+天蓝，游戏化教育
 id: candy-duolingo
-name: 糖果色凸起立体 — 绿+黄+天蓝（Duolingo风）
-version: "1.0.0"
-category: color-scheme/candy
-tags: [candy, playful, friendly, game, rounded, duolingo]
-source: "references/design-styles.md — 糖果色凸起立体按钮游戏化 Friendly Geometric Candy"
-contrast_ratio: "5.8:1 ✅"
-
-colors:
-  background: "#FFFFFF"
-  text_primary: "#1A1A2E"
-  text_secondary: "#555566"
-  accent_green: "#58CC02"       # Duo绿
-  accent_yellow: "#FFC800"      # 鸭子黄
-  accent_blue: "#1CB0F6"        # 天蓝
-  accent_red: "#FF4B4B"         # 错误红
-  success: "#58CC02"
-  error: "#FF4B4B"
-  border: "#E0E0E0"
-  shadow: "0 4px 0 rgba(0,0,0,0.15)"
-
-when:
-  brand_tone: [playful, friendly, educational, energetic, warm]
-  audience: [children, students, general_consumers]
-  suitable_for: [education, language_learning, gamified_product, app_landing]
-
-css_variables: |
-  --bg: #FFFFFF;
-  --text-primary: #1A1A2E;
-  --accent-green: #58CC02;
-  --accent-yellow: #FFC800;
-  --accent-blue: #1CB0F6;
-  --accent-red: #FF4B4B;
-  --border: #E0E0E0;
+name:
+  zh: "糖果色"
+  en: "Candy Duolingo"
+  ja: "キャンディ"
+metadata:
+  designer: via54 / Duolingo (Johnson Banks)
+  cultural_context: "Duolingo通过糖果般的色彩组合打破了教育软件'严肃'的刻板印象。其标志性的Duo绿+鸭子黄已经成为游戏化学习的视觉代名词。"
+  philosophy: "学习应该像糖果一样让人愉悦"
+mood: [playful, friendly, energetic, warm, educational]
+season: spring
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "白"
+    cultural_note: "干净画布"
+  - role: text_primary
+    hex: "#1A1A2E"
+    name_zh: "深蓝黑"
+    cultural_note: "舒适阅读深色"
+  - role: text_secondary
+    hex: "#6B6B80"
+    name_zh: "灰紫"
+    cultural_note: "柔和辅助色"
+  - role: accent
+    hex: "#58CC02"
+    name_zh: "Duo绿"
+    cultural_note: "Duolingo标志性绿色"
+  - role: accent_alt
+    hex: "#FFC800"
+    name_zh: "鸭子黄"
+    cultural_note: "Duolingo吉祥物颜色"
+  - role: border
+    hex: "#E0E0E8"
+    name_zh: "淡灰"
+    cultural_note: "柔和边界"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [playful-rounded, sans-geometric-tech]

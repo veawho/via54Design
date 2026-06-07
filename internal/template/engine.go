@@ -66,7 +66,11 @@ func buildCSSVariables(color *ColorSchemeTemplate, font *TypographyTemplate) str
 	b.WriteString(":root {\n")
 	if color.CSSVariables != "" {
 		b.WriteString(color.CSSVariables)
-	} else {
+	} else if len(color.Palette) > 0 {
+		for _, item := range color.Palette {
+			b.WriteString(fmt.Sprintf("  --%s: %s;\n", item.Role, item.Hex))
+		}
+	} else if color.Colors != nil {
 		for role, hex := range color.Colors {
 			b.WriteString(fmt.Sprintf("  --%s: %s;\n", role, hex))
 		}
@@ -122,6 +126,19 @@ img { max-width: 100%%%%; height:auto; display:block; }
 @media (max-width:768px) { .container { padding:0 24px; } }`, body, disp, mono)
 }
 
+
+// displayName 从 name 字段提取中文名或英文名
+// DisplayName 获取模板中文名或英文名
+func DisplayName(name interface{}) string {
+	switch v := name.(type) {
+	case string:
+		return v
+	case map[string]interface{}:
+		if zh, ok := v["zh"]; ok { return zh.(string) }
+		if en, ok := v["en"]; ok { return en.(string) }
+	}
+	return ""
+}
 func getOrDefault(m map[string]string, key, def string) string {
 	if v, ok := m[key]; ok && v != "" {
 		return v

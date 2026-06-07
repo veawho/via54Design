@@ -1,31 +1,41 @@
-# ─── 元数据 ───
+# via54Design 经典配色
+# Warm Editorial — Anthropic风，奶油纸底+赤陶橙
 id: warm-editorial-cream
-name: 暖色出版物 — 奶油纸底+赤陶橙（Anthropic风）
-version: "1.0.0"
-category: color-scheme/warm
-tags: [warm, editorial, cream, natural, premium, ai-product]
-source: "references/design-styles.md — 暖色出版物 Warm Editorial, 中性·还原97%"
-contrast_ratio: "6.8:1 ✅"
-
-colors:
-  background: "#F5F0E8"
-  text_primary: "#191919"
-  text_secondary: "#6B6258"
-  accent: "#CC785C"
-  accent_hover: "#B8654A"
-  border: "#E8DFD4"
-  success: "#4A7C59"
-  error: "#C44A4A"
-
-when:
-  brand_tone: [warm, editorial, natural, premium, knowledge]
-  audience: [readers, professionals, knowledge_workers]
-  suitable_for: [ai_product, longform, research_report, training]
-
-css_variables: |
-  --bg: #F5F0E8;
-  --text-primary: #191919;
-  --text-secondary: #6B6258;
-  --accent: #CC785C;
-  --accent-hover: #B8654A;
-  --border: #E8DFD4;
+name:
+  zh: "暖色出版"
+  en: "Warm Editorial"
+  ja: "暖色出版"
+metadata:
+  designer: via54 / Anthropic (DBCo + Geist Studio)
+  cultural_context: "参考Anthropic官网的暖色调。赤陶橙+奶油纸底的组合来自企鹅图书(Penguin Books)的出版传统与现代AI品牌的结合。"
+  philosophy: "温暖如纸书，智性且亲和"
+mood: [warm, editorial, natural, premium, intellectual]
+season: autumn
+palette:
+  - role: background
+    hex: "#F5F0E8"
+    name_zh: "奶油纸"
+    cultural_note: "精装书的护封纸色"
+  - role: text_primary
+    hex: "#191919"
+    name_zh: "墨黑"
+    cultural_note: "印刷油墨的黑"
+  - role: text_secondary
+    hex: "#6B6258"
+    name_zh: "灰褐"
+    cultural_note: "阅读时的舒适灰色"
+  - role: accent
+    hex: "#CC785C"
+    name_zh: "赤陶橙"
+    cultural_note: "Anthropic标志性暖橙"
+  - role: accent_alt
+    hex: "#D9A88A"
+    name_zh: "淡陶"
+    cultural_note: "浅陶土色"
+  - role: border
+    hex: "#E8DFD4"
+    name_zh: "淡米"
+    cultural_note: "书页边缘的暖灰"
+compatibility:
+  layouts: [hero-split-left-image, editorial-longform, bento-grid-2x2]
+  fonts: [serif-sans-editorial, serif-longform]

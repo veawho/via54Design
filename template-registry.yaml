@@ -25,12 +25,89 @@ layouts:
     file: templates/layouts/gallery-waterfall.yaml
 
 color_schemes:
+  # ── 中国传统配色 (8) ──
+  - id: crimson-elegance
+    name: 绛红 — 朱砂正色，唐代宫廷
+    tags: [chinese, traditional, warm, bold, festive]
+    file: templates/color-schemes/crimson-elegance.yaml
+  - id: pine-spring
+    name: 松花 — 宋人雅绿，文人清趣
+    tags: [chinese, traditional, calm, natural, scholarly]
+    file: templates/color-schemes/pine-spring.yaml
+  - id: daylily-warmth
+    name: 萱草 — 忘忧暖黄，明人晴日
+    tags: [chinese, traditional, warm, cheerful, nostalgic]
+    file: templates/color-schemes/daylily-warmth.yaml
+  - id: ultramarine-deep
+    name: 群青 — 青金石色，敦煌千载
+    tags: [chinese, traditional, calm, deep, noble]
+    file: templates/color-schemes/ultramarine-deep.yaml
+  - id: rosewood-noble
+    name: 紫檀 — 一寸紫檀一寸金
+    tags: [chinese, traditional, elegant, luxury, femine]
+    file: templates/color-schemes/rosewood-noble.yaml
+  - id: moon-white
+    name: 月白 — 雨过天青云破处
+    tags: [chinese, traditional, minimal, poetic, cool]
+    file: templates/color-schemes/moon-white.yaml
+  - id: autumn-fragrance
+    name: 秋香 — 桂花与银杏之间
+    tags: [chinese, traditional, warm, earthy, rustic]
+    file: templates/color-schemes/autumn-fragrance.yaml
+  - id: ink-wash
+    name: 水墨 — 墨分五色，大道至简
+    tags: [chinese, traditional, zen, minimal, powerful]
+    file: templates/color-schemes/ink-wash.yaml
+  # ── 日系配色 (6) ──
+  - id: tsubaki-camellia
+    name: 椿 — 资深堂口红传奇
+    tags: [japanese, elegant, femine, warm, luxury]
+    file: templates/color-schemes/tsubaki-camellia.yaml
+  - id: wabi-sabi
+    name: 侘寂 — 残缺之美，万物皆有时
+    tags: [japanese, zen, rustic, earthy, calm]
+    file: templates/color-schemes/wabi-sabi.yaml
+  - id: muji-minimal
+    name: 無印 — 这样就好
+    tags: [japanese, minimal, clean, functional, calm]
+    file: templates/color-schemes/muji-minimal.yaml
+  - id: sakura-blossom
+    name: 桜 — 一期一会
+    tags: [japanese, gentle, romantic, poetic, spring]
+    file: templates/color-schemes/sakura-blossom.yaml
+  - id: indigo-craft
+    name: 藍染 — 匠人本色
+    tags: [japanese, deep, artisan, traditional, calm]
+    file: templates/color-schemes/indigo-craft.yaml
+  - id: rinpa-gold
+    name: 琳派 — 金碧辉煌
+    tags: [japanese, bold, luxurious, decorative, dramatic]
+    file: templates/color-schemes/rinpa-gold.yaml
+  # ── 经典设计 (6) ──
   - id: warm-editorial-cream
-    name: 暖色出版物（奶油底+赤陶橙/Anthropic风）
-    version: "1.0.0"
-    category: color-scheme/warm
-    tags: [warm, editorial, cream, natural, premium, ai-product]
+    name: 暖色出版 — 奶油底+赤陶橙(Anthropic风)
+    tags: [classic, warm, editorial, premium, ai-product]
     file: templates/color-schemes/warm-editorial-cream.yaml
+  - id: dark-terminal-blue
+    name: 暗色终端 — 近黑+紫蓝(Linear风)
+    tags: [classic, dark, tech, developer, premium]
+    file: templates/color-schemes/dark-terminal-blue.yaml
+  - id: swiss-monochrome
+    name: 瑞士极简 — 纯黑+纯白(Vercel风)
+    tags: [classic, minimal, clean, swiss, bold]
+    file: templates/color-schemes/swiss-monochrome.yaml
+  - id: bauhaus-primary
+    name: 包豪斯 — 三原色+黑白
+    tags: [classic, playful, bold, geometric, educational]
+    file: templates/color-schemes/bauhaus-primary.yaml
+  - id: candy-duolingo
+    name: 糖果色 — 绿+黄+天蓝(Duolingo风)
+    tags: [classic, playful, friendly, educational, candy]
+    file: templates/color-schemes/candy-duolingo.yaml
+  - id: cosmic-retro
+    name: 复古未来 — 黑+奶油+钴蓝(Perplexity风)
+    tags: [classic, cosmic, retro, futuristic, mysterious]
+    file: templates/color-schemes/cosmic-retro.yaml
 
   - id: dark-terminal-blue
     name: 暗色终端美学（近黑+紫蓝强调/Linear风）
