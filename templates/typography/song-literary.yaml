@@ -1,0 +1,40 @@
+# via54Design 字体模板
+# 宋体书卷 — 仿宋的书卷气+明体的沉稳
+id: song-literary
+name:
+  zh: "宋体书卷"
+  en: "Song Literary"
+  ja: "宋朝体"
+metadata:
+  designer: via54 / JustFont 灵感
+  classification: "仿宋(Fang Song) + 明体(Ming)"
+  inspiration: "仿宋是中文印刷中最具书卷气的字体，源于宋刻本。仿宋+明体的组合常见于文学书籍、文艺杂志、文化品牌。"
+  principle: "仿宋的文人气质 + 明体的阅读舒适"
+mood: [literary, elegant, cultural, refined, poetic]
+chinese:
+  display_body: true
+  note: "适合文学出版、文化品牌、博物馆展览"
+
+fonts:
+  display: "'Source Han Serif SC', 'Noto Serif SC', 'STSong', 'SimSun', 'Georgia', serif"
+  body: "'FangSong', 'STFangsong', '仿宋', 'Noto Serif SC', 'Source Han Serif SC', serif"
+  mono: "'JetBrains Mono', monospace"
+
+weights:
+  display: "600;700;900"
+  body: "400"
+
+google_fonts:
+  - "Noto+Serif+SC:wght@400;600;700;900"
+
+sizes:
+  display: "clamp(36px, 5vw, 66px)"
+  h2: "clamp(22px, 2.5vw, 38px)"
+  h3: "clamp(18px, 1.5vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "12px"
+
+compatibility:
+  moods: [literary, elegant, cultural, refined, poetic, calm]
+  layouts: [hero-split-left-image, editorial-longform]

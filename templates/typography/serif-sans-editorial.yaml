@@ -1,17 +1,26 @@
-# ─── 元数据 ───
+# via54Design 字体模板
+# Editorial Serif+Sans — Anthropic风，衬线标题+无衬线正文
 id: serif-sans-editorial
-name: 衬线标题+无衬线正文（编辑出版配）
-version: "1.0.0"
-category: typography/pair
-tags: [editorial, serif, sans, warm, premium, readable]
-
+name:
+  zh: "编辑衬线配"
+  en: "Editorial Serif Sans"
+  ja: "エディトリアル"
+metadata:
+  designer: via54 / Anthropic (DBCo + Geist Studio)
+  classification: "过渡衬线(Transitional) + 人文无衬线(Humanist)"
+  inspiration: "Anthropic/Claude官网使用的Styrene×Tiempos组合。Fraunces是Google Fonts上最接近Tiempos的开源替代，Inter是Styrene的最佳开源替代。"
+  principle: "衬线标题传递信任与经典，无衬线正文确保清晰与速度"
+mood: [editorial, warm, premium, classic, intellectual]
 fonts:
-  display: "'Fraunces', 'Newsreader', 'Georgia', serif"
-  display_weight: 700
+  display: "'Fraunces', 'Georgia', 'Times New Roman', serif"
   body: "'Inter', -apple-system, 'Helvetica Neue', sans-serif"
-  body_weight: 400
   mono: "'JetBrains Mono', 'Fira Code', monospace"
-
+weights:
+  display: "400;600;700;900"
+  body: "400;500"
+google_fonts:
+  - "Fraunces:wght@400;600;700;900"
+  - "Inter:wght@400;500"
 sizes:
   display: "clamp(42px, 6vw, 96px)"
   h2: "clamp(28px, 3vw, 48px)"
@@ -19,7 +28,6 @@ sizes:
   body: "clamp(16px, 1.2vw, 21px)"
   small: "14px"
   caption: "12px"
-
-when:
-  brand_tone: [warm, editorial, premium, natural]
-  suitable_for: [ai_product, longform, research_report, brand_hero]
+compatibility:
+  moods: [editorial, warm, premium, classic, intellectual, natural]
+  layouts: [hero-split-left-image, editorial-longform]

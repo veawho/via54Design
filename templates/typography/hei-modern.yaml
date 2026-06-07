@@ -1,0 +1,41 @@
+# via54Design 字体模板
+# 黑体现 — 中文字体现代化，思源黑体+Inter
+id: hei-modern
+name:
+  zh: "黑体现"
+  en: "Hei Modern"
+  ja: "現代ゴシック"
+metadata:
+  designer: via54 / Google Fonts + Adobe
+  classification: "无衬线(Sans Serif)全面覆盖中英文"
+  inspiration: "思源黑体(Source Han Sans)是Adobe与Google联合开发的Pan-CJK字体。与Inter搭配可以实现中英文视觉一致的无衬线体验。这是现代中文UI设计的标准选择。"
+  principle: "中英混排视觉一致，无衬线的极简现代"
+mood: [modern, clean, tech, minimal, professional]
+chinese:
+  display_body: true
+  note: "中英混排的最佳选择，科技产品首选"
+
+fonts:
+  display: "'Source Han Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Inter', sans-serif"
+  body: "'Source Han Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Inter', sans-serif"
+  mono: "'JetBrains Mono', 'Source Han Mono SC', monospace"
+
+weights:
+  display: "700;900"
+  body: "400;500"
+
+google_fonts:
+  - "Noto+Sans+SC:wght@400;500;700;900"
+  - "Inter:wght@400;500;700"
+
+sizes:
+  display: "clamp(34px, 5vw, 64px)"
+  h2: "clamp(22px, 2.5vw, 38px)"
+  h3: "clamp(18px, 1.5vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "12px"
+
+compatibility:
+  moods: [modern, clean, tech, minimal, professional, cool]
+  layouts: [bento-grid-2x2, hero-split-left-image]

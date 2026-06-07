@@ -54,13 +54,16 @@ type ColorWhen struct {
 }
 
 type TypographyTemplate struct {
-	ID      string            `yaml:"id"`
-	Name interface{} `yaml:"name"`
-	Version string            `yaml:"version"`
-	Tags    []string          `yaml:"tags"`
-	Fonts   map[string]string `yaml:"fonts"`
-	Sizes   map[string]string `yaml:"sizes"`
-	When    TypographyWhen    `yaml:"when"`
+	ID          string            `yaml:"id"`
+	Name        interface{}       `yaml:"name"`
+	Version     string            `yaml:"version"`
+	Tags        []string          `yaml:"tags"`
+	Fonts       map[string]string `yaml:"fonts"`
+	Weights     map[string]string `yaml:"weights,omitempty"`
+	Sizes       map[string]string `yaml:"sizes"`
+	GoogleFonts []string          `yaml:"google_fonts,omitempty"`
+	Mood        []string          `yaml:"mood,omitempty"`
+	When        TypographyWhen    `yaml:"when"`
 }
 
 type TypographyWhen struct {

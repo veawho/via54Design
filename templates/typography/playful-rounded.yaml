@@ -1,24 +1,33 @@
-# ─── 元数据 ───
+# via54Design 字体模板
+# Rounded Friendly — 圆润亲和，教育产品首选
 id: playful-rounded
-name: 圆润亲和字体（教育/游戏/消费配）
-version: "1.0.0"
-category: typography/pair
-tags: [playful, rounded, friendly, education, candy]
-
+name:
+  zh: "圆润亲和"
+  en: "Rounded Friendly"
+  ja: "丸ゴシック"
+metadata:
+  designer: via54 / Duolingo / Khan Academy
+  classification: "圆体(Rounded) — 无衬线的亲和变体"
+  inspiration: "圆体(Rounded Sans)是'不严肃'的设计语言。Baloo 2和Nunito是Google Fonts上最受欢迎的圆体选择。Duolingo、Khan Academy等教育产品大量使用圆体来降低用户的认知负担。"
+  principle: "圆角传达友好，夸张传达趣味，克制保证可读"
+mood: [playful, friendly, warm, educational, energetic]
 fonts:
   display: "'Baloo 2', 'Nunito', 'Poppins', sans-serif"
-  display_weight: 800
   body: "'Nunito', 'Inter', sans-serif"
-  body_weight: 400
-  accent: "'Poppins', sans-serif"
-
+  mono: "'JetBrains Mono', monospace"
+weights:
+  display: "800"
+  body: "400;600"
+google_fonts:
+  - "Baloo+2:wght@800"
+  - "Nunito:wght@400;600"
 sizes:
   display: "clamp(36px, 5vw, 72px)"
   h2: "clamp(24px, 2.5vw, 40px)"
+  h3: "clamp(18px, 1.5vw, 24px)"
   body: "clamp(16px, 1.2vw, 20px)"
   small: "14px"
-  button: "clamp(16px, 1.1vw, 18px)"
-
-when:
-  brand_tone: [playful, friendly, warm, educational, consumer]
-  suitable_for: [education, app_landing, gamified, consumer_product]
+  caption: "12px"
+compatibility:
+  moods: [playful, friendly, warm, educational, energetic, candy]
+  layouts: [bento-grid-2x2, hero-split-left-image]

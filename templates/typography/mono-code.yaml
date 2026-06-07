@@ -1,0 +1,33 @@
+# via54Design 字体模板
+# Mono Code — 开发者优先，等宽字体为主角
+id: mono-code
+name:
+  zh: "等宽代码"
+  en: "Mono Code"
+  ja: "モノコード"
+metadata:
+  designer: via54 / JetBrains / Cursor
+  classification: "等宽无衬线(Ductive)主导 + 无衬线辅助"
+  inspiration: "JetBrains Mono是2020年代最受欢迎的开发者字体。当等宽字作为Display字体使用时，产品传达出强烈的'工具感'和'精确感'——Cursor和Vercel都在使用这个策略。"
+  principle: "代码是新的排版语言。等宽不再只是代码，也是品牌。"
+mood: [tech, developer, precise, modern, minimal, cool]
+fonts:
+  display: "'JetBrains Mono', 'Geist Mono', 'Fira Code', monospace"
+  body: "'Inter', -apple-system, 'Helvetica Neue', sans-serif"
+  mono: "'JetBrains Mono', 'Geist Mono', 'Fira Code', monospace"
+weights:
+  display: "700;800"
+  body: "400;500"
+google_fonts:
+  - "JetBrains+Mono:wght@400;700;800"
+  - "Inter:wght@400;500"
+sizes:
+  display: "clamp(28px, 4vw, 56px)"
+  h2: "clamp(20px, 2vw, 32px)"
+  h3: "clamp(16px, 1.3vw, 22px)"
+  body: "clamp(14px, 1vw, 16px)"
+  small: "12px"
+  caption: "11px"
+compatibility:
+  moods: [tech, developer, precise, modern, minimal, cool, futuristic]
+  layouts: [bento-grid-2x2, hero-split-left-image]

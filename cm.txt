@@ -1,9 +1,22 @@
-feat: add 6 Adobe/Behance popular color schemes
+feat: typography system rewrite — 12 templates with Chinese typography
 
-New palettes (total: 26):
-  spectrum-indigo — Adobe's brand color
-  flat-ui-vibrant — Behance most-used flat palette
-  millennial-sage — viral Millennial Pink + Sage Green
-  glassmorphism-pastel — frosted glass UI trend
-  neon-dark — Cyberpunk dark mode
-  earth-terracotta — 2026 Earth tone trend
+Architecture inspired by:
+  - modern-font-stacks (⭐3466) — system font classification
+  - DrXie/OSFCC (⭐825) — open source Chinese fonts
+  - JustFont / TwinType — Chinese typography education platforms
+
+New schema:
+  - google_fonts: []string — explicit GF imports (was: implicit inference)
+  - weights: map — per-role weight control
+  - mood: []string — design context tags
+  - chinese: {} — CJK-specific metadata
+
+Chinese typography (6 new):
+  ming-hei-editorial / kai-rounded-friendly / song-literary
+  hei-modern / calligraphy-accent / sc-sans-clean
+
+International (6 upgraded):
+  serif-sans-editorial / sans-geometric-tech / display-sans-bold
+  elegant-didone (NEW!) / mono-code (NEW!) / playful-rounded
+
+Removed 4 legacy templates: serif-longform, mono-terminal, cormorant-elegant, system-utility

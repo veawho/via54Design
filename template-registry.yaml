@@ -223,61 +223,56 @@ color_schemes:
     file: templates/color-schemes/candy-duolingo.yaml
 
 typography:
+  # ── 中文排版 (6) ──
+  - id: ming-hei-editorial
+    name: 明黑配 — 明体标题+黑体正文(JustFont经典)
+    tags: [chinese, editorial, classic, authoritative]
+    file: templates/typography/ming-hei-editorial.yaml
+  - id: kai-rounded-friendly
+    name: 楷圆配 — 霞鹜文楷+圆体(亲和教育)
+    tags: [chinese, friendly, warm, educational, organic]
+    file: templates/typography/kai-rounded-friendly.yaml
+  - id: song-literary
+    name: 宋体书卷 — 仿宋+明体(文学出版)
+    tags: [chinese, literary, elegant, cultural, refined]
+    file: templates/typography/song-literary.yaml
+  - id: hei-modern
+    name: 黑体现 — 思源黑体+Inter(现代科技)
+    tags: [chinese, modern, clean, tech, professional]
+    file: templates/typography/hei-modern.yaml
+  - id: calligraphy-accent
+    name: 书法点缀 — 站酷小薇+黑体(艺术文化)
+    tags: [chinese, artistic, bold, cultural, dramatic]
+    file: templates/typography/calligraphy-accent.yaml
+  - id: sc-sans-clean
+    name: 中文无衬线 — Noto Sans SC+Inter(安全通用)
+    tags: [chinese, clean, modern, professional, minimal]
+    file: templates/typography/sc-sans-clean.yaml
+  # ── 国际排版 (6) ──
   - id: serif-sans-editorial
-    name: 衬线标题+无衬线正文（编辑出版配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [editorial, serif, sans, warm, premium, readable]
+    name: 编辑衬线 — Fraunces+Inter(Anthropic风)
+    tags: [editorial, serif, sans, warm, premium, classic]
     file: templates/typography/serif-sans-editorial.yaml
-
   - id: sans-geometric-tech
-    name: 几何无衬线+等宽（科技产品配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [tech, sans, geometric, mono, clean]
+    name: 几何科技 — Inter+JetBrains Mono(Linear风)
+    tags: [tech, geometric, clean, precise, modern]
     file: templates/typography/sans-geometric-tech.yaml
-
   - id: display-sans-bold
-    name: 超粗Display+常规正文（大字报/发布会配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [bold, display, poster, keynote, big-type]
+    name: 粗体展示 — Archivo Black+Inter(发布会级)
+    tags: [bold, display, keynote, impactful, dramatic]
     file: templates/typography/display-sans-bold.yaml
-
-  - id: serif-longform
-    name: 阅读级衬线正文（年报/长文配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [serif, longform, reading, editorial, annual-report]
-    file: templates/typography/serif-longform.yaml
-
-  - id: mono-terminal
-    name: 等宽字主角（终端/CLI产品配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [mono, terminal, cli, developer, tech]
-    file: templates/typography/mono-terminal.yaml
-
+  - id: elegant-didone
+    name: 优雅迪多 — Playfair Display+Inter(时尚杂志)
+    tags: [elegant, luxury, editorial, didone, dramatic]
+    file: templates/typography/elegant-didone.yaml
+  - id: mono-code
+    name: 等宽代码 — JetBrains Mono+Inter(开发者优先)
+    tags: [mono, code, developer, tech, precise]
+    file: templates/typography/mono-code.yaml
   - id: playful-rounded
-    name: 圆润亲和字体（教育/游戏配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [playful, rounded, friendly, education, candy]
+    name: 圆润亲和 — Baloo 2+Nunito(教育游戏)
+    tags: [playful, rounded, friendly, educational, warm]
     file: templates/typography/playful-rounded.yaml
-
-  - id: cormorant-elegant
-    name: 高反差衬线（奢侈/画廊配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [serif, elegant, luxury, gallery, editorial]
-    file: templates/typography/cormorant-elegant.yaml
-
-  - id: system-utility
-    name: 系统字栈（社区/文档/功能性配）
-    version: "1.0.0"
-    category: typography/pair
-    tags: [system, utility, functional, clean, accessible]
-    file: templates/typography/system-utility.yaml
 
 animations:
   - id: hero-reveal-stagger

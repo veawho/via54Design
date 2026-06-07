@@ -83,26 +83,35 @@ func buildCSSVariables(color *ColorSchemeTemplate, font *TypographyTemplate) str
 }
 
 func buildFontImports(font *TypographyTemplate) string {
-	gf := map[string]bool{
-		"Inter": true, "Geist": true, "Geist Mono": true,
-		"JetBrains Mono": true, "Fraunces": true, "Newsreader": true,
-		"Playfair Display": true, "Noto Serif SC": true,
-		"Lora": true, "EB Garamond": true, "Cormorant Garamond": true,
-		"Space Grotesk": true, "Manrope": true, "Nunito": true,
-		"Poppins": true, "Archivo": true,
+	// 优先使用显式定义的 google_fonts
+	if len(font.GoogleFonts) > 0 {
+		var b strings.Builder
+		b.WriteString(`<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+`)
+		for _, gf := range font.GoogleFonts {
+			b.WriteString(fmt.Sprintf(
+				`<link href="https://fonts.googleapis.com/css2?family=%s&display=swap" rel="stylesheet">`+"\n", gf))
+		}
+		return b.String()
 	}
-	seen := map[string]bool{}
+
+	// 回退：从 fonts map 自动推断
+	gf := map[string]bool{
+		"Inter":true,"Geist":true,"JetBrains Mono":true,"Fraunces":true,
+		"Playfair Display":true,"Noto Serif SC":true,"Noto Sans SC":true,
+		"EB Garamond":true,"Nunito":true,"Baloo 2":true,
+		"Archivo Black":true,"Archivo":true,"LXGW WenKai":true,"ZCOOL XiaoWei":true,
+	}
 	for _, family := range font.Fonts {
 		primary := strings.Trim(strings.Split(family, ",")[0], " '\"")
-		if seen[primary] || !gf[primary] {
-			continue
-		}
-		seen[primary] = true
-		return fmt.Sprintf(
-			`<link rel="preconnect" href="https://fonts.googleapis.com">
+		if gf[primary] {
+			return fmt.Sprintf(
+				`<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=%s:wght@400;500;600;700&display=swap" rel="stylesheet">`,
-			strings.ReplaceAll(primary, " ", "+"))
+<link href="https://fonts.googleapis.com/css2?family=%s:wght@400;500;700&display=swap" rel="stylesheet">`,
+				strings.ReplaceAll(primary, " ", "+"))
+		}
 	}
 	return ""
 }

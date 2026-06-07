@@ -162,7 +162,7 @@ via54 media add-music input.mp4 --mood tech|ad|educational|tutorial
 via54 media convert input.mp4
 via54 media fetch --query "关键词" --out ./img --count 3
 
-# 导出
+| 导出
 via54 export render input.html --duration 30 --width 1920 --height 1080
 via54 export pdf input.html
 via54 export tts --text "你好" --out voice.mp3
@@ -171,7 +171,47 @@ via54 export tts --text "你好" --out voice.mp3
 via54 serve
 ```
 
-### MCP 配置
+---
+
+## 🔤 字体模版一览
+
+12 套字体配对方案，每套包含显示(display)、正文(body)、等宽(mono)三层字体栈，层层降级。
+
+### 中文排版 (6)
+
+| 方案 | 分类 | 显示字体 | 正文字体 | 灵感来源 |
+|------|------|---------|---------|----------|
+| `ming-hei-editorial` | 明体+黑体 | Source Han Serif | Source Han Sans | JustFont 经典推荐 |
+| `kai-rounded-friendly` | 楷体+圆体 | LXGW WenKai | Nunito | 霞鹜文楷开源项目 |
+| `song-literary` | 仿宋+明体 | Source Han Serif | FangSong | 宋刻本文学传统 |
+| `hei-modern` | 黑体统一 | Source Han Sans | Source Han Sans | Adobe+Google 联合开发 |
+| `calligraphy-accent` | 书法+黑体 | ZCOOL XiaoWei | Inter | 站酷小薇开源书法 |
+| `sc-sans-clean` | 中文无衬线 | Noto Sans SC | Noto Sans SC | Google Noto 项目 |
+
+```bash
+via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --title "寒山寺" --output demo.html
+via54 generate --layout hero-split --color tsubaki-camellia --font calligraphy-accent --title "銀座" --output demo.html
+```
+
+### 国际排版 (6)
+
+| 方案 | 分类 | 显示字体 | 正文字体 | 灵感来源 |
+|------|------|---------|---------|----------|
+| `serif-sans-editorial` | 过渡衬线+人文无衬线 | Fraunces | Inter | Anthropic/Claude |
+| `sans-geometric-tech` | 几何无衬线+等宽 | Inter | Inter | Linear/Vercel |
+| `display-sans-bold` | Grotesque 展示 | Archivo Black | Inter | Apple Keynote |
+| `elegant-didone` | 迪多体高反差 | Playfair Display | Inter 300 | Vogue / Harper's |
+| `mono-code` | 等宽主导 | JetBrains Mono | Inter | JetBrains/Cursor |
+| `playful-rounded` | 圆体亲和 | Baloo 2 | Nunito | Duolingo/Khan Academy |
+
+```bash
+via54 generate --layout bento-grid --color dark-terminal-blue --font mono-code --title "API Dashboard" --output demo.html
+via54 generate --layout hero-split --color earth-terracotta --font elegant-didone --title "Café de Flore" --output demo.html
+```
+
+---
+
+## 💻 命令参考
 
 **Claude Desktop** (`claude_desktop_config.json`):
 ```json
