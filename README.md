@@ -65,3 +65,7 @@ via54 serve
 - `scripts/` JS/Shell 脚本：MIT
 - `internal/` Go 源代码：AGPL-3.0
 - `internal/wasm/` Rust 源代码：AGPL-3.0
+
+## 致谢
+
+基于 [huashu-design](https://github.com/alchaincyf/huashu-design) by alchaincyf（花叔·花生），MIT 许可。

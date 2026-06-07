@@ -1,6 +1,3 @@
-chore: remove all huashu/花叔 references
+docs: add MIT attribution to original author
 
-Replaced 11 references across 12 files:
-- huashu-design -> via54Design
-- 花叔Design -> via54Design
-- author: huashu-design -> author: via54
+NOTICE file, README, and source header
