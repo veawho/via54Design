@@ -55,29 +55,28 @@ curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/ins
   via54 media add-music brand.mp4 --mood=tech
 ```
 
-### 手写/书法 → SVG 文字
+### 你的随意挥毫，都可以图形矢量化（LOGO、标题、矢量插画）
+
+支持任何手绘输入：毛笔书法、钢笔签名、Logo 草稿、插画线稿。VTracer 保留原始笔触质感，输出干净的 SVG path，不依赖任何字体文件或 OCR。
 
 ```
-"把我手写的'山水之间'照片转成 SVG，放到页面标题上"
+"把我手写的'山水之间'转成 SVG 标题，放到页面上"
+"这是我纸上画的 Logo 草稿，帮我矢量化"
+"把这个签名做成 SVG 放到品牌页脚"
 
 → 实际执行的命令:
-  via54 media trace --input ./handwriting.jpg --output ./logo.svg
-  via54 generate --lettering-svg ./logo.svg --color ink-wash --title "山水之间" --output index.html
-```
+  # ① 照片 → SVG 矢量化（一次）
+  via54 media trace --input ./any-sketch.jpg --output ./vector.svg
 
-### 手绘 Logo → SVG 矢量化
+  # ② SVG 嵌入设计（支持书法、Logo、插画任意图形）
+  via54 generate --lettering-svg ./vector.svg --color ink-wash --title "山水之间" --output index.html
 
-```
-"把我纸上画的 Logo 草稿转成干净的 SVG，放到品牌页面上"
-
-→ 实际执行的命令:
-  via54 media trace --input ./logo-sketch.jpg --output ./logo-clean.svg
+  # 也可以先处理再检查质量
+  via54 media trace --input ./logo-sketch.jpg --output ./logo.svg
   via54 generate --layout hero-split --color ultramarine-deep --font sans-geometric-tech \
-    --lettering-svg ./logo-clean.svg --title "品牌名" --output brand.html
+    --lettering-svg ./logo.svg --title "品牌名" --output brand.html
   via54 quality --html brand.html
 ```
-
-也支持任何手绘图形：插画草稿、签名、装饰纹样——VTracer 保留原始线条质感，不依赖任何字体或 OCR。
 
 ### 自然语言查询模板
 

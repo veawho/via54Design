@@ -1,1 +1,1 @@
-docs: add hand-drawn logo trace example
+docs: consolidate handwritten trace into one capability
