@@ -657,6 +657,140 @@ docs/        ← 模板格式规范 + 故障恢复指南
 | `hack/` | MIT | 部署/编译脚本 + Rust WASM |
 | `docs/` | MIT | 文档 |
 | `internal/` + `cmd/` | AGPL-3.0 | Go 源代码 |
+|
+|---
+
+## 🆕 v0.5.0 - v0.6.0 新增功能
+
+### 🔧 Prompt 引擎 v3 (36维度 × 17平台)
+
+| 特性 | 说明 |
+|------|------|
+| **36维度控制** | subject/lighting/camera_movement/emotion 等 36 维精确控制 |
+| **17平台** | midjourney/flux/dalle3/sd3/ideogram/recraft/seedance/gemini/veo/sora/kling/pika/jimeng + 3视频专用 |
+| **负面词库** | 每平台 4-5 条负面词, 含视频时序约束 |
+| **Token权重** | 字段级权重控制 (cinematic:1.2) |
+| **版本管理** | prompt version save/list/diff |
+| **质量评估** | 5 维度生图质量评估 (综合/清晰度/构图/色彩/Prompt匹配) |
+| **反向图片→Prompt** | 通过 vision LLM 从图片反推 36 维 prompt |
+| **模板语法** | `{cat\|dog}` 变体扩展 + 组合生成 |
+| **Prompt存档** | JSONL 存档 + 语义搜索 |
+
+### ⚡ ComfyUI 工作流系统 (21模板)
+
+```bash
+via54 comfyui --workflow sdxl_txt2img --prompt "cat" --output workflow.json
+```
+
+| 模板类别 | 数量 | 覆盖模型 |
+|---------|------|---------|
+| **基础** txt2img/img2img | 6 | SDXL/Flux/SD1.5/SD3.5 |
+| **专业** LoRA+ControlNet+FaceRestore | 5 | SDXL advanced/Flux pro/Tiled/OpenPose/Face |
+| **视频** txt2vid | 10 | AnimateDiff/Hunyuan/Wan/LTXV/Mochi/Cosmos/SVD |
+
+**数据驱动架构**: 加模板只需 `.yaml` + `.skeleton.json`, 不改 Go 代码。
+
+### 🎬 Forge Classic / A1111 双后端支持
+
+```bash
+via54 forge --workflow sdxl_txt2img --prompt "cat" --send
+# → 自动提交到 localhost:7860 (Forge/A1111 API)
+
+via54 comfyui --workflow sdxl_txt2img --prompt "cat"
+# → 输出 ComfyUI JSON workflow
+```
+
+| 后端 | 安装 | 端口 | 适合人群 |
+|------|------|------|---------|
+| **Forge Classic** | `bash hack/setup_backend.sh --forge` | 7860 | 初学者/A1111用户 |
+| **ComfyUI** | `bash hack/setup_backend.sh --comfy` | 8188 | 进阶/工程用户 |
+
+### 📖 叙事→演示管线 (Present)
+
+```bash
+via54 present --title "My Talk" --slides 10 --format marp       # Marp (默认)
+via54 present --title "My Talk" --slides 10 --format slidev     # Slidev
+via54 present --title "My Talk" --slides 10 --format revealjs   # reveal.js
+via54 present --title "Story" --seed "a hero's journey" --slides 5  # 从叙事引擎
+```
+
+### 🌐 Web UI (全功能控制面板)
+
+```bash
+via54 web --port 8080 --open
+```
+
+6 大模块含中英文切换:
+
+| 模块 | API | 功能 |
+|------|-----|------|
+| 🔧 Prompt | `/api/prompt` | 17平台, 36维度, 场景→prompt |
+| 🎨 Design | `/api/generate` | 3布局, 30+配色, 12字体 |
+| 📖 Narrate | `/api/narrate` | 4叙事模型, 时长控制 |
+| 📦 Export | `/api/export` | PPTX/SVG/JSON/Markdown/PDF/TTS |
+| 🎵 Media | `/api/media` | 配乐/转换/矢量化/搜索 |
+| ⚡ Workflow | `/api/build` | ComfyUI JSON / Forge A1111 API |
+
+- 零外部依赖 (vanilla HTML/CSS/JS, 61KB)
+- 暗色主题 + CSS 变量 + minmax(0,1fr) 网格
+- 键盘无障碍 (:focus-visible) + 动画无障碍 (prefers-reduced-motion)
+- 统一事件绑定 (17个onclick→addEventListener)
+- 压力测试: 1999 req/s, 47/47 100%
+- 自动监控: Hermes cron 每10分钟自测
+
+### 🏗️ 设计质量门禁 v2
+
+```bash
+via54 quality --html output.html
+# → PASS (0 errors, 0 warnings, 1 info)
+```
+
+| 检查项 | 来源 | 功能 |
+|--------|------|------|
+| HTML结构 | DOCTYPE/head/body/ charset/viewport | 基础完整性 |
+| CSS | 花括号匹配 + !important 检测 | 代码质量 |
+| 布局系统 | 22 锁定布局识别 | guizang-ppt-skill 参考 |
+| 配色合规 | CSS变量 + 硬编码hex检测 | Claude Design 标准 |
+| 字体系统 | font-family + line-height | Claude Design 标准 |
+| 响应式 | @media + viewport | Claude Design 标准 |
+| 无障碍 | alt文本 + focus样式 + reduced-motion | Claude Design 标准 |
+| 反陈词滥调 | 15个business cliche + 5个AI-generic短语 | garden-skills 参考 |
+| 9-Ramp色阶 | 9色阶×7停=63色参考库 (templates/color-schemes/_claude_9ramp_reference.yaml) | Claude Design |
+
+### 🎨 Claude Design 优化 (system_prompts_leaks ⭐41k)
+
+| 优化项 | 标准 | 实现 |
+|--------|------|------|
+| minmax(0,1fr) 网格溢出修复 | Claude Design | 3 layout YAML → engine.go |
+| font-weight 仅400/500 | Claude Design | 禁止600/700 |
+| :focus-visible 键盘无障碍 | Claude Design | 全局焦点样式 |
+| prefers-reduced-motion | Claude Design | 动画无障碍包裹 |
+| 暗色模式强制 | Claude Design | CSS变量双模式 |
+| SVG规范 | Claude Design visualize | docs/prompts/svg-standards.md |
+| 9-Ramp色阶系统 | Claude Design 63色 | _claude_9ramp_reference.yaml |
+| 零外部CDN | Open Source | 无CDN引用 |
+
+### 🔬 测试与验证体系
+
+```bash
+python hack/test_webui.py              # 全量47项测试
+python hack/test_webui.py --watch      # 文件变更自动重测
+python hack/watch_webui.py             # Hermes cron 自测 (每10分钟)
+
+# 第一性铁律 6步验证:
+# ① Given/When/Then ② 方案验证 ③ MVP ④ 对比 ⑤ 执行 ⑥ 3轮×4维测试
+```
+
+| 测试 | 通过率 | 关键指标 |
+|------|--------|---------|
+| 单元测试 (workflow) | 11/11 | 0.45s |
+| API端点 | 9/9 | health/templates/prompt/narrate/generate/build/export/media |
+| HTML结构 | 15/15 | DOCTYPE/6模块/API引用/i18n/零CDN |
+| 压力测试 | **1999 req/s** | 100并发, 0错误 |
+| 错误边界 | 5/5 | 异常输入正确处理 |
+| CLI命令 | 13/13 | serve→version 全部注册 |
+| 布局组合 | 9/9 | 3布局×3配色全部有效 |
+| 生成稳定性 | 20/20 | 连续20次0错误 |
 
 ## 致谢
 
