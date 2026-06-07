@@ -1,3 +1,10 @@
-docs: add MIT attribution to original author
+feat: one-click deploy + natural language examples
 
-NOTICE file, README, and source header
+scripts/setup.sh — 全自动部署 (Go/ffmpeg/Node.js/Playwright)
+scripts/install.sh — AI Agent 一句话部署入口
+  bash <(curl -s .../install.sh) | bash
+  curl -fsSL .../install.sh | bash
+
+README.md — 自然语言操作示例 (12个场景)
+  "帮我用 via54Design 做一个暖色编辑风格的页面"
+  "给这个视频配一首科技感 BGM"
