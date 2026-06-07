@@ -65,6 +65,20 @@ curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/ins
   via54 generate --lettering-svg ./logo.svg --color ink-wash --title "山水之间" --output index.html
 ```
 
+### 手绘 Logo → SVG 矢量化
+
+```
+"把我纸上画的 Logo 草稿转成干净的 SVG，放到品牌页面上"
+
+→ 实际执行的命令:
+  via54 media trace --input ./logo-sketch.jpg --output ./logo-clean.svg
+  via54 generate --layout hero-split --color ultramarine-deep --font sans-geometric-tech \
+    --lettering-svg ./logo-clean.svg --title "品牌名" --output brand.html
+  via54 quality --html brand.html
+```
+
+也支持任何手绘图形：插画草稿、签名、装饰纹样——VTracer 保留原始线条质感，不依赖任何字体或 OCR。
+
 ### 自然语言查询模板
 
 ```

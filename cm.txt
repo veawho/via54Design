@@ -1,1 +1,1 @@
-docs: add trace + lettering-svg examples to README
+docs: add hand-drawn logo trace example
