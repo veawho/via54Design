@@ -1,0 +1,36 @@
+# 即梦 AI 提示词模板
+id: jimeng
+name:
+  zh: "即梦 AI"
+  en: "Jimeng AI"
+platform: jimeng
+description: "即梦 AI 图片生成"
+version: "1.0.0"
+format: jimeng
+
+sections:
+  - id: subject
+    label: "主体"
+    hint: "主要视觉元素"
+    default: "（LLM填充：主体）"
+
+  - id: style
+    label: "风格"
+    hint: "视觉风格"
+    default: "写实"
+    options:
+      - {value: "写实", label: "写实摄影"}
+      - {value: "插画", label: "插画风格"}
+      - {value: "3D", label: "3D渲染"}
+      - {value: "国风", label: "中国风"}
+      - {value: "二次元", label: "动漫风格"}
+
+  - id: composition
+    label: "构图"
+    hint: "画面构图"
+    default: "（LLM填充：构图）"
+
+  - id: detail
+    label: "细节要求"
+    hint: "特定的细节描述"
+    default: "（LLM填充：细节）")
