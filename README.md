@@ -78,6 +78,60 @@ npx playwright install chromium
 ./via54
 ```
 
+## 🎨 配色模版一览
+
+20 套配色方案，每套包含 6 个语义角色（背景/正文/辅助/强调/强调2/边框）。
+
+### 中国传统配色 (8)
+
+| 方案 | 季节 | 气质 | 强调色 | 典故 |
+|------|------|------|--------|------|
+| `crimson-elegance` | 秋 | 热烈·庄重 | `#C23A2B` 朱砂 | 唐代宫廷正色 |
+| `pine-spring` | 春 | 自然·雅致 | `#5B8C5A` 松花绿 | 苏轼松花酿酒 |
+| `daylily-warmth` | 夏 | 温暖·忘忧 | `#E8A838` 萱草黄 | 诗经忘忧草 |
+| `ultramarine-deep` | 冬 | 深邃·宁静 | `#2E5CB8` 群青 | 敦煌青金石 |
+| `rosewood-noble` | 秋 | 高贵·典雅 | `#7A4B5C` 紫檀 | 明清一寸紫檀一寸金 |
+| `moon-white` | 冬 | 素雅·空灵 | `#5B7B8C` 雨过天青 | 宋徽宗汝窑梦色 |
+| `autumn-fragrance` | 秋 | 古朴·温润 | `#9B8B6E` 秋香 | 明人书房桂花色 |
+| `ink-wash` | 四季 | 极简·禅意 | `#C43C3A` 朱砂印 | 王维始创水墨画 |
+
+```bash
+via54 generate --layout hero-split --color ink-wash --font cormorant-elegant --title "寒山寺" --output demo.html
+via54 generate --layout gallery --color moon-white --font system-utility --title "雨过天青" --output demo.html
+```
+
+### 日系配色 (6)
+
+| 方案 | 来源 | 气质 | 强调色 | 文化背景 |
+|------|------|------|--------|----------|
+| `tsubaki-camellia` | 资深堂 | 优雅·知性 | `#BF3A2B` 椿色 | 山茶花口红传奇 |
+| `wabi-sabi` | 千利休茶道 | 残缺·空寂 | `#6B5B4A` 焦茶 | 侘寂美学发源 |
+| `muji-minimal` | 原研哉 | 极简·功能 | `#B27C5A` 亚麻 | 空无的设计哲学 |
+| `sakura-blossom` | 花见 | 温柔·短暂 | `#E8A0B4` 薄紅 | 一期一会 |
+| `indigo-craft` | 阿波藍 | 匠人·深沉 | `#264C7B` 藍色 | Japan Blue |
+| `rinpa-gold` | 尾形光琳 | 华美·装饰 | `#C89B3C` 金 | 风神雷神屏风 |
+
+```bash
+via54 generate --layout hero-split --color tsubaki-camellia --font cormorant-elegant --title "銀座" --output demo.html
+via54 generate --layout gallery --color muji-minimal --font system-utility --title "無印" --output demo.html
+```
+
+### 经典配色 (6)
+
+| 方案 | 灵感来源 | 气质 | 强调色 |
+|------|----------|------|--------|
+| `warm-editorial-cream` | Anthropic | 温暖·智性 | `#CC785C` 赤陶橙 |
+| `dark-terminal-blue` | Linear | 科技·发光 | `#5E6AD2` 紫蓝 |
+| `swiss-monochrome` | Vercel | 极简·权威 | `#000000` 纯黑 |
+| `bauhaus-primary` | Khan Academy | 几何·活力 | `#E63946` 红 |
+| `candy-duolingo` | Duolingo | 游戏·亲和 | `#58CC02` 绿 |
+| `cosmic-retro` | Perplexity | 太空·复古 | `#2B4F91` 钴蓝 |
+
+```bash
+via54 generate --layout bento-grid --color dark-terminal-blue --font sans-geometric-tech --title "Dashboard" --output demo.html
+via54 generate --layout hero-split --color warm-editorial-cream --font serif-sans-editorial --title "品牌故事" --output demo.html
+```
+
 ---
 
 ## 💻 命令参考
