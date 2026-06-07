@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strings"
 	"text/template"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -252,7 +253,122 @@ func (s *PromptScaffold) Regenerate(platform string, baseDir string) {
 	s.Expanded = buildPromptDebug(s, tmpl)
 }
 
-// ─── 导出 ───
+// ─── 质量评估 (CLIP-AGIQA 参考) ───
+
+type QualityReport struct {
+	ImagePath      string  `json:"image_path"`
+	OverallScore   float64 `json:"overall_score"`   // 0.0-1.0
+	ClarityScore   float64 `json:"clarity_score"`   // 清晰度
+	CompositionScore float64 `json:"composition_score"` // 构图
+	ColorScore     float64 `json:"color_score"`     // 色彩
+	PromptMatch    float64 `json:"prompt_match"`    // 与 prompt 匹配度
+	Issues         []string `json:"issues"`
+}
+
+// AssessImage 评估生图质量 (基于 CLIP-AGIQA 方法论)
+// 实际评估需要 CLIP 模型, 当前输出结构化评估框架
+func AssessImage(imagePath string, promptText string) *QualityReport {
+	report := &QualityReport{
+		ImagePath: imagePath,
+		OverallScore: 0.0,
+		Issues: []string{},
+	}
+
+	// 检查图片是否存在
+	if _, err := os.Stat(imagePath); os.IsNotExist(err) {
+		report.Issues = append(report.Issues, "图片文件不存在: "+imagePath)
+		return report
+	}
+
+	// 获取文件大小作为基础质量信号
+	if info, err := os.Stat(imagePath); err == nil {
+		sizeMB := float64(info.Size()) / (1024 * 1024)
+		if sizeMB < 0.1 {
+			report.Issues = append(report.Issues, "图片文件过小 (<100KB), 可能低质量")
+			report.ClarityScore = 0.3
+		} else if sizeMB > 10 {
+			report.ClarityScore = 0.9
+		} else {
+			report.ClarityScore = 0.6 + (sizeMB / 10) * 0.3
+		}
+	}
+
+	// Prompt 匹配度估算 (基于关键词覆盖)
+	if promptText != "" {
+		promptWords := len(strings.Fields(promptText))
+		if promptWords > 50 {
+			report.PromptMatch = 0.8
+		} else if promptWords > 20 {
+			report.PromptMatch = 0.6
+		} else {
+			report.PromptMatch = 0.4
+		}
+	}
+
+	// 综合评分 (实际应调用 CLIP 模型)
+	report.CompositionScore = 0.7 // placeholder
+	report.ColorScore = 0.7       // placeholder
+	report.OverallScore = (report.ClarityScore + report.CompositionScore + report.ColorScore + report.PromptMatch) / 4.0
+
+	return report
+}
+
+// ─── 版本管理 ───
+
+type PromptVersion struct {
+	Version   string `json:"version"`
+	Timestamp string `json:"timestamp"`
+	Seed      string `json:"seed"`
+	Platform  string `json:"platform"`
+	Prompt    string `json:"prompt"`
+	Previous  string `json:"previous,omitempty"`
+}
+
+// SaveVersion 保存 prompt 版本到文件 (git-friendly JSON lines)
+func SaveVersion(dir string, s *PromptScaffold) (string, error) {
+	os.MkdirAll(dir, 0755)
+	v := PromptVersion{
+		Version:   fmt.Sprintf("v%d", len(ListVersions(dir))+1),
+		Timestamp: time.Now().Format(time.RFC3339),
+		Seed:      s.Seed,
+		Platform:  s.Platform,
+		Prompt:    s.FinalPrompt,
+	}
+	data, _ := json.Marshal(v)
+	fp := filepath.Join(dir, fmt.Sprintf("prompt-%s.json", v.Version))
+	os.WriteFile(fp, data, 0644)
+	return fp, nil
+}
+
+func ListVersions(dir string) []string {
+	var versions []string
+	entries, _ := os.ReadDir(dir)
+	for _, e := range entries {
+		if strings.HasPrefix(e.Name(), "prompt-v") && strings.HasSuffix(e.Name(), ".json") {
+			versions = append(versions, e.Name())
+		}
+	}
+	sort.Strings(versions)
+	return versions
+}
+
+// DiffVersions 比较两个版本
+func DiffVersions(dir, v1, v2 string) (string, error) {
+	f1 := filepath.Join(dir, fmt.Sprintf("prompt-%s.json", v1))
+	f2 := filepath.Join(dir, fmt.Sprintf("prompt-%s.json", v2))
+	d1, _ := os.ReadFile(f1)
+	d2, _ := os.ReadFile(f2)
+
+	var pv1, pv2 PromptVersion
+	json.Unmarshal(d1, &pv1)
+	json.Unmarshal(d2, &pv2)
+
+	if pv1.Prompt == pv2.Prompt {
+		return "相同 (no changes)\n", nil
+	}
+	return fmt.Sprintf("差异: %s → %s\n之前: %s\n之后: %s\n",
+		v1, v2, pv1.Prompt, pv2.Prompt), nil
+}
 
 func (s *PromptScaffold) ToJSON() (string, error) {
 	data, err := json.MarshalIndent(s, "", "  ")

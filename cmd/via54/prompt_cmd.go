@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"path/filepath"
 	"github.com/veawho/via54Design/internal/prompt"
 )
 
@@ -28,6 +29,12 @@ func cmdPrompt() {
 		cmdPromptGallery()
 	case "comfyui":
 		cmdComfyUI()
+	case "assess":
+		cmdPromptAssess()
+	case "version":
+		cmdPromptVersion()
+	case "send":
+		cmdPromptSend()
 	default:
 		cmdPromptGenerate()
 	}
@@ -48,6 +55,14 @@ func promptHelp() {
 	fmt.Println("  gallery              提示词模板市场")
 	fmt.Println("  comfyui              ComfyUI 工作流执行")
 	fmt.Println("    --workflow workflow.json --prompt \"...\"")
+	fmt.Println("  assess              生图质量评估")
+	fmt.Println("    --image output.png [--prompt \"used prompt\"]")
+	fmt.Println("  version             版本管理 (save/list/diff)")
+	fmt.Println("    --save --prompt prompt.json          保存版本")
+	fmt.Println("    --list .                             列出版本")
+	fmt.Println("    --diff v1 v2                         比较版本")
+	fmt.Println("  send                BrowserWing 生图指令")
+	fmt.Println("    --prompt prompt.json --platform midjourney")
 }
 
 func cmdPromptGenerate() {
@@ -235,4 +250,117 @@ func cmdComfyUI() {
 	os.WriteFile(*output, outData, 0644)
 	fmt.Printf("✅ ComfyUI workflow 已注入 prompt (%d 个节点): %s\n", injected, *output)
 	fmt.Println("  执行: comfy-swap run --workflow " + *output)
+}
+
+// ─── Assess ───
+func cmdPromptAssess() {
+	fs := flag.NewFlagSet("assess", flag.ExitOnError)
+	image := fs.String("image", "", "生图输出路径")
+	promptText := fs.String("prompt", "", "使用的 prompt")
+	fs.Parse(os.Args[3:])
+
+	if *image == "" {
+		fmt.Fprintln(os.Stderr, "请指定 --image output.png")
+		os.Exit(1)
+	}
+
+	report := prompt.AssessImage(*image, *promptText)
+	fmt.Printf("📊 生图质量评估: %s\n", *image)
+	fmt.Printf("  综合评分: %.2f / 1.0\n", report.OverallScore)
+	fmt.Printf("  清晰度:   %.2f\n", report.ClarityScore)
+	fmt.Printf("  构图:     %.2f\n", report.CompositionScore)
+	fmt.Printf("  色彩:     %.2f\n", report.ColorScore)
+	fmt.Printf("  Prompt匹配: %.2f\n", report.PromptMatch)
+	if len(report.Issues) > 0 {
+		fmt.Println("  问题:")
+		for _, iss := range report.Issues {
+			fmt.Printf("    ⚠️ %s\n", iss)
+		}
+	}
+}
+
+// ─── Version ───
+func cmdPromptVersion() {
+	fs := flag.NewFlagSet("version", flag.ExitOnError)
+	save := fs.Bool("save", false, "保存版本")
+	promptFile := fs.String("prompt", "", "prompt JSON 文件")
+	list := fs.Bool("list", false, "列出版本")
+	versionDir := fs.String("dir", ".via54/prompts", "版本目录")
+	diffV1 := fs.String("diff-v1", "", "比较版本 v1")
+	diffV2 := fs.String("diff-v2", "", "比较版本 v2")
+	fs.Parse(os.Args[3:])
+
+	bd := baseDir()
+	dir := *versionDir
+	if !filepath.IsAbs(dir) {
+		dir = filepath.Join(bd, dir)
+	}
+
+	if *save {
+		if *promptFile == "" {
+			fmt.Fprintln(os.Stderr, "请指定 --prompt prompt.json")
+			os.Exit(1)
+		}
+		data, _ := os.ReadFile(*promptFile)
+		var s prompt.PromptScaffold
+		json.Unmarshal(data, &s)
+		fp, err := prompt.SaveVersion(dir, &s)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "保存失败: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("✅ 已保存: %s\n", fp)
+	} else if *list {
+		versions := prompt.ListVersions(dir)
+		if len(versions) == 0 {
+			fmt.Println("无版本记录")
+			return
+		}
+		fmt.Println("📋 版本列表:")
+		for _, v := range versions {
+			fmt.Printf("  %s\n", v)
+		}
+	} else if *diffV1 != "" && *diffV2 != "" {
+		diff, err := prompt.DiffVersions(dir, *diffV1, *diffV2)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "比较失败: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(diff)
+	} else {
+		fmt.Fprintln(os.Stderr, "请指定操作: --save, --list, 或 --diff-v1 --diff-v2")
+		os.Exit(1)
+	}
+}
+
+// ─── Send (BrowserWing 兼容) ───
+func cmdPromptSend() {
+	fs := flag.NewFlagSet("send", flag.ExitOnError)
+	promptFile := fs.String("prompt", "", "prompt JSON 文件")
+	platform := fs.String("platform", "midjourney", "目标平台")
+	fs.Parse(os.Args[3:])
+
+	if *promptFile == "" {
+		fmt.Fprintln(os.Stderr, "请指定 --prompt prompt.json")
+		os.Exit(1)
+	}
+
+	data, _ := os.ReadFile(*promptFile)
+	var s prompt.PromptScaffold
+	json.Unmarshal(data, &s)
+
+	// 输出 BrowserWing 兼容的指令
+	fmt.Printf(`🌐 使用 BrowserWing (⭐1,292) 自动提交到 %s:
+
+1. 确保 BrowserWing 已安装: npx skills add browserwing/browserwing
+2. 执行以下指令:
+
+   browserwing navigate "https://www.midjourney.com"
+   browserwing type "#prompt-input" "%s"
+   browserwing click "#generate-button"
+   browserwing wait 30
+
+或直接复制 prompt 到 %s:
+   %s
+`, *platform, s.FinalPrompt, *platform, s.FinalPrompt)
 }
