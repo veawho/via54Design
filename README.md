@@ -384,7 +384,7 @@ YAML `responsive[]` 自动生成 CSS `@media` 查询，覆盖 **columns/stack/sa
 
 ```bash
 # 一行部署
-bash <(curl -s https://raw.githubusercontent.com/veawho/via54Design/main/scripts/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/veawho/via54Design/main/hack/install.sh)
 
 # 或手动编译
 go build -o via54 ./cmd/via54/
@@ -396,7 +396,7 @@ go build -o via54 ./cmd/via54/
 |------|------|------|
 | Go 1.21+ | 核心引擎 | [go.dev/dl](https://go.dev/dl/) |
 | ffmpeg | 视频/音频处理 | `brew install ffmpeg` / `apt install ffmpeg` |
-| Node.js 18+ | PPTX 导出 | [nodejs.org](https://nodejs.org/) |
+| Playwright (可选) | HTML→视频/PDF | `npm install playwright && npx playwright install chromium` |
 
 ---
 

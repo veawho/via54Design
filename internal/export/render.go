@@ -1,3 +1,5 @@
+// via54Design — 视频渲染管线
+// 使用 Playwright 录制 HTML + ffmpeg 转码多格式输出
 package export
 
 import (
@@ -8,43 +10,60 @@ import (
 	"strings"
 )
 
-// RenderVideo 使用 Playwright 将 HTML 录制成 MP4
-// 实际调用 npx playwright (保留 node 依赖)
-// 输入: htmlPath 路径, duration 秒
+// RenderFormats 支持的视频格式
+var RenderFormats = map[string]struct {
+	Codec string
+	Ext   string
+	Muxer string
+	Desc  string
+}{
+	"mp4":    {"libx264", ".mp4", "mp4", "H.264 通用格式"},
+	"webm":   {"libvpx-vp9", ".webm", "webm", "VP9 开源格式"},
+	"hevc":   {"libx265", ".mp4", "mp4", "H.265 高压缩比"},
+	"frames": {"", "", "image2", "PNG 序列帧 (输出目录)"},
+	"apng":   {"apng", ".png", "apng", "APNG 动图"},
+}
+
+// RenderVideo 使用 Playwright 渲染 HTML → MP4 (兼容旧接口)
 func RenderVideo(htmlPath string, duration int, width, height int) (*RenderResult, error) {
+	return RenderVideoExt(htmlPath, duration, width, height, "mp4")
+}
+
+// RenderVideoExt 扩展版: 支持多格式
+func RenderVideoExt(htmlPath string, duration int, width, height int, format string) (*RenderResult, error) {
 	if _, err := os.Stat(htmlPath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("HTML 文件不存在: %s", htmlPath)
 	}
+
+	fmtInfo, ok := RenderFormats[format]
+	if !ok {
+		return nil, fmt.Errorf("不支持的格式: %s (可选: mp4/webm/hevc/frames/apng)", format)
+	}
+
 	absHTML, _ := filepath.Abs(htmlPath)
 	outDir := filepath.Dir(absHTML)
 	baseName := strings.TrimSuffix(filepath.Base(absHTML), ".html")
 
-	// Playwright Node.js 脚本 —— 通过 stdlib os/exec 调 npx
-	// 使用内联 Node.js 脚本，避免文件依赖
-	script := fmt.Sprintf(`
-const { chromium } = require('playwright');
+	// Playwright 录制 raw video
+	rawWebm := filepath.Join(outDir, baseName+"_raw.webm")
+	script := fmt.Sprintf(`const { chromium } = require('playwright');
 (async () => {
-	const browser = await chromium.launch({ headless: true });
-	const page = await browser.newPage({
-		viewport: { width: %d, height: %d }
-	});
-	await page.goto('file://%s', { waitUntil: 'networkidle' });
-	await page.waitForTimeout(2000);
-	const ctx = await browser.newContext({
-		recordVideo: { dir: '%s', size: { width: %d, height: %d } }
-	});
-	const p2 = await ctx.newPage();
-	await p2.goto('file://%s', { waitUntil: 'networkidle' });
-	await p2.waitForTimeout(3000);
-	await p2.waitForTimeout(%d * 1000);
-	await p2.close();
-	await ctx.close();
-	await browser.close();
-	console.log('DONE');
-})();
-`, width, height, absHTML, outDir, width, height, absHTML, duration)
+  const browser = await chromium.launch({ headless: true });
+  const ctx = await browser.newContext({
+    recordVideo: { dir: '%s', size: { width: %d, height: %d } }
+  });
+  const page = await ctx.newPage();
+  await page.goto('file://%s', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(2000);
+  await page.waitForTimeout(%d * 1000);
+  await page.close();
+  await ctx.close();
+  await browser.close();
+  const fs = require('fs');
+  const files = fs.readdirSync('%s').filter(f => f.endsWith('.webm'));
+  if (files.length) fs.renameSync('%s/'+files[0], '%s');
+})();`, outDir, width, height, absHTML, duration+2, outDir, outDir, rawWebm)
 
-	// 写入临时脚本
 	tmpScript := filepath.Join(outDir, "_render_temp.mjs")
 	os.WriteFile(tmpScript, []byte(script), 0644)
 	defer os.Remove(tmpScript)
@@ -52,14 +71,44 @@ const { chromium } = require('playwright');
 	cmd := exec.Command("npx", "playwright", "run", tmpScript)
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		return nil, fmt.Errorf("Playwright 渲染失败: %w (需要: npm install playwright + npx playwright install chromium)", err)
+		return nil, fmt.Errorf("Playwright 录制失败: %w", err)
 	}
 
-	// 查找生成的 webm 文件
-	videoFile := filepath.Join(outDir, baseName+".mp4")
+	outputFile := filepath.Join(outDir, baseName+fmtInfo.Ext)
+
+	switch format {
+	case "mp4", "hevc":
+		ffmpegCmd := exec.Command("ffmpeg", "-y", "-i", rawWebm,
+			"-c:v", fmtInfo.Codec, "-pix_fmt", "yuv420p", outputFile)
+		ffmpegCmd.Stderr = os.Stderr
+		if err := ffmpegCmd.Run(); err != nil {
+			os.Rename(rawWebm, outputFile)
+		} else {
+			os.Remove(rawWebm)
+		}
+
+	case "webm":
+		os.Rename(rawWebm, outputFile)
+
+	case "frames":
+		os.MkdirAll(outputFile, 0755)
+		exec.Command("ffmpeg", "-y", "-i", rawWebm,
+			filepath.Join(outputFile, "frame-%04d.png")).Run()
+		os.Remove(rawWebm)
+
+	case "apng":
+		ffmpegCmd := exec.Command("ffmpeg", "-y", "-i", rawWebm,
+			"-plays", "0", outputFile)
+		ffmpegCmd.Stderr = os.Stderr
+		if err := ffmpegCmd.Run(); err != nil {
+			os.Rename(rawWebm, outputFile)
+		} else {
+			os.Remove(rawWebm)
+		}
+	}
 
 	return &RenderResult{
-		VideoPath: videoFile,
+		VideoPath: outputFile,
 		Duration:  duration,
 		Width:     width,
 		Height:    height,
