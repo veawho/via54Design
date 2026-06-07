@@ -1,4 +1,4 @@
-// via54Design — 设计质量门禁 v2
+// via54Design — 设计质量门禁 v2 (参考: garden-skills anti-cliché + guizang validator)
 //
 // Copyright (C) 2026  via54 (veawho)
 //
@@ -70,10 +70,47 @@ func (c *Checker) checkAccessibility() []Issue {
 	imgs := imgRe.FindAllString(c.html, -1)
 	noAlt := 0
 	for _, img := range imgs {
-		if !strings.Contains(img, "alt=") { noAlt++ }
+		if !strings.Contains(img, "alt=") {
+			noAlt++
+		}
 	}
 	if noAlt > 0 {
 		issues = append(issues, Issue{"warning", "a11y", fmt.Sprintf("%d <img> missing alt text", noAlt)})
+	}
+	return issues
+}
+
+// garden-skills inspired anti-cliché blocklist
+func (c *Checker) checkAntiCliche() []Issue {
+	var issues []Issue
+	cliches := map[string]string{
+		"cutting-edge":         "Avoid 'cutting-edge' - be specific",
+		"leverage":             "Avoid 'leverage' - use concrete verbs",
+		"game-changer":         "Avoid 'game-changer' - show impact",
+		"revolutionary":        "Avoid 'revolutionary' - demonstrate value",
+		"disruptive":           "Avoid 'disruptive' - describe innovation",
+		"synergy":              "Avoid 'synergy' - describe collaboration",
+		"think outside the box": "Avoid cliche - describe approach",
+		"deep dive":            "Avoid 'deep dive' - describe analysis",
+		"circle back":          "Avoid 'circle back' - describe follow-up",
+		"low-hanging fruit":    "Avoid cliche - describe quick wins",
+		"best-in-class":        "Avoid 'best-in-class' - show comparison",
+	}
+	lower := strings.ToLower(c.html)
+	for cliche, msg := range cliches {
+		if strings.Contains(lower, cliche) {
+			issues = append(issues, Issue{"warning", "anti-cliche", msg})
+		}
+	}
+	aiPatterns := []string{
+		"In today's digital world", "In today's fast-paced",
+		"The future of", "Unlock the power", "Transform your",
+	}
+	for _, pattern := range aiPatterns {
+		if strings.Contains(c.html, pattern) {
+			issues = append(issues, Issue{"warning", "anti-cliche",
+				fmt.Sprintf("AI-generic phrase: '%s'", pattern)})
+		}
 	}
 	return issues
 }
@@ -85,12 +122,18 @@ func (c *Checker) RunAllV2() *Report {
 	r.Issues = append(r.Issues, c.checkTypography()...)
 	r.Issues = append(r.Issues, c.checkResponsive()...)
 	r.Issues = append(r.Issues, c.checkAccessibility()...)
+	r.Issues = append(r.Issues, c.checkAntiCliche()...)
 	summary := map[string]int{"error": 0, "warning": 0, "info": 0}
-	for _, iss := range r.Issues { summary[iss.Severity]++ }
+	for _, iss := range r.Issues {
+		summary[iss.Severity]++
+	}
 	r.Summary = summary
 	verdict := "PASS"
-	if summary["error"] > 0 { verdict = "FAIL"
-	} else if summary["warning"] > 2 { verdict = "WARNING" }
+	if summary["error"] > 0 {
+		verdict = "FAIL"
+	} else if summary["warning"] > 2 {
+		verdict = "WARNING"
+	}
 	r.Verdict = verdict
 	return r
 }

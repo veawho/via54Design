@@ -206,7 +206,7 @@ func buildResponsiveCSS(layout *LayoutTemplate) string {
 		// ── 隐藏元素 ──
 		for _, role := range bp.HideRoles {
 			elClass := fmt.Sprintf("%s__%s", className, elementCSSRole(role))
-			b.WriteString(fmt.Sprintf("  .%s { display: none !important; }\n", elClass))
+			b.WriteString(fmt.Sprintf("  .%s { display: none; }\n", elClass))
 		}
 
 		b.WriteString("}\n")
@@ -257,7 +257,7 @@ func buildElementResponsiveCSS(layout *LayoutTemplate) string {
 			}
 
 			if res.Hide {
-				b.WriteString(fmt.Sprintf("  .%s { display: none !important; }\n", elClass))
+				b.WriteString(fmt.Sprintf("  .%s { display: none; }\n", elClass))
 			}
 			if res.Order != 0 {
 				b.WriteString(fmt.Sprintf("  .%s { order: %d; }\n", elClass, res.Order))
