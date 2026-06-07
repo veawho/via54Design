@@ -25,3 +25,7 @@ Thumbs.db
 
 # Node
 node_modules/
+
+# Test outputs
+*.html
+*.exe
