@@ -143,9 +143,7 @@ func handleBuild(w http.ResponseWriter, r *http.Request) {
 	if kfInput != "" {
 		for _, kf := range strings.Split(kfInput, ",") {
 			kf = strings.TrimSpace(kf)
-			if kf == "" {
-				continue
-			}
+			if kf == "" { continue }
 			parts := strings.SplitN(kf, ":", 2)
 			if len(parts) == 2 {
 				frame := 0
@@ -155,21 +153,64 @@ func handleBuild(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	result, err := workflow.BuildWorkflow(tmpl, prompt, negative, overrides, kfs)
-	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
+	// Determine output format (comfyui or forge)
+	outputFormat, _ := req["format"].(string)
+	if outputFormat == "" {
+		outputFormat = "comfyui"
 	}
 
-	// Count nodes
-	var nodes []interface{}
-	json.Unmarshal(result.JSON, &nodes)
+	var resultJSON []byte
+	nodeCount := 0
+	injected := 0
+	kfCount := 0
+
+	if outputFormat == "forge" {
+		// Build Forge/A1111 API payload
+		forgePayload := map[string]interface{}{
+			"prompt":          prompt,
+			"negative_prompt": negative,
+			"steps":           30,
+			"cfg_scale":       7.5,
+			"width":           1024,
+			"height":          1024,
+			"sampler_name":    "Euler",
+			"save_images":     true,
+		}
+		if v, ok := overrides["steps"].(int); ok { forgePayload["steps"] = v }
+		if v, ok := overrides["cfg"].(float64); ok { forgePayload["cfg_scale"] = v }
+		if v, ok := overrides["width"].(int); ok { forgePayload["width"] = v }
+		if v, ok := overrides["height"].(int); ok { forgePayload["height"] = v }
+		if v, ok := overrides["seed"].(int); ok { forgePayload["seed"] = v }
+
+		resultMap := map[string]interface{}{
+			"format":       "forge_a1111",
+			"template":     workflowID,
+			"api_payload":  forgePayload,
+			"api_endpoint": "http://localhost:7860/sdapi/v1/txt2img",
+		}
+		resultJSON, _ = json.MarshalIndent(resultMap, "", "  ")
+		nodeCount = 1
+		injected = 1
+		kfCount = 0
+	} else {
+		// Build ComfyUI workflow JSON (default)
+		result, err := workflow.BuildWorkflow(tmpl, prompt, negative, overrides, kfs)
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+			return
+		}
+		resultJSON = result.JSON
+		nodeCount = len(strings.Split(string(result.JSON), "\n")) / 3
+		injected = result.Injected
+		kfCount = result.Keyframes
+	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"json":      string(result.JSON),
-		"nodes":     len(nodes),
-		"injected":  result.Injected,
-		"keyframes": result.Keyframes,
-		"template":  result.TemplateID,
+		"json":      string(resultJSON),
+		"nodes":     nodeCount,
+		"injected":  injected,
+		"keyframes": kfCount,
+		"template":  workflowID,
+		"format":    outputFormat,
 	})
 }
