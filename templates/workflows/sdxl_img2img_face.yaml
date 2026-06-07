@@ -1,0 +1,36 @@
+# via54Design — SDXL Image-to-Image with Face Restoration & Upscale
+# SPDX-License-Identifier: MIT
+id: sdxl_img2img_face
+name: "SDXL Img2Img + Face Restore + Upscale"
+description: "SDXL image-to-image with CodeFormer face restoration and model-based upscaling"
+type: img2img
+model: "sd_xl_base_1.0.safetensors"
+vae: "sdxl_vae.safetensors"
+params:
+  steps: 30
+  cfg: 7.5
+  sampler: "dpmpp_2m"
+  scheduler: "karras"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 0.65
+nodes:
+  load_image: LoadImage
+  checkpoint: CheckpointLoaderSimple
+  vae_encode: VAEEncode
+  positive_prompt: CLIPTextEncode
+  negative_prompt: CLIPTextEncode
+  sampler: KSampler
+  face_restore: FaceRestoreWithModel
+  upscale: ImageUpscaleWithModel
+  output: SaveImage
+models:
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_vae.safetensors"
+    path: "vae/sdxl_vae.safetensors"
+  - url: "https://huggingface.co/sczhou/CodeFormer/resolve/main/codeformer.pth"
+    path: "face_restore/codeformer.pth"
+  - url: "https://huggingface.co/lokCX/4x-UltraSharp/resolve/main/4x-UltraSharp.pth"
+    path: "upscale_models/4x-UltraSharp.pth"

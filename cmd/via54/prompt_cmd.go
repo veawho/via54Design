@@ -9,8 +9,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"os"
 	"strings"
+	"os"
 
 	"path/filepath"
 	"github.com/veawho/via54Design/internal/prompt"
@@ -239,6 +239,7 @@ func cmdComfyUI() {
 	cfg := fs.Float64("cfg", 0, "Override CFG scale")
 	seed := fs.Int("seed", -1, "Override seed (-1 = random)")
 	sampler := fs.String("sampler", "", "Override sampler name")
+	keyframes := fs.String("keyframes", "", "Keyframe schedule for video: frame:prompt,frame:prompt (e.g. 0:a cat,8:a dog)")
 	fs.Parse(os.Args[2:])
 
 	bd := baseDir()
@@ -314,8 +315,25 @@ func cmdComfyUI() {
 	}
 	negText := *negativePrompt
 
-	// Build the workflow
-	result, err := workflow.BuildWorkflow(tmpl, promptText, negText, overrides)
+	// Parse keyframes from CLI flag
+	var kfs []workflow.Keyframe
+	if *keyframes != "" {
+		for _, kf := range strings.Split(*keyframes, ",") {
+			kf = strings.TrimSpace(kf)
+			if kf == "" {
+				continue
+			}
+			parts := strings.SplitN(kf, ":", 2)
+			if len(parts) == 2 {
+				frame := 0
+				fmt.Sscanf(parts[0], "%d", &frame)
+				kfs = append(kfs, workflow.Keyframe{Frame: frame, Prompt: strings.TrimSpace(parts[1])})
+			}
+		}
+	}
+
+	// Build the workflow with keyframe support
+	result, err := workflow.BuildWorkflow(tmpl, promptText, negText, overrides, kfs)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "构建工作流失败: %v\n", err)
 		os.Exit(1)

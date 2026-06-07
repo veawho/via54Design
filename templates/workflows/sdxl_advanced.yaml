@@ -1,0 +1,35 @@
+# via54Design — SDXL Advanced Workflow with LoRA + IPAdapter + Face Restoration
+# SPDX-License-Identifier: MIT
+id: sdxl_advanced
+name: "SDXL Advanced (LoRA + IPAdapter + Face Restore)"
+description: "SDXL text-to-image with LoRA loading, IPAdapter style transfer, and CodeFormer face restoration"
+type: txt2img
+model: "sd_xl_base_1.0.safetensors"
+vae: "sdxl_vae.safetensors"
+params:
+  steps: 30
+  cfg: 7.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  positive_prompt: CLIPTextEncode
+  negative_prompt: CLIPTextEncode
+  lora: LoraLoader
+  ipadapter: IPAdapterApply
+  face_restore: FaceRestoreWithModel
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_vae.safetensors"
+    path: "vae/sdxl_vae.safetensors"
+  - url: "https://huggingface.co/h94/IP-Adapter/resolve/main/sdxl_models/ip-adapter_xl.safetensors"
+    path: "ipadapter/ip-adapter_xl.safetensors"
+  - url: "https://huggingface.co/openai/clip-vit-large-patch14/resolve/main/pytorch_model.bin"
+    path: "clip_vision/clip-vit-large-patch14.bin"

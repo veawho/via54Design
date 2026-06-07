@@ -1,0 +1,32 @@
+# via54Design — Flux Pro Workflow with High-Res Fix & Tiled VAE
+# SPDX-License-Identifier: MIT
+id: flux_pro
+name: "Flux Pro High-Res (Tiled VAE + Upscale)"
+description: "Flux Dev text-to-image at 2048px with tiled VAE decode and model-based upscaling"
+type: txt2img
+model: "flux_dev.safetensors"
+vae: "flux_vae.safetensors"
+params:
+  steps: 28
+  cfg: 1.0
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 2048
+  height: 2048
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  positive_prompt: CLIPTextEncode
+  negative_prompt: CLIPTextEncode
+  sampler: KSampler
+  tiled_vae: VAETiledDecode
+  upscale: ImageUpscaleWithModel
+  output: SaveImage
+models:
+  - url: "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors"
+    path: "checkpoints/flux_dev.safetensors"
+  - url: "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors"
+    path: "vae/flux_vae.safetensors"
+  - url: "https://huggingface.co/lokCX/4x-UltraSharp/resolve/main/4x-UltraSharp.pth"
+    path: "upscale_models/4x-UltraSharp.pth"

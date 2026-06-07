@@ -98,3 +98,33 @@ workflows:
     type: txt2img
     model: "v1-5-pruned-emaonly.safetensors"
     params: "20 steps, cfg 7.0, canny"
+  - id: sdxl_advanced
+    name: "SDXL Advanced (LoRA + IPAdapter + Face Restore)"
+    description: "SDXL with LoRA loading, IPAdapter style transfer, and CodeFormer face restoration"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, euler, LoRA+IPAdapter+CodeFormer"
+  - id: flux_pro
+    name: "Flux Pro High-Res (Tiled VAE + Upscale)"
+    description: "Flux Dev at 2048px with tiled VAE decode and model-based upscaling"
+    type: txt2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, cfg 1.0, 2048px, tiled VAE, upscale"
+  - id: sdxl_tiled
+    name: "SDXL Tiled VAE (Anti-OOM)"
+    description: "SDXL with tiled VAE decode to avoid OOM on large (1536×1024) outputs"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, dpmpp_2m karras, tiled VAE"
+  - id: controlnet_openpose
+    name: "SD1.5 OpenPose ControlNet"
+    description: "SD1.5 with OpenPose skeleton ControlNet for pose-controlled generation"
+    type: txt2img
+    model: "v1-5-pruned-emaonly.safetensors"
+    params: "25 steps, cfg 7.0, 512px, OpenPose"
+  - id: sdxl_img2img_face
+    name: "SDXL Img2Img + Face Restore + Upscale"
+    description: "SDXL image-to-image with CodeFormer face restoration and upscaling"
+    type: img2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, dpmpp_2m karras, denoise 0.65, CodeFormer"
