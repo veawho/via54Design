@@ -1,0 +1,32 @@
+# ─── 元数据 ───
+id: dark-terminal-blue
+name: 暗色终端美学 — 近黑+紫蓝强调（Linear/Cursor风）
+version: "1.0.0"
+category: color-scheme/dark
+tags: [dark, terminal, tech, developer, bento, glassmorphism]
+source: "references/design-styles.md — Linear暗色发光+Bento网格 / 终端核软未来"
+contrast_ratio: "13.5:1 ✅"
+
+colors:
+  background: "#08090A"
+  background_alt: "#0B0D14"
+  text_primary: "#F2F0EF"
+  text_secondary: "#8B8B8B"
+  accent: "#5E6AD2"
+  accent_gradient: "#4EA7FC→#B59AFF"
+  border: "#1E1E24"
+  success: "#34D399"
+  error: "#EF4444"
+
+when:
+  brand_tone: [tech, dark, developer, premium, futuristic]
+  audience: [developers, engineers, tech_professionals]
+  suitable_for: [saas, devtool, dashboard, cli_product]
+
+css_variables: |
+  --bg: #08090A;
+  --bg-alt: #0B0D14;
+  --text-primary: #F2F0EF;
+  --text-secondary: #8B8B8B;
+  --accent: #5E6AD2;
+  --border: #1E1E24;

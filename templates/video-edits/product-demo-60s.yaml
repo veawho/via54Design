@@ -1,0 +1,80 @@
+# ─── 元数据 ───
+id: product-demo-60s
+name: 60秒产品功能演示视频
+version: "1.0.0"
+category: video/product-demo
+tags: [product, demo, feature, walkthrough, 60s, tutorial]
+source: "references/video-export.md + references/animation-best-practices.md"
+
+specs:
+  total_duration: 60
+  frame_rate: 25
+  resolution: [1920, 1080]
+  orientation: landscape
+  export: [mp4-25fps, gif]
+
+# 叙事弧 — 5段式
+arc:
+  - phase: hook             # 0-8s: 问题+产品亮相
+    duration: 8
+    mood: problem-aware
+    music: bgm-tech.mp3
+    sfx_density: medium
+    elements:
+      - "用户痛点/问题场景（3s）"
+      - "产品logo+名称亮相（3s）"
+      - "一句话价值主张（2s）"
+
+  - phase: overview         # 8-18s: 产品全景
+    duration: 10
+    mood: clear
+    music: bgm-tech.mp3
+    sfx_density: low
+    elements:
+      - "产品全貌展示（界面/硬件/服务）"
+      - "核心界面1-2个关键区域标注"
+      - "整体第一印象"
+
+  - phase: feature-1        # 18-33s: 核心功能1
+    duration: 15
+    mood: focused
+    music: bgm-tutorial.mp3
+    sfx_density: medium
+    elements:
+      - "最重要的功能/卖点"
+      - "操作流程2-3步动画"
+      - "前后对比/效果展示"
+
+  - phase: feature-2        # 33-48s: 核心功能2
+    duration: 15
+    mood: focused
+    music: bgm-tutorial.mp3
+    sfx_density: medium
+    elements:
+      - "第二重要功能"
+      - "差异化特色/竞品对比"
+      - "实际应用场景"
+
+  - phase: cta              # 48-60s: 行动号召
+    duration: 12
+    mood: urgent-positive
+    music: bgm-ad.mp3
+    sfx_density: high
+    elements:
+      - "用户价值总结（3点以内）"
+      - "价格/可用性信息（5s）"
+      - "logo+CTA按钮/网址（4s）"
+
+# 音效规则
+sfx_rules:
+  - "产品亮相配 logo-reveal sfx"
+  - "操作步骤配 click-soft / tap-finger sfx"
+  - "完成/成功配 success-chime sfx"
+  - "切换场景配 whoosh sfx"
+
+# 导出参数
+export_params:
+  render_script: "scripts/render-video.js"
+  music_add: "scripts/add-music.sh --mood=tech"
+  gif: true
+  gif_width: 960

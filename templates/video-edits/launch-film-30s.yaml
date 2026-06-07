@@ -1,0 +1,85 @@
+# ─── 元数据 ───
+id: launch-film-30s
+name: 30秒品牌宣传片（苹果发布会级）
+version: "1.0.0"
+category: video/launch-film
+tags: [launch, film, brand, promo, apple-level, 30s]
+source: "references/launch-film-director-notes.md + references/video-export.md + references/audio-design-rules.md"
+
+specs:
+  total_duration: 30
+  frame_rate: 25
+  resolution: [1920, 1080]
+  orientation: landscape
+  export: [mp4-25fps, mp4-60fps, gif]
+
+# 叙事弧 — 四段式
+arc:
+  - phase: hook            # 0-5s: 钩子，建立悬念/氛围
+    duration: 5
+    mood: mysterious
+    music: bgm-tech.mp3
+    sfx_density: high       # 6/10s
+    sfx_recipe: A
+    elements:
+      - "暗场或极简视觉，只有声音/文字暗示"
+      - "建立期待，不揭示产品"
+    transitions:
+      next: cross-fade 0.8s
+
+  - phase: reveal          # 5-15s: 产品揭示，核心亮相
+    duration: 10
+    mood: aspirational
+    music: bgm-tech.mp3
+    sfx_density: medium     # 3/10s
+    sfx_recipe: A
+    elements:
+      - "产品首次出场，标志性镜头"
+      - "品牌logo显露，配brand-stamp sfx"
+      - "核心卖点逐一亮相"
+    transitions:
+      next: slide-left 0.5s
+
+  - phase: feature         # 15-25s: 功能展示，产品深度
+    duration: 10
+    mood: confident
+    music: bgm-educational.mp3
+    sfx_density: low        # 1-2/10s
+    sfx_recipe: B
+    elements:
+      - "2-3个核心功能场景切换"
+      - "数据/指标可视化"
+      - "用户场景/应用实例"
+    transitions:
+      next: fade-to-black 1.0s
+
+  - phase: closing         # 25-30s: 品牌收尾，行动号召
+    duration: 5
+    mood: inspiring
+    music: bgm-educational.mp3
+    sfx_density: high
+    sfx_recipe: A
+    elements:
+      - "品牌slogan全屏展示"
+      - "logo+标语+网站/CTA"
+      - "黑底白字收尾"
+    transitions:
+      next: null
+
+# 关键帧
+keyframes:
+  - time: 0.0
+    event: "动画开始，暗场"
+  - time: 5.0
+    event: "产品首次亮相 (logo-reveal sfx)"
+  - time: 15.0
+    event: "功能展示开始"
+  - time: 25.0
+    event: "品牌收尾 (brand-stamp sfx)"
+  - time: 29.5
+    event: "最后定格帧"
+
+# 音效配方（见 audio-design-rules.md）
+sfx_recipes:
+  A: "发布hero型：密集SFX + 低频BGM，6个/10s"
+  B: "工具演示型：稀疏SFX + 中性BGM，1-2个/10s"

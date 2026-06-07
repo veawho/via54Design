@@ -1,0 +1,35 @@
+# ─── 元数据 ───
+id: candy-duolingo
+name: 糖果色凸起立体 — 绿+黄+天蓝（Duolingo风）
+version: "1.0.0"
+category: color-scheme/candy
+tags: [candy, playful, friendly, game, rounded, duolingo]
+source: "references/design-styles.md — 糖果色凸起立体按钮游戏化 Friendly Geometric Candy"
+contrast_ratio: "5.8:1 ✅"
+
+colors:
+  background: "#FFFFFF"
+  text_primary: "#1A1A2E"
+  text_secondary: "#555566"
+  accent_green: "#58CC02"       # Duo绿
+  accent_yellow: "#FFC800"      # 鸭子黄
+  accent_blue: "#1CB0F6"        # 天蓝
+  accent_red: "#FF4B4B"         # 错误红
+  success: "#58CC02"
+  error: "#FF4B4B"
+  border: "#E0E0E0"
+  shadow: "0 4px 0 rgba(0,0,0,0.15)"
+
+when:
+  brand_tone: [playful, friendly, educational, energetic, warm]
+  audience: [children, students, general_consumers]
+  suitable_for: [education, language_learning, gamified_product, app_landing]
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #1A1A2E;
+  --accent-green: #58CC02;
+  --accent-yellow: #FFC800;
+  --accent-blue: #1CB0F6;
+  --accent-red: #FF4B4B;
+  --border: #E0E0E0;

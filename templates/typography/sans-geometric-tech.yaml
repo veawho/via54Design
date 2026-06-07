@@ -1,0 +1,26 @@
+# ─── 元数据 ───
+id: sans-geometric-tech
+name: 几何无衬线+等宽（科技产品配）
+version: "1.0.0"
+category: typography/pair
+tags: [tech, sans, geometric, mono, clean, modern]
+
+fonts:
+  display: "'Inter', 'Geist', -apple-system, sans-serif"
+  display_weight: 700
+  display_tight: "'Inter Tight', 'Geist', sans-serif"
+  body: "'Inter', -apple-system, sans-serif"
+  body_weight: 400
+  mono: "'JetBrains Mono', 'Geist Mono', 'Fira Code', monospace"
+
+sizes:
+  display: "clamp(36px, 5vw, 80px)"
+  h2: "clamp(24px, 2.5vw, 40px)"
+  h3: "clamp(18px, 1.3vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "11px"
+
+when:
+  brand_tone: [tech, clean, modern, developer, precise]
+  suitable_for: [saas, devtool, dashboard, docs, cli_product]

@@ -1,0 +1,36 @@
+# ─── 元数据 ───
+id: editorial-brutalist
+name: 媒体粗野主义 — 纯黑白+超链接蓝（Bloomberg风）
+version: "1.0.0"
+category: color-scheme/editorial
+tags: [editorial, brutalist, high-contrast, media, bold, black-white]
+source: "references/design-styles.md — 媒体级粗野主义 Editorial Brutalism"
+contrast_ratio: "21:1 ✅（黑白）"
+
+colors:
+  background: "#FFFFFF"
+  background_dark: "#000000"
+  text_primary: "#000000"
+  text_primary_on_dark: "#FFFFFF"
+  text_secondary: "#333333"
+  accent: "#0000EE"           # 超链接蓝
+  accent_visited: "#551A8B"   # 已访问紫
+  accent_signal: "#FF433D"    # 信号橙红
+  accent_terminal: "#00A33E"  # 终端绿
+  border: "#000000"
+  border_light: "#CCCCCC"
+
+when:
+  brand_tone: [bold, editorial, serious, authoritative]
+  audience: [readers, analysts, decision_makers]
+  suitable_for: [media, research_report, brand_hero, cover]
+
+css_variables: |
+  --bg: #FFFFFF;
+  --bg-dark: #000000;
+  --text-primary: #000000;
+  --text-on-dark: #FFFFFF;
+  --accent: #0000EE;
+  --accent-visited: #551A8B;
+  --accent-signal: #FF433D;
+  --border: #000000;

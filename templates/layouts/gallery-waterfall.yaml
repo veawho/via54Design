@@ -1,0 +1,129 @@
+# ─── 元数据 ───
+id: gallery-waterfall
+name: 画廊瀑布流 — Masonry裁切画廊
+version: "1.0.0"
+created: 2026-06-07
+author: huashu-design
+category: layout/gallery
+tags: [gallery, waterfall, masonry, images, portfolio, showcase]
+
+when:
+  content_has: [multiple_images, portfolio_items]
+  suitable_for: [portfolio, gallery, product_showcase, moodboard]
+  min_images: 4
+
+structure:
+  type: css-masonry
+  columns: 3
+  column_gap: 24px
+  row_gap: 24px
+  max_width: 1400px
+  margin: "0 auto"
+  padding: [80, 40]
+
+elements:
+  - role: gallery-item
+    behavior: repeat
+    min_count: 4
+    style: no-frame
+    break_inside: avoid
+    margin_bottom: 24
+
+    children:
+      - role: image
+        width: 100%
+        display: block
+        border_radius: 0
+        hover: scale-102
+
+      - role: caption
+        tag: figcaption
+        font_size: 13px
+        line_height: 1.5
+        padding: [12, 0, 0, 0]
+        style: muted
+
+        children:
+          - role: title
+            tag: strong
+            font_weight: 600
+            display: block
+          - role: subtitle
+            tag: span
+            font_size: 12px
+            opacity: 0.6
+
+# 备选方案：CSS columns 实现 masonry（兼容性更好）
+fallback_css: |
+  .gallery-masonry {
+    columns: 3;
+    column-gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .gallery-masonry > * {
+    break-inside: avoid;
+    margin-bottom: 24px;
+  }
+  .gallery-masonry img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s;
+  }
+  .gallery-masonry img:hover {
+    transform: scale(1.02);
+  }
+  @media (max-width: 900px) {
+    .gallery-masonry { columns: 2; }
+  }
+  @media (max-width: 600px) {
+    .gallery-masonry { columns: 1; }
+  }
+
+primary_css: |
+  .gallery-masonry {
+    column-count: 3;
+    column-gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .gallery-masonry__item {
+    break-inside: avoid;
+    margin-bottom: 24px;
+  }
+  .gallery-masonry__item img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .gallery-masonry__item:hover img {
+    transform: scale(1.02);
+  }
+  .gallery-masonry__caption {
+    padding: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    opacity: 0.7;
+  }
+  .gallery-masonry__caption strong {
+    display: block;
+    font-weight: 600;
+  }
+  @media (max-width: 900px) { .gallery-masonry { column-count: 2; } }
+  @media (max-width: 600px) { .gallery-masonry { column-count: 1; } }
+
+quality:
+  min_images: 4
+  min_image_width: 300
+  max_caption_length: 120
+
+examples:
+  - brand: cosmos.so
+    notes: "暗色画廊瀑布流，图下metadata小字"
+  - brand: Bottega Veneta
+    notes: "暗房黑底，内容至上UI退隐"
+
+changelog:
+  "1.0.0": "从cosmos.so / Bottega Veneta画廊布局迁移"

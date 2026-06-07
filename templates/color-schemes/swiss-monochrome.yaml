@@ -1,0 +1,34 @@
+# ─── 元数据 ───
+id: swiss-monochrome
+name: Swiss极致黑白 — 纯黑+纯白+灰阶（Vercel风）
+version: "1.0.0"
+category: color-scheme/monochrome
+tags: [swiss, monochrome, minimal, clean, vercel, geist]
+source: "references/design-styles.md — Swiss极致黑白 Swiss Monochrome"
+contrast_ratio: "21:1 ✅"
+
+colors:
+  background: "#FFFFFF"
+  background_dark: "#000000"
+  text_primary: "#000000"
+  text_on_dark: "#FFFFFF"
+  text_secondary: "#888888"
+  text_tertiary: "#AAAAAA"
+  accent: "#000000"           # 纯黑强调
+  accent_blue: "#0070F3"      # Vercel蓝（可选）
+  border: "#000000"
+  border_light: "#E5E5E5"
+
+when:
+  brand_tone: [minimal, clean, premium, authoritative, swiss]
+  audience: [developers, designers, professionals]
+  suitable_for: [devtool, saas_landing, docs, portfolio, research]
+
+css_variables: |
+  --bg: #FFFFFF;
+  --bg-dark: #000000;
+  --text-primary: #000000;
+  --text-on-dark: #FFFFFF;
+  --text-secondary: #888888;
+  --border: #000000;
+  --border-light: #E5E5E5;

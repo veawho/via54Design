@@ -1,0 +1,105 @@
+# 降级链配置 v1.0
+# huashu-design 三级降级链 — 每个故障点都有备选方案
+# 使用方式：preflight.py 检测到问题后，按此配置自动走降级路径
+
+# ─── 图片获取降级链 ───
+image_fetch:
+  chain:
+    - source: wikimedia_commons
+      script: scripts/fetch_images.py
+      condition: "公共领域/CC内容（博物、历史、艺术类）"
+      fallback_to: unsplash_pexels
+    
+    - source: unsplash_pexels
+      script: scripts/fetch_images.py --source unsplash
+      condition: "通用生活/场景/产品摄影"
+      fallback_to: ai_generate
+    
+    - source: ai_generate
+      script: "用户确认有生图能力 → nano-banana-pro / Gemini API"
+      condition: "用户确认有生图能力"
+      fallback_to: honest_placeholder
+    
+    - source: honest_placeholder
+      output: "灰块+文字'图待补'，不画烂SVG"
+      condition: "所有渠道失败"
+      fallback_to: null
+
+# ─── Logo获取降级链 ───
+logo_fetch:
+  chain:
+    - source: svgl_api
+      url: "https://api.svgl.app?search={brand}"
+      condition: "知名数字产品/SaaS/AI工具"
+      fallback_to: simpleicons
+    
+    - source: simpleicons_cdn
+      url: "https://cdn.simpleicons.org/{slug}/{hex}"
+      condition: "单色glyph即可"
+      fallback_to: google_favicon
+    
+    - source: google_favicon
+      url: "https://www.google.com/s2/favicons?domain={domain}&sz=256"
+      condition: "任何有域名的品牌"
+      fallback_to: ask_user
+    
+    - source: ask_user
+      action: "停下问用户要logo"
+      condition: "logo是品牌识别度根基，不能硬做"
+      fallback_to: null
+
+# ─── 字体CDN降级链 ───
+font_cdn:
+  chain:
+    - source: google_fonts
+      condition: "外部CDN可达"
+      fallback_to: system_fonts
+    
+    - source: system_fonts
+      css: |
+        /* 系统字体栈 - 不依赖CDN */
+        --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', 'SimSun', serif;
+        --font-sans: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+        --font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+      condition: "CDN不可达时使用"
+      fallback_to: null  # 安全终止
+
+# ─── 录屏降级链 ───
+recording:
+  chain:
+    - source: playwright_record
+      script: scripts/render-video.js
+      condition: "Playwright可用 + 有显示"
+      fallback_to: ffmpeg_x11grab
+    
+    - source: ffmpeg_x11grab
+      script: "ffmpeg -f x11grab -i :0.0 ..."
+      condition: "WSL有X11 forwarding"
+      fallback_to: manual_screenshot
+    
+    - source: manual_screenshot
+      action: "手动浏览器截图指导"
+      condition: "无自动录屏能力"
+      fallback_to: null
+
+# ─── 通用策略 ───
+strategies:
+  # 当CDN不可达时
+  offline_mode:
+    - "React/Babel本地内联（从node_modules或vendor目录加载）"
+    - "字体走系统字体栈"
+    - "图片base64内联"
+    - "不引用任何CDN URL"
+  
+  # 当Wikimedia限流时
+  wikimedia_rate_limited:
+    - "切到Unsplash/Pexels备选关键词"
+    - "或使用公共领域素材本地缓存"
+    - "或AI生图（有生图能力时）"
+    - "或诚实placeholder"
+  
+  # 当Playwright不可用时
+  no_playwright:
+    - "手动浏览器截图"
+    - "或ffmpeg录屏（有显示环境）"
+    - "或只交HTML文件（标注'未截图'）"

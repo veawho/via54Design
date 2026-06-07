@@ -1,0 +1,91 @@
+# ─── 元数据 ───
+id: educational-5min
+name: 5分钟科普解说视频
+version: "1.0.0"
+category: video/educational
+tags: [educational, tutorial, explainer, voiceover, long-form]
+source: "references/voiceover-pipeline.md + references/audio-design-rules.md"
+
+specs:
+  total_duration: 300       # 5分钟
+  frame_rate: 25
+  resolution: [1920, 1080]
+  orientation: landscape
+  export: [mp4-25fps, mp4-60fps]
+  has_voiceover: true       # 必带解说
+
+# 叙事结构 — 6段式科普
+arc:
+  - phase: hook             # 0-30s: 钩子+问题引入
+    duration: 30
+    mood: curious
+    music: bgm-educational.mp3
+    sfx_density: medium
+    elements:
+      - "一个引人入胜的问题/现象"
+      - "观众痛点或认知冲突"
+      - "预告「今天讲清楚XX」"
+
+  - phase: context          # 30-60s: 背景知识铺垫
+    duration: 30
+    mood: informative
+    music: bgm-educational.mp3
+    sfx_density: low
+    elements:
+      - "必要的术语解释"
+      - "历史/行业背景"
+      - "建立理解基础"
+
+  - phase: core-concept     # 60-150s: 核心概念讲解
+    duration: 90
+    mood: focused
+    music: bgm-educational.mp3
+    sfx_density: low
+    elements:
+      - "核心概念/原理的可视化"
+      - "使用动画/图表辅助理解"
+      - "3-5个关键知识点逐步展开"
+
+  - phase: example          # 150-210s: 实例/应用展示
+    duration: 60
+    mood: practical
+    music: bgm-tutorial.mp3
+    sfx_density: medium
+    elements:
+      - "真实案例/场景演示"
+      - "before/after对比"
+      - "数据/效果展示"
+
+  - phase: deep-dive        # 210-270s: 深度延展
+    duration: 60
+    mood: insightful
+    music: bgm-educational-alt.mp3
+    sfx_density: low
+    elements:
+      - "进阶知识点"
+      - "异常/边界情况讨论"
+      - "延展思考方向"
+
+  - phase: summary          # 270-300s: 总结+CTA
+    duration: 30
+    mood: warm
+    music: bgm-educational.mp3
+    sfx_density: medium
+    elements:
+      - "核心要点回顾（3点内）"
+      - "行动建议/下一步"
+      - "品牌/频道收尾"
+
+# 解说稿结构
+voiceover:
+  script_format: "markdown，每段以 ## scene-id 标识"
+  cue_markers: "[[cue:xx]] 标关键句"
+  tts_engine: "豆包TTS (scripts/tts-doubao.mjs)"
+  timeline_source: "narration/timeline.json（真实TTS时长，非估算）"
+
+# 视觉规范
+visual_rules:
+  - "整片是一个连续的运动叙事，不是一组独立场景"
+  - "选1-2个hero element跨scene持续存在"
+  - "scene之间morph不切，禁用整页opacity切换"
+  - "字幕默认带（B站风：深墨字+白光晕，≤12字短行不跨句号）"

@@ -1,0 +1,32 @@
+# ─── 元数据 ───
+id: cosmic-retro
+name: 复古未来太空图录 — 黑+奶油+钴蓝（Perplexity Comet风）
+version: "1.0.0"
+category: color-scheme/cosmic
+tags: [cosmic, retro, futuristic, dark, warm-dark, celestial]
+source: "references/design-styles.md — 复古未来太空图录 Cosmic Retro-Futurism"
+contrast_ratio: "10.2:1 ✅"
+
+colors:
+  background: "#0A0A0A"
+  background_warm: "#F0EAD8"   # 奶油纸白
+  text_primary: "#F0EAD8"
+  text_on_cream: "#0A0A0A"
+  text_secondary: "#A09888"
+  accent: "#2B4F91"            # 钴蓝-孔雀蓝
+  accent_warm: "#C9A84C"       # 暖金
+  border: "#2A2A2A"
+  border_light: "#4A4A4A"
+
+when:
+  brand_tone: [cosmic, retro-future, mysterious, premium, archival]
+  audience: [explorers, knowledge_seekers, design_enthusiasts]
+  suitable_for: [ai_launch, concept_page, countdown, manifesto]
+
+css_variables: |
+  --bg: #0A0A0A;
+  --bg-warm: #F0EAD8;
+  --text-primary: #F0EAD8;
+  --text-on-cream: #0A0A0A;
+  --accent: #2B4F91;
+  --accent-warm: #C9A84C;

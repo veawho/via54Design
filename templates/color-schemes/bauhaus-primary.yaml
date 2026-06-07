@@ -1,0 +1,30 @@
+# ─── 元数据 ───
+id: bauhaus-primary
+name: 包豪斯三原色 — 红黄蓝+黑白（Khan Academy风）
+version: "1.0.0"
+category: color-scheme/bauhaus
+tags: [bauhaus, primary, geometric, education, playful, flat]
+source: "references/design-styles.md — 包豪斯几何标志+扁平插画系统 Bauhaus Geometric"
+contrast_ratio: "7.2:1 ✅"
+
+colors:
+  background: "#FFFFFF"
+  text_primary: "#1A1A1A"
+  text_secondary: "#555555"
+  accent_red: "#E63946"
+  accent_yellow: "#FFB703"
+  accent_blue: "#0077B6"
+  border: "#1A1A1A"
+
+when:
+  brand_tone: [playful, educational, geometric, clean, bold]
+  audience: [students, children, families, general]
+  suitable_for: [education, course_landing, infographic, activity_kv]
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --accent-red: #E63946;
+  --accent-yellow: #FFB703;
+  --accent-blue: #0077B6;
+  --border: #1A1A1A;

@@ -1,0 +1,25 @@
+# ─── 元数据 ───
+id: serif-sans-editorial
+name: 衬线标题+无衬线正文（编辑出版配）
+version: "1.0.0"
+category: typography/pair
+tags: [editorial, serif, sans, warm, premium, readable]
+
+fonts:
+  display: "'Fraunces', 'Newsreader', 'Georgia', serif"
+  display_weight: 700
+  body: "'Inter', -apple-system, 'Helvetica Neue', sans-serif"
+  body_weight: 400
+  mono: "'JetBrains Mono', 'Fira Code', monospace"
+
+sizes:
+  display: "clamp(42px, 6vw, 96px)"
+  h2: "clamp(28px, 3vw, 48px)"
+  h3: "clamp(20px, 1.5vw, 28px)"
+  body: "clamp(16px, 1.2vw, 21px)"
+  small: "14px"
+  caption: "12px"
+
+when:
+  brand_tone: [warm, editorial, premium, natural]
+  suitable_for: [ai_product, longform, research_report, brand_hero]

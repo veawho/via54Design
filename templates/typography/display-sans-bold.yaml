@@ -1,0 +1,25 @@
+# ─── 元数据 ───
+id: display-sans-bold
+name: 超粗Display+常规正文（大字报/发布会配）
+version: "1.0.0"
+category: typography/pair
+tags: [bold, display, poster, keynote, big-type, impactful]
+
+fonts:
+  display: "'Archivo Black', 'Anton', 'Manrope', sans-serif"
+  display_weight: 900
+  body: "'Inter', -apple-system, sans-serif"
+  body_weight: 400
+  mono: "'Geist Mono', 'JetBrains Mono', monospace"
+
+sizes:
+  display: "clamp(60px, 10vw, 160px)"
+  sub_display: "clamp(32px, 5vw, 72px)"
+  h2: "clamp(24px, 3vw, 48px)"
+  body: "clamp(16px, 1.2vw, 20px)"
+  body_lead: "clamp(18px, 1.4vw, 24px)"
+  small: "14px"
+
+when:
+  brand_tone: [bold, impactful, dramatic, confident, keynote]
+  suitable_for: [keynote, launch_deck, poster, manifesto, qbr]

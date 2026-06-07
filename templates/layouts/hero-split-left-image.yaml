@@ -1,0 +1,157 @@
+# ─── 元数据 ───
+id: hero-split-left-image
+name: 左右分割式Hero — 左图右文全出血
+version: "1.0.0"
+created: 2026-06-07
+author: huashu-design
+category: layout/hero
+tags: [hero, split, editorial, image-left, full-bleed]
+
+# ─── 使用条件 ───
+when:
+  content_has: [hero_image, headline, subtitle]
+  suitable_for: [landing, product_page, brand_story]
+  min_sections: 2
+  max_sections: 4
+
+# ─── 结构 ───
+structure:
+  type: grid-2col
+  ratio: [5, 7]
+  gap: 0
+  min_height: 100vh
+  responsive:
+    tablet: stack      # 平板堆叠
+    mobile: stack      # 手机堆叠
+
+elements:
+  - role: image-container
+    position: left
+    behavior: full-bleed
+    z_index: 1
+    child:
+      role: image
+      aspect_ratio: 3/4
+      object_fit: cover
+      overlay: "linear-gradient(90deg, rgba(0,0,0,0.12) 0%, transparent 50%)"
+
+  - role: text-container
+    position: right
+    padding: [120, 80, 120, 80]
+    align: center-left
+    max_width: 520px
+    children:
+      - role: eyebrow
+        tag: p
+        font_size: "clamp(11px, 0.75vw, 14px)"
+        letter_spacing: "0.15em"
+        text_transform: uppercase
+        margin_bottom: 24
+      - role: headline
+        tag: h1
+        font_size: "clamp(42px, 6vw, 96px)"
+        font_weight: 700
+        line_height: 1.05
+        letter_spacing: "-0.02em"
+        margin_bottom: 32
+      - role: body
+        tag: p
+        font_size: "clamp(16px, 1.2vw, 21px)"
+        line_height: 1.7
+        max_width: 50ch
+        margin_bottom: 40
+      - role: cta
+        tag: a
+        style: button-outline
+        padding: [16, 32]
+        border_width: 2
+        border_radius: 0
+        font_weight: 500
+
+# ─── CSS ───
+css: |
+  .hero-split {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    min-height: 100vh;
+  }
+  .hero-split__image {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-split__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-split__image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.12) 0%, transparent 50%);
+  }
+  .hero-split__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 80px;
+    max-width: 520px;
+  }
+  .hero-split__eyebrow {
+    font-size: clamp(11px, 0.75vw, 14px);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-split__headline {
+    font-size: clamp(42px, 6vw, 96px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+  .hero-split__body {
+    font-size: clamp(16px, 1.2vw, 21px);
+    line-height: 1.7;
+    max-width: 50ch;
+    margin-bottom: 40px;
+  }
+  .hero-split__cta {
+    display: inline-flex;
+    padding: 16px 32px;
+    border: 2px solid currentColor;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .hero-split__cta:hover {
+    background: currentColor;
+    color: var(--bg, #fff);
+  }
+  @media (max-width: 768px) {
+    .hero-split {
+      grid-template-columns: 1fr;
+    }
+    .hero-split__image { min-height: 40vh; }
+    .hero-split__text { padding: 60px 32px; }
+  }
+
+# ─── 质量 ───
+quality:
+  min_font_size: 16px
+  max_line_length: 75ch
+  min_contrast_ratio: 4.5:1
+  min_whitespace_percent: 10
+
+# ─── 案例 ───
+examples:
+  - brand: Anthropic
+    url: https://anthropic.com
+    notes: "奶油纸底+赤陶橙，左图右文全出血"
+  - brand: Stripe
+    url: https://stripe.com
+    notes: "斜切渐变hero，结构栅格正文"
+
+# ─── 演化 ───
+changelog:
+  "1.0.0": "从Anthropic/Stripe英雄区布局迁移"
