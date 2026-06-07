@@ -7,6 +7,7 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+	"github.com/veawho/via54Design/internal/media"
 	"github.com/veawho/via54Design/internal/pattern"
 	"github.com/veawho/via54Design/internal/quality"
 	"github.com/veawho/via54Design/internal/template"
@@ -51,6 +52,12 @@ func (s *Server) registerTools() {
 	s.mcp.AddTool(mcp.NewTool("list_templates",
 		mcp.WithDescription("List all available templates"),
 	), s.handleList)
+
+	s.mcp.AddTool(mcp.NewTool("trace_image",
+		mcp.WithDescription("Convert image (photo of handwriting/calligraphy) to SVG vector paths"),
+		mcp.WithString("input", mcp.Required(), mcp.Description("Input image path (JPG/PNG)")),
+		mcp.WithString("output", mcp.Description("Output SVG path (optional)")),
+	), s.handleTrace)
 }
 
 func (s *Server) handleCompose(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -123,6 +130,22 @@ func getArg[T any](args any, key string) T {
 	}
 	var zero T; return zero
 }
+func (s *Server) handleTrace(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	input := getArg[string](req.Params.Arguments, "input")
+	output := getArgDefault(req.Params.Arguments, "output", "")
+	svgPath, err := media.TraceImage(input, nil)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Trace failed: %v", err)), nil
+	}
+	if output != "" {
+		os.Rename(svgPath, output)
+		svgPath = output
+	}
+	// Read SVG content
+	data, _ := os.ReadFile(svgPath)
+	return mcp.NewToolResultText(fmt.Sprintf("✅ SVG generated: %s\n\n```svg\n%s\n```", svgPath, string(data[:min(len(data), 2000)]))), nil
+}
+
 func getArgDefault(args any, key string, def string) string {
 	if m, ok := args.(map[string]interface{}); ok {
 		if v, ok := m[key]; ok { if vt, ok := v.(string); ok && vt != "" { return vt } }

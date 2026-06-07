@@ -21,6 +21,10 @@ func NewEngine(baseDir string) (*Engine, error) {
 }
 
 func (e *Engine) Compose(layoutID, colorID, fontID, title string) (*GenerationResult, error) {
+	return e.ComposeWithSVG(layoutID, colorID, fontID, title, "")
+}
+
+func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG string) (*GenerationResult, error) {
 	lp, _ := e.Registry.ResolveLayout(layoutID)
 	cp, _ := e.Registry.ResolveColorScheme(colorID)
 	fp, _ := e.Registry.ResolveTypography(fontID)
@@ -43,6 +47,7 @@ func (e *Engine) Compose(layoutID, colorID, fontID, title string) (*GenerationRe
 		ColorID:  colorID,
 		FontID:   fontID,
 		Title:    title,
+		LetteringSVG: letteringSVG,
 	}
 	result.CSSVars = buildCSSVariables(color, font)
 	result.FontImports = buildFontImports(font)
@@ -156,6 +161,12 @@ func getOrDefault(m map[string]string, key, def string) string {
 }
 
 func assembleHTML(r *GenerationResult) string {
+	// SVG lettering: 用自定义 SVG 替换标题文字
+	titleHTML := r.Title
+	if r.LetteringSVG != "" {
+		titleHTML = r.LetteringSVG
+	}
+
 	return fmt.Sprintf(`<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -167,6 +178,8 @@ func assembleHTML(r *GenerationResult) string {
 %s
 %s
 %s
+.hero-split__lettering { max-width: 100%%; height: auto; display: block; margin-bottom: 24px; }
+.hero-split__lettering svg { width: 100%%; height: auto; max-height: 40vh; }
 </style>
 </head>
 <body>
@@ -174,15 +187,14 @@ func assembleHTML(r *GenerationResult) string {
 <section class="hero-split">
   <div class="hero-split__image"><!-- img --></div>
   <div class="hero-split__text">
-    <p class="hero-split__eyebrow">EYEBROW</p>
-    <h1 class="hero-split__headline">标题</h1>
+    <div class="hero-split__lettering">%s</div>
     <p class="hero-split__body">副标题</p>
     <a class="hero-split__cta" href="#">CTA</a>
   </div>
 </section>
 </main>
 </body>
-</html>`, r.Title, r.FontImports, r.CSSVars, r.BaseCSS, r.LayoutCSS)
+</html>`, r.Title, r.FontImports, r.CSSVars, r.BaseCSS, r.LayoutCSS, titleHTML)
 }
 
 func (r *GenerationResult) SaveToFile(path string) error {

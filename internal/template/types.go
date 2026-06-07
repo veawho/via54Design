@@ -96,13 +96,14 @@ type Combination struct {
 }
 
 type GenerationResult struct {
-	HTML        string
-	LayoutID    string
-	ColorID     string
-	FontID      string
-	Title       string
-	FontImports string
-	CSSVars     string
-	BaseCSS     string
-	LayoutCSS   string
+	HTML         string
+	LayoutID     string
+	ColorID      string
+	FontID       string
+	Title        string
+	FontImports  string
+	CSSVars      string
+	BaseCSS      string
+	LayoutCSS    string
+	LetteringSVG string // 手写/书法 SVG path (可选)
 }

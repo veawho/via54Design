@@ -46,10 +46,11 @@ func help() {
 	fmt.Println("  quality ...        质量门禁检查")
 	fmt.Println("  pattern ...        从HTML提取设计模式")
 	fmt.Println("  list               列出所有可用模板")
-	fmt.Println("  media ...          媒体管线 (ffmpeg)")
+	fmt.Println("  media ...          媒体管线 (ffmpeg + trace)")
 	fmt.Println("    add-music     input.mp4 --mood=tech")
 	fmt.Println("    convert       input.mp4")
 	fmt.Println("    fetch         --query parrot --out ./img")
+	fmt.Println("    trace         --input photo.jpg --output logo.svg")
 	fmt.Println("  export ...         导出 (Playwright/TTS)")
 	fmt.Println("    render        input.html --duration 30")
 	fmt.Println("    pdf           input.html")
@@ -89,13 +90,23 @@ func cmdGenerate() {
 	font := fs.String("font", "", "字体模板ID")
 	title := fs.String("title", "via54Design", "页面标题")
 	output := fs.String("output", "output.html", "输出路径")
+	letteringSVG := fs.String("lettering-svg", "", "SVG lettering 文件路径 (手写/书法文字)")
 	fs.Parse(os.Args[2:])
-	if *layout == "" || *color == "" || *font == "" {
+	if (*layout == "" || *color == "" || *font == "") && *letteringSVG == "" {
 		fmt.Fprintln(os.Stderr, "请指定: --layout, --color, --font"); os.Exit(1)
 	}
 	eng, err := template.NewEngine(baseDir())
 	if err != nil { fmt.Fprintf(os.Stderr, "失败: %v\n", err); os.Exit(1) }
-	result, err := eng.Compose(*layout, *color, *font, *title)
+	var result *template.GenerationResult
+	if *letteringSVG != "" {
+		data, _ := os.ReadFile(*letteringSVG)
+		if *layout == "" { *layout = "hero-split-left-image" }
+		if *color == "" { *color = "ink-wash" }
+		if *font == "" { *font = "serif-sans-editorial" }
+		result, err = eng.ComposeWithSVG(*layout, *color, *font, *title, string(data))
+	} else {
+		result, err = eng.Compose(*layout, *color, *font, *title)
+	}
 	if err != nil { fmt.Fprintf(os.Stderr, "生成失败: %v\n", err); os.Exit(1) }
 	result.SaveToFile(*output)
 	fmt.Printf("✅ %s (%d bytes)\n   layout=%s color=%s font=%s\n", *output, len(result.HTML), result.LayoutID, result.ColorID, result.FontID)
@@ -144,7 +155,7 @@ func cmdList() {
 
 // ─── Media (Shell+Python 迁移) ───
 func cmdMedia() {
-	if len(os.Args) < 3 { fmt.Fprintln(os.Stderr, "用法: via54 media [add-music|convert|fetch]"); os.Exit(1) }
+	if len(os.Args) < 3 { fmt.Fprintln(os.Stderr, "用法: via54 media [add-music|convert|fetch|trace]"); os.Exit(1) }
 	switch os.Args[2] {
 	case "add-music":
 		fs := flag.NewFlagSet("add-music", flag.ExitOnError)
@@ -178,7 +189,20 @@ func cmdMedia() {
 		if err != nil { fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1) }
 		fmt.Printf("✅ 下载 %d 张到 %s\n", len(results), *out)
 
-	default:
+	case "trace":
+		fs := flag.NewFlagSet("trace", flag.ExitOnError)
+		input := fs.String("input", "", "输入图片路径 (JPG/PNG)")
+		output := fs.String("output", "", "输出 SVG 路径 (可选)")
+		fs.Parse(os.Args[3:])
+		if *input == "" { fmt.Fprintln(os.Stderr, "请指定 --input"); os.Exit(1) }
+		svgPath, err := media.TraceImage(*input, nil)
+		if err != nil { fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1) }
+		if *output != "" {
+			os.Rename(svgPath, *output)
+			svgPath = *output
+		}
+		fmt.Printf("✅ SVG: %s\n", svgPath)
+		default:
 		fmt.Fprintf(os.Stderr, "未知 media 命令: %s (支持: add-music, convert, fetch)\n", os.Args[2])
 		os.Exit(1)
 	}

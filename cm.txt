@@ -1,22 +1,18 @@
-feat: typography system rewrite — 12 templates with Chinese typography
+feat: VTracer image tracing + SVG lettering integration
 
-Architecture inspired by:
-  - modern-font-stacks (⭐3466) — system font classification
-  - DrXie/OSFCC (⭐825) — open source Chinese fonts
-  - JustFont / TwinType — Chinese typography education platforms
+via54 media trace -- VTracer (⭐6149) based image-to-SVG
+  - Auto-downloads VTracer binary (Windows/Mac/Linux)
+  - Converts handwriting/photo to clean SVG paths
+  - Pre-configured parameters for calligraphy/tracing
 
-New schema:
-  - google_fonts: []string — explicit GF imports (was: implicit inference)
-  - weights: map — per-role weight control
-  - mood: []string — design context tags
-  - chinese: {} — CJK-specific metadata
+via54 generate --lettering-svg -- SVG lettering injection
+  - Embed traced SVG as hero title (no font dependency)
+  - Auto-fallback layout/color/font when only SVG provided
+  - SVG scales responsively, works with color schemes
 
-Chinese typography (6 new):
-  ming-hei-editorial / kai-rounded-friendly / song-literary
-  hei-modern / calligraphy-accent / sc-sans-clean
+MCP tool: trace_image
+  - Accept image path, return SVG with path preview
 
-International (6 upgraded):
-  serif-sans-editorial / sans-geometric-tech / display-sans-bold
-  elegant-didone (NEW!) / mono-code (NEW!) / playful-rounded
-
-Removed 4 legacy templates: serif-longform, mono-terminal, cormorant-elegant, system-utility
+Architecture:
+  media.TraceImage() → VTracer CLI → SVG file
+  template.ComposeWithSVG() → embed SVG in HTML
