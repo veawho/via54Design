@@ -1,0 +1,62 @@
+{
+  "scenes": [
+    {
+      "title": "日常 (ordinary_world)",
+      "voiceover": "每天，我们都...",
+      "body": "",
+      "mood": "calm",
+      "beat_name": "日常 (ordinary_world)",
+      "scene_no": 1,
+      "total_scenes": 4,
+      "duration_seconds": 7,
+      "timing": {
+        "start_sec": 0,
+        "end_sec": 7
+      }
+    },
+    {
+      "title": "相遇 (call_to_adventure)",
+      "voiceover": "直到有一天...",
+      "body": "",
+      "mood": "curious",
+      "beat_name": "相遇 (call_to_adventure)",
+      "scene_no": 2,
+      "total_scenes": 4,
+      "duration_seconds": 7,
+      "timing": {
+        "start_sec": 7,
+        "end_sec": 14
+      }
+    },
+    {
+      "title": "蜕变 (transformation)",
+      "voiceover": "不一样了...",
+      "body": "",
+      "mood": "excited",
+      "beat_name": "蜕变 (transformation)",
+      "scene_no": 3,
+      "total_scenes": 4,
+      "duration_seconds": 7,
+      "timing": {
+        "start_sec": 14,
+        "end_sec": 21
+      }
+    },
+    {
+      "title": "回归 (return)",
+      "voiceover": "每一天...",
+      "body": "",
+      "mood": "inspiring",
+      "beat_name": "回归 (return)",
+      "scene_no": 4,
+      "total_scenes": 4,
+      "duration_seconds": 9,
+      "timing": {
+        "start_sec": 21,
+        "end_sec": 30
+      }
+    }
+  ],
+  "total_scenes": 4,
+  "version": "1.0"
+}

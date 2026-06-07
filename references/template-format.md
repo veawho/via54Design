@@ -1,287 +1,228 @@
-# 结构化模板格式规范 v1.0
+# 结构化模板格式规范 v2.0
 > via54Design — 模板系统核心规范
-> 目标：将设计模式从「散文描述」转化为「结构化数据」，实现确定性执行 + 版本化演进
+> 将设计模式从「散文描述」转化为「结构化数据」，实现确定性执行 + 版本化演进
 
 ## 设计原则
 
-1. **数据驱动 > 散文描述**：每个模板是 YAML 结构，CSS 直接生成，不靠 LLM 重新理解
-2. **确定性组合**：布局 × 配色 × 字体 × 动画 可独立版本化、自由组合
+1. **数据驱动 > 散文描述**：每个模板是 YAML 结构，CSS 自动生成，不靠 LLM 重新理解
+2. **确定性组合**：布局 × 配色 × 字体 × 叙事 可独立版本化、自由组合
 3. **可验证**：每个模板自带质量指标（对比度/字号/行宽）
 4. **可进化**：模板版本号递增，旧版保留不删
 
 ## 模板层级
 
 ```
-template-registry.yaml  (入口索引)
-├── layouts/             (布局模板 — 决定结构)
-├── color-schemes/       (配色模板 — 决定色彩)
-├── typography/          (字体模板 — 决定排印)
-├── animations/          (动画模板 — 决定动效)
-└── video-edits/         (视频剪辑模板 — 决定叙事节奏/转场/音效)
+templates/registry.yaml  (入口索引)
+├── layouts/              (布局模板 — 决定结构)
+├── color-schemes/        (配色模板 — 决定色彩)
+├── typography/           (字体模板 — 决定排印)
+├── animations/           (动画模板 — 决定动效)
+├── narratology/          (叙事模型 — 决定故事结构)
+│   ├── models/           (叙事模型定义)
+│   └── guides/           (分镜/叙事指南)
+└── video-edits/          (视频剪辑模板 — 参考文档)
 ```
 
 ## YAML Schema
 
-### 布局模板 (layout)
+### 布局模板 (layout) — v2
 
 ```yaml
-# ─── 元数据 ───
-id: hero-split-left-image
-name: 左右分割式Hero（左图右文）
-version: "1.0.0"
-created: 2026-06-07
-author: via54
-category: layout/hero
-tags: [hero, split, editorial, image-left, full-bleed]
+id: hero-split-16-9                 # 唯一 ID
+name:                               # 多语言名称
+  zh: "左右分割式 Hero (16:9)"
+  en: "Split Hero (16:9)"
+version: "2.0.0"                     # 语义化版本
+category: layout/hero                # 分类（用于 registry 分组）
+tags: [hero, split, 16-9]           # 筛选标签
 
-# ─── 使用条件 ───
+# ─── 使用条件（供 LLM 自动选择）───
 when:
-  content_has: [hero_image, headline, subtitle, cta]
-  suitable_for: [landing, product_page, brand_story]
-  min_sections: 2
-  max_sections: 4
+  content_has: [hero_image, headline]
+  suitable_for: [landing, brand_story]
 
-# ─── 视觉DNA ───
+# ─── 视口配置 ───
+viewport:
+  baseline: "16:9"                  # 设计基准比例
+  min_height: 100dvh
+  max_width: 1920px                 # TV 端最大宽度
+  presentation_mode: false           # 是否默认开启演示锁定
+
+# ─── 结构 ───
 structure:
-  type: grid-2col
-  ratio: [5, 7]           # 左5/12 : 右7/12
-  gap: 0                  # 全出血无间距
-  min_height: 100vh       # 全屏
+  type: grid-2col                   # grid-2col / grid-3col / flex / bento
+  ratio: "5fr 7fr"                  # 列比例
+  gap: "0"
 
+# ─── 间距系统（黄金比例 φ=1.618）───
+spacing:
+  base: 4                           # 基准 4px
+  ratio: 1.618
+  semantic:
+    section: "step-8"              # → --space-section: var(--space-step-8)
+    card: "step-5"                 # → --space-card: var(--space-step-5)
+
+# ─── 响应式断点 ───
+responsive:
+  - name: tv                        # 断点名称
+    min_width: 1920                 # 最小宽度
+    max_width: 0                    # 0 = 无上限
+    columns: "5fr 7fr"              # 覆盖栅格
+    font_scale: 1.3                 # 字体缩放
+    safe_area: [80, 120, 80, 120]   # TV overscan 安全区 [上右下左]
+    spacing_scale: 1.2
+    hide_roles: []                  # 按 role 隐藏元素
+    stack: false                    # 是否堆叠
+    stack_order: []                 # 堆叠顺序 [text, image]
+
+  - name: phone
+    min_width: 0
+    max_width: 767
+    columns: "1fr"
+    font_scale: 0.72
+    safe_area: [0, 20, 0, 20]
+    stack: true
+    stack_order: [text, image]
+    hide_roles: [eyebrow]
+
+# ─── 元素树 ───
 elements:
   - role: image-container
     position: left
     behavior: full-bleed
-    child:
-      role: image
-      aspect_ratio: 3/4
-      object_fit: cover
-      style: classic-vignette   # 古典暗角效果
+    z_index: 1
+    children:
+      - role: image
+        tag: div
+        behavior: cover
 
   - role: text-container
     position: right
-    padding: [120, 80, 120, 80]  # top right bottom left
-    align: center-left
+    padding: [120, 80, 120, 80]
+    max_width: 560px
     children:
       - role: eyebrow
         tag: p
-        style: uppercase-tracking-wider
+        font_size: "clamp(11px, 0.7vw, 14px)"
+        letter_spacing: "0.15em"
+        text_transform: uppercase
+        responsive:                 # ← 元素级响应式（v2 新增）
+          phone:
+            hide: true
+          tablet:
+            font_size: "12px"
       - role: headline
         tag: h1
-        style: display-large
-        size: clamp(48, 6vw, 96)
-      - role: body
-        tag: p
-        style: body-lead
-        max_width: 50ch
-      - role: cta
-        tag: a
-        style: button-outline
+        font_size: "clamp(36px, 5vw, 88px)"
+        font_weight: 700
 
-# ─── CSS实现 ───
-css:
-  container: |
-    display: grid;
-    grid-template-columns: 5fr 7fr;
-    min-height: 100vh;
-  image_col: |
-    position: relative;
-    overflow: hidden;
-    &::after { content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(0,0,0,0.15) 0%, transparent 50%); }
-  text_col: |
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 120px 80px;
+# ─── CSS（手写核心样式，媒体查询由 engine 自动生成）───
+css: |                              # 可空，引擎会从 responsive[] 自动编译
+  .layout-hero-split { ... }
 
-# ─── 质量门禁 ───
+# ─── 质量 ───
 quality:
-  min_font_size: 16px
-  max_line_length: 75ch
+  min_font_size: 15px
+  max_line_length: 50ch
   min_contrast_ratio: 4.5:1
-  min_whitespace_percent: 10
-  max_elements_per_section: 7
 
-# ─── 案例参考（用于学习/检索） ───
+# ─── 案例 ───
 examples:
   - brand: Anthropic
     url: https://anthropic.com
-    screenshot: refs/examples/anthropic-hero.png
-    notes: "左图右文，奶油底+赤陶橙 accent"
-  - brand: Stripe
-    url: https://stripe.com
-    screenshot: refs/examples/stripe-hero.png
-    notes: "斜切渐变hero，结构化栅格"
 
-# ─── 进化日志 ───
 changelog:
-  "1.0.0": "初始版本，从 Anthropic/Stripe 布局迁移"
+  "2.0.0": "16:9 基准 + 四端适配 + CSS 自动编译 + 黄金比例间距"
+  "1.0.0": "初始版"
 ```
 
 ### 配色模板 (color-scheme)
 
 ```yaml
-id: warm-editorial-cream
-name: 暖色出版物 — 奶油纸底+赤陶橙
-version: "1.0.0"
-category: color-scheme/warm
+id: ink-wash
+name:
+  zh: "水墨"
+  en: "Ink Wash"
 
-colors:
-  background: "#F5F0E8"      # 奶油纸底
-  text_primary: "#191919"     # 近黑
-  text_secondary: "#6B6258"   # 深灰褐
-  accent: "#CC785C"           # 赤陶橙
-  accent_hover: "#B8654A"
-  border: "#E8DFD4"           # 极淡米灰
-  success: "#4A7C59"
-  error: "#C44A4A"
+mood: [calm, minimal, zen]
+season: all
 
-# 使用场景
-when:
-  brand_tone: [warm, editorial, natural, premium]
-  audience: [readers, professionals, knowledge_workers]
-
-# 可访问性校验
-contrast:
-  background_text_primary: "6.8:1 ✅"
-  background_text_secondary: "3.5:1 ⚠️（仅用于装饰）"
-  background_accent: "2.1:1 ❌（accent仅用于大块/按钮，不用于文字）"
-
-# CSS变量
-css_variables: |
-  --bg: #F5F0E8;
-  --text-primary: #191919;
-  --text-secondary: #6B6258;
-  --accent: #CC785C;
-  --accent-hover: #B8654A;
-  --border: #E8DFD4;
+palette:
+  - role: background
+    hex: "#F5F0E6"
+    name_zh: "澄心堂纸"
+    cultural_note: "南唐李后主御用宣纸色"
+  - role: text_primary      # 6 语义角色: background / text_primary
+    hex: "#1A1A1A"          #         text_secondary / accent
+  - role: text_secondary    #         accent_alt / border
+    hex: "#6B6B6B"
+  - role: accent
+    hex: "#C43C3A"
+    name_zh: "朱砂印"
 ```
 
-### 动画模板 (animation)
+### 字体模板 (typography)
 
 ```yaml
-id: hero-reveal-stagger
-name: Hero渐进式展开 — 逐元素错位入场
-version: "1.0.0"
-category: animation/hero
+id: ming-hei-editorial
+name:
+  zh: "明黑配"
 
-# 时间轴
-timeline:
-  total_duration: 2.0  # 秒
-  elements:
-    - id: background
-      type: fade-in
-      start: 0.0
-      duration: 0.8
-      easing: ease-out
-    
-    - id: headline
-      type: slide-up
-      start: 0.3
-      duration: 0.6
-      easing: cubic-bezier(0.16, 1, 0.3, 1)
-      offset: 40px
-    
-    - id: subtitle
-      type: slide-up
-      start: 0.7
-      duration: 0.5
-      easing: cubic-bezier(0.16, 1, 0.3, 1)
-      offset: 30px
-    
-    - id: cta
-      type: fade-in
-      start: 1.1
-      duration: 0.4
-      easing: ease-out
+fonts:
+  display: "'Source Han Serif', serif"    # 标题字体
+  body: "'Source Han Sans', sans-serif"   # 正文字体
+  mono: "'JetBrains Mono', monospace"     # 等宽字体
 
-# CSS实现
-css: |
-  @keyframes slide-up {
-    from { opacity: 0; transform: translateY(var(--offset)); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+sizes:
+  display: "clamp(42px, 5vw, 88px)"      # 响应式字号
+  body: "clamp(16px, 1.2vw, 21px)"
 
-# 质量
-quality:
-  max_stagger_gap: 0.4s  # 最大错位间隔，防止观众等待
-  min_element_duration: 0.3s  # 最小动画时长
+google_fonts: ["Source+Han+Serif:wght@400;700", "Source+Han+Sans"]
 ```
 
-### 视频剪辑模板 (video-edit)
+### 叙事模型 (narratology/model)
 
 ```yaml
-id: launch-film-30s
-name: 30秒品牌宣传片 — 苹果发布会级
-version: "1.0.0"
-category: video/launch-film
+id: three-act
+name:
+  zh: "三幕剧"
+  en: "Three-Act"
 
-specs:
-  total_duration: 30       # 秒
-  frame_rate: 25
-  resolution: [1920, 1080]
-
-# 叙事弧
-arc:
-  - phase: hook            # 0-5s 钩子
-    duration: 5
+beats:
+  - id: setup
+    name:
+      zh: "设问"
     mood: mysterious
-    music: bgm-tech.mp3
-    sfx_density: high      # 6个/10秒
-    
-  - phase: reveal          # 5-15s 产品揭示
-    duration: 10
-    mood: aspirational
-    music: bgm-tech.mp3
-    sfx_density: medium    # 3个/10秒
-    
-  - phase: feature         # 15-25s 功能展示
-    duration: 10
-    mood: confident
-    music: bgm-educational.mp3
-    sfx_density: low       # 1-2个/10秒
-    
-  - phase: closing         # 25-30s 品牌收尾
-    duration: 5
-    mood: inspiring
-    music: bgm-educational.mp3
-    sfx_density: high
+    duration_weight: 0.2
+    voiceover_template: "是否曾经..."
+    sub_beats:                    # 子节拍（可选）
+      - id: reveal
+        weight: 0.5
 
-# 转场规则
-transitions:
-  hook_to_reveal: "cross-fade 0.8s"
-  reveal_to_feature: "slide-left 0.5s"
-  feature_to_closing: "fade-to-black 1.0s + logo stamp sfx"
-
-# 音效配方（参考 audio-design-rules.md）
-sfx_recipe: A  # 发布hero型：密集SFX + 低频BGM
-
-# 模板来源
-source: "references/launch-film-director-notes.md"
+shot_types: [WIDE, MEDIUM, CLOSE-UP, DETAIL]
+camera_moves: [Static, Slow zoom, Dolly in]
 ```
 
-## 使用流程
+## 引擎自动生成
 
-### 设计时（LLM调用）
-```
-LLM确定用户需求 → 查询 template-registry.yaml 匹配模板
-→ 读取对应YAML → 注入用户内容 → 按CSS字段生成HTML
-→ 通过 quality 字段自检
-```
+以下 CSS **不需要手写**，引擎根据 YAML 自动编译：
 
-### 进化时（反馈驱动）
-```
-用户反馈“好” → pattern-extractor.py 提取该产品的视觉特征
-→ 生成新模板候选 → 人工审校 → 合并到注册表 + 版本号+1
-```
+| YAML 字段 | 引擎自动生成 |
+|-----------|-------------|
+| `spacing` | `--space-step-1..12` CSS 变量 (φ=1.618) |
+| `responsive[].columns` | `@media { grid-template-columns }` |
+| `responsive[].font_scale` | `calc(1em * scale)` |
+| `responsive[].safe_area` | `padding` 覆盖 |
+| `responsive[].hide_roles` | `display: none` |
+| `responsive[].stack` | `grid-template-columns: 1fr` + order |
+| `element.responsive` | 独立 `@media` 块 |
+| `presentation_mode` | `.presentation-mode` 16:9 锁定容器 |
 
-### 质量门禁执行
-```
-preflight.py 检查环境 → quality-gate.py 验证CSS/对比度/字号
-→ 输出报告（通过/警告/失败）
-```
+## 引擎不自动生成（需要手写）
+
+| 内容 | 原因 |
+|------|------|
+| 布局核心 `display: grid` / `flex` | 布局类型太多，无法穷举 |
+| 元素具体样式（border-radius、transition） | 视觉细节因设计而异 |
+| 背景图片/渐变 | 无通用模式 |
+| hover 交互 | 交互设计不可预测 |
