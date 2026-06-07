@@ -47,7 +47,7 @@ AI 分析你的种子，匹配最合适的叙事模型，输出结构化脚手�
 
 📋 分镜表: 12 个 shot（WIDE / MEDIUM / CLOSE-UP / DETAIL 循环）
 📋 Fountain 剧本骨架（4 幕 8 场景）
-📋 LLM 完整提示词（可直接喂给 Claude / GPT 生成完整剧本）
+📋 **LLM 完整提示词（可直接喂给 Claude / GPT 生成完整剧本）**
 ```
 
 **Step 3 — 人类选择叙事模型，确认方向**
