@@ -39,6 +39,7 @@ func main() {
 	case "media":     cmdMedia()
 	case "export":    cmdExport()
 	case "prompt":    cmdPrompt()
+	case "comfyui":   cmdComfyUI()
 	case "version":   cmdVersion()
 	default:          help()
 	}

@@ -1,4 +1,4 @@
-// via54Design — 图片提示词 (Prompt) 命令 v3
+// via54Design — 图片提示词 (Prompt) 命令 v4
 //
 // Copyright (C) 2026  via54 (veawho)
 //
@@ -14,6 +14,7 @@ import (
 
 	"path/filepath"
 	"github.com/veawho/via54Design/internal/prompt"
+	"github.com/veawho/via54Design/internal/workflow"
 )
 
 func cmdPrompt() {
@@ -181,7 +182,7 @@ func cmdPromptRef() {
 }
 
 func listPromptPlatforms() {
-	fmt.Println("可用平台 (26维度控制 v3.0):")
+	fmt.Println("可用平台 (36维度控制 v3.1 — 含视频参数):")
 	for _, p := range []struct{n, d string}{
 		{"midjourney", "Midjourney 图片生成 — 26维度 + Token权重"},
 		{"flux", "Flux Pro 图片生成"},
@@ -192,13 +193,17 @@ func listPromptPlatforms() {
 		{"recraft", "Recraft V3"},
 		{"seedance", "Seedance 2.0"},
 		{"gemini", "Google Gemini Imagen"},
-		{"veo", "Google Veo 3 (视频)"},
-		{"sora", "OpenAI Sora (视频)"},
-		{"kling", "可灵 AI 视频/图片"},
-		{"pika", "Pika 4.0 (视频)"},
 		{"jimeng", "即梦 AI 图片生成"},
+		// Video platforms
+		{"veo", "Google Veo 3 (视频) — 36维度"},
+		{"sora", "OpenAI Sora (视频) — 36维度"},
+		{"kling", "可灵 AI 视频/图片 — 36维度"},
+		{"pika", "Pika 4.0 (视频) — 36维度"},
+		{"video_generic", "通用视频生成 — 36维度 (含10维视频控制)"},
+		{"video_camera", "相机运镜视频 — 聚焦运镜控制"},
+		{"video_keyframe", "关键帧视频 — 多镜头关键帧描述"},
 	} {
-		fmt.Printf("  %-15s  %s\n", p.n, p.d)
+		fmt.Printf("  %-20s  %s\n", p.n, p.d)
 	}
 }
 
@@ -225,45 +230,127 @@ func cmdPromptGallery() {
 
 func cmdComfyUI() {
 	fs := flag.NewFlagSet("comfyui", flag.ExitOnError)
-	workflow := fs.String("workflow", "", "ComfyUI workflow JSON")
-	workflowPrompt := fs.String("prompt", "", "生图 prompt")
-	output := fs.String("output", "comfyui_output.json", "输出路径")
-	fs.Parse(os.Args[3:])
+	workflowID := fs.String("workflow", "", "ComfyUI workflow template ID (e.g. sdxl_txt2img)")
+	workflowPrompt := fs.String("prompt", "", "Generation prompt")
+	negativePrompt := fs.String("negative", "", "Negative prompt")
+	output := fs.String("output", "", "Output JSON path (default: stdout)")
+	list := fs.Bool("list", false, "List available workflow templates")
+	steps := fs.Int("steps", 0, "Override steps")
+	cfg := fs.Float64("cfg", 0, "Override CFG scale")
+	seed := fs.Int("seed", -1, "Override seed (-1 = random)")
+	sampler := fs.String("sampler", "", "Override sampler name")
+	fs.Parse(os.Args[2:])
 
-	if *workflow == "" || *workflowPrompt == "" {
-		fmt.Fprintln(os.Stderr, "请指定 --workflow workflow.json --prompt \"...\"")
-		fmt.Fprintln(os.Stderr, "ComfyUI 工作流模板: docs/prompts/comfyui-workflows/")
-		os.Exit(1)
-	}
+	bd := baseDir()
 
-	// 读取 workflow 并注入 prompt
-	data, err := os.ReadFile(*workflow)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "读取 workflow 失败: %v\n", err)
-		os.Exit(1)
-	}
+	// ── List mode ──
+	if *list {
+		ids, err := workflow.ListWorkflowTemplates(bd)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "列出工作流模板失败: %v\n", err)
+			os.Exit(1)
+		}
+		reg, _ := workflow.LoadRegistry(bd)
 
-	// 注入 prompt 到 workflow 的 CLIPTextEncode 节点
-	var wf map[string]interface{}
-	json.Unmarshal(data, &wf)
-
-	injected := 0
-	for _, node := range wf {
-		n, ok := node.(map[string]interface{})
-		if !ok { continue }
-		cls, _ := n["class_type"].(string)
-		if cls == "CLIPTextEncode" {
-			if inputs, ok := n["inputs"].(map[string]interface{}); ok {
-				inputs["text"] = *workflowPrompt
-				injected++
+		fmt.Println("📋 ComfyUI 工作流模板:")
+		fmt.Println()
+		if reg != nil {
+			for _, w := range reg.Workflows {
+				fmt.Printf("  📄 %-20s %s\n", w.ID, w.Name)
+				fmt.Printf("     %s\n", w.Description)
+				fmt.Printf("     模型: %s | %s\n", w.Model, w.Params)
+				fmt.Println()
+			}
+		} else {
+			for _, id := range ids {
+				tmpl, err := workflow.LoadWorkflowTemplate(id, bd)
+				if err != nil {
+					continue
+				}
+				fmt.Printf("  📄 %-20s %s\n", tmpl.ID, tmpl.Name)
+				fmt.Printf("     %s\n", tmpl.Description)
+				fmt.Printf("     模型: %s\n", tmpl.Model)
+				fmt.Println()
 			}
 		}
+		fmt.Println("用法: via54 comfyui --workflow <id> --prompt \"...\"")
+		fmt.Println("       via54 comfyui --workflow sdxl_txt2img --prompt \"a cat\" --output workflow.json")
+		fmt.Println("       via54 comfyui --workflow sdxl_txt2img --prompt \"...\" --steps 40 --cfg 10.0")
+		return
 	}
 
-	outData, _ := json.MarshalIndent(wf, "", "  ")
-	os.WriteFile(*output, outData, 0644)
-	fmt.Printf("✅ ComfyUI workflow 已注入 prompt (%d 个节点): %s\n", injected, *output)
-	fmt.Println("  执行: comfy-swap run --workflow " + *output)
+	// ── Build mode ──
+	if *workflowID == "" {
+		fmt.Fprintln(os.Stderr, "请指定 --workflow <模板ID> (或使用 --list 查看可用模板)")
+		fmt.Fprintln(os.Stderr, "用法: via54 comfyui --workflow sdxl_txt2img --prompt \"...\"")
+		os.Exit(1)
+	}
+
+	// Load the template
+	tmpl, err := workflow.LoadWorkflowTemplate(*workflowID, bd)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "加载工作流模板失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Collect overrides
+	overrides := make(map[string]interface{})
+	if *steps > 0 {
+		overrides["steps"] = *steps
+	}
+	if *cfg > 0 {
+		overrides["cfg"] = *cfg
+	}
+	if *seed >= 0 {
+		overrides["seed"] = *seed
+	}
+	if *sampler != "" {
+		overrides["sampler"] = *sampler
+	}
+
+	promptText := *workflowPrompt
+	if promptText == "" {
+		promptText = "empty prompt"
+	}
+	negText := *negativePrompt
+
+	// Build the workflow
+	result, err := workflow.BuildWorkflow(tmpl, promptText, negText, overrides)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "构建工作流失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Output
+	if *output != "" {
+		if err := os.WriteFile(*output, result.JSON, 0644); err != nil {
+			fmt.Fprintf(os.Stderr, "写入输出文件失败: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("✅ ComfyUI 工作流已生成: %s\n", *output)
+		fmt.Printf("   模板: %s (%s)\n", tmpl.ID, tmpl.Name)
+		fmt.Printf("   类型: %s\n", tmpl.Type)
+		fmt.Printf("   模型: %s\n", tmpl.Model)
+		fmt.Printf("   节点数: %d\n", countNodes(result.JSON))
+		if promptText != "empty prompt" {
+			fmt.Printf("   提示词: %q\n", promptText)
+		}
+		if negText != "" {
+			fmt.Printf("   负面提示词: %q\n", negText)
+		}
+		fmt.Println("   执行: comfy-swap run --workflow " + *output)
+	} else {
+		fmt.Print(string(result.JSON))
+	}
+}
+
+// countNodes returns the number of top-level keys in a workflow JSON.
+func countNodes(data []byte) int {
+	var m map[string]interface{}
+	if json.Unmarshal(data, &m) != nil {
+		return 0
+	}
+	return len(m)
 }
 
 // ─── Assess ───

@@ -15,14 +15,15 @@ type PromptTemplate struct {
 }
 
 type PromptSection struct {
-	ID       string   `yaml:"id"`
-	Label    string   `yaml:"label"`
-	Category string   `yaml:"category,omitempty"`
-	Hint     string   `yaml:"hint,omitempty"`
-	Default  string   `yaml:"default,omitempty"`
-	Options  []Option `yaml:"options,omitempty"`
-	Weighted bool     `yaml:"weighted,omitempty"`
-	Weight   float64  `yaml:"weight,omitempty"`
+	ID        string   `yaml:"id"`
+	Label     string   `yaml:"label"`
+	Category  string   `yaml:"category,omitempty"`
+	Hint      string   `yaml:"hint,omitempty"`
+	Default   string   `yaml:"default,omitempty"`
+	Options   []Option `yaml:"options,omitempty"`
+	Weighted  bool     `yaml:"weighted,omitempty"`
+	Weight    float64  `yaml:"weight,omitempty"`
+	VideoOnly bool     `yaml:"video_only,omitempty"`
 }
 
 type Option struct {

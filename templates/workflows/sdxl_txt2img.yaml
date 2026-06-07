@@ -1,0 +1,26 @@
+# via54Design — SDXL Text-to-Image Workflow Template
+# SPDX-License-Identifier: MIT
+id: sdxl_txt2img
+name: "SDXL Text-to-Image"
+description: "Basic SDXL text-to-image generation workflow"
+model: "sd_xl_base_1.0.safetensors"
+vae: "sdxl_vae.safetensors"
+type: txt2img
+params:
+  steps: 30
+  cfg: 7.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  positive_prompt: "CLIPTextEncode"
+  negative_prompt: "CLIPTextEncode"
+  checkpoint: "CheckpointLoaderSimple"
+models:
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_vae.safetensors"
+    path: "vae/sdxl_vae.safetensors"

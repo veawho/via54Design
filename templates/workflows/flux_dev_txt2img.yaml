@@ -1,0 +1,28 @@
+# via54Design — Flux Dev Text-to-Image Workflow Template
+# SPDX-License-Identifier: MIT
+id: flux_dev_txt2img
+name: "Flux Dev Text-to-Image"
+description: "Flux Dev text-to-image with guidance scale control"
+model: "flux_dev.safetensors"
+vae: "flux_vae.safetensors"
+type: txt2img
+params:
+  steps: 28
+  cfg: 1.0
+  guidance: 3.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  positive_prompt: "CLIPTextEncode"
+  negative_prompt: "CLIPTextEncode"
+  checkpoint: "CheckpointLoaderSimple"
+  dual_clip: "DualCLIPLoader"
+models:
+  - url: "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors"
+    path: "checkpoints/flux_dev.safetensors"
+  - url: "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors"
+    path: "vae/flux_vae.safetensors"

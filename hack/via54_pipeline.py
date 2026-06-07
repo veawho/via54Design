@@ -52,7 +52,7 @@ from typing import Any, Dict, List, Optional, Tuple
 # Constants
 # ---------------------------------------------------------------------------
 
-# The 26 dimension fields (updated v3.0.0 — from Flux-PG, Dynamic Prompts, ai-media-gen).
+# The 26 + 10 video dimension fields (updated v3.1.0 — with video control dimensions).
 DIMENSION_FIELDS: List[str] = [
     # core subject
     "subject",          # 主体对象
@@ -88,6 +88,17 @@ DIMENSION_FIELDS: List[str] = [
     # quality
     "quality_tags",     # 质量标签
     "emotion",          # 情绪/氛围 (NEW v3)
+    # video control (NEW v3.1)
+    "camera_movement",  # 运镜类型
+    "motion_intensity", # 运动强度
+    "frame_count",      # 帧数
+    "fps",              # 帧率
+    "shot_size",        # 景别尺寸
+    "angle",            # 拍摄角度
+    "duration_seconds", # 时长
+    "keyframe",         # 关键帧
+    "transition",       # 转场
+    "motion_blur",      # 运动模糊
 ]
 
 DEFAULT_ENDPOINT = "https://api.openai.com/v1"
@@ -132,8 +143,8 @@ PROVIDER_PRESETS: Dict[str, Dict[str, Any]] = {
 
 # LLM system prompt for filling prompt dimensions.
 SYSTEM_PROMPT_FILL = (
-    "You are a professional AI image prompt engineer. "
-    "Given a scene description, fill the 26 dimensions below with specific, vivid, "
+    "You are a professional AI image and video prompt engineer. "
+    "Given a scene description, fill the 36 dimensions below with specific, vivid, "
     "English-language values. Each value should be 2-8 words, descriptive and concrete. "
     "Return ONLY a JSON object with the field values."
 )
@@ -147,8 +158,8 @@ SYSTEM_PROMPT_TRANSLATE = (
 
 # LLM system prompt for reverse image analysis.
 SYSTEM_PROMPT_REVERSE = (
-    "You are a professional AI image prompt engineer specializing in reverse prompt engineering. "
-    "Analyze this image and infer the 26 prompt dimensions below with specific, vivid, "
+    "You are a professional AI image and video prompt engineer specializing in reverse prompt engineering. "
+    "Analyze this image and infer the 36 prompt dimensions below with specific, vivid, "
     "English-language values. Each value should be 2-8 words, descriptive and concrete. "
     "Return ONLY a JSON object with the field values."
 )
@@ -356,7 +367,7 @@ def expand_with_llm(
     user_prompt = (
         f"Platform: {platform}\n"
         f"Scene: {scene}\n\n"
-        f"Fill these 26 dimensions with specific, vivid values:\n"
+        f"Fill these 36 dimensions with specific, vivid values:\n"
         f"{fields_list}\n\n"
         f"Also provide 3-5 negative prompt terms as an array 'negative'.\n"
         f'Return a JSON object with keys "fields" (object) and "negative" (array).'
@@ -495,7 +506,7 @@ def reverse_image(
         {
             "type": "text",
             "text": (
-                f"Analyze this image and return JSON with 26 dimension fields:\n"
+                f"Analyze this image and return JSON with 36 dimension fields:\n"
                 f"{fields_list}\n\n"
                 f"Also provide 3-5 negative prompt terms as an array 'negative'.\n"
                 f'Return a JSON object with keys "fields" (object) and "negative" (array).'

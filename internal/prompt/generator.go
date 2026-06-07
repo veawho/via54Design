@@ -22,7 +22,9 @@ func GeneratePrompt(scene string, platform string, refImage string, baseDir stri
 	if s.Negative == nil && len(tmpl.Negative) > 0 {
 		s.Negative = tmpl.Negative
 	}
+	isVideo := isVideoPlatform(platform)
 	for _, sec := range tmpl.Sections {
+		if sec.VideoOnly && !isVideo { continue }
 		val := sec.Default
 		if val == "" { val = fmt.Sprintf("（LLM填充：%s）", sec.Hint) }
 		s.Fields[sec.ID] = val
@@ -32,6 +34,15 @@ func GeneratePrompt(scene string, platform string, refImage string, baseDir stri
 	s.FinalPrompt = buildWeightedPrompt(tmpl, s.Fields, s.Weights, s.Negative)
 	s.Expanded = buildPromptDebug(s, tmpl)
 	return s, nil
+}
+
+// isVideoPlatform returns true if the platform supports video dimensions.
+func isVideoPlatform(platform string) bool {
+	videoPlatforms := map[string]bool{
+		"kling": true, "veo": true, "sora": true, "pika": true,
+		"seedance": true, "video_generic": true, "video_camera": true, "video_keyframe": true,
+	}
+	return videoPlatforms[platform]
 }
 
 func buildWeightedPrompt(tmpl *PromptTemplate, fields map[string]string, weights map[string]float64, negative []string) string {

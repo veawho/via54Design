@@ -1,0 +1,29 @@
+# via54Design — AnimateDiff Text-to-Video Workflow Template
+# SPDX-License-Identifier: MIT
+id: animatediff_txt2vid
+name: "AnimateDiff Text-to-Video"
+description: "AnimateDiff text-to-video with motion module"
+model: "majicmixRealistic_v7.safetensors"
+vae: "vae-ft-mse-840000-ema-pruned.safetensors"
+type: txt2vid
+params:
+  steps: 25
+  cfg: 7.0
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 512
+  height: 512
+  denoise: 1.0
+  frames: 16
+  frame_rate: 8
+nodes:
+  positive_prompt: "CLIPTextEncode"
+  negative_prompt: "CLIPTextEncode"
+  checkpoint: "CheckpointLoaderSimple"
+  motion_module: "AnimateDiffLoader"
+models:
+  - url: "https://huggingface.co/nickk6249/majicmixRealistic_v7/resolve/main/majicmixRealistic_v7.safetensors"
+    path: "checkpoints/majicmixRealistic_v7.safetensors"
+  - url: "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+    path: "vae/vae-ft-mse-840000-ema-pruned.safetensors"
