@@ -26,7 +26,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
-	"image/color"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -41,7 +40,7 @@ type PPTXSlide struct {
 	Subtitle string   // 副标题/眉标
 	Body     []string // 正文段落
 	Color    string   // 强调色 hex
-	Image    string   // 图片路径(可选)
+	Image    string   // 图片路径(可选) // TODO: image embedding not yet implemented
 }
 
 // PPTXStyleElement 布局元素坐标
@@ -138,7 +137,7 @@ func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool, styleID,
 	w := zip.NewWriter(&buf)
 
 	// ── 必需: [Content_Types].xml ──
-	writeZip(w, "[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
@@ -150,44 +149,60 @@ func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool, styleID,
   <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
   <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
   <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
-`+genSlideTypes(len(slides))+`</Types>`)
+`+genSlideTypes(len(slides))+`</Types>`); err != nil {
+		return err
+	}
 
 	// ── 关系: _rels/.rels ──
-	writeZip(w, "_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
   <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
-</Relationships>`)
+</Relationships>`); err != nil {
+		return err
+	}
 
 	// ── docProps ──
-	writeZip(w, "docProps/core.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "docProps/core.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties">
   <dc:title>via54Design</dc:title>
   <cp:lastModifiedBy>via54Design</cp:lastModifiedBy>
-</cp:coreProperties>`)
+</cp:coreProperties>`); err != nil {
+		return err
+	}
 
-	writeZip(w, "docProps/app.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "docProps/app.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
   <Application>via54Design</Application>
   <Slides>`+strconv.Itoa(len(slides))+`</Slides>
-</Properties>`)
+</Properties>`); err != nil {
+		return err
+	}
 
 	// ── Theme ──
-	writeZip(w, "ppt/theme/theme1.xml", pptxTheme())
+	if err := writeZip(w, "ppt/theme/theme1.xml", pptxTheme()); err != nil {
+		return err
+	}
 
 	// ── Slide Master ──
-	writeZip(w, "ppt/slideMasters/slideMaster1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "ppt/slideMasters/slideMaster1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sldMaster xmlns:p="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <p:cSld><p:spTree><p:nvGrpSpPr><p:nvPr/><p:cNvPr id="1" name=""/></p:nvGrpSpPr><p:grpSpPr/></p:spTree></p:cSld>
-</p:sldMaster>`)
-	writeZip(w, "ppt/slideMasters/_rels/slideMaster1.xml.rels", `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/></Relationships>`)
+</p:sldMaster>`); err != nil {
+		return err
+	}
+	if err := writeZip(w, "ppt/slideMasters/_rels/slideMaster1.xml.rels", `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/></Relationships>`); err != nil {
+		return err
+	}
 
 	// ── Slide Layout ──
-	writeZip(w, "ppt/slideLayouts/slideLayout1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "ppt/slideLayouts/slideLayout1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sldLayout xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" type="blank">
   <p:cSld><p:spTree><p:nvGrpSpPr><p:nvPr/><p:cNvPr id="1" name=""/></p:nvGrpSpPr><p:grpSpPr/></p:spTree></p:cSld>
-</p:sldLayout>`)
+</p:sldLayout>`); err != nil {
+		return err
+	}
 
 	// ── Presentation ──
 	slideRels := ""
@@ -207,31 +222,44 @@ func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool, styleID,
 		sz = strings.Replace(sz, `cx="12192000" cy="6858000"`, `cx="9144000" cy="6858000"`, 1) // 4:3
 	}
 	sz += `<p:notesSz cx="6858000" cy="9144000"/></p:presentation>`
-	writeZip(w, "ppt/presentation.xml", sz)
+	if err := writeZip(w, "ppt/presentation.xml", sz); err != nil {
+		return err
+	}
 
-	writeZip(w, "ppt/_rels/presentation.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	if err := writeZip(w, "ppt/_rels/presentation.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>
-`+slideRels+`</Relationships>`)
+`+slideRels+`</Relationships>`); err != nil {
+		return err
+	}
 
 	// ── 每张 Slide ──
 	for i, s := range slides {
 		num := i + 1
 		slideXML := buildSlideXML(s, num, len(slides), style, theme)
-		writeZip(w, fmt.Sprintf("ppt/slides/slide%d.xml", num), slideXML)
-		writeZip(w, fmt.Sprintf("ppt/slides/_rels/slide%d.xml.rels", num), `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>`)
+		if err := writeZip(w, fmt.Sprintf("ppt/slides/slide%d.xml", num), slideXML); err != nil {
+			return err
+		}
+		if err := writeZip(w, fmt.Sprintf("ppt/slides/_rels/slide%d.xml.rels", num), `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>`); err != nil {
+			return err
+		}
 	}
 
 	w.Close()
 
 	// 写入文件
-	os.MkdirAll(filepath.Dir(outputPath), 0755)
+	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+		return fmt.Errorf("mkdir output: %w", err)
+	}
 	return os.WriteFile(outputPath, buf.Bytes(), 0644)
 }
 
-func writeZip(w *zip.Writer, name, content string) {
-	f, _ := w.Create(name)
-	f.Write([]byte(content))
+func writeZip(w *zip.Writer, name, content string) error {
+	f, err := w.Create(name)
+	if err != nil { return fmt.Errorf("zip create %s: %w", name, err) }
+	_, err = f.Write([]byte(content))
+	if err != nil { return fmt.Errorf("zip write %s: %w", name, err) }
+	return nil
 }
 
 func genSlideTypes(n int) string {
@@ -389,10 +417,12 @@ func loadPPTXStyle(styleID, baseDir string) *PPTXStyle {
 	path := filepath.Join(baseDir, "templates", "pptx-styles", styleID+".yaml")
 	data, err := os.ReadFile(path)
 	if err != nil {
+		fmt.Printf("loadPPTXStyle: read %s: %v\n", path, err)
 		return nil
 	}
 	var s PPTXStyle
 	if err := yaml.Unmarshal(data, &s); err != nil {
+		fmt.Printf("loadPPTXStyle: unmarshal %s: %v\n", path, err)
 		return nil
 	}
 	return &s
@@ -401,10 +431,12 @@ func loadPPTXStyle(styleID, baseDir string) *PPTXStyle {
 func loadPPTXTheme(themePath string) *PPTXTheme {
 	data, err := os.ReadFile(themePath)
 	if err != nil {
+		fmt.Printf("loadPPTXTheme: read %s: %v\n", themePath, err)
 		return nil
 	}
 	var t PPTXTheme
 	if err := yaml.Unmarshal(data, &t); err != nil {
+		fmt.Printf("loadPPTXTheme: unmarshal %s: %v\n", themePath, err)
 		return nil
 	}
 	return &t
@@ -425,4 +457,4 @@ func defaultPPTXStyle() *PPTXStyle {
 	return s
 }
 
-var _ = color.White // 保留 color 导入
+

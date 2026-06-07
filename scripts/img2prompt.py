@@ -11,59 +11,61 @@ def analyze_image(path: str) -> dict:
     """Extract visual features from image."""
     if not os.path.exists(path):
         return {"error": f"file not found: {path}"}
-    
-    img = Image.open(path).convert("RGB")
-    w, h = img.size
-    
-    # Basic info
-    aspect = w / h
-    aspect_label = "landscape" if aspect > 1.1 else "portrait" if aspect < 0.9 else "square"
-    
-    # Dominant colors (simple quantization)
-    small = img.resize((64, 64))
-    pixels = list(small.getdata())
-    # Quantize to 16 colors
-    quantized = [(r//32*32, g//32*32, b//32*32) for r,g,b in pixels]
-    color_counts = Counter(quantized)
-    top_colors = [{"rgb": list(c), "hex": f"#{c[0]:02x}{c[1]:02x}{c[2]:02x}", "count": n}
-                  for c, n in color_counts.most_common(8) if n > 5]
-    
-    # Brightness analysis
-    gray = img.convert("L")
-    stat = ImageStat.Stat(gray)
-    avg_brightness = stat.mean[0]
-    brightness_label = "high-key" if avg_brightness > 200 else "low-key" if avg_brightness < 60 else "mid-key"
-    
-    # Contrast (std dev)
-    std = stat.stddev[0] if stat.stddev else 0
-    contrast = "high contrast" if std > 60 else "soft" if std < 25 else "moderate"
-    
-    # Colorfulness (variance across channels)
-    r_stat = ImageStat.Stat(img.split()[0])
-    g_stat = ImageStat.Stat(img.split()[1])
-    b_stat = ImageStat.Stat(img.split()[2])
-    color_var = (r_stat.stddev[0] or 0) + (g_stat.stddev[0] or 0) + (b_stat.stddev[0] or 0)
-    colorful = "vibrant" if color_var > 120 else "muted" if color_var < 50 else "balanced"
-    
-    # Edge detection for details
-    edges = img.filter(ImageFilter.FIND_EDGES).convert("L")
-    edge_stat = ImageStat.Stat(edges)
-    edge_density = edge_stat.mean[0]
-    detail_level = "high detail" if edge_density > 40 else "smooth" if edge_density < 10 else "moderate detail"
-    
-    return {
-        "width": w, "height": h,
-        "aspect_ratio": f"{aspect:.2f}",
-        "orientation": aspect_label,
-        "brightness": round(avg_brightness, 1),
-        "brightness_label": brightness_label,
-        "contrast": contrast,
-        "colorfulness": colorful,
-        "detail": detail_level,
-        "dominant_colors": top_colors[:5],
-        "suggested_moods": suggest_moods(avg_brightness, std, color_var),
-        "suggested_styles": suggest_styles(aspect_label, brightness_label, colorful),
-    }
+    try:
+        img = Image.open(path).convert("RGB")
+        w, h = img.size
+        
+        # Basic info
+        aspect = w / h
+        aspect_label = "landscape" if aspect > 1.1 else "portrait" if aspect < 0.9 else "square"
+        
+        # Dominant colors (simple quantization)
+        small = img.resize((64, 64))
+        pixels = list(small.getdata())
+        # Quantize to 16 colors
+        quantized = [(r//32*32, g//32*32, b//32*32) for r,g,b in pixels]
+        color_counts = Counter(quantized)
+        top_colors = [{"rgb": list(c), "hex": f"#{c[0]:02x}{c[1]:02x}{c[2]:02x}", "count": n}
+                      for c, n in color_counts.most_common(8) if n > 5]
+        
+        # Brightness analysis
+        gray = img.convert("L")
+        stat = ImageStat.Stat(gray)
+        avg_brightness = stat.mean[0]
+        brightness_label = "high-key" if avg_brightness > 200 else "low-key" if avg_brightness < 60 else "mid-key"
+        
+        # Contrast (std dev)
+        std = stat.stddev[0] if stat.stddev else 0
+        contrast = "high contrast" if std > 60 else "soft" if std < 25 else "moderate"
+        
+        # Colorfulness (variance across channels)
+        r_stat = ImageStat.Stat(img.split()[0])
+        g_stat = ImageStat.Stat(img.split()[1])
+        b_stat = ImageStat.Stat(img.split()[2])
+        color_var = (r_stat.stddev[0] or 0) + (g_stat.stddev[0] or 0) + (b_stat.stddev[0] or 0)
+        colorful = "vibrant" if color_var > 120 else "muted" if color_var < 50 else "balanced"
+        
+        # Edge detection for details
+        edges = img.filter(ImageFilter.FIND_EDGES).convert("L")
+        edge_stat = ImageStat.Stat(edges)
+        edge_density = edge_stat.mean[0]
+        detail_level = "high detail" if edge_density > 40 else "smooth" if edge_density < 10 else "moderate detail"
+        
+        return {
+            "width": w, "height": h,
+            "aspect_ratio": f"{aspect:.2f}",
+            "orientation": aspect_label,
+            "brightness": round(avg_brightness, 1),
+            "brightness_label": brightness_label,
+            "contrast": contrast,
+            "colorfulness": colorful,
+            "detail": detail_level,
+            "dominant_colors": top_colors[:5],
+            "suggested_moods": suggest_moods(avg_brightness, std, color_var),
+            "suggested_styles": suggest_styles(aspect_label, brightness_label, colorful),
+        }
+    except Exception as e:
+        return {"error": f"analysis failed: {type(e).__name__}: {e}"}
 
 def suggest_moods(brightness: float, contrast: float, colorfulness: float) -> list:
     moods = []
@@ -73,6 +75,7 @@ def suggest_moods(brightness: float, contrast: float, colorfulness: float) -> li
     if contrast > 50: moods.append("dramatic")
     if colorfulness > 100: moods.append("vibrant")
     elif colorfulness < 60: moods.append("subdued")
+    moods = list(dict.fromkeys(moods))
     return moods[:5]
 
 def suggest_styles(orientation: str, brightness: str, colorfulness: str) -> list:
@@ -114,6 +117,9 @@ def build_prompt_from_analysis(analysis: dict, user_prompt: str = "") -> str:
     if styles:
         parts.append(f"--style {', '.join(styles)}")
     
+    if not parts:
+        return "a photograph with balanced composition and natural lighting"
+
     return ". ".join(parts) + "."
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -105,8 +106,11 @@ func handleBuild(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	workflowID, _ := req["workflow_id"].(string)
 	prompt, _ := req["prompt"].(string)
@@ -192,8 +196,11 @@ func handlePrompt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	scene, _ := req["scene"].(string)
 	platform, _ := req["platform"].(string)
@@ -233,8 +240,11 @@ func handleGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	layout, _ := req["layout"].(string)
 	color, _ := req["color"].(string)
@@ -284,8 +294,11 @@ func handleNarrate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	seed, _ := req["seed"].(string)
 	model, _ := req["model"].(string)
@@ -332,8 +345,11 @@ func handleExport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	expType, _ := req["type"].(string)
 	source, _ := req["source"].(string)
@@ -377,8 +393,11 @@ func handleMedia(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	action, _ := req["action"].(string)
 	source, _ := req["source"].(string)
@@ -432,11 +451,13 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := r.ParseMultipartForm(32 << 20); err != nil {
+		log.Printf("handleUpload: parse multipart: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("parse: %v", err)})
 		return
 	}
 	file, header, err := r.FormFile("image")
 	if err != nil {
+		log.Printf("handleUpload: form file: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("file: %v", err)})
 		return
 	}
@@ -456,7 +477,10 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer out.Close()
-	io.Copy(out, file)
+	if _, err := io.Copy(out, file); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("write file: %v", err)})
+		return
+	}
 
 	url := fmt.Sprintf("/uploads/%s", filename)
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -471,22 +495,35 @@ func handleAnalyze(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	imgPath, _ := req["path"].(string)
 	if imgPath == "" {
+		log.Printf("handleAnalyze: path required")
 		json.NewEncoder(w).Encode(map[string]string{"error": "path required"})
 		return
 	}
 	if !filepath.IsAbs(imgPath) {
 		imgPath = filepath.Join(baseDir, imgPath)
 	}
+	// Path traversal prevention
+	cleanPath := filepath.Clean(imgPath)
+	cleanBase := filepath.Clean(baseDir)
+	if cleanPath != cleanBase && !strings.HasPrefix(cleanPath, cleanBase+string(filepath.Separator)) {
+		log.Printf("handleAnalyze: path traversal blocked: %s", imgPath)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid path"})
+		return
+	}
 
 	cmd := exec.Command("python", filepath.Join(baseDir, "scripts", "img2prompt.py"), imgPath)
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
 	if err != nil {
+		log.Printf("handleAnalyze: exec error: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("analysis error: %v", err)})
 		return
 	}
@@ -503,8 +540,11 @@ func handleImg2Prompt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	imgPath, _ := req["path"].(string)
 	userDesc, _ := req["desc"].(string)
@@ -513,17 +553,27 @@ func handleImg2Prompt(w http.ResponseWriter, r *http.Request) {
 		platform = "flux"
 	}
 	if imgPath == "" {
+		log.Printf("handleImg2Prompt: path required")
 		json.NewEncoder(w).Encode(map[string]string{"error": "path required"})
 		return
 	}
 	if !filepath.IsAbs(imgPath) {
 		imgPath = filepath.Join(baseDir, imgPath)
 	}
+	// Path traversal prevention
+	cleanPath := filepath.Clean(imgPath)
+	cleanBase := filepath.Clean(baseDir)
+	if cleanPath != cleanBase && !strings.HasPrefix(cleanPath, cleanBase+string(filepath.Separator)) {
+		log.Printf("handleImg2Prompt: path traversal blocked: %s", imgPath)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid path"})
+		return
+	}
 
 	cmd := exec.Command("python", filepath.Join(baseDir, "scripts", "img2prompt.py"), imgPath, userDesc)
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
 	if err != nil {
+		log.Printf("handleImg2Prompt: exec error: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("analysis error: %v", err)})
 		return
 	}
@@ -562,8 +612,11 @@ func handleRegen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	prompt, _ := req["prompt"].(string)
 	negative, _ := req["negative"].(string)
@@ -591,7 +644,8 @@ func handleRegen(w http.ResponseWriter, r *http.Request) {
 	payloadBytes, _ := json.MarshalIndent(payload, "", "  ")
 	info += string(payloadBytes)
 
-	resp, err := http.Post("http://localhost:7860/sdapi/v1/txt2img", "application/json", bytes.NewReader(payloadBytes))
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Post("http://localhost:7860/sdapi/v1/txt2img", "application/json", bytes.NewReader(payloadBytes))
 
 	if err != nil {
 		// Forge not available - not an error, just return the prompt info
@@ -661,14 +715,20 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 			if ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".webp" { f.Close(); continue }
 			filename := fmt.Sprintf("sb_%d_%s", time.Now().UnixNano(), fh.Filename)
 			dst := filepath.Join(uploadDir(), filename)
-			out, _ := os.Create(dst); defer out.Close()
-			io.Copy(out, f); f.Close()
+			out, err := os.Create(dst)
+			if err != nil { f.Close(); continue }
+			if _, err := io.Copy(out, f); err != nil { out.Close(); f.Close(); continue }
+			out.Close()
+			f.Close()
 			paths = append(paths, dst)
 		}
 	} else {
 		var req map[string]interface{}
-		body, _ := io.ReadAll(r.Body)
-		json.Unmarshal(body, &req)
+		body, err := io.ReadAll(r.Body)
+		if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+		if err := json.Unmarshal(body, &req); err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		}
 		if p, ok := req["paths"].([]interface{}); ok {
 			for _, pp := range p {
 				if s, ok := pp.(string); ok {
@@ -684,6 +744,7 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(paths) == 0 {
+		log.Printf("handleStoryboard: no images provided")
 		json.NewEncoder(w).Encode(map[string]string{"error": "at least 1 image required"})
 		return
 	}
@@ -699,6 +760,7 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
 	if err != nil {
+		log.Printf("handleStoryboard: exec error: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{
 			"error": fmt.Sprintf("storyboard error: %v", err),
 			"stderr": string(out),
@@ -717,8 +779,11 @@ func handleVideoPrompt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req map[string]interface{}
-	body, _ := io.ReadAll(r.Body)
-	json.Unmarshal(body, &req)
+	body, err := io.ReadAll(r.Body)
+	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err := json.Unmarshal(body, &req); err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+	}
 
 	imgPath, _ := req["path"].(string)
 	desc, _ := req["desc"].(string)
@@ -726,11 +791,20 @@ func handleVideoPrompt(w http.ResponseWriter, r *http.Request) {
 	if workflow == "" { workflow = "animatediff_txt2vid" }
 
 	if imgPath == "" {
+		log.Printf("handleVideoPrompt: path required")
 		json.NewEncoder(w).Encode(map[string]string{"error": "path required"})
 		return
 	}
 	if !filepath.IsAbs(imgPath) {
 		imgPath = filepath.Join(baseDir, imgPath)
+	}
+	// Path traversal prevention
+	cleanPath := filepath.Clean(imgPath)
+	cleanBase := filepath.Clean(baseDir)
+	if cleanPath != cleanBase && !strings.HasPrefix(cleanPath, cleanBase+string(filepath.Separator)) {
+		log.Printf("handleVideoPrompt: path traversal blocked: %s", imgPath)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid path"})
+		return
 	}
 
 	// Single image → video prompt
@@ -742,6 +816,7 @@ func handleVideoPrompt(w http.ResponseWriter, r *http.Request) {
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
 	if err != nil {
+		log.Printf("handleVideoPrompt: exec error: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("video error: %v", err)})
 		return
 	}
@@ -788,14 +863,25 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 		ext := strings.ToLower(filepath.Ext(header.Filename))
 		filename := fmt.Sprintf("s2p_%d%s", time.Now().UnixNano(), ext)
 		dst := filepath.Join(uploadDir(), filename)
-		out, _ := os.Create(dst)
+		out, err := os.Create(dst)
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("create: %v", err)})
+			file.Close()
+			return
+		}
 		defer out.Close()
-		io.Copy(out, file)
+		if _, err := io.Copy(out, file); err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("write file: %v", err)})
+			return
+		}
 		docPath = dst
 	} else {
 		var req map[string]interface{}
-		body, _ := io.ReadAll(r.Body)
-		json.Unmarshal(body, &req)
+		body, err := io.ReadAll(r.Body)
+		if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+		if err := json.Unmarshal(body, &req); err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		}
 		docPath, _ = req["path"].(string)
 		userPrompt, _ = req["prompt"].(string)
 		if !filepath.IsAbs(docPath) {
@@ -804,6 +890,7 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if docPath == "" {
+		log.Printf("handleStory2PPT: file required")
 		json.NewEncoder(w).Encode(map[string]string{"error": "file required"})
 		return
 	}
@@ -818,6 +905,7 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
 	if err != nil {
+		log.Printf("handleStory2PPT: exec error: %v", err)
 		json.NewEncoder(w).Encode(map[string]string{
 			"error": fmt.Sprintf("doc2ppt error: %v", err), "stderr": string(out),
 		})
