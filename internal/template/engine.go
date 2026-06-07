@@ -53,7 +53,7 @@ func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG s
 	result.CSSVars = buildCSSVariables(color, font)
 	result.FontImports = buildFontImports(font)
 	result.BaseCSS = buildBaseCSS(font, layout, presentationMode)
-	result.LayoutCSS = layout.CSS
+	result.LayoutCSS = buildLayoutCSS(layout, presentationMode)
 	result.HTML = assembleHTML(result, layout)
 	return result, nil
 }
@@ -86,6 +86,212 @@ func buildCSSVariables(color *ColorSchemeTemplate, font *TypographyTemplate) str
 	}
 	b.WriteString("}")
 	return b.String()
+}
+
+// buildLayoutCSS 合并手写 CSS + 自动生成响应式 + 间距变量
+func buildLayoutCSS(layout *LayoutTemplate, presentationMode bool) string {
+	var parts []string
+
+	// 1. 手写 CSS (核心布局样式)
+	if layout.CSS != "" {
+		parts = append(parts, layout.CSS)
+	}
+
+	// 2. 间距变量注入 (黄金比例)
+	parts = append(parts, buildSpacingCSS(layout.Spacing))
+
+	// 3. 断点自动编译
+	parts = append(parts, buildResponsiveCSS(layout))
+
+	// 4. 元素级响应式
+	parts = append(parts, buildElementResponsiveCSS(layout))
+
+	return strings.Join(parts, "\n\n")
+}
+
+// buildSpacingCSS 从 YAML spacing 注入黄金比例 CSS 变量
+// 参考: Extra-Strength Responsive Grids 流体间距体系
+func buildSpacingCSS(spacing SpacingScale) string {
+	if spacing.Base <= 0 {
+		return ""
+	}
+	var b strings.Builder
+	b.WriteString("/* 间距系统 (黄金比例 φ=1.618) */\n:root {\n")
+	step := float64(spacing.Base)
+	for i := 1; i <= 12; i++ {
+		px := int(step + 0.5)
+		b.WriteString(fmt.Sprintf("  --space-step-%d: %dpx;\n", i, px))
+		step *= spacing.Ratio
+	}
+	for name, ref := range spacing.Semantic {
+		b.WriteString(fmt.Sprintf("  --space-%s: var(--%s);\n", name, ref))
+	}
+	b.WriteString("}")
+	return b.String()
+}
+
+// buildResponsiveCSS 从 YAML responsive[] 自动编译媒体查询
+// 覆盖: columns / safe_area / font_scale / spacing_scale
+func buildResponsiveCSS(layout *LayoutTemplate) string {
+	if len(layout.Responsive) == 0 {
+		return ""
+	}
+
+	className := layoutClassName(layout.ID)
+	var b strings.Builder
+	b.WriteString("/* 自动编译响应式断点 */\n")
+
+	for _, bp := range layout.Responsive {
+		if bp.MinWidth == 0 && bp.MaxWidth == 0 {
+			continue
+		}
+
+		// ── 媒体查询条件 ──
+		if bp.MaxWidth > 0 {
+			b.WriteString(fmt.Sprintf("@media (min-width: %dpx) and (max-width: %dpx) {\n", bp.MinWidth, bp.MaxWidth))
+		} else {
+			b.WriteString(fmt.Sprintf("@media (min-width: %dpx) {\n", bp.MinWidth))
+		}
+
+		// ── 栅格布局 ──
+		if bp.Columns != "" {
+			b.WriteString(fmt.Sprintf("  .%s { grid-template-columns: %s; }\n", className, bp.Columns))
+		}
+
+		// ── Stack (堆叠 + 控制顺序) ──
+		if bp.Stack {
+			b.WriteString(fmt.Sprintf("  .%s { grid-template-columns: 1fr; }\n", className))
+			for i, role := range bp.StackOrder {
+				elClass := fmt.Sprintf("%s__%s", className, elementCSSRole(role))
+				b.WriteString(fmt.Sprintf("  .%s { order: %d; }\n", elClass, i+1))
+			}
+		}
+
+		// ── 安全区域 ──
+		if len(bp.SafeArea) == 4 {
+			// 作用于 text-container
+			b.WriteString(fmt.Sprintf("  .%s__text { padding: %dpx %dpx %dpx %dpx; }\n",
+				className, bp.SafeArea[0], bp.SafeArea[1], bp.SafeArea[2], bp.SafeArea[3]))
+		}
+
+		// ── 字体缩放 ──
+		if bp.FontScale > 0 && bp.FontScale != 1.0 {
+			b.WriteString(fmt.Sprintf("  .%s { --bp-font-scale: %.2f; }\n", className, bp.FontScale))
+			b.WriteString(fmt.Sprintf("  .%s h1, .%s h2, .%s p { font-size: calc(1em * %.2f); }\n",
+				className, className, className, bp.FontScale))
+		}
+
+		// ── 隐藏元素 ──
+		for _, role := range bp.HideRoles {
+			elClass := fmt.Sprintf("%s__%s", className, elementCSSRole(role))
+			b.WriteString(fmt.Sprintf("  .%s { display: none !important; }\n", elClass))
+		}
+
+		b.WriteString("}\n")
+	}
+	return b.String()
+}
+
+// buildElementResponsiveCSS 从 Element.Responsive 编译元素级响应式
+func buildElementResponsiveCSS(layout *LayoutTemplate) string {
+	if len(layout.Responsive) == 0 {
+		return ""
+	}
+	className := layoutClassName(layout.ID)
+	var b strings.Builder
+	b.WriteString("/* 元素级响应式 */\n")
+
+	// 收集所有元素到拍平列表
+	var elements []Element
+	var walk func(elems []Element)
+	walk = func(elems []Element) {
+		for _, e := range elems {
+			elements = append(elements, e)
+			if len(e.Children) > 0 {
+				walk(e.Children)
+			}
+		}
+	}
+	walk(layout.Elements)
+
+	for _, el := range elements {
+		if len(el.Responsive) == 0 {
+			continue
+		}
+		elClass := fmt.Sprintf("%s__%s", className, elementCSSRole(el.Role))
+
+		for bpName, res := range el.Responsive {
+			// 找对应断点的尺寸
+			bp := findBreakpoint(layout.Responsive, bpName)
+			if bp == nil {
+				continue
+			}
+
+			// 媒体查询
+			if bp.MaxWidth > 0 {
+				b.WriteString(fmt.Sprintf("@media (min-width: %dpx) and (max-width: %dpx) {\n", bp.MinWidth, bp.MaxWidth))
+			} else {
+				b.WriteString(fmt.Sprintf("@media (min-width: %dpx) {\n", bp.MinWidth))
+			}
+
+			if res.Hide {
+				b.WriteString(fmt.Sprintf("  .%s { display: none !important; }\n", elClass))
+			}
+			if res.Order != 0 {
+				b.WriteString(fmt.Sprintf("  .%s { order: %d; }\n", elClass, res.Order))
+			}
+			if res.FontSize != "" {
+				b.WriteString(fmt.Sprintf("  .%s { font-size: %s; }\n", elClass, res.FontSize))
+			}
+			if len(res.Padding) == 4 {
+				b.WriteString(fmt.Sprintf("  .%s { padding: %dpx %dpx %dpx %dpx; }\n",
+					elClass, res.Padding[0], res.Padding[1], res.Padding[2], res.Padding[3]))
+			}
+
+			b.WriteString("}\n")
+		}
+	}
+	return b.String()
+}
+
+// layoutClassName 从布局 ID 生成 CSS 类名
+func layoutClassName(id string) string {
+	// hero-split-16-9 → layout-hero-split
+	// bento-grid-2x2 → layout-bento
+	// gallery-waterfall → layout-gallery
+	switch {
+	case len(id) >= 11 && id[:11] == "hero-split-":
+		return "layout-hero-split"
+	case len(id) >= 5 && id[:5] == "bento":
+		return "layout-bento"
+	case len(id) >= 7 && id[:7] == "gallery":
+		return "layout-gallery"
+	}
+	return "layout-" + id
+}
+
+// elementCSSRole 从 role 生成 CSS 类名片段
+func elementCSSRole(role string) string {
+	// image-container → image
+	// text-container → text
+	// card-icon → card-icon
+	// gallery-item → item
+	switch role {
+	case "image-container": return "image"
+	case "text-container":  return "text"
+	case "gallery-item":    return "item"
+	}
+	return role
+}
+
+// findBreakpoint 按名称查找断点
+func findBreakpoint(bps []BreakpointDef, name string) *BreakpointDef {
+	for _, bp := range bps {
+		if bp.Name == name {
+			return &bp
+		}
+	}
+	return nil
 }
 
 func buildFontImports(font *TypographyTemplate) string {

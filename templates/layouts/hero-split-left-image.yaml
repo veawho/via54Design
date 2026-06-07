@@ -101,6 +101,9 @@ elements:
         letter_spacing: "0.15em"
         text_transform: uppercase
         style: eyebrow
+        responsive:
+          phone:
+            hide: true
       - role: headline
         tag: h1
         font_size: "clamp(36px, 5vw, 88px)"

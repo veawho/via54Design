@@ -99,6 +99,17 @@ type Element struct {
 	Padding  []int     `yaml:"padding,omitempty"`    // [top, right, bottom, left]
 	MaxWidth string    `yaml:"max_width,omitempty"`
 	Children []Element `yaml:"children,omitempty"`
+	
+	// 元素级响应式 (key = breakpoint name: tv/desktop/tablet/phone)
+	Responsive map[string]ElementResponsive `yaml:"responsive,omitempty"`
+}
+
+type ElementResponsive struct {
+	Hide     bool   `yaml:"hide,omitempty"`       // 隐藏此元素
+	Order    int    `yaml:"order,omitempty"`       // flex/grid order
+	FontSize string `yaml:"font_size,omitempty"`   // 覆盖字号
+	Padding  []int  `yaml:"padding,omitempty"`     // 覆盖内边距
+	Columns  int    `yaml:"columns,omitempty"`      // 跨越列数
 }
 
 // ─── 以下保留不动 ───
