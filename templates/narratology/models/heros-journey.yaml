@@ -1,0 +1,62 @@
+# 英雄之旅 (Hero's Journey) — 简化四段式
+# 参考: Joseph Campbell's The Hero with a Thousand Faces
+id: heros-journey
+name:
+  en: "Hero's Journey"
+  zh: "英雄之旅 (简化四段)"
+  ja: "ヒーローズジャーニー"
+description:
+  en: "Simplified Hero's Journey. Ordinary → Call → Transformation → Return"
+  zh: "Joseph Campbell 英雄之旅简化版。日常→相遇→蜕变→回归"
+source: "Joseph Campbell's The Hero with a Thousand Faces"
+suitable_for: [品牌故事, 纪录片, 关于我们, 人物访谈]
+
+beats:
+  - id: ordinary_world
+    name:
+      en: "Ordinary World"
+      zh: "日常"
+    mood: calm
+    duration_weight: 0.25
+    duration_min: 5
+    voiceover_template: "每天，我们都..."
+
+  - id: call_to_adventure
+    name:
+      en: "Call to Adventure"
+      zh: "相遇"
+    mood: curious
+    duration_weight: 0.25
+    duration_min: 5
+    voiceover_template: "直到有一天..."
+
+  - id: transformation
+    name:
+      en: "Transformation"
+      zh: "蜕变"
+    mood: excited
+    duration_weight: 0.25
+    duration_min: 5
+    voiceover_template: "不一样了..."
+    sub_beats:
+      - id: struggle
+        name: {en: "Struggle", zh: "挑战"}
+        mood: tense
+        weight: 0.4
+      - id: breakthrough
+        name: {en: "Breakthrough", zh: "突破"}
+        mood: triumphant
+        weight: 0.6
+
+  - id: return
+    name:
+      en: "Return with Elixir"
+      zh: "回归"
+    mood: inspiring
+    duration_weight: 0.25
+    duration_min: 5
+    voiceover_template: "每一天..."
+    sfx: brand-stamp
+
+shot_types: [WIDE, MEDIUM, MEDIUM, CLOSE-UP, DETAIL, WIDE]
+camera_moves: [Static, Pan, Slow zoom, Dolly in, Static, Crane up]

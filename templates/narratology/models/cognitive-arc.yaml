@@ -1,0 +1,75 @@
+# 认知弧 (Cognitive Arc)
+# 参考: Instructional Design / Cognitive Load Theory
+id: cognitive-arc
+name:
+  en: "Cognitive Arc"
+  zh: "认知弧"
+  ja: "認知アーク"
+description:
+  en: "From unknown to understanding. Hook → Foundation → Core → Example → Extension → Summary"
+  zh: "从陌生到理解的教育叙事。开场→建立→核心→案例→延展→总结"
+source: "Instructional Design / Cognitive Load Theory (Sweller, 1988)"
+suitable_for: [科普讲解, 教程, 知识分享, TED风格]
+
+beats:
+  - id: hook
+    name:
+      en: "Hook"
+      zh: "开场钩子"
+    mood: curious
+    duration_weight: 0.08
+    duration_max: 30
+    voiceover_template: "你有没有想过..."
+
+  - id: foundation
+    name:
+      en: "Foundation"
+      zh: "建立认知基础"
+    mood: informative
+    duration_weight: 0.14
+    voiceover_template: "要理解这个，首先要知道..."
+
+  - id: core
+    name:
+      en: "Core Concept"
+      zh: "核心概念讲解"
+    mood: focused
+    duration_weight: 0.40
+    voiceover_template: "其实原理很简单..."
+    sub_beats:
+      - id: principle
+        name: {en: "Principle", zh: "原理"}
+        mood: focused
+        weight: 0.5
+      - id: analogy
+        name: {en: "Analogy", zh: "比喻"}
+        mood: warm
+        weight: 0.5
+
+  - id: example
+    name:
+      en: "Real-world Example"
+      zh: "实际应用案例"
+    mood: practical
+    duration_weight: 0.18
+    voiceover_template: "在实际生活中..."
+
+  - id: extension
+    name:
+      en: "Extension"
+      zh: "延展思考"
+    mood: insightful
+    duration_weight: 0.10
+    voiceover_template: "更有意思的是..."
+
+  - id: summary
+    name:
+      en: "Summary"
+      zh: "总结回顾"
+    mood: warm
+    duration_weight: 0.10
+    voiceover_template: "今天我们学到了三件事..."
+    sfx: chime
+
+shot_types: [WIDE, MEDIUM, CLOSE-UP, DETAIL, INFOGRAPHIC, MEDIUM, WIDE]
+camera_moves: [Static, Slow zoom, Static, Dolly in, Ken Burns, Pan, Static]

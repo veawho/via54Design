@@ -1,0 +1,56 @@
+# 三幕剧 (Three-Act Structure)
+# 参考: Aristotle's Poetics / Syd Field's Screenplay
+id: three-act
+name:
+  en: "Three-Act"
+  zh: "三幕剧"
+  ja: "三幕構成"
+description:
+  en: "Classic Hollywood narrative. Setup → Confrontation → Resolution"
+  zh: "经典好莱坞叙事结构。设问→解答→号召"
+source: "Aristotle's Poetics / Syd Field's Screenplay"
+suitable_for: [产品发布, 品牌广告, 促销视频, 产品Demo]
+
+beats:
+  - id: setup
+    name:
+      en: "Setup"
+      zh: "设问"
+    mood: mysterious
+    duration_weight: 0.2
+    duration_min: 4
+    voiceover_template: "是否曾经..."
+    transition: cross-fade
+
+  - id: confrontation
+    name:
+      en: "Confrontation"
+      zh: "解答"
+    mood: aspirational
+    duration_weight: 0.6
+    duration_min: 8
+    voiceover_template: "现在，有了..."
+    transition: slide-left
+    sub_beats:
+      - id: reveal
+        name: {en: "Reveal", zh: "亮相"}
+        mood: aspirational
+        weight: 0.5
+      - id: feature
+        name: {en: "Feature", zh: "功能"}
+        mood: confident
+        weight: 0.5
+
+  - id: resolution
+    name:
+      en: "Resolution"
+      zh: "号召"
+    mood: urgent
+    duration_weight: 0.2
+    duration_min: 4
+    voiceover_template: "立即..."
+    transition: fade-to-black
+    sfx: brand-stamp
+
+shot_types: [WIDE, MEDIUM, CLOSE-UP, DETAIL, MEDIUM, WIDE]
+camera_moves: [Static, Slow zoom, Dolly in, Static, Pan, Crane up]

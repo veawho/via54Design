@@ -75,6 +75,7 @@ type TemplateRegistry struct {
 	Layouts      []RegistryEntry `yaml:"layouts"`
 	ColorSchemes []RegistryEntry `yaml:"color_schemes"`
 	Typography   []RegistryEntry `yaml:"typography"`
+	Narratology  []RegistryEntry `yaml:"narratology"`
 	Combinations []Combination   `yaml:"combinations"`
 }
 

@@ -1,0 +1,93 @@
+# via54Design 叙事驱动视频模板
+# Educational Explain — 6段式科普讲解
+id: educational-explain-5min
+name:
+  zh: "科普讲解"
+  en: "Educational Explain"
+  ja: "教育解説"
+
+model: "认知弧 (Cognitive Arc) — 从陌生到理解"
+
+story_seed:
+  prompt: "一句话描述你想解释的概念"
+  example: "量子纠缠到底是什么？"
+  expand_to: "5分钟的科普讲解视频，让零基础观众也能听懂"
+
+narration:
+  known: "观众已经知道什么？"
+  gap: "他们的理解缺口在哪里？"
+  bridge: "用什么比喻/例子来连接？"
+  insight: "讲完后观众应该带走什么认知？"
+
+voiceover_script:
+  format: "fountain screenplay markdown"
+  example: |
+    **SCENE 1: 开场钩子**
+    你有没有想过，两个粒子可以在宇宙的两端瞬间感应到彼此？
+
+    **SCENE 2: 问题引入**
+    这就是爱因斯坦所说的"鬼魅般的超距作用"...
+
+arc:
+  - act: "开场·钩子"
+    duration: 20
+    beats:
+      - time: 0
+        event: "引人入胜的问题/现象"
+        voiceover: "你有没有想过..."
+        mood: curious
+
+  - act: "建立·认知基础"
+    duration: 40
+    beats:
+      - time: 20
+        event: "必要术语解释/背景知识"
+        voiceover: "要理解这个，首先要知道..."
+        mood: informative
+
+  - act: "核心·概念讲解"
+    duration: 120
+    beats:
+      - time: 60
+        event: "核心概念可视化"
+        voiceover: "其实原理很简单..."
+        mood: focused
+      - time: 100
+        event: "用比喻帮助理解"
+        voiceover: "你可以把它想象成..."
+        mood: warm
+      - time: 140
+        event: "深入一点"
+        voiceover: "更进一步说..."
+        mood: confident
+
+  - act: "案例·实际应用"
+    duration: 60
+    beats:
+      - time: 180
+        event: "真实案例/场景演示"
+        voiceover: "在实际生活中..."
+        mood: practical
+
+  - act: "延展·深度思考"
+    duration: 40
+    beats:
+      - time: 240
+        event: "进阶讨论/开放问题"
+        voiceover: "有意思的是..."
+        mood: insightful
+
+  - act: "收尾·总结回顾"
+    duration: 20
+    beats:
+      - time: 280
+        event: "核心要点回顾（3点内）"
+        voiceover: "今天我们学到了三件事..."
+        mood: warm
+
+export:
+  format: mp4-25fps
+  resolution: [1920, 1080]
+  bgm: bgm-educational.mp3
+  subtitles: true
+  voiceover: true

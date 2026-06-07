@@ -1,0 +1,87 @@
+# via54Design 叙事框架
+# 讲故事指南 — 从一句话到完整视频
+# 参考: huobao-drama (⭐12623) 一句话生成短剧  +  Fountain screenplay format
+
+model: "叙事脚手架 (Narrative Scaffolding)"
+
+pipeline: |
+  人类写一句话
+    ↓
+  Step 1: AI 扩展为故事大纲 (基于选定的叙事模型)
+    ↓
+  Step 2: 人类选择方向 + 调整
+    ↓
+  Step 3: AI 生成剧本 (Fountain 格式)
+    ↓
+  Step 4: AI 生成分镜 (shot-by-shot)
+    ↓
+  Step 5: via54 生成 HTML 动画 + 导出视频
+
+available_models:
+  - id: three-act
+    name: "三幕剧"
+    description: "经典好莱坞叙事结构。设问→解答→号召，适合产品发布、品牌广告"
+    source: "Aristotle's Poetics / Syd Field's Screenplay"
+    beats: [setup, confrontation, resolution]
+    suitable_for: [launch, ad, promo]
+
+  - id: heros-journey
+    name: "英雄之旅 (简化四段)"
+    description: "Campbell's 英雄之旅简化版。日常→相遇→蜕变→回归，适合品牌故事"
+    source: "Joseph Campbell's The Hero with a Thousand Faces"
+    beats: [ordinary_world, call_to_adventure, transformation, return]
+    suitable_for: [brand_story, documentary, about_us]
+
+  - id: cognitive-arc
+    name: "认知弧"
+    description: "从陌生到理解的教育叙事。开场→建立→核心→案例→延展→收尾"
+    source: " instructional design / cognitive load theory"
+    beats: [hook, foundation, core, example, extension, summary]
+    suitable_for: [educational, tutorial, explainer]
+
+  - id: problem-solution
+    name: "问题-解法"
+    description: "直截了当的销售叙事。痛点→方案→证明→行动"
+    source: "direct response marketing"
+    beats: [pain, solution, proof, action]
+    suitable_for: [sales, demo, landing_page]
+
+# ── Fountain 剧本格式规范 ──
+fountain_spec:
+  reference: "https://fountain.io"
+  key_elements:
+    scene_heading: "**场景编号: 场景名称**  (以 ** 开头)"
+    action: "场景描述文字"
+    character: "角色名（说话者）"
+    dialogue: "对白内容"
+    parenthetical: "(动作/语气说明)"
+    transition: "> 转场方式"
+  example: |
+    **SCENE 1: 产品首次亮相**
+    黑屏渐渐亮起，产品以特写出现。
+    背景音乐开始。
+
+    旁白
+    (温柔而坚定)
+    终于，有一款产品真正理解你。
+
+    > 切至 SCENE 2
+
+story_seed_examples:
+  - input: "我们做了一个AI翻译机"
+    expand:
+      model: three-act
+      outline: |
+        第一幕：跨国会议的尴尬场景 → 第二幕：AI翻译机出现，实时翻译 →
+        第三幕：团队协作无国界，品牌Slogan
+      script_lines: 8
+      duration: 30s
+
+  - input: "每个⼈都可以成为创作者"
+    expand:
+      model: heros-journey
+      outline: |
+        日常：普通人想创作却不知从何开始 → 相遇：发现创作工具 →
+        蜕变：完成第一个作品 → 回归：创作成为日常
+      script_lines: 12
+      duration: 60s

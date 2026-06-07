@@ -53,6 +53,10 @@ func (r *Registry) ResolveTypography(id string) (string, error) {
 	return r.resolve(r.Data.Typography, id)
 }
 
+func (r *Registry) ResolveNarratology(id string) (string, error) {
+	return r.resolve(r.Data.Narratology, id)
+}
+
 func (r *Registry) resolve(entries []RegistryEntry, id string) (string, error) {
 	for _, e := range entries {
 		if e.ID == id {
@@ -70,8 +74,13 @@ func (r *Registry) resolve(entries []RegistryEntry, id string) (string, error) {
 
 func (r *Registry) ListAll() map[string][]RegistryEntry {
 	return map[string][]RegistryEntry{
-		"layouts":       r.Data.Layouts,
-		"color_schemes": r.Data.ColorSchemes,
-		"typography":    r.Data.Typography,
+		"layouts":        r.Data.Layouts,
+		"color_schemes":  r.Data.ColorSchemes,
+		"typography":     r.Data.Typography,
+		"narratology":    r.Data.Narratology,
 	}
+}
+
+func (r *Registry) ListNarratology() []RegistryEntry {
+	return r.Data.Narratology
 }

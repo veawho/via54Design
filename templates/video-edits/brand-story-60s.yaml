@@ -1,0 +1,88 @@
+# via54Design 叙事驱动视频模板
+# Brand Story — 英雄之旅四段式品牌故事
+id: brand-story-60s
+name:
+  zh: "品牌故事"
+  en: "Brand Story"
+  ja: "ブランドストーリー"
+
+model: "英雄之旅 (Hero's Journey) 简化四段式"
+
+story_seed:
+  prompt: "一句话描述你的品牌想改变什么"
+  example: "我们相信每个人都可以成为创作者"
+  expand_to: "60秒品牌故事视频"
+
+narration:
+  ordinary_world: "用户的日常是怎样的？"
+  call_to_adventure: "什么契机让改变发生？"
+  transformation: "品牌带来的改变是什么？"
+  return_with_elixir: "用户获得了什么新能力？"
+
+arc:
+  - act: "第一幕·日常"
+    duration: 10
+    beats:
+      - time: 0
+        event: "用户的日常生活场景"
+        voiceover: "每天，我们都在..."
+        mood: calm
+      - time: 5
+        event: "痛点/缺失感浮现"
+        voiceover: "但总感觉少了点什么"
+        mood: reflective
+
+  - act: "第二幕·相遇"
+    duration: 20
+    beats:
+      - time: 10
+        event: "品牌出现/产品亮相"
+        voiceover: "直到有一天..."
+        mood: curious
+      - time: 15
+        event: "品牌理念阐述"
+        voiceover: "我们相信，每个人都有..."
+        mood: warm
+      - time: 22
+        event: "用户第一次使用产品的瞬间"
+        voiceover: "那一刻，不一样了"
+        mood: excited
+      - time: 26
+        event: "产品核心价值展示"
+        voiceover: "因为你值得拥有..."
+        mood: confident
+
+  - act: "第三幕·蜕变"
+    duration: 20
+    beats:
+      - time: 30
+        event: "用户生活发生的变化"
+        voiceover: "现在，你可以..."
+        mood: aspirational
+      - time: 38
+        event: "具体场景/案例展示"
+        voiceover: "就像他/她一样"
+        mood: warm
+      - time: 45
+        event: "品牌理念升华"
+        voiceover: "因为我们的使命是..."
+        mood: inspiring
+
+  - act: "第四幕·回归"
+    duration: 10
+    beats:
+      - time: 50
+        event: "用户新日常"
+        voiceover: "每一天，都充满可能"
+        mood: happy
+      - time: 55
+        event: "Logo + Slogan + CTA"
+        voiceover: "XX — 你的创作伙伴"
+        mood: inspiring
+        sfx: brand-stamp
+
+export:
+  format: mp4-25fps
+  resolution: [1920, 1080]
+  bgm: bgm-ad.mp3
+  subtitles: true

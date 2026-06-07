@@ -56,6 +56,8 @@ xdg-open demo.html # Linux
 | **转 GIF** | "把视频转成 GIF: via54 media convert demo.mp4" |
 | **取素材图** | "帮我找一些鹦鹉的公共领域插画: via54 media fetch --query parrot" |
 | **录视频** | "把这个 HTML 录成 30 秒 1080p 视频: via54 export render demo.html --duration 30" |
+| **讲故事** | "用 via54Design 帮我构思一个品牌故事: via54 narrate --seed '让每个人都能创作' --model heros-journey" |
+| **全链路** | "把我的一句话想法做成多场景动画: via54 narrate --seed '一句话' --format json | via54 generate --from-narrative /dev/stdin" |
 | **转 PDF** | "把这个页面导出为 PDF: via54 export pdf demo.html" |
 | **语音合成** | "把这段文字转成语音: via54 export tts --text '你好世界' --out hello.mp3" |
 | **列出模板** | "看看有哪些设计模板可以用: via54 list" |
@@ -72,6 +74,34 @@ xdg-open demo.html # Linux
   via54 export render brand.html --duration 30
   via54 media add-music brand.mp4 --mood=tech
 ```
+
+### 叙事管线示例
+
+```
+"帮我构思一个60秒的品牌故事，然后做成多场景动画"
+
+→ 实际执行的命令:
+  # Step 1: 叙事脚手架
+  via54 narrate --seed "让每个人都能创作" --model heros-journey --duration 60 --format json --output scaffold.json
+
+  # Step 2: 多场景 HTML 动画
+  via54 generate --from-narrative scaffold.json --output story.html
+
+  # Step 3 (可选): 录制视频
+  via54 export render story.html --duration 60
+
+  # Step 4 (可选): 配乐
+  via54 media add-music story.mp4 --mood=ad
+```
+
+叙事引擎支持 4 种模型，以 YAML 模板定义，可自由扩展：
+
+| 模型 | 中文名 | 节拍 | 适用场景 |
+|------|--------|------|----------|
+| `three-act` | 三幕剧 | 设问 → 解答 → 号召 | 产品发布、品牌广告 |
+| `heros-journey` | 英雄之旅 | 日常 → 相遇 → 蜕变 → 回归 | 品牌故事、纪录片 |
+| `cognitive-arc` | 认知弧 | 钩子 → 基础 → 核心 → 案例 → 延展 → 总结 | 科普、教程 |
+| `problem-solution` | 问题-解法 | 痛点 → 方案 → 证明 → 行动 | 销售视频、Demo |
 
 ### 你的随意挥毫，都可以图形矢量化（LOGO、标题、矢量插画）
 
@@ -220,6 +250,16 @@ via54 media fetch --query "关键词" --out ./img --count 3
 via54 media trace --input photo.jpg --output logo.svg   # 照片→SVG矢量化
 via54 media trace --input logo-sketch.jpg --output logo.svg   # 手绘Logo→SVG
 via54 media trace --input handwriting.jpg --output title.svg  # 书法/签名→SVG
+
+# 叙事引擎 (Narrate)
+via54 narrate --list                                          # 查看4种叙事模型
+via54 narrate --seed "一句话" --model three-act                # 输出叙事脚手架 (markdown)
+via54 narrate --seed "..." --model heros-journey --duration 60 # 指定时长
+via54 narrate --seed "..." --format json --output scaffold.json # 输出JSON (供generate消费)
+via54 narrate --seed "..." --model cognitive-arc              # 四选一: three-act / heros-journey / cognitive-arc / problem-solution
+
+# 叙事驱动生成 (全管线)
+via54 narrate --seed "一句话想法" --format json | via54 generate --from-narrative /dev/stdin
 
 # 导出
 via54 export render input.html --duration 30 --width 1920 --height 1080

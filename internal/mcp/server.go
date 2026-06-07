@@ -8,6 +8,7 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/veawho/via54Design/internal/media"
+	"github.com/veawho/via54Design/internal/narrate"
 	"github.com/veawho/via54Design/internal/pattern"
 	"github.com/veawho/via54Design/internal/quality"
 	"github.com/veawho/via54Design/internal/template"
@@ -58,6 +59,13 @@ func (s *Server) registerTools() {
 		mcp.WithString("input", mcp.Required(), mcp.Description("Input image path (JPG/PNG)")),
 		mcp.WithString("output", mcp.Description("Output SVG path (optional)")),
 	), s.handleTrace)
+
+	s.mcp.AddTool(mcp.NewTool("narrate",
+		mcp.WithDescription("Generate narrative scaffold from a one-sentence story seed"),
+		mcp.WithString("seed", mcp.Required(), mcp.Description("One-sentence story seed")),
+		mcp.WithString("model", mcp.Description("Narrative model ID (default: three-act)")),
+		mcp.WithNumber("duration", mcp.Description("Target video duration in seconds (default: 30)")),
+	), s.handleNarrate)
 }
 
 func (s *Server) handleCompose(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -151,4 +159,23 @@ func getArgDefault(args any, key string, def string) string {
 		if v, ok := m[key]; ok { if vt, ok := v.(string); ok && vt != "" { return vt } }
 	}
 	return def
+}
+
+func (s *Server) handleNarrate(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	seed := getArg[string](req.Params.Arguments, "seed")
+	model := getArgDefault(req.Params.Arguments, "model", "three-act")
+	durRaw := getArg[float64](req.Params.Arguments, "duration")
+	dur := int(durRaw)
+	if dur <= 0 { dur = 30 }
+
+	scaffold, err := narrate.GenerateScaffold(seed, model, dur, s.baseDir)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Narrate failed: %v", err)), nil
+	}
+
+	md, err := scaffold.RenderMarkdown()
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Render failed: %v", err)), nil
+	}
+	return mcp.NewToolResultText(md), nil
 }

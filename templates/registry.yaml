@@ -287,30 +287,48 @@ animations:
     category: animation/interaction
     file: templates/animations/card-hover-lift.yaml
 
+narratology:
+  - id: storytelling-guide
+    name: 叙事框架总纲 — 从一句话到完整视频
+    category: narratology/guide
+    file: templates/narratology/storytelling-guide.yaml
+
+  - id: storyboard-template
+    name: 分镜模板 — shot-by-shot 标准格式
+    category: narratology/template
+    file: templates/narratology/storyboard-template.md
+
+  # 叙事模型 (由 via54 narrate 引擎直接加载)
+  - id: three-act
+    name: 三幕剧 — 设问→解答→号召
+    category: narratology/model
+    tags: [产品发布, 品牌广告, 促销视频]
+    file: templates/narratology/models/three-act.yaml
+  - id: heros-journey
+    name: 英雄之旅 — 日常→相遇→蜕变→回归
+    category: narratology/model
+    tags: [品牌故事, 纪录片, 关于我们]
+    file: templates/narratology/models/heros-journey.yaml
+  - id: cognitive-arc
+    name: 认知弧 — 开场→核心→收尾
+    category: narratology/model
+    tags: [科普讲解, 教程, 知识分享]
+    file: templates/narratology/models/cognitive-arc.yaml
+  - id: problem-solution
+    name: 问题-解法 — 痛点→方案→证明→行动
+    category: narratology/model
+    tags: [销售视频, 产品Demo, 着陆页]
+    file: templates/narratology/models/problem-solution.yaml
 video_edits:
-  - id: launch-film-30s
-    name: 30秒品牌宣传片（苹果发布会级）
-    version: "1.0.0"
-    category: video/launch-film
-    file: templates/video-edits/launch-film-30s.yaml
-
-  - id: educational-5min
-    name: 5分钟科普解说视频
-    version: "1.0.0"
-    category: video/educational
-    file: templates/video-edits/educational-5min.yaml
-
-  - id: product-demo-60s
-    name: 60秒产品功能演示
-    version: "1.0.0"
-    category: video/product-demo
-    file: templates/video-edits/product-demo-60s.yaml
-
-## 组合规则
-
-# 布局 × 配色 × 字体 × 动画 = 完整页面
-# 示例组合推荐：
-
+  - id: product-launch-30s
+    name: 产品发布 — 三幕式30秒品牌广告
+    file: templates/video-edits/product-launch-30s.yaml
+  - id: brand-story-60s
+    name: 品牌故事 — 英雄之旅60秒品牌叙事
+    file: templates/video-edits/brand-story-60s.yaml
+  - id: educational-explain-5min
+    name: 科普讲解 — 认知弧5分钟教育视频
+    file: templates/video-edits/educational-explain-5min.yaml
 combinations:
   - name: 暖色编辑Hero
     layout: hero-split-left-image

@@ -1,0 +1,76 @@
+# via54Design 叙事驱动视频模板
+# Product Launch — 三幕式品牌发布
+id: product-launch-30s
+name:
+  zh: "产品发布"
+  en: "Product Launch"
+  ja: "製品発表"
+
+model: "三幕剧 (Three-Act Structure)"
+
+story_seed:
+  prompt: "一句话描述你的产品和要解决的问题"
+  example: "我们做了一个AI翻译机，能让跨国会议不再需要人工翻译"
+  expand_to: "完整的30秒发布视频"
+
+narration:
+  hook: "用户正在经历什么痛苦？"
+  conflict: "现有方案为什么不够好？"
+  revelation: "产品如何优雅解决？"
+  vision: "用了之后世界有什么不同？"
+
+arc:
+  - act: "第一幕·设问"
+    duration: 6
+    beats:
+      - time: 0
+        event: "黑屏/极简视觉"
+        voiceover: "是否曾经..."
+        mood: mysterious
+      - time: 3
+        event: "问题场景浮现"
+        voiceover: "因为语言不通而错过重要机会？"
+        mood: empathetic
+    transitions: cross-fade 0.5s
+
+  - act: "第二幕·解答"
+    duration: 18
+    beats:
+      - time: 6
+        event: "产品首次亮相"
+        voiceover: "现在，有了XX"
+        mood: aspirational
+        sfx: logo-reveal
+      - time: 10
+        event: "核心功能展示"
+        voiceover: "实时翻译，精准到每一个术语"
+        mood: confident
+      - time: 16
+        event: "用户场景演示"
+        voiceover: "跨国团队协作，从未如此简单"
+        mood: warm
+      - time: 20
+        event: "数据/效果展示"
+        voiceover: "效率提升300%"
+        mood: excited
+    transitions: slide-left 0.5s
+
+  - act: "第三幕·号召"
+    duration: 6
+    beats:
+      - time: 24
+        event: "品牌slogan+logo"
+        voiceover: "XX — 让世界听懂你"
+        mood: inspiring
+        sfx: brand-stamp
+      - time: 28
+        event: "CTA 行动号召"
+        voiceover: "立即体验"
+        mood: urgent
+    transitions: fade-to-black 1s
+
+export:
+  format: mp4-25fps
+  resolution: [1920, 1080]
+  bgm: bgm-tech.mp3
+  subtitles: true

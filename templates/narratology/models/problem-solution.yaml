@@ -1,0 +1,62 @@
+# 问题-解法 (Problem-Solution)
+# 参考: Direct Response Marketing (John Caples, Eugene Schwartz)
+id: problem-solution
+name:
+  en: "Problem-Solution"
+  zh: "问题-解法"
+  ja: "問題解決"
+description:
+  en: "Direct response narrative. Pain → Solution → Proof → Action"
+  zh: "直销式叙事。痛点→方案→证明→行动"
+source: "Direct Response Marketing (John Caples / Eugene Schwartz)"
+suitable_for: [销售视频, 产品Demo, 着陆页, 广告转化]
+
+beats:
+  - id: pain
+    name:
+      en: "Pain Point"
+      zh: "痛点"
+    mood: frustrated
+    duration_weight: 0.25
+    duration_min: 5
+    voiceover_template: "你是否受够了..."
+
+  - id: solution
+    name:
+      en: "Solution"
+      zh: "方案"
+    mood: hopeful
+    duration_weight: 0.25
+    duration_min: 5
+    voiceover_template: "现在有更好的方式..."
+
+  - id: proof
+    name:
+      en: "Proof"
+      zh: "证明"
+    mood: confident
+    duration_weight: 0.30
+    duration_min: 6
+    voiceover_template: "数据证明..."
+    sub_beats:
+      - id: data
+        name: {en: "Data", zh: "数据"}
+        mood: confident
+        weight: 0.5
+      - id: testimonial
+        name: {en: "Testimonial", zh: "用户证言"}
+        mood: warm
+        weight: 0.5
+
+  - id: action
+    name:
+      en: "Call to Action"
+      zh: "行动"
+    mood: urgent
+    duration_weight: 0.20
+    duration_min: 4
+    voiceover_template: "现在就..."
+    sfx: click
+
+shot_types: [CLOSE-UP, MEDIUM, DETAIL, INFOGRAPHIC, WIDE, CLOSE-UP]
+camera_moves: [Dolly in, Static, Ken Burns, Static, Crane up, Zoom in]
