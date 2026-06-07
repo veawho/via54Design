@@ -1,3 +1,6 @@
-chore: rename binary huashu -> via54
+chore: remove all huashu/花叔 references
 
-All help texts, build script, docs updated.
+Replaced 11 references across 12 files:
+- huashu-design -> via54Design
+- 花叔Design -> via54Design
+- author: huashu-design -> author: via54

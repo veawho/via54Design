@@ -1,5 +1,5 @@
 # 结构化模板格式规范 v1.0
-> huashu-design 二次开发 — 模板系统核心规范
+> via54Design — 模板系统核心规范
 > 目标：将设计模式从「散文描述」转化为「结构化数据」，实现确定性执行 + 版本化演进
 
 ## 设计原则
@@ -30,7 +30,7 @@ id: hero-split-left-image
 name: 左右分割式Hero（左图右文）
 version: "1.0.0"
 created: 2026-06-07
-author: huashu-design
+author: via54
 category: layout/hero
 tags: [hero, split, editorial, image-left, full-bleed]
 
