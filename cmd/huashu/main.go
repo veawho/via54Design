@@ -36,7 +36,7 @@ func main() {
 }
 
 func help() {
-	fmt.Println("via54Design — 结构化设计模板引擎")
+	fmt.Println("via54 — 设计模板引擎 (via54Design)")
 	fmt.Println()
 	fmt.Println("用法:")
 	fmt.Println("  serve             启动 MCP Server (stdio)")
@@ -142,7 +142,7 @@ func cmdList() {
 
 // ─── Media (Shell+Python 迁移) ───
 func cmdMedia() {
-	if len(os.Args) < 3 { fmt.Fprintln(os.Stderr, "用法: huashu media [add-music|convert|fetch]"); os.Exit(1) }
+	if len(os.Args) < 3 { fmt.Fprintln(os.Stderr, "用法: via54 media [add-music|convert|fetch]"); os.Exit(1) }
 	switch os.Args[2] {
 	case "add-music":
 		fs := flag.NewFlagSet("add-music", flag.ExitOnError)
@@ -184,7 +184,7 @@ func cmdMedia() {
 
 // ─── Export (JS 迁移) ───
 func cmdExport() {
-	if len(os.Args) < 3 { fmt.Fprintln(os.Stderr, "用法: huashu export [render|pdf|tts]"); os.Exit(1) }
+	if len(os.Args) < 3 { fmt.Fprintln(os.Stderr, "用法: via54 export [render|pdf|tts]"); os.Exit(1) }
 	switch os.Args[2] {
 	case "render":
 		fs := flag.NewFlagSet("render", flag.ExitOnError)

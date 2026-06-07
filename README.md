@@ -20,29 +20,48 @@
 │   → YAML 模板        │ ← 结构化、可复用、可版本化
 ├──────────────────────┤
 │   Go 核心引擎        │ ← 单二进制 MCP Server + CLI
-│   (template-applier) │
-├──────────────────────┤
-│   Shell 媒体管线      │ ← ffmpeg + Playwright（不改）
+│   (12 MB, 13 命令)   │
 ├──────────────────────┤
 │   MCP Server          │ ← 兼容 Claude Desktop / Cursor / Copilot / Hermes
 └──────────────────────┘
 ```
+
+## 命令
+
+```bash
+# 设计模板
+via54 generate --layout hero-split --color warm-editorial --font serif-sans --title "提案" --output output.html
+via54 quality --html output.html
+via54 pattern --html output.html --name "项目名"
+via54 list
+
+# 媒体管线
+via54 media fetch --query "Edward Lear parrot" --out ./img
+via54 media add-music input.mp4 --mood=tech
+via54 media convert input.mp4
+
+# 导出
+via54 export render input.html --duration 30
+via54 export pdf input.html
+via54 export tts --text "你好" --out voice.mp3
+
+# MCP Server
+via54 serve
+```
+
+## 语言
+
+| 语言 | 用途 | 文件数 |
+|------|------|--------|
+| Go | 核心引擎、CLI、MCP、媒体管线、导出 | 13 |
+| Rust | WASM 高速模板引擎（可选编译） | 7 |
+| JavaScript | PPTX 导出（唯一残留） | 3 |
 
 ## 许可
 
 双许可：**MIT OR AGPL-3.0**
 
 - `templates/` YAML 模板：MIT
-- `scripts/` Shell 脚本：MIT
+- `scripts/` JS/Shell 脚本：MIT
 - `internal/` Go 源代码：AGPL-3.0
-- `references/` 文档：CC BY 4.0
-
-## 快速开始
-
-```bash
-# MCP Server 模式（推荐）
-go run ./cmd/huashu serve
-
-# CLI 模式
-go run ./cmd/huashu generate --layout hero-split --color warm-editorial --font serif-sans
-```
+- `internal/wasm/` Rust 源代码：AGPL-3.0

@@ -17,9 +17,9 @@
 
 | 旧文件 | 迁移目标 | 新命令 |
 |--------|----------|--------|
-| add-music.sh → | `internal/media/media.go` → | `huashu media add-music` |
-| convert-formats.sh → | `internal/media/media.go` → | `huashu media convert` |
-| fetch_images.py → | `internal/media/fetch.go` → | `huashu media fetch` |
-| render-video.js → | `internal/export/render.go` → | `huashu export render` |
-| tts-doubao.mjs → | `internal/export/tts.go` → | `huashu export tts` |
-| verify.py → | `internal/quality/checker.go` → | `huashu quality` |
+| add-music.sh → | `internal/media/media.go` → | `via54 media add-music` |
+| convert-formats.sh → | `internal/media/media.go` → | `via54 media convert` |
+| fetch_images.py → | `internal/media/fetch.go` → | `via54 media fetch` |
+| render-video.js → | `internal/export/render.go` → | `via54 export render` |
+| tts-doubao.mjs → | `internal/export/tts.go` → | `via54 export tts` |
+| verify.py → | `internal/quality/checker.go` → | `via54 quality` |

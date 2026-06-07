@@ -14,8 +14,8 @@ echo "=== via54Design v$VERSION 跨平台编译 ==="
 build() {
     local GOOS="$1" GOARCH="$2" ext=""
     [ "$GOOS" = "windows" ] && ext=".exe"
-    local NAME="via54Design-${GOOS}-${GOARCH}"
-    local BINARY="${OUTDIR}/${NAME}/huashu${ext}"
+    local NAME="via54-${GOOS}-${GOARCH}"
+    local BINARY="${OUTDIR}/${NAME}/via54${ext}"
 
     mkdir -p "$(dirname "$BINARY")"
     echo "  → ${NAME}..."

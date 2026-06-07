@@ -1,0 +1,3 @@
+chore: rename binary huashu -> via54
+
+All help texts, build script, docs updated.
