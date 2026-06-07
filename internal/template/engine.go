@@ -21,6 +21,7 @@ package template
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"gopkg.in/yaml.v3"
 )
@@ -95,12 +96,14 @@ func buildCSSVariables(color *ColorSchemeTemplate, font *TypographyTemplate) str
 			b.WriteString(fmt.Sprintf("  --%s: %s;\n", item.Role, item.Hex))
 		}
 	} else if color.Colors != nil {
-		for role, hex := range color.Colors {
-			b.WriteString(fmt.Sprintf("  --%s: %s;\n", role, hex))
+		keys := sortedKeys(color.Colors)
+		for _, role := range keys {
+			b.WriteString(fmt.Sprintf("  --%s: %s;\n", role, color.Colors[role]))
 		}
 	}
-	for name, size := range font.Sizes {
-		b.WriteString(fmt.Sprintf("  --size-%s: %s;\n", name, size))
+	keys := sortedKeys(font.Sizes)
+	for _, name := range keys {
+		b.WriteString(fmt.Sprintf("  --size-%s: %s;\n", name, font.Sizes[name]))
 	}
 	b.WriteString("}")
 	return b.String()
@@ -141,8 +144,9 @@ func buildSpacingCSS(spacing SpacingScale) string {
 		b.WriteString(fmt.Sprintf("  --space-step-%d: %dpx;\n", i, px))
 		step *= spacing.Ratio
 	}
-	for name, ref := range spacing.Semantic {
-		b.WriteString(fmt.Sprintf("  --space-%s: var(--%s);\n", name, ref))
+	keys := sortedKeys(spacing.Semantic)
+	for _, name := range keys {
+		b.WriteString(fmt.Sprintf("  --space-%s: var(--%s);\n", name, spacing.Semantic[name]))
 	}
 	b.WriteString("}")
 	return b.String()
@@ -515,4 +519,12 @@ func galleryBodyHTML() string {
 
 func (r *GenerationResult) SaveToFile(path string) error {
 	return os.WriteFile(path, []byte(r.HTML), 0644)
+}
+
+// sortedKeys 返回 map 的排序后 keys，保证遍历确定性
+func sortedKeys[K string, V any](m map[K]V) []K {
+	keys := make([]K, 0, len(m))
+	for k := range m { keys = append(keys, k) }
+	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+	return keys
 }
