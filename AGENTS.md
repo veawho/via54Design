@@ -37,11 +37,60 @@
 | **Continue.dev** | `AGENTS.md` / `.continuerc.json` | ✅ 兼容 |
 | **Aider** | `CONVENTIONS.md` (软链接) | ✅ 可手动链接 |
 | **Codex CLI** | `AGENTS.md` | ✅ 兼容 |
+| **Hermes Agent** | `SOUL.md` | ✅ 专用灵魂定义 |
+| **OpenClaw** | `agent_routing.yaml` + `kanban` | ✅ 多Agent编排层 |
 | **CrewAI / AutoGen / LangGraph** | 系统提示词 / Agent 定义 | 🔧 需复制到 Agent 配置 |
 
 ---
 
 ## 与 Agent 框架集成
+
+### Hermes Agent (主Agent → OpenClaw 编排层)
+
+Hermes Agent 是 via54Design 的默认开发环境。集成方式：
+
+```bash
+# 1. SOUL.md 自动注入 system prompt（项目根部自动发现）
+# 2. 工具调用: 通过 terminal 执行 via54 CLI
+cd /c/Users/via54/AppData/Local/Temp/via54Design
+./via54.exe prompt --scene "..." --platform midjourney
+
+# 3. 子Agent派单: 通过 lab_dispatch.py 路由到对应lab
+python ~/.hermes/bin/lab_dispatch.py prdlab "Run via54 stress test"
+
+# 4. cron 任务自动化
+# 在 Hermes cron jobs.json 中注册定时生成任务
+```
+
+**SOUL.md** 位于项目根部，Hermes 自动发现并注入。内容涵盖:
+- 核心身份 + 行为准则
+- 技术边界 + 关键约束
+- 常用工作流 + 项目状态
+
+### OpenClaw (多Agent编排层)
+
+OpenClaw 是 Hermes 的多 Agent 编排层，管理 7 lab + 6 template agents。
+
+```yaml
+# agent_routing.yaml 示例 (OpenClaw 路由表)
+via54-design:
+  description: "via54Design 设计模板引擎"
+  workdir: "/c/Users/via54/AppData/Local/Temp/via54Design"
+  tools: [terminal, file, web]
+  triggers:
+    - "via54"
+    - "prompt生成"
+    - "设计模板"
+```
+
+通过 `kanban` 跨 Agent 协作:
+```bash
+# 跨Agent任务分配
+python ~/.hermes/bin/kanban create \
+  --task "为via54Design添加Flux平台" \
+  --assignee prdlab \
+  --context "templates/prompts/flux.yaml already exists, need Go command update"
+```
 
 ### CrewAI (多Agent编排)
 ```python
