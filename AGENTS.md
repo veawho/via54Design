@@ -1,0 +1,161 @@
+# via54Design — AI 工作上下文
+
+> 版本: v2.0 | 最后更新: 2026-06-08
+> 由 CLAUDE.md 迁移至此。所有 AI 工具在项目根目录发现此文件时会自动加载。
+
+---
+
+## 项目定位
+
+**via54Design** — 把人类的审美判断力固化为结构化 YAML 模板，用 Go 核心引擎确定性执行。
+
+不是设计工具，是 **设计模板引擎 + 叙事引擎 + 媒体管线**。CLI 优先，MCP Server 第二。
+
+---
+
+## 谁在开发
+
+| 角色 | 身份 | 职责 |
+|------|------|------|
+| **巫师叔叔 (via54)** | 4A产品策略总监 | 设计决策、审美判断、YAML模板编写 |
+| **AI助手** | 开发助手 | Go代码实现、Shell脚本、测试、文档 |
+
+**关键关系**: 人类提供灵感种子，AI结构化扩展。循环: 人写一句 → AI脚手架 → 人确认 → AI生成。
+
+---
+
+## 技术栈
+
+| 层 | 语言 | 用途 | 外部依赖 |
+|----|------|------|---------|
+| 核心引擎 | **Go** | CLI + MCP Server + 模板引擎 + 质量门禁 | 仅 `mcp-go` + `yaml.v3` |
+| LLM管道 | **Python 3.11+** | 提示词扩展、i18n翻译、反向图片分析 | 零外部依赖（stdlib only） |
+| 设计模板 | **YAML** | 布局/配色/字体/叙事/提示词 | 纯数据文件 |
+| 媒体管线 | **Shell** | ffmpeg + Playwright | 系统工具 |
+
+---
+
+## 目录结构
+
+```
+via54Design/
+├── cmd/
+│   ├── via54/          # CLI 入口 (13个子命令)
+│   └── mcp-server/     # MCP Server 入口
+├── internal/
+│   ├── export/         # 导出: pptx/svg/json/markdown
+│   ├── media/          # 媒体管线 (下载/追踪)
+│   ├── narrate/        # 叙事引擎 (4模型)
+│   ├── pattern/        # 设计模式提取
+│   ├── prompt/         # 提示词引擎 (26维度)
+│   ├── quality/        # 质量门禁
+│   ├── template/       # 模板引擎 (布局/配色/字体)
+│   └── wasm/           # WASM桥接
+├── templates/
+│   ├── prompts/        # 14平台 × 26维度 YAML
+│   ├── layouts/        # 3种布局模板
+│   ├── color-schemes/  # 30+配色方案
+│   ├── typography/     # 12字体定义
+│   └── narratology/    # 4种叙事模型
+├── hack/
+│   └── via54_pipeline.py  # LLM编排管道 (1713行, 零依赖)
+├── docs/
+│   └── prompts/        # 镜头/布光/配色/构图参考
+├── AGENTS.md           # ← 本文件 (AI工作上下文)
+├── go.mod              # Go模块+许可声明
+└── README.md           # 项目文档
+```
+
+---
+
+## 架构原则
+
+```
+用户请求
+  │
+  ▼
+hack/via54_pipeline.py ← Python: i18n + LLM扩展 + 变体 (需API key)
+  │                         │
+  │                         ▼ 不需要LLM时直通
+  ▼
+via54 (Go CLI) ← 结构化执行: 模板组合/叙事/导出/质量门禁
+  │
+  ├── templates/YAML  ← 所有设计数据由YAML驱动
+  ├── export/         ← PPTX/SVG/JSON/Markdown 纯Go实现
+  └── quality/        ← 质量评分+问题清单
+```
+
+- **Go 纯二进制**: 不嵌入 API key，零外部运行时依赖
+- **Python 仅负责 LLM 编排**: i18n 翻译、语义扩展、反向图片
+- **YAML 是唯一数据源**: 添加新平台/配色/字体只需新增 YAML 文件
+- **确定性优先**: 所有 map 遍历前用 `sortedKeys()` 排序，输出 md5 可复现
+
+---
+
+## 关键约束
+
+### 代码风格
+- Go: 标准库优先，少加第三方依赖
+- 错误处理: `fmt.Errorf("xxx: %w", err)` 带上下文
+- 所有 map 遍历必须用 `sortedKeys()` 泛型函数保证确定性
+- `internal/` + `cmd/` Go 源码：**AGPL-3.0-only**
+- 每个 .go 文件必须有 `SPDX-License-Identifier` 头部
+
+### 测试要求
+- MVP验证: 至少3轮×4维 (有效性/稳定性/准确性/完整性)
+- 边界测试: 空输入、无效平台、超长字符、特殊字符
+- 输出确定性: 同一输入必须产生同一 md5
+- 压力测试: 200次连续生成无错误
+
+### Git 惯例
+- 提交信息: `type: 描述`
+- type: `feat` / `fix` / `refactor` / `docs` / `license` / `test`
+- 每次大改动后必须有 `git push`
+- 变更清单附在提交信息尾部
+
+### 常见陷阱 (AI 注意)
+- `empty_scene` 返回 exit=1 是正确行为，不是 bug
+- PPTX 导出用 `archive/zip` + `encoding/xml`，不用第三方库
+- `baseDir()` 在 prompt_cmd.go 中未定义 → 由 `main.go` 的 `baseDir()` 提供
+- `lab_dispatch.py` 派单到子 agent 时用 Python，不是 Shell
+- Provider 为 `ollama/hermes/local` 时不需 API key
+
+---
+
+## 许可证地图
+
+| 目录 | 许可 | 说明 |
+|------|------|------|
+| `internal/` + `cmd/` | **AGPL-3.0-only** | Go 源码，防云服务商闭源提取 |
+| `templates/` + `hack/` + `docs/` | **MIT** | 模板/脚本/文档，宽松 |
+| `go.mod` | `AGPL-3.0-only OR MIT` | 模块级双重许可声明 |
+
+---
+
+## 当前状态
+
+- **版本**: v0.4.0
+- **Go二进制**: ~15MB, 单文件, 零外部依赖
+- **Python管道**: 1713行, 零外部依赖
+- **14平台**: midjourney/flux/dalle3/sd3/stable_diffusion/ideogram/recraft/seedance/gemini/veo/sora/kling/pika/jimeng
+- **26维度**: subject~emotion 全字段 + 权重控制
+- **稳定性**: 200次连续生成 0 错误, 100% 确定性
+- **SPDX覆盖率**: 37/37 Go 源文件 (100%)
+
+---
+
+## 快速参考
+
+### 常用命令
+```bash
+go build -o via54.exe ./cmd/via54/     # 编译
+./via54.exe prompt --scene "..." --platform midjourney  # 生成提示词
+./via54.exe prompt list                # 列表所有平台
+python hack/via54_pipeline.py --help   # LLM管道帮助
+```
+
+### 添加新平台
+1. 新建 `templates/prompts/<name>.yaml` (复制现有模板改参数)
+2. 更新 `cmd/via54/prompt_cmd.go` 的 `listPromptPlatforms()`
+3. 更新 `hack/via54_pipeline.py` 的 `choices=`
+4. `go build` + 验证
