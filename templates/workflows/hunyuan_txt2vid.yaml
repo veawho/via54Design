@@ -1,0 +1,18 @@
+# via54Design — ComfyUI workflow template
+id: hunyuan_txt2vid
+name: "HunyuanVideo Text-to-Video"
+description: "HunyuanVideo text-to-video, 129 frames"
+type: txt2vid
+model: "hunyuan_video.safetensors"
+params:
+  steps: 50
+  cfg: 6.0
+  frames: 129
+models:
+  - url: ""
+    path: "checkpoints/hunyuan_video.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

@@ -1,0 +1,18 @@
+# via54Design — ComfyUI workflow template
+id: mochi_txt2vid
+name: "Mochi 1 Text-to-Video"
+description: "Mochi 1 (Genmo) text-to-video"
+type: txt2vid
+model: "mochi.safetensors"
+params:
+  steps: 50
+  cfg: 5.0
+  frames: 31
+models:
+  - url: ""
+    path: "checkpoints/mochi.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

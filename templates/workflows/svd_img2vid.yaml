@@ -1,0 +1,18 @@
+# via54Design — ComfyUI workflow template
+id: svd_img2vid
+name: "SVD Image-to-Video"
+description: "Stable Video Diffusion image-to-video"
+type: img2img
+model: "svd.safetensors"
+params:
+  steps: 25
+  cfg: 3.0
+  frames: 14
+models:
+  - url: ""
+    path: "checkpoints/svd.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

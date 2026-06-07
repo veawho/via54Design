@@ -1,0 +1,18 @@
+# via54Design — ComfyUI workflow template
+id: cosmos_txt2vid
+name: "Cosmos Text-to-Video"
+description: "Cosmos (NVIDIA) text-to-video"
+type: txt2vid
+model: "cosmos.safetensors"
+params:
+  steps: 30
+  cfg: 7.0
+  frames: 17
+models:
+  - url: ""
+    path: "checkpoints/cosmos.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

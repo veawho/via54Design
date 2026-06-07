@@ -1,0 +1,53 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": ""
+    }
+  },
+  "2": {
+    "class_type": "ImageUpscaleWithModel",
+    "inputs": {
+      "upscale_model": "",
+      "image": [
+        "1",
+        0
+      ]
+    }
+  },
+  "3": {
+    "class_type": "UpscaleModelLoader",
+    "inputs": {
+      "model_name": "4x_NMKD-Superscale-SP_178000_G.pth"
+    }
+  },
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "__MODEL__"
+    }
+  },
+  "5": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "1",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "5",
+        0
+      ],
+      "filename_prefix": "via54_upscale"
+    }
+  }
+}
