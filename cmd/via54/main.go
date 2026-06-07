@@ -39,6 +39,7 @@ func main() {
 	case "media":     cmdMedia()
 	case "export":    cmdExport()
 	case "prompt":    cmdPrompt()
+	case "pipeline":   cmdPipeline()
 	case "present":   cmdPresent()
 	case "comfyui":   cmdComfyUI()
 	case "forge":     cmdForge()
