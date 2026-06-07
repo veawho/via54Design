@@ -812,9 +812,25 @@ via54Design 建立在以下开源项目的基础上，感谢所有贡献者：
 | **[VTracer](https://github.com/visioncortex/vtracer)** | MIT | 照片→SVG 矢量化引擎（WASM 二进制下载） | ✅ 无代码链接 |
 | **[CLIP Interrogator](https://github.com/pharmapsychotic/clip-interrogator)** | MIT | 提示词设计参考 | ✅ |
 | **[ai-media-generator](https://github.com/Hao0321/ai-media-generator)** | MIT | 多平台提示词生成参考 | ✅ |
+| **[Dynamic Prompts](https://github.com/adieyal/dynamicprompts)** | MIT | 模板语法与组合生成参考 | ✅ |
+| **[IMGPrompt](https://github.com/rockbenben/img-prompt)** | MIT | i18n多语言提示词参考 | ✅ |
 | **[Extra-Strength Responsive Grids](https://github.com/johnpolacek/extra-strength-responsive-grids)** | MIT & GPL | 流体 CSS Grid 系统参考 | ✅ |
 | **[Marp](https://github.com/marp-team/marp)** | MIT | Markdown 幻灯片生态（export markdown 兼容格式） | ✅ |
+| **[Slidev](https://github.com/slidevjs/slidev)** | MIT | Markdown→HTML幻灯片管线参考 | ✅ |
+| **[reveal.js](https://github.com/hakimel/reveal.js)** | MIT | HTML演示框架参考 | ✅ |
 | **[golang-standards/project-layout](https://github.com/golang-standards/project-layout)** | Unlicense | Go 项目目录结构参考 | ✅ |
+
+### 设计研究参考
+
+| 项目 | 许可 | 用途 | 合规 |
+|------|------|------|------|
+| **[guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)** | AGPL-3.0 | 双视觉系统 + 22布局锁定 + 布局验证器 | ✅ AGPL-3.0 兼容 |
+| **[garden-skills](https://github.com/ConardLi/garden-skills)** | MIT | 23主题 + token架构 + anti-cliché blocklist | ✅ |
+| **[banana-slides](https://github.com/Anionex/banana-slides)** | Apache-2.0 | AI PPT生成 + 模板上传 + 可编辑PPTX | ✅ |
+| **[system_prompts_leaks](https://github.com/asgeirtj/system_prompts_leaks)** | CC0-1.0 | Claude Design + Gemini Design 设计规则提取 | ✅ 公共领域 |
+| **[Stable Diffusion WebUI Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge)** | AGPL-3.0 | 生图后端 (Forge Classic) | ✅ AGPL-3.0 兼容 |
+| **[ComfyUI](https://github.com/comfyanonymous/ComfyUI)** | GPL-3.0 | 生图后端 (21 workflow模板) | ✅ GPL-3.0 兼容 |
+| **[AUTOMATIC1111 SD WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui)** | AGPL-3.0 | A1111 API兼容 (--export-a1111) | ✅ AGPL-3.0 兼容 |
 
 ### 仅参考（无代码使用）
 
