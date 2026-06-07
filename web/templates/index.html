@@ -155,7 +155,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
 
 <!-- ═══ HEADER ═══ -->
 <header class="app-header">
-  <a href="#" class="logo" onclick="switchTab(0);return false">
+  <a href="#" class="logo">
     <h1>via54Design</h1>
     <span class="version">v0.5</span>
   </a>
@@ -272,7 +272,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     </div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="promptBuildBtn" onclick="buildPrompt()">✨ <span data-i18n="generatePromptBtn">Generate Prompt</span></button>
+    <button class="btn btn-primary" id="promptBuildBtn">✨ <span data-i18n="generatePromptBtn">Generate Prompt</span></button>
   </div>
 </div>
 <div class="panel-output">
@@ -280,7 +280,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <h3 data-i18n="promptPreview">Prompt Preview</h3>
     <div class="output-meta" id="promptMeta"></div>
     <div class="output-actions">
-      <button class="btn btn-secondary btn-sm" id="promptCopyBtn" disabled onclick="copyPrompt()">📋 <span data-i18n="copy">Copy</span></button>
+      <button class="btn btn-secondary btn-sm" id="promptCopyBtn" disabled>📋 <span data-i18n="copy">Copy</span></button>
     </div>
   </div>
   <div id="promptPreview" class="placeholder-preview">
@@ -298,15 +298,15 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
   <div class="form-group">
     <label data-i18n="layoutLabel">Layout Template</label>
     <div class="layout-cards" id="layoutCards">
-      <div class="layout-card active" data-layout="hero" onclick="selectLayout(this)">
+      <div class="layout-card active" data-layout="hero">
         <span class="layout-icon">📰</span>
         <span class="layout-label" data-i18n="layoutHero">Hero / Landing</span>
       </div>
-      <div class="layout-card" data-layout="grid" onclick="selectLayout(this)">
+      <div class="layout-card" data-layout="grid">
         <span class="layout-icon">📐</span>
         <span class="layout-label" data-i18n="layoutGrid">Grid / Gallery</span>
       </div>
-      <div class="layout-card" data-layout="article" onclick="selectLayout(this)">
+      <div class="layout-card" data-layout="article">
         <span class="layout-icon">📝</span>
         <span class="layout-label" data-i18n="layoutArticle">Article / Blog</span>
       </div>
@@ -334,7 +334,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <div class="font-list" id="fontList"></div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="designGenBtn" onclick="generateDesign()">🎨 <span data-i18n="generateDesignBtn">Generate HTML</span></button>
+    <button class="btn btn-primary" id="designGenBtn">🎨 <span data-i18n="generateDesignBtn">Generate HTML</span></button>
   </div>
 </div>
 <div class="panel-output">
@@ -342,8 +342,8 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <h3 data-i18n="designPreview">Design Preview</h3>
     <div class="output-meta" id="designMeta"></div>
     <div class="output-actions">
-      <button class="btn btn-secondary btn-sm" id="designCopyBtn" disabled onclick="copyDesign()">📋 <span data-i18n="copyHTML">Copy HTML</span></button>
-      <button class="btn btn-secondary btn-sm" id="designExportBtn" disabled onclick="exportDesign()">📥 <span data-i18n="export">Export</span></button>
+      <button class="btn btn-secondary btn-sm" id="designCopyBtn" disabled>📋 <span data-i18n="copyHTML">Copy HTML</span></button>
+      <button class="btn btn-secondary btn-sm" id="designExportBtn" disabled>📥 <span data-i18n="export">Export</span></button>
     </div>
   </div>
   <iframe class="preview-frame" id="designFrame" srcdoc="<html><body style='background:#1c2128;display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#8b949e;font-size:14px;min-height:200px;margin:0'>✨ Select a layout and click Generate HTML</body></html>"></iframe>
@@ -390,7 +390,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     </div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="narrateGenBtn" onclick="generateNarrate()">📖 <span data-i18n="generateNarrateBtn">Generate Story</span></button>
+    <button class="btn btn-primary" id="narrateGenBtn">📖 <span data-i18n="generateNarrateBtn">Generate Story</span></button>
   </div>
 </div>
 <div class="panel-output">
@@ -398,7 +398,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <h3 data-i18n="narratePreview">Story Output</h3>
     <div class="output-meta" id="narrateMeta"></div>
     <div class="output-actions">
-      <button class="btn btn-secondary btn-sm" id="narrateCopyBtn" disabled onclick="copyNarrate()">📋 <span data-i18n="copy">Copy</span></button>
+      <button class="btn btn-secondary btn-sm" id="narrateCopyBtn" disabled>📋 <span data-i18n="copy">Copy</span></button>
     </div>
   </div>
   <div id="narratePreview" class="placeholder-preview">
@@ -434,7 +434,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <input type="text" id="exportOutput" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:13px;padding:7px 10px;outline:none" placeholder="output/file.ext">
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="exportBtn" onclick="runExport()">📦 <span data-i18n="exportBtn">Export</span></button>
+    <button class="btn btn-primary" id="exportBtn">📦 <span data-i18n="exportBtn">Export</span></button>
   </div>
 </div>
 <div class="panel-output">
@@ -442,7 +442,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <h3 data-i18n="exportResult">Export Result</h3>
     <div class="output-meta" id="exportMeta"></div>
     <div class="output-actions">
-      <button class="btn btn-secondary btn-sm" id="exportCopyBtn" disabled onclick="copyExport()">📋 <span data-i18n="copy">Copy</span></button>
+      <button class="btn btn-secondary btn-sm" id="exportCopyBtn" disabled>📋 <span data-i18n="copy">Copy</span></button>
     </div>
   </div>
   <div id="exportPreview" class="placeholder-preview">
@@ -480,7 +480,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <textarea id="mediaParams" rows="2" placeholder='{"volume":0.5,"format":"mp3","quality":"high"}'></textarea>
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="mediaExecBtn" onclick="executeMedia()">🎵 <span data-i18n="executeBtn">Execute</span></button>
+    <button class="btn btn-primary" id="mediaExecBtn">🎵 <span data-i18n="executeBtn">Execute</span></button>
   </div>
 </div>
 <div class="panel-output">
@@ -488,7 +488,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <h3 data-i18n="mediaResult">Media Result</h3>
     <div class="output-meta" id="mediaMeta"></div>
     <div class="output-actions">
-      <button class="btn btn-secondary btn-sm" id="mediaCopyBtn" disabled onclick="copyMedia()">📋 <span data-i18n="copy">Copy</span></button>
+      <button class="btn btn-secondary btn-sm" id="mediaCopyBtn" disabled>📋 <span data-i18n="copy">Copy</span></button>
     </div>
   </div>
   <div id="mediaPreview" class="placeholder-preview">
@@ -504,8 +504,8 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
 <div class="panel-split">
 <div class="panel-controls">
   <div class="inner-tabs" id="workflowInnerTabs">
-    <button class="inner-tab active" data-wf="comfyui" onclick="switchWorkflowFormat(this,'comfyui')">ComfyUI</button>
-    <button class="inner-tab" data-wf="forge" onclick="switchWorkflowFormat(this,'forge')">Forge/A1111</button>
+    <button class="inner-tab active" data-wf="comfyui">ComfyUI</button>
+    <button class="inner-tab" data-wf="forge">Forge/A1111</button>
   </div>
   <div class="form-group">
     <label data-i18n="workflowTemplateLabel">Workflow Template</label>
@@ -892,12 +892,6 @@ function toggleLang() {
   showToast(currentLang === 'cn' ? '已切换至中文' : 'Switched to English', 'info', 2000);
 }
 
-
-/* ── Event binding (script at body end, DOM ready) ── */
-(function(){
-  var lt = document.getElementById('langToggle');
-  if (lt) lt.addEventListener('click', toggleLang);
-})();
 
 function applyLang() {
   const dict = i18n[currentLang];
@@ -1356,6 +1350,43 @@ async function init() {
 init();
 
 })();
+
+/* ── Unified event binding (all onclick functions registered here) ── */
+(function() {
+  var bind = function(id, fn) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  };
+  var qsa = function(sel, fn) {
+    document.querySelectorAll(sel).forEach(function(el) { el.addEventListener('click', fn); });
+  };
+  
+  // Tab nav buttons
+  document.querySelectorAll('.tab-btn').forEach(function(btn, i) {
+    btn.addEventListener('click', function() { switchTab(i); });
+  });
+  
+  // Other buttons by ID
+  bind('langToggle', toggleLang);
+  bind('promptBuildBtn', buildPrompt);
+  bind('promptCopyBtn', copyPrompt);
+  bind('designGenBtn', generateDesign);
+  bind('designCopyBtn', copyDesign);
+  bind('designExportBtn', exportDesign);
+  bind('narrateGenBtn', generateNarrate);
+  bind('narrateCopyBtn', copyNarrate);
+  bind('exportBtn', runExport);
+  bind('exportCopyBtn', copyExport);
+  bind('mediaExecBtn', executeMedia);
+  bind('mediaCopyBtn', copyMedia);
+  
+  // Layout selection cards
+  qsa('.layout-card', selectLayout);
+  
+  // Workflow format toggle
+  qsa('[data-wf]', function(e) { switchWorkflowFormat(e, e.target.dataset.wf); });
+})();
+
 </script>
 </body>
 </html>
