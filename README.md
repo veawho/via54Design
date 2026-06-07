@@ -55,6 +55,29 @@ curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/ins
   via54 media add-music brand.mp4 --mood=tech
 ```
 
+### 手写/书法 → SVG 文字
+
+```
+"把我手写的'山水之间'照片转成 SVG，放到页面标题上"
+
+→ 实际执行的命令:
+  via54 media trace --input ./handwriting.jpg --output ./logo.svg
+  via54 generate --lettering-svg ./logo.svg --color ink-wash --title "山水之间" --output index.html
+```
+
+### 自然语言查询模板
+
+```
+"有哪些中国传统配色可以用？"
+"帮我找一个适合书法标题的字体"
+"列出所有暗色配色方案"
+
+→ 实际执行的命令:
+  via54 list | grep chinese
+  via54 list | grep calligraphy
+  via54 list | grep dark
+```
+
 ---
 
 ## 📦 手动安装
@@ -161,8 +184,9 @@ via54 pattern --html out.html --name "项目名"
 via54 media add-music input.mp4 --mood tech|ad|educational|tutorial
 via54 media convert input.mp4
 via54 media fetch --query "关键词" --out ./img --count 3
+via54 media trace --input photo.jpg --output logo.svg   # 照片→SVG矢量化
 
-| 导出
+# 导出
 via54 export render input.html --duration 30 --width 1920 --height 1080
 via54 export pdf input.html
 via54 export tts --text "你好" --out voice.mp3

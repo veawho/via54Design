@@ -1,18 +1,1 @@
-feat: VTracer image tracing + SVG lettering integration
-
-via54 media trace -- VTracer (⭐6149) based image-to-SVG
-  - Auto-downloads VTracer binary (Windows/Mac/Linux)
-  - Converts handwriting/photo to clean SVG paths
-  - Pre-configured parameters for calligraphy/tracing
-
-via54 generate --lettering-svg -- SVG lettering injection
-  - Embed traced SVG as hero title (no font dependency)
-  - Auto-fallback layout/color/font when only SVG provided
-  - SVG scales responsively, works with color schemes
-
-MCP tool: trace_image
-  - Accept image path, return SVG with path preview
-
-Architecture:
-  media.TraceImage() → VTracer CLI → SVG file
-  template.ComposeWithSVG() → embed SVG in HTML
+docs: add trace + lettering-svg examples to README
