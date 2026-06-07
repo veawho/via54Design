@@ -50,7 +50,7 @@ func (c *Checker) RunAll() *Report {
 		verdict = "WARNING"
 	}
 
-	cssRe := regexp.MustCompile("(?i)<style[^>]*>(.*?)</style>")
+	cssRe := regexp.MustCompile("(?is)<style[^>]*>(.*?)</style>")
 
 	return &Report{
 		Verdict:    verdict,
@@ -92,7 +92,7 @@ func (c *Checker) checkHTMLStructure() []Issue {
 
 func (c *Checker) checkCSS() []Issue {
 	var issues []Issue
-	re := regexp.MustCompile("(?i)<style[^>]*>(.*?)</style>")
+	re := regexp.MustCompile("(?is)<style[^>]*>(.*?)</style>")
 	matches := re.FindAllStringSubmatch(c.html, -1)
 
 	for i, match := range matches {
