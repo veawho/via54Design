@@ -1,1 +1,1 @@
-docs: consolidate handwritten trace into one capability
+docs: add CLI examples for trace and lettering-svg

@@ -190,6 +190,8 @@ via54 list                         # 列出所有模板
 
 # 设计模板
 via54 generate --layout <id> --color <id> --font <id> --title "标题" --output out.html
+via54 generate --lettering-svg ./vector.svg --title "标题" --output out.html   # 手绘/Logo做标题
+via54 generate --layout <id> --color <id> --font <id> --lettering-svg ./art.svg --title "标题" --output out.html  # 模板+手绘组合
 via54 quality --html out.html
 via54 pattern --html out.html --name "项目名"
 
@@ -198,6 +200,8 @@ via54 media add-music input.mp4 --mood tech|ad|educational|tutorial
 via54 media convert input.mp4
 via54 media fetch --query "关键词" --out ./img --count 3
 via54 media trace --input photo.jpg --output logo.svg   # 照片→SVG矢量化
+via54 media trace --input logo-sketch.jpg --output logo.svg   # 手绘Logo→SVG
+via54 media trace --input handwriting.jpg --output title.svg  # 书法/签名→SVG
 
 # 导出
 via54 export render input.html --duration 30 --width 1920 --height 1080
