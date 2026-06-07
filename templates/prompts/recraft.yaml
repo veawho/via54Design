@@ -301,3 +301,111 @@ sections:
       - {value: "joyful", label: "欢乐", weight: 1.0}
       - {value: "mysterious", label: "神秘", weight: 1.1}
       - {value: "epic", label: "史诗", weight: 1.3}
+
+
+  # ── VIDEO CONTROL (video_only fields) ──
+  - id: camera_movement
+    label: "运镜 (Camera Movement)"
+    category: motion
+    hint: "相机运动类型 (pan/tilt/dolly/truck/pedestal/zoom/crane/tracking/orbit/handheld/aerial/whip_pan/pov)"
+    video_only: true
+    default: "pan"
+    options:
+      - {value: "pan", label: "横摇 Pan"}
+      - {value: "tilt", label: "俯仰 Tilt"}
+      - {value: "dolly", label: "推拉 Dolly"}
+      - {value: "truck", label: "横移 Truck"}
+      - {value: "pedestal", label: "升降 Pedestal"}
+      - {value: "zoom", label: "变焦 Zoom"}
+      - {value: "crane", label: "摇臂 Crane"}
+      - {value: "tracking", label: "跟拍 Tracking"}
+      - {value: "orbit", label: "环绕 Orbit"}
+      - {value: "handheld", label: "手持 Handheld"}
+      - {value: "aerial", label: "航拍 Aerial"}
+      - {value: "whip_pan", label: "甩镜 Whip Pan"}
+      - {value: "pov", label: "主观视角 POV"}
+  - id: motion_intensity
+    label: "运动强度 (Motion Intensity)"
+    category: motion
+    hint: "运动强度"
+    video_only: true
+    default: "moderate"
+    options:
+      - {value: "subtle", label: "微弱 Subtle"}
+      - {value: "moderate", label: "中等 Moderate"}
+      - {value: "dramatic", label: "剧烈 Dramatic"}
+  - id: frame_count
+    label: "帧数 (Frame Count)"
+    category: motion
+    hint: "生成帧数"
+    video_only: true
+    default: "24"
+  - id: fps
+    label: "帧率 (FPS)"
+    category: motion
+    hint: "帧每秒"
+    video_only: true
+    default: "24"
+  - id: shot_size
+    label: "景别 (Shot Size)"
+    category: comp
+    hint: "景别尺寸 (ECU/CU/MCU/MS/MLS/FS/LS/VLS/EWS)"
+    video_only: true
+    default: "MS"
+    options:
+      - {value: "ECU", label: "极端特写 ECU"}
+      - {value: "CU", label: "特写 CU"}
+      - {value: "MCU", label: "中特写 MCU"}
+      - {value: "MS", label: "中景 MS"}
+      - {value: "MLS", label: "中远景 MLS"}
+      - {value: "FS", label: "全景 FS"}
+      - {value: "LS", label: "远景 LS"}
+      - {value: "VLS", label: "大远景 VLS"}
+      - {value: "EWS", label: "极远景 EWS"}
+  - id: angle
+    label: "角度 (Angle)"
+    category: comp
+    hint: "拍摄角度"
+    video_only: true
+    default: "eye_level"
+    options:
+      - {value: "eye_level", label: "平视 Eye Level"}
+      - {value: "low_angle", label: "低角度 Low Angle"}
+      - {value: "high_angle", label: "高角度 High Angle"}
+      - {value: "dutch", label: "荷兰角 Dutch"}
+      - {value: "bird_eye", label: "鸟瞰 Bird's Eye"}
+      - {value: "worm_eye", label: "虫视 Worm's Eye"}
+  - id: duration_seconds
+    label: "时长 (Duration)"
+    category: motion
+    hint: "视频总时长（秒）"
+    video_only: true
+    default: "5"
+  - id: keyframe
+    label: "关键帧 (Keyframe)"
+    category: motion
+    hint: "关键帧/关键画面描述"
+    video_only: true
+    default: ""
+  - id: transition
+    label: "转场 (Transition)"
+    category: motion
+    hint: "镜头转场类型"
+    video_only: true
+    default: "cut"
+    options:
+      - {value: "cut", label: "切 Cut"}
+      - {value: "fade", label: "淡入淡出 Fade"}
+      - {value: "dissolve", label: "溶解 Dissolve"}
+      - {value: "wipe", label: "划像 Wipe"}
+  - id: motion_blur
+    label: "运动模糊 (Motion Blur)"
+    category: detail
+    hint: "运动模糊程度"
+    video_only: true
+    default: "moderate"
+    options:
+      - {value: "none", label: "无 None"}
+      - {value: "subtle", label: "轻微 Subtle"}
+      - {value: "moderate", label: "中等 Moderate"}
+      - {value: "heavy", label: "强烈 Heavy"}

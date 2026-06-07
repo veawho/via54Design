@@ -1,0 +1,40 @@
+# via54Design — ComfyUI Workflow Template Registry
+# SPDX-License-Identifier: MIT
+version: 1
+workflows:
+  - id: sdxl_txt2img
+    name: "SDXL Text-to-Image"
+    description: "Basic SDXL text-to-image generation at 1024×1024"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, euler"
+  - id: sdxl_img2img
+    name: "SDXL Image-to-Image"
+    description: "SDXL image-to-image with denoising (default 0.6)"
+    type: img2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, denoise 0.6"
+  - id: flux_dev_txt2img
+    name: "Flux Dev Text-to-Image"
+    description: "Flux Dev text-to-image with guidance scale 3.5"
+    type: txt2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, guidance 3.5"
+  - id: sd15_txt2img
+    name: "SD 1.5 Text-to-Image"
+    description: "Stable Diffusion 1.5 at 512×512, fast generation"
+    type: txt2img
+    model: "v1-5-pruned-emaonly.safetensors"
+    params: "20 steps, cfg 7.5, 512×512"
+  - id: animatediff_txt2vid
+    name: "AnimateDiff Text-to-Video"
+    description: "AnimateDiff text-to-video with motion module (16 frames)"
+    type: txt2vid
+    model: "majicmixRealistic_v7.safetensors"
+    params: "25 steps, 16 frames, 512×512"
+  - id: wan_txt2vid
+    name: "Wan2.1 Text-to-Video"
+    description: "Wan2.1 text-to-video (81 frames, camera controls)"
+    type: txt2vid
+    model: "wan2.1_ttt.safetensors"
+    params: "50 steps, 81 frames, 832×480"

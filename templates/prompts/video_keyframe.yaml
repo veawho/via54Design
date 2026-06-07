@@ -1,24 +1,25 @@
-# Seedance 2.0 提示词模板
-id: seedance
+# 关键帧视频提示词模板 — 36 维度 (26 图片 + 10 视频控制)
+# 专注于多镜头的关键帧描述和转场控制
+# 参考: AnimateDiff (⭐12k) 运动参数 + ai-media-generator
+id: video_keyframe
 name:
-  zh: "Seedance 2.0"
-  en: "Seedance 2.0"
-platform: seedance
-description: "Seedance 2.0 视频生成 — 26 维度精确控制"
+  zh: "视频关键帧控制"
+  en: "Video Keyframe"
+platform: video_keyframe
+description: "多镜头关键帧视频 — 36 维度控制, 聚焦关键帧描述和转场"
 version: "1.0.0"
-format: seedance
+format: video
 params:
   ar: "16:9"
-  steps: "30"
-  seed: "-1"
+  fps: "24"
+  duration: "10"
 
-# 平台默认负面词
 negative:
-  - "blurry, low quality, distorted, deformed"
-  - "unnatural movement, jittery, shaky camera"
-  - "watermark, text, logo, signature, timestamp"
-  - "bad anatomy, extra limbs, missing fingers"
-  - "flickering, artifacts, morphing artifacts"
+  - "blurry, shaky, unstable motion, flickering"
+  - "distorted faces, bad anatomy, unnatural movement"
+  - "watermark, text overlay, logo, timestamp"
+  - "inconsistent style between shots"
+  - "morphing, disappearing objects, physics errors"
 
 sections:
   # ── SUBJECT ──
@@ -285,7 +286,7 @@ sections:
     label: "画质标签"
     category: quality
     hint: "质量关键词"
-    default: "cinematic, high quality, 4K, smooth motion"
+    default: "cinematic, high quality, 4K"
     options:
       - {value: "masterpiece, highly detailed", label: "杰作级"}
       - {value: "trending on ArtStation", label: "ArtStation 热门"}
@@ -304,14 +305,21 @@ sections:
       - {value: "mysterious", label: "神秘", weight: 1.1}
       - {value: "epic", label: "史诗", weight: 1.3}
 
-
-  # ── VIDEO CONTROL (video_only fields) ──
+  # ── VIDEO CONTROL (keyframe-focused) ──
+  - id: keyframe
+    label: "关键帧 (Keyframe)"
+    category: motion
+    hint: "关键帧/关键画面描述（多个关键帧用分号分隔）"
+    default: "opening wide shot establishing scene; mid shot character enters; close-up reaction"
+    weighted: true
+    weight: 1.5
   - id: camera_movement
     label: "运镜 (Camera Movement)"
     category: motion
-    hint: "相机运动类型 (pan/tilt/dolly/truck/pedestal/zoom/crane/tracking/orbit/handheld/aerial/whip_pan/pov)"
-    video_only: true
-    default: "pan"
+    hint: "相机运动类型"
+    default: "tracking"
+    weighted: true
+    weight: 1.2
     options:
       - {value: "pan", label: "横摇 Pan"}
       - {value: "tilt", label: "俯仰 Tilt"}
@@ -330,7 +338,6 @@ sections:
     label: "运动强度 (Motion Intensity)"
     category: motion
     hint: "运动强度"
-    video_only: true
     default: "moderate"
     options:
       - {value: "subtle", label: "微弱 Subtle"}
@@ -340,19 +347,16 @@ sections:
     label: "帧数 (Frame Count)"
     category: motion
     hint: "生成帧数"
-    video_only: true
-    default: "24"
+    default: "48"
   - id: fps
     label: "帧率 (FPS)"
     category: motion
     hint: "帧每秒"
-    video_only: true
     default: "24"
   - id: shot_size
     label: "景别 (Shot Size)"
     category: comp
     hint: "景别尺寸 (ECU/CU/MCU/MS/MLS/FS/LS/VLS/EWS)"
-    video_only: true
     default: "MS"
     options:
       - {value: "ECU", label: "极端特写 ECU"}
@@ -368,7 +372,6 @@ sections:
     label: "角度 (Angle)"
     category: comp
     hint: "拍摄角度"
-    video_only: true
     default: "eye_level"
     options:
       - {value: "eye_level", label: "平视 Eye Level"}
@@ -381,20 +384,12 @@ sections:
     label: "时长 (Duration)"
     category: motion
     hint: "视频总时长（秒）"
-    video_only: true
-    default: "5"
-  - id: keyframe
-    label: "关键帧 (Keyframe)"
-    category: motion
-    hint: "关键帧/关键画面描述"
-    video_only: true
-    default: ""
+    default: "10"
   - id: transition
     label: "转场 (Transition)"
     category: motion
     hint: "镜头转场类型"
-    video_only: true
-    default: "cut"
+    default: "dissolve"
     options:
       - {value: "cut", label: "切 Cut"}
       - {value: "fade", label: "淡入淡出 Fade"}
@@ -404,7 +399,6 @@ sections:
     label: "运动模糊 (Motion Blur)"
     category: detail
     hint: "运动模糊程度"
-    video_only: true
     default: "moderate"
     options:
       - {value: "none", label: "无 None"}

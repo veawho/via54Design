@@ -1,0 +1,29 @@
+# via54Design — Wan2.1 Text-to-Video Workflow Template
+# SPDX-License-Identifier: MIT
+id: wan_txt2vid
+name: "Wan2.1 Text-to-Video"
+description: "Wan2.1 text-to-video generation (81 frames, camera controls)"
+model: "wan2.1_ttt.safetensors"
+vae: "wan2.1_vae.safetensors"
+type: txt2vid
+params:
+  steps: 50
+  cfg: 5.0
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 832
+  height: 480
+  denoise: 1.0
+  frames: 81
+  frame_rate: 24
+  camera: "off"
+nodes:
+  positive_prompt: "CLIPTextEncode"
+  negative_prompt: "CLIPTextEncode"
+  checkpoint: "CheckpointLoaderSimple"
+models:
+  - url: "https://huggingface.com/Wan-AI/Wan2.1-T2V/resolve/main/wan2.1_ttt.safetensors"
+    path: "checkpoints/wan2.1_ttt.safetensors"
+  - url: "https://huggingface.com/Wan-AI/Wan2.1-T2V/resolve/main/wan2.1_vae.safetensors"
+    path: "vae/wan2.1_vae.safetensors"
