@@ -36,6 +36,16 @@ palette:
     hex: "#E5E5E5"
     name_zh: "灰线"
     cultural_note: "发丝线"
+
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #888888;
+  --accent: #000000;
+  --accent-alt: #E5E5E5;
+  --border: #E5E5E5;
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image, gallery-waterfall]
   fonts: [system-utility, sans-geometric-tech]

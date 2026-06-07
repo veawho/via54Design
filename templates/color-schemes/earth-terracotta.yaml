@@ -37,6 +37,16 @@ palette:
     hex: "#E6DED4"
     name_zh: "米石"
     cultural_note: "淡米灰边界"
+
+
+css_variables: |
+  --bg: #F8F3ED;
+  --text-primary: #2C2420;
+  --text-secondary: #7D7168;
+  --accent: #C06C4C;
+  --accent-alt: #8DA38C;
+  --border: #E6DED4;
+
 compatibility:
   layouts: [hero-split-left-image, editorial-longform]
   fonts: [serif-sans-editorial, cormorant-elegant]

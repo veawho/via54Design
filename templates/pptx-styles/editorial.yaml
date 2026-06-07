@@ -1,0 +1,47 @@
+# via54Design — PPTX 编辑/报告风格模板
+id: editorial
+name: "编辑 (Editorial)"
+description: "左侧装饰条 + 大字号主标题，适合提案封面和章节页"
+layout:
+  background:
+    fill: "solid"
+    color: "--bg"
+  accent_bar:
+    enabled: true
+    width: 152400
+    color: "--accent"
+  title:
+    x: 1524000
+    y: 1828800
+    w: 8229600
+    h: 1828800
+    font_size: 5400
+    bold: true
+    color: "#1A1A1A"
+    align: left
+  subtitle:
+    x: 1524000
+    y: 914400
+    w: 8229600
+    h: 457200
+    font_size: 1400
+    bold: false
+    color: "--accent"
+    align: left
+  body:
+    x: 1524000
+    y: 4114800
+    w: 8229600
+    h: 2286000
+    font_size: 2200
+    color: "#444444"
+    align: left
+    line_spacing: 500
+  page_number:
+    enabled: true
+    x: 1524000
+    y: 6400800
+    w: 1371600
+    h: 274320
+    font_size: 900
+    color: "#999999"

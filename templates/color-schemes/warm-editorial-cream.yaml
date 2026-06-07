@@ -36,6 +36,16 @@ palette:
     hex: "#E8DFD4"
     name_zh: "淡米"
     cultural_note: "书页边缘的暖灰"
+
+
+css_variables: |
+  --bg: #F5F0E8;
+  --text-primary: #191919;
+  --text-secondary: #6B6258;
+  --accent: #CC785C;
+  --accent-alt: #D9A88A;
+  --border: #E8DFD4;
+
 compatibility:
   layouts: [hero-split-left-image, editorial-longform, bento-grid-2x2]
   fonts: [serif-sans-editorial, serif-longform]

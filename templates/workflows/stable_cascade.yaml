@@ -1,0 +1,30 @@
+# via54Design — Stable Cascade Workflow Template
+# SPDX-License-Identifier: MIT
+id: stable_cascade
+name: "Stable Cascade"
+description: "Stable Cascade efficient 1024px"
+type: txt2img
+model: "stable_cascade.safetensors"
+stage_b_model: "stable_cascade_stage_b.safetensors"
+params:
+  stage_c_steps: 20
+  stage_b_steps: 10
+  cfg: 4.0
+  stage_b_cfg: 1.0
+  sampler: "euler"
+  scheduler: "sgm_uniform"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  stage_c_checkpoint: CheckpointLoaderSimple
+  stage_b_checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/stable_cascade.safetensors"
+  - url: ""
+    path: "checkpoints/stable_cascade_stage_b.safetensors"

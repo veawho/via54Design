@@ -37,6 +37,16 @@ palette:
     hex: "#ECE0D8"
     name_zh: "白妙"
     cultural_note: "纯白丝绸的微暖"
+
+
+css_variables: |
+  --bg: #FBF6F0;
+  --text-primary: #3D2B2F;
+  --text-secondary: #8A7378;
+  --accent: #E8A0B4;
+  --accent-alt: #C98C9A;
+  --border: #ECE0D8;
+
 compatibility:
   layouts: [hero-split-left-image, gallery-waterfall]
   fonts: [cormorant-elegant, serif-sans-editorial]

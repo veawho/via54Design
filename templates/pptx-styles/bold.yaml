@@ -1,0 +1,45 @@
+# via54Design — PPTX 品牌撞色风格模板
+id: bold
+name: "撞色 (Bold)"
+description: "满版品牌色背景 + 反白字，适合品牌宣传/海报式 PPT"
+layout:
+  background:
+    fill: "solid"
+    color: "--accent"
+  accent_bar:
+    enabled: false
+  title:
+    x: 914400
+    y: 2057400
+    w: 10363200
+    h: 1371600
+    font_size: 4800
+    bold: true
+    color: "#FFFFFF"
+    align: center
+  subtitle:
+    x: 914400
+    y: 1371600
+    w: 10363200
+    h: 457200
+    font_size: 1600
+    bold: false
+    color: "rgba(255,255,255,0.8)"
+    align: center
+  body:
+    x: 1828800
+    y: 3657600
+    w: 8229600
+    h: 2743200
+    font_size: 2000
+    color: "#FFFFFF"
+    align: center
+    line_spacing: 600
+  page_number:
+    enabled: false
+    x: 0
+    y: 0
+    w: 0
+    h: 0
+    font_size: 0
+    color: ""

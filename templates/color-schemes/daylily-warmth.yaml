@@ -41,6 +41,16 @@ palette:
     name_zh: "麦芽"
     cultural_note: "淡麦色边界"
 
+
+
+css_variables: |
+  --bg: #FEF7E9;
+  --text-primary: #3D3522;
+  --text-secondary: #8C7C66;
+  --accent: #E8A838;
+  --accent-alt: #D4875E;
+  --border: #EDE4D5;
+
 compatibility:
   layouts: [hero-split-left-image, bento-grid-2x2]
   fonts: [serif-sans-editorial, playful-rounded]

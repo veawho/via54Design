@@ -19,6 +19,7 @@
 // via54Design — PPTX 导出器
 // 纯 Go 实现，零外部依赖。PPTX = ZIP + XML。
 // 替代 scripts/export_deck_pptx.mjs (Node.js + html2pptx.js)
+// v2: 支持风格 + 配色模板系统
 package export
 
 import (
@@ -30,6 +31,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 // PPTXSlide 单张幻灯片内容
@@ -41,10 +44,96 @@ type PPTXSlide struct {
 	Image    string   // 图片路径(可选)
 }
 
+// PPTXStyleElement 布局元素坐标
+type PPTXStyleElement struct {
+	Enabled    bool   `yaml:"enabled"`
+	X          int    `yaml:"x"`
+	Y          int    `yaml:"y"`
+	W          int    `yaml:"w"`
+	H          int    `yaml:"h"`
+	FontSize   int    `yaml:"font_size"`
+	Bold       bool   `yaml:"bold"`
+	Color      string `yaml:"color"`
+	Align      string `yaml:"align"`
+	LineSpacing int   `yaml:"line_spacing"`
+}
+
+// PPTXAccentBar 装饰条配置
+type PPTXAccentBar struct {
+	Enabled bool   `yaml:"enabled"`
+	Width   int    `yaml:"width"`
+	Color   string `yaml:"color"`
+}
+
+// PPTXStyle PPTX 风格模板
+type PPTXStyle struct {
+	ID          string `yaml:"id"`
+	Name        string `yaml:"name"`
+	Description string `yaml:"description"`
+	Layout      struct {
+		Background struct {
+			Fill  string `yaml:"fill"`
+			Color string `yaml:"color"`
+		} `yaml:"background"`
+		AccentBar    PPTXAccentBar     `yaml:"accent_bar"`
+		Title        PPTXStyleElement  `yaml:"title"`
+		Subtitle     PPTXStyleElement  `yaml:"subtitle"`
+		Body         PPTXStyleElement  `yaml:"body"`
+		PageNumber   PPTXStyleElement  `yaml:"page_number"`
+	} `yaml:"layout"`
+}
+
+// PPTXTheme 配色方案（从color-scheme YAML加载）
+type PPTXTheme struct {
+	ID   string `yaml:"id"`
+	Name struct {
+		Zh string `yaml:"zh"`
+		En string `yaml:"en"`
+	} `yaml:"name"`
+	Palette []struct {
+		Role string `yaml:"role"`
+		Hex  string `yaml:"hex"`
+	} `yaml:"palette"`
+	CSSVariables string `yaml:"css_variables"`
+}
+
+// resolveColor 解析颜色值，支持 --var 引用和直接 hex
+func resolveColor(colorSpec string, theme *PPTXTheme) string {
+	if theme == nil || !strings.HasPrefix(colorSpec, "--") {
+		return colorSpec
+	}
+	varName := strings.TrimPrefix(colorSpec, "--")
+	for _, p := range theme.Palette {
+		if p.Role == varName {
+			return strings.TrimPrefix(p.Hex, "#")
+		}
+	}
+	return strings.TrimPrefix(colorSpec, "#")
+}
+
+// resolveColorHex 解析颜色并去 #
+func resolveColorHex(colorSpec string, theme *PPTXTheme) string {
+	c := resolveColor(colorSpec, theme)
+	return strings.TrimPrefix(c, "#")
+}
+
 // ExportPPTX 从 slide 列表生成 PPTX 文件
+// styleID: "accent-bar" (默认), "minimal", "editorial", "bold"
+// themePath: 配色 YAML 路径 (可选)
+// baseDir:   templates 基础路径
 // PPTX 是 ZIP 包，内含 OOXML (Office Open XML)
 // 参考: ECMA-376 Office Open XML 标准
-func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool) error {
+func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool, styleID, themePath, baseDir string) error {
+	// 加载风格模板
+	style := loadPPTXStyle(styleID, baseDir)
+	if style == nil {
+		style = defaultPPTXStyle()
+	}
+	// 加载配色主题
+	var theme *PPTXTheme
+	if themePath != "" {
+		theme = loadPPTXTheme(themePath)
+	}
 	var buf bytes.Buffer
 	w := zip.NewWriter(&buf)
 
@@ -128,7 +217,7 @@ func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool) error {
 	// ── 每张 Slide ──
 	for i, s := range slides {
 		num := i + 1
-		slideXML := buildSlideXML(s, num)
+		slideXML := buildSlideXML(s, num, len(slides), style, theme)
 		writeZip(w, fmt.Sprintf("ppt/slides/slide%d.xml", num), slideXML)
 		writeZip(w, fmt.Sprintf("ppt/slides/_rels/slide%d.xml.rels", num), `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>`)
 	}
@@ -153,70 +242,91 @@ func genSlideTypes(n int) string {
 	return b.String()
 }
 
-func buildSlideXML(s PPTXSlide, num int) string {
+func buildSlideXML(s PPTXSlide, num, total int, style *PPTXStyle, theme *PPTXTheme) string {
+	// 安全 fallback
+	if style == nil {
+		style = defaultPPTXStyle()
+	}
+
 	// 颜色解析
-	accentHex := "C43C3A"
+	bgColor := resolveColorHex(style.Layout.Background.Color, theme)
+	accentColor := style.Layout.AccentBar.Color
+	accentColor = resolveColorHex(accentColor, theme)
 	if s.Color != "" {
-		accentHex = strings.TrimPrefix(s.Color, "#")
+		accentColor = strings.TrimPrefix(s.Color, "#")
 	}
 
 	// 构建 body 段落
 	var bodyXML strings.Builder
 	for _, line := range s.Body {
-		bodyXML.WriteString(fmt.Sprintf(`<a:p><a:r><a:rPr lang="zh-CN" sz="1800" dirty="0"/><a:t>%s</a:t></a:r></a:p>`, escapeXML(line)))
+		bodyXML.WriteString(fmt.Sprintf(`<a:p><a:r><a:rPr lang="zh-CN" sz="%d" dirty="0"/><a:t>%s</a:t></a:r></a:p>`,
+			style.Layout.Body.FontSize, escapeXML(line)))
 	}
 
-	titleSize := "4400"
-	if len(s.Title) > 20 {
-		titleSize = "3200"
+	// 标题字号自适应
+	titleSize := style.Layout.Title.FontSize
+	if len(s.Title) > 20 && titleSize > 3200 {
+		titleSize = 3200
+	}
+
+	// ── 构建 spTree 内部 ──
+	var spTree strings.Builder
+	spTree.WriteString(`<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>`)
+	spTree.WriteString(`<p:grpSpPr/>`)
+
+	// 背景
+	spTree.WriteString(fmt.Sprintf(`<p:sp><p:nvSpPr><p:cNvPr id="2" name="Bg"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:solidFill><a:srgbClr val="%s"/></a:solidFill></p:spPr></p:sp>`, bgColor))
+
+	// 强调色装饰条 (条件)
+	if style.Layout.AccentBar.Enabled {
+		barW := style.Layout.AccentBar.Width
+		if barW == 0 {
+			barW = 152400
+		}
+		spTree.WriteString(fmt.Sprintf(`<p:sp><p:nvSpPr><p:cNvPr id="3" name="Accent"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="%d" cy="6858000"/></a:xfrm><a:solidFill><a:srgbClr val="%s"/></a:solidFill></p:spPr></p:sp>`, barW, accentColor))
+	}
+
+	// 眉标 (Subtitle)
+	if s.Subtitle != "" {
+		sub := style.Layout.Subtitle
+		subColor := resolveColorHex(sub.Color, theme)
+		spTree.WriteString(fmt.Sprintf(`<p:sp><p:nvSpPr><p:cNvPr id="4" name="Eyebrow"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:p><a:r><a:rPr lang="zh-CN" sz="%d" dirty="0" b="0"><a:solidFill><a:srgbClr val="%s"/></a:solidFill></a:rPr><a:t>%s</a:t></a:r></a:p></p:txBody></p:sp>`,
+			sub.X, sub.Y, sub.W, sub.H, sub.FontSize, subColor, escapeXML(s.Subtitle)))
+	}
+
+	// 标题
+	title := style.Layout.Title
+	titleColor := resolveColorHex(title.Color, theme)
+	titleBold := "0"
+	if title.Bold {
+		titleBold = "1"
+	}
+	spTree.WriteString(fmt.Sprintf(`<p:sp><p:nvSpPr><p:cNvPr id="5" name="Title"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:p><a:r><a:rPr lang="zh-CN" sz="%d" dirty="0" b="%s"><a:solidFill><a:srgbClr val="%s"/></a:solidFill></a:rPr><a:t>%s</a:t></a:r></a:p></p:txBody></p:sp>`,
+		title.X, title.Y, title.W, title.H, titleSize, titleBold, titleColor, escapeXML(s.Title)))
+
+	// 正文
+	body := style.Layout.Body
+	if s.Body != nil && len(s.Body) > 0 {
+		spTree.WriteString(fmt.Sprintf(`<p:sp><p:nvSpPr><p:cNvPr id="6" name="Body"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/>%s</p:txBody></p:sp>`,
+			body.X, body.Y, body.W, body.H, bodyXML.String()))
+	}
+
+	// 页码 (条件)
+	if style.Layout.PageNumber.Enabled {
+		pn := style.Layout.PageNumber
+		pnColor := resolveColorHex(pn.Color, theme)
+		spTree.WriteString(fmt.Sprintf(`<p:sp><p:nvSpPr><p:cNvPr id="7" name="PageNum"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="%d" y="%d"/><a:ext cx="%d" cy="%d"/></a:xfrm></p:spPr><p:txBody><a:bodyPr/><a:p><a:r><a:rPr lang="zh-CN" sz="%d" dirty="0"><a:solidFill><a:srgbClr val="%s"/></a:solidFill></a:rPr><a:t>%d / %d</a:t></a:r></a:p></p:txBody></p:sp>`,
+			pn.X, pn.Y, pn.W, pn.H, pn.FontSize, pnColor, num, total))
 	}
 
 	return fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <p:cSld>
     <p:spTree>
-      <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
-      <p:grpSpPr/>
-      <!-- 背景 -->
-      <p:sp>
-        <p:nvSpPr><p:cNvPr id="2" name="Bg"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
-        <p:spPr><a:solidFill><a:srgbClr val="F5F0E6"/></a:solidFill></p:spPr>
-      </p:sp>
-      <!-- 强调色装饰条 -->
-      <p:sp>
-        <p:nvSpPr><p:cNvPr id="3" name="Accent"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
-        <p:spPr>
-          <a:xfrm><a:off x="0" y="0"/><a:ext cx="152400" cy="6858000"/></a:xfrm>
-          <a:solidFill><a:srgbClr val="%s"/></a:solidFill>
-        </p:spPr>
-      </p:sp>
-      <!-- 眉标 (Subtitle) -->
-      <p:sp>
-        <p:nvSpPr><p:cNvPr id="4" name="Eyebrow"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
-        <p:spPr><a:xfrm><a:off x="914400" y="685800"/><a:ext cx="8229600" cy="457200"/></a:xfrm></p:spPr>
-        <p:txBody><a:bodyPr/><a:p><a:r><a:rPr lang="zh-CN" sz="1200" dirty="0" b="0"><a:solidFill><a:srgbClr val="%s"/></a:solidFill></a:rPr><a:t>%s</a:t></a:r></a:p></p:txBody>
-      </p:sp>
-      <!-- 标题 -->
-      <p:sp>
-        <p:nvSpPr><p:cNvPr id="5" name="Title"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
-        <p:spPr><a:xfrm><a:off x="914400" y="1371600"/><a:ext cx="8229600" cy="1371600"/></a:xfrm></p:spPr>
-        <p:txBody><a:bodyPr/><a:p><a:r><a:rPr lang="zh-CN" sz="%s" dirty="0" b="1"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill></a:rPr><a:t>%s</a:t></a:r></a:p></p:txBody>
-      </p:sp>
-      <!-- 正文 -->
-      <p:sp>
-        <p:nvSpPr><p:cNvPr id="6" name="Body"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
-        <p:spPr><a:xfrm><a:off x="914400" y="2971800"/><a:ext cx="8229600" cy="3200400"/></a:xfrm></p:spPr>
-        <p:txBody><a:bodyPr/>%s</p:txBody>
-      </p:sp>
-      <!-- 页码 -->
-      <p:sp>
-        <p:nvSpPr><p:cNvPr id="7" name="PageNum"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
-        <p:spPr><a:xfrm><a:off x="914400" y="6400800"/><a:ext cx="1371600" cy="274320"/></a:xfrm></p:spPr>
-        <p:txBody><a:bodyPr/><a:p><a:r><a:rPr lang="zh-CN" sz="900" dirty="0"><a:solidFill><a:srgbClr val="999999"/></a:solidFill></a:rPr><a:t>%d / %d</a:t></a:r></a:p></p:txBody>
-      </p:sp>
+      %s
     </p:spTree>
   </p:cSld>
-</p:sld>`, accentHex, accentHex, escapeXML(s.Subtitle), titleSize, escapeXML(s.Title), bodyXML.String(), num, num)
+</p:sld>`, spTree.String())
 }
 
 func pptxTheme() string {
@@ -270,6 +380,49 @@ func PPTXSlideFromBeat(act, voiceover, mood string, idx, total int) PPTXSlide {
 		Body:     []string{voiceover},
 		Color:    c,
 	}
+}
+
+func loadPPTXStyle(styleID, baseDir string) *PPTXStyle {
+	if styleID == "" {
+		styleID = "accent-bar"
+	}
+	path := filepath.Join(baseDir, "templates", "pptx-styles", styleID+".yaml")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	var s PPTXStyle
+	if err := yaml.Unmarshal(data, &s); err != nil {
+		return nil
+	}
+	return &s
+}
+
+func loadPPTXTheme(themePath string) *PPTXTheme {
+	data, err := os.ReadFile(themePath)
+	if err != nil {
+		return nil
+	}
+	var t PPTXTheme
+	if err := yaml.Unmarshal(data, &t); err != nil {
+		return nil
+	}
+	return &t
+}
+
+func defaultPPTXStyle() *PPTXStyle {
+	s := &PPTXStyle{
+		ID:   "default",
+		Name: "默认",
+	}
+	s.Layout.Background.Fill = "solid"
+	s.Layout.Background.Color = "F5F0E6"
+	s.Layout.AccentBar = PPTXAccentBar{Enabled: true, Width: 152400, Color: "C43C3A"}
+	s.Layout.Title = PPTXStyleElement{X: 914400, Y: 1371600, W: 8229600, H: 1371600, FontSize: 4400, Bold: true, Color: "1A1A1A"}
+	s.Layout.Subtitle = PPTXStyleElement{X: 914400, Y: 685800, W: 8229600, H: 457200, FontSize: 1200, Color: "C43C3A"}
+	s.Layout.Body = PPTXStyleElement{X: 914400, Y: 2971800, W: 8229600, H: 3200400, FontSize: 1800, Color: "4A4A4A"}
+	s.Layout.PageNumber = PPTXStyleElement{X: 914400, Y: 6400800, W: 1371600, H: 274320, FontSize: 900, Color: "999999", Enabled: true}
+	return s
 }
 
 var _ = color.White // 保留 color 导入

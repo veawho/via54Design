@@ -25,6 +25,7 @@ when:
   audience: [readers, analysts, decision_makers]
   suitable_for: [media, research_report, brand_hero, cover]
 
+
 css_variables: |
   --bg: #FFFFFF;
   --bg-dark: #000000;

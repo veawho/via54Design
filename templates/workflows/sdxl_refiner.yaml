@@ -1,0 +1,29 @@
+# via54Design — SDXL Refiner Two-Stage Workflow Template
+# SPDX-License-Identifier: MIT
+id: sdxl_refiner
+name: "SDXL Refiner"
+description: "SDXL base→refiner two-stage generation"
+type: txt2img
+model: "sd_xl_refiner_1.0.safetensors"
+base_model: "sd_xl_base_1.0.safetensors"
+params:
+  base_steps: 30
+  refiner_steps: 10
+  cfg: 7.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 0.3
+nodes:
+  base_checkpoint: CheckpointLoaderSimple
+  refiner_checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/sd_xl_refiner_1.0.safetensors"
+  - url: ""
+    path: "checkpoints/sd_xl_base_1.0.safetensors"

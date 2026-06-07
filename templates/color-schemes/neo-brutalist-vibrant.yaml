@@ -22,6 +22,7 @@ when:
   audience: [youth, creators, tech_enthusiasts]
   suitable_for: [media_hub, community, campaign, ai_aggregator]
 
+
 css_variables: |
   --bg: #FFFFFF;
   --bg-dark: #08080D;

@@ -41,6 +41,16 @@ palette:
     name_zh: "牙色"
     cultural_note: "象牙白带微暖"
 
+
+
+css_variables: |
+  --bg: #F8F4EF;
+  --text-primary: #2D2326;
+  --text-secondary: #7A6B70;
+  --accent: #7A4B5C;
+  --accent-alt: #C9A88D;
+  --border: #E6DFD8;
+
 compatibility:
   layouts: [hero-split-left-image, gallery-waterfall]
   fonts: [cormorant-elegant, serif-sans-editorial]

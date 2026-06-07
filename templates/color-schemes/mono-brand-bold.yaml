@@ -21,6 +21,7 @@ when:
   audience: [mass, consumer, youth]
   suitable_for: [campaign, townhall, brand_story, marketing_deck]
 
+
 css_variables: |
   --bg: #1ED760;
   --bg-dark: #191919;

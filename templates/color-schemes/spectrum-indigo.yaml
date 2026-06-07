@@ -37,6 +37,16 @@ palette:
     hex: "#E0E0E0"
     name_zh: "Spectrum淡灰"
     cultural_note: "组件边界线"
+
+
+css_variables: |
+  --bg: #FAFAFA;
+  --text-primary: #1A1A1A;
+  --text-secondary: #6E6E6E;
+  --accent: #5C5CE0;
+  --accent-alt: #E03C31;
+  --border: #E0E0E0;
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image]
   fonts: [sans-geometric-tech, system-utility]

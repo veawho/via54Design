@@ -1,0 +1,28 @@
+# via54Design — SDXL LCM LoRA Workflow Template
+# SPDX-License-Identifier: MIT
+id: lcm_lora
+name: "SDXL LCM LoRA"
+description: "SDXL + LCM LoRA super-fast (1-4 steps)"
+type: txt2img
+model: "sd_xl_base_1.0.safetensors"
+lora: "lcm_lora.safetensors"
+params:
+  steps: 4
+  cfg: 1.5
+  sampler: "lcm"
+  scheduler: "sgm_uniform"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  lora: LoraLoader
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+  - url: ""
+    path: "loras/lcm_lora.safetensors"

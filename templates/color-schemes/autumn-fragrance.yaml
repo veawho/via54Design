@@ -41,6 +41,16 @@ palette:
     name_zh: "米黄"
     cultural_note: "淡米黄分割"
 
+
+
+css_variables: |
+  --bg: #F5F0E8;
+  --text-primary: #3A3226;
+  --text-secondary: #8A7F72;
+  --accent: #9B8B6E;
+  --accent-alt: #C4A96A;
+  --border: #E0D9CE;
+
 compatibility:
   layouts: [hero-split-left-image, editorial-longform]
   fonts: [serif-sans-editorial, serif-longform]

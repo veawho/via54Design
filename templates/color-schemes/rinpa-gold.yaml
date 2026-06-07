@@ -37,6 +37,16 @@ palette:
     hex: "#3A3528"
     name_zh: "铁色"
     cultural_note: "暗金铁色边界"
+
+
+css_variables: |
+  --bg: #1A1A1A;
+  --text-primary: #F5F0E0;
+  --text-secondary: #B8A88A;
+  --accent: #C89B3C;
+  --accent-alt: #2E5CB8;
+  --border: #3A3528;
+
 compatibility:
   layouts: [gallery-waterfall, bento-grid-2x2]
   fonts: [display-sans-bold, system-utility]

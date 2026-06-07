@@ -41,6 +41,16 @@ palette:
     name_zh: "银丝"
     cultural_note: "极细银灰分割"
 
+
+
+css_variables: |
+  --bg: #F0F2F0;
+  --text-primary: #1A1A1A;
+  --text-secondary: #7B827E;
+  --accent: #5B7B8C;
+  --accent-alt: #C4BBAF;
+  --border: #E0E2E0;
+
 compatibility:
   layouts: [gallery-waterfall, hero-split-left-image]
   fonts: [cormorant-elegant, system-utility]

@@ -37,6 +37,16 @@ palette:
     hex: "#D6CFC3"
     name_zh: "絹色"
     cultural_note: "生绢的天然米灰色"
+
+
+css_variables: |
+  --bg: #EDE8DE;
+  --text-primary: #3B302A;
+  --text-secondary: #7D756C;
+  --accent: #6B5B4A;
+  --accent-alt: #A89880;
+  --border: #D6CFC3;
+
 compatibility:
   layouts: [gallery-waterfall, editorial-longform]
   fonts: [serif-longform, cormorant-elegant]

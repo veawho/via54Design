@@ -25,6 +25,7 @@ when:
   audience: [developers, tech_professionals, saas_users]
   suitable_for: [saas, dashboard, devtool, product_showcase]
 
+
 css_variables: |
   --bg: #08090A;
   --bg-card: #0F0F13;

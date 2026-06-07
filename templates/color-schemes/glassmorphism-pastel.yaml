@@ -37,6 +37,16 @@ palette:
     hex: "rgba(255,255,255,0.15)"
     name_zh: "玻璃边框"
     cultural_note: "半透明白边框，玻璃拟态的灵魂"
+
+
+css_variables: |
+  --bg: #0A0E27;
+  --text-primary: #F0EFFF;
+  --text-secondary: #A8B0D0;
+  --accent: #7C6BF5;
+  --accent-alt: #6CD4FF;
+  --border: rgba(255,255,255,0.15);
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image]
   fonts: [sans-geometric-tech, mono-terminal]

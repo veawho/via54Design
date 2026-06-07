@@ -41,6 +41,16 @@ palette:
     name_zh: "清水"
     cultural_note: "极淡墨痕，若有若无"
 
+
+
+css_variables: |
+  --bg: #F5F0E6;
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B6B6B;
+  --accent: #C43C3A;
+  --accent-alt: #2A2A2A;
+  --border: #D9D4CA;
+
 compatibility:
   layouts: [gallery-waterfall, hero-split-left-image]
   fonts: [cormorant-elegant, system-utility]

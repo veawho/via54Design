@@ -1,0 +1,45 @@
+# via54Design — PPTX 极简风格模板
+id: minimal
+name: "极简 (Minimal)"
+description: "白底黑字，左对齐，无装饰条。适合正文密集的会议文档"
+layout:
+  background:
+    fill: "solid"
+    color: "--bg"
+  accent_bar:
+    enabled: false
+  title:
+    x: 914400
+    y: 914400
+    w: 10363200
+    h: 914400
+    font_size: 3600
+    bold: true
+    color: "#1A1A1A"
+    align: left
+  subtitle:
+    x: 914400
+    y: 685800
+    w: 10363200
+    h: 457200
+    font_size: 1200
+    bold: false
+    color: "--accent"
+    align: left
+  body:
+    x: 914400
+    y: 2286000
+    w: 10363200
+    h: 4114800
+    font_size: 1800
+    color: "#333333"
+    align: left
+    line_spacing: 400
+  page_number:
+    enabled: true
+    x: 914400
+    y: 6400800
+    w: 1371600
+    h: 274320
+    font_size: 900
+    color: "#999999"

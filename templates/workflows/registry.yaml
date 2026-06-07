@@ -128,3 +128,57 @@ workflows:
     type: img2img
     model: "sd_xl_base_1.0.safetensors"
     params: "30 steps, cfg 7.5, dpmpp_2m karras, denoise 0.65, CodeFormer"
+  - id: flux_fill
+    name: "Flux Fill (Inpainting)"
+    description: "Flux Dev inpainting with mask input"
+    type: txt2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, guidance 3.5, mask input"
+  - id: sd3_img2img
+    name: "SD3.5 Image-to-Image"
+    description: "Stable Diffusion 3.5 Medium image-to-image"
+    type: img2img
+    model: "sd3.5_medium.safetensors"
+    params: "30 steps, cfg 4.5, denoise 0.6"
+  - id: sdxl_refiner
+    name: "SDXL Refiner"
+    description: "SDXL base→refiner two-stage generation"
+    type: txt2img
+    model: "sd_xl_refiner_1.0.safetensors"
+    params: "30+10 steps, cfg 7.5, refiner"
+  - id: sdxl_turbo
+    name: "SDXL Turbo"
+    description: "SDXL Turbo (1-4 steps, real-time)"
+    type: txt2img
+    model: "sdxl_turbo.safetensors"
+    params: "4 steps, cfg 2.0, 512×512"
+  - id: playground_v2
+    name: "Playground v2.5"
+    description: "Playground v2.5 aesthetic (1024×1024)"
+    type: txt2img
+    model: "playground_v2.5.safetensors"
+    params: "50 steps, cfg 7.0, dpmpp_2m karras"
+  - id: lcm_lora
+    name: "SDXL LCM LoRA"
+    description: "SDXL + LCM LoRA super-fast (1-4 steps)"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "4 steps, cfg 1.5, lcm_lora.safetensors"
+  - id: pixart
+    name: "PixArt Sigma"
+    description: "PixArt Sigma 1024px transformer"
+    type: txt2img
+    model: "pixart_sigma.safetensors"
+    params: "20 steps, cfg 4.5, 1024×1024"
+  - id: stable_cascade
+    name: "Stable Cascade"
+    description: "Stable Cascade efficient 1024px"
+    type: txt2img
+    model: "stable_cascade.safetensors"
+    params: "20 steps, cfg 4.0, efficient"
+  - id: svd_img2vid_ext
+    name: "SVD 25-Frame Video"
+    description: "Stable Video Diffusion extended 25-frame generation"
+    type: img2img
+    model: "svd.safetensors"
+    params: "25 steps, cfg 3.0, 25 frames"

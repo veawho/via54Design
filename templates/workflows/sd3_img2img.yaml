@@ -1,0 +1,22 @@
+# via54Design — SD3.5 Image-to-Image Workflow Template
+# SPDX-License-Identifier: MIT
+id: sd3_img2img
+name: "SD3.5 Image-to-Image"
+description: "Stable Diffusion 3.5 Medium image-to-image"
+type: img2img
+model: "sd3.5_medium.safetensors"
+params:
+  steps: 30
+  cfg: 4.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  denoise: 0.6
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/sd3.5_medium.safetensors"
