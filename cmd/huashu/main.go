@@ -6,19 +6,23 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/veawho/via54Design/internal/mcp"
+	"github.com/veawho/via54Design/internal/quality"
 	"github.com/veawho/via54Design/internal/template"
 )
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("via54Design -- 结构化设计模板引擎")
+		fmt.Println("via54Design — 结构化设计模板引擎")
 		fmt.Println()
 		fmt.Println("用法:")
-		fmt.Println("  via54Design serve            启动 MCP Server")
+		fmt.Println("  via54Design serve            启动 MCP Server (stdio)")
 		fmt.Println("  via54Design generate ...      模板组合生成HTML")
+		fmt.Println("  via54Design quality ...       质量门禁检查")
 		fmt.Println("  via54Design list              列出所有可用模板")
 		fmt.Println("  via54Design version           版本信息")
 		fmt.Println()
+		fmt.Println("MCP 兼容: Claude Desktop / Cursor / Copilot / VS Code / Hermes")
 		fmt.Println("文档: https://github.com/veawho/via54Design")
 		return
 	}
@@ -28,6 +32,8 @@ func main() {
 		cmdServe()
 	case "generate":
 		cmdGenerate()
+	case "quality":
+		cmdQuality()
 	case "list":
 		cmdList()
 	case "version":
@@ -39,20 +45,29 @@ func main() {
 }
 
 func baseDir() string {
-	// 尝试可执行文件所在目录
 	exe, _ := os.Executable()
 	dir := filepath.Dir(exe)
-	// 检查目录结构是否匹配
 	if _, err := os.Stat(filepath.Join(dir, "templates")); err == nil {
 		return dir
 	}
-	// 回退到当前工作目录
+	if _, err := os.Stat(filepath.Join(dir, "template-registry.yaml")); err == nil {
+		return dir
+	}
 	wd, _ := os.Getwd()
 	return wd
 }
 
 func cmdServe() {
-	fmt.Println("MCP Server - 待实现")
+	srv, err := mcp.New(baseDir())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "MCP Server 初始化失败: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Fprintf(os.Stderr, "via54Design MCP Server 启动 (stdio)...\n")
+	if err := srv.ServeStdio(); err != nil {
+		fmt.Fprintf(os.Stderr, "Server 错误: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 func cmdGenerate() {
@@ -62,7 +77,7 @@ func cmdGenerate() {
 	font := fs.String("font", "", "字体模板ID")
 	title := fs.String("title", "via54Design", "页面标题")
 	output := fs.String("output", "output.html", "输出路径")
-	_ = fs.Parse(os.Args[2:])
+	fs.Parse(os.Args[2:])
 
 	if *layout == "" || *color == "" || *font == "" {
 		fmt.Fprintln(os.Stderr, "请指定: --layout, --color, --font")
@@ -92,6 +107,38 @@ func cmdGenerate() {
 		result.LayoutID, result.ColorID, result.FontID)
 }
 
+func cmdQuality() {
+	fs := flag.NewFlagSet("quality", flag.ExitOnError)
+	htmlFile := fs.String("html", "", "HTML 文件路径")
+	verbose := fs.Bool("verbose", false, "显示 info 级别")
+	fs.Parse(os.Args[2:])
+
+	if *htmlFile == "" {
+		fmt.Fprintln(os.Stderr, "请指定 --html")
+		os.Exit(1)
+	}
+
+	data, err := os.ReadFile(*htmlFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "读取文件失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	report := quality.CheckHTML(string(data))
+	fmt.Printf("\n=== 质量门禁: %s ===\n", report.Verdict)
+	fmt.Printf("文件: %d bytes | CSS块: %d | 行: %d\n", report.HTMLSize, report.CSSBlocks, report.TotalLines)
+	fmt.Printf("问题: %d 错误 / %d 警告 / %d 信息\n\n",
+		report.Summary["error"], report.Summary["warning"], report.Summary["info"])
+
+	for _, iss := range report.Issues {
+		if iss.Severity == "info" && !*verbose {
+			continue
+		}
+		icon := map[string]string{"error": "❌", "warning": "⚠️", "info": "ℹ️"}[iss.Severity]
+		fmt.Printf("  %s [%s] %s\n", icon, iss.Category, iss.Message)
+	}
+}
+
 func cmdList() {
 	eng, err := template.NewEngine(baseDir())
 	if err != nil {
@@ -102,7 +149,7 @@ func cmdList() {
 	for cat, entries := range all {
 		fmt.Printf("\n=== %s ===\n", cat)
 		for _, e := range entries {
-			fmt.Printf("  %-30s %s\n", e.ID, e.Name)
+			fmt.Printf("  %-32s %s\n", e.ID, e.Name)
 		}
 	}
 }
