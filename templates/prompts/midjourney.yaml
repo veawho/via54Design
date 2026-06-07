@@ -1,0 +1,72 @@
+# Midjourney 提示词模板
+# 格式: "subject, environment, lighting, style, mood, composition" + --params
+id: midjourney
+name:
+  zh: "Midjourney"
+  en: "Midjourney"
+platform: midjourney
+description: "Midjourney 图片生成"
+version: "1.0.0"
+format: midjourney
+params:
+  ar: "16:9"
+  v: "6.1"
+  style: "raw"
+  s: "250"
+
+sections:
+  - id: subject
+    label: "主体 (Subject)"
+    hint: "描述主要人物/物体/场景"
+    default: "（LLM填充：主体描述）"
+
+  - id: environment
+    label: "环境 (Environment)"
+    hint: "背景/环境/氛围"
+    default: "（LLM填充：环境描述）"
+
+  - id: lighting
+    label: "光线 (Lighting)"
+    hint: "光线类型和方向"
+    default: "自然光"
+    options:
+      - {value: "自然光", label: "自然光"}
+      - {value: "黄金时刻", label: "Golden Hour"}
+      - {value: "电影布光", label: "Cinematic Lighting"}
+      - {value: "伦勃朗光", label: "Rembrandt Lighting"}
+      - {value: "霓虹光", label: "Neon Lighting"}
+      - {value: "剪影", label: "Silhouette"}
+
+  - id: style
+    label: "风格 (Style)"
+    hint: "艺术风格/流派"
+    default: "摄影写实"
+    options:
+      - {value: "摄影写实", label: "Photorealistic"}
+      - {value: "电影感", label: "Cinematic"}
+      - {value: "水墨画", label: "Ink Wash Painting"}
+      - {value: "赛博朋克", label: "Cyberpunk"}
+      - {value: "浮世绘", label: "Ukiyo-e"}
+      - {value: "3D 渲染", label: "3D Render"}
+
+  - id: mood
+    label: "情绪 (Mood)"
+    hint: "整体情绪氛围"
+    default: "平静"
+    options:
+      - {value: "平静", label: "Calm"}
+      - {value: "神秘", label: "Mysterious"}
+      - {value: "振奋", label: "Uplifting"}
+      - {value: "忧郁", label: "Melancholic"}
+      - {value: "未来感", label: "Futuristic"}
+
+  - id: composition
+    label: "构图 (Composition)"
+    hint: "镜头/构图方式"
+    default: "中景"
+    options:
+      - {value: "特写", label: "Close-up"}
+      - {value: "中景", label: "Medium Shot"}
+      - {value: "远景", label: "Wide Shot"}
+      - {value: "俯视", label: "Top-down"}
+      - {value: "仰视", label: "Low Angle"}

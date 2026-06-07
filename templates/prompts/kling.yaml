@@ -1,0 +1,46 @@
+# Kling AI 提示词模板
+id: kling
+name:
+  zh: "可灵 AI"
+  en: "Kling AI"
+platform: kling
+description: "Kling AI 视频/图片生成"
+version: "1.0.0"
+format: kling
+params:
+  duration: "5"
+  motion: "medium"
+  cfg_scale: "0.7"
+
+sections:
+  - id: subject
+    label: "主体"
+    hint: "主要人物/物体"
+    default: "（LLM填充：主体描述）"
+
+  - id: action
+    label: "动作 (Action)"
+    hint: "主体的运动/动作"
+    default: "静止"
+    options:
+      - {value: "静止", label: "Still"}
+      - {value: "漫步", label: "Walking"}
+      - {value: "奔跑", label: "Running"}
+      - {value: "舞蹈", label: "Dancing"}
+      - {value: "飘动", label: "Flowing"}
+
+  - id: environment
+    label: "环境"
+    hint: "背景环境"
+    default: "（LLM填充：环境）"
+
+  - id: camera
+    label: "运镜"
+    hint: "镜头运动"
+    default: "固定"
+    options:
+      - {value: "固定", label: "Static"}
+      - {value: "推近", label: "Dolly In"}
+      - {value: "拉远", label: "Dolly Out"}
+      - {value: "环绕", label: "Orbit"}
+      - {value: "跟随", label: "Tracking"}

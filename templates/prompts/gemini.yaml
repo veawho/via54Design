@@ -1,0 +1,30 @@
+# Gemini Imagen 提示词模板
+id: gemini
+name:
+  zh: "Gemini Imagen"
+  en: "Gemini Imagen"
+platform: gemini
+description: "Google Gemini Imagen 图片生成"
+version: "1.0.0"
+format: gemini
+
+sections:
+  - id: subject
+    label: "主体描述"
+    hint: "描述要生成的主体"
+    default: "（LLM填充：主体）"
+
+  - id: scene
+    label: "场景描述"
+    hint: "完整的场景构建"
+    default: "（LLM填充：场景构建）"
+
+  - id: style_ref
+    label: "风格参考"
+    hint: "参考艺术家或风格"
+    default: "摄影写实风格"
+
+  - id: negative
+    label: "负面提示词"
+    hint: "不希望出现的内容"
+    default: "模糊, 变形, 低质量"

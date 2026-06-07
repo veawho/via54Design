@@ -38,6 +38,7 @@ func main() {
 	case "list":      cmdList()
 	case "media":     cmdMedia()
 	case "export":    cmdExport()
+	case "prompt":    cmdPrompt()
 	case "version":   cmdVersion()
 	default:          help()
 	}
@@ -55,6 +56,7 @@ func help() {
 	fmt.Println("  list               列出所有可用模板")
 	fmt.Println("  media ...          媒体管线")
 	fmt.Println("  export ...         导出 (pptx/svg/json/markdown/video/pdf/tts)")
+	fmt.Println("  prompt ...         图片提示词 (scene→MJ/Kling/即梦/Gemini)")
 	fmt.Println("  version           版本信息")
 	fmt.Println()
 	fmt.Println("详见: https://github.com/veawho/via54Design")

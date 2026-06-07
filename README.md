@@ -193,7 +193,42 @@ via54 media trace --input photo.jpg --output portrait.svg        # 照片 → �
 
 基于 VTracer (⭐6,150) 引擎，保留原始笔触质感。
 
-**Step 3 — 矢量标题嵌入设计**
+**Step 3 — 场景 → AI 生图提示词（新增）**
+
+人类写一句基础场景，AI 生成结构化提示词，人类修改确认后喂给 Midjourney / 可灵 / 即梦 / Gemini。
+
+```bash
+via54 prompt --scene "1920年代，巴黎左岸的小裁缝店里，一位中国裁缝在制作旗袍" \
+  --platform midjourney --output prompt.md
+```
+
+输出结构化提示词，包含可编辑字段：
+
+```
+📋 平台: midjourney | 格式: midjourney
+⏳ [subject]      （LLM填充：主体描述）
+⏳ [environment]  （LLM填充：环境描述）
+✅ [lighting]     自然光
+✅ [style]        摄影写实
+✅ [mood]         平静
+✅ [composition]  中景
+
+最终 prompt:
+（LLM填充：主体描述）, （LLM填充：环境描述）, 自然光, 摄影写实, 平静, 中景 --ar 16:9 --v 6.1 --style raw --s 250
+```
+
+人类可以直接修改 YAML 字段值，然后重新生成最终 prompt。支持平台：
+
+| 平台 | 格式 | 特点 |
+|------|------|------|
+| `midjourney` | `subject, env, style --params` | --ar / --v / --style / --s |
+| `kling` | 结构化 + 运镜参数 | duration / motion / cfg_scale |
+| `jimeng` | 中文结构化 | 国风 / 写实 / 3D |
+| `gemini` | 自然语言段落 | 适合 Gemini Imagen |
+
+参考项目: ai-media-generator (⭐70), Ultimate-AI-Media-Generator-Skill (⭐57)
+
+**矢量标题嵌入设计**
 
 ```bash
 via54 generate --lettering-svg ./title.svg --color ink-wash \
@@ -211,6 +246,7 @@ via54 generate --lettering-svg ./title.svg --color ink-wash \
 | 🎬 **故事→视频** | 一句话 → 叙事JSON | MP4/WebM/HEVC + 配乐 | narrate + generate + Playwright | 需 ffmpeg |
 | 📊 **故事→演示** | 一句话 → 叙事JSON | PPTX / Markdown / JSON / PDF | **纯 Go** | **零** |
 | 🎨 **故事→创意图片** | 一句话 → 叙事JSON | SVG 矢量文件 | **纯 Go** + VTracer | 需 VTracer (trace) |
+| 🖼️ **场景→生图提示词** | 一句话场景 | 结构化 Prompt (MJ/Kling/即梦/Gemini) | **纯 Go** (YAML模板) | **零** |
 
 ---
 
@@ -299,6 +335,11 @@ via54 export svg --output ./scenes scaffold.json                                
 via54 export json --output scenes.json scaffold.json                                     # 结构化场景数据
 via54 export markdown --output slides.md scaffold.json                                   # Marp 兼容幻灯片
 via54 export tts --text "你好" --out voice.mp3                                           # 语音合成
+
+# 图片提示词 (Prompt)
+via54 prompt --list                                                      # 查看可用平台
+via54 prompt --scene "场景描述" --platform midjourney                     # 生成 Midjourney 提示词
+via54 prompt --scene "场景" --platform kling --output prompt.md           # 输出到文件
 
 # MCP Server (独立二进制: via54-mcp, 兼容: via54 serve)
 via54 serve
