@@ -465,10 +465,40 @@ docs/       ← 模板格式规范 + 故障恢复指南
 双许可：**MIT OR AGPL-3.0**
 
 - `templates/` YAML 模板：MIT
-- `scripts/` JS/Shell 脚本：MIT
+- `hack/` Shell/Rust 脚本：MIT
 - `internal/` Go 源代码：AGPL-3.0
-- `internal/wasm/` Rust 源代码：AGPL-3.0
+- `docs/` 文档：MIT
 
 ## 致谢
 
-基于 [huashu-design](https://github.com/alchaincyf/huashu-design) by alchaincyf（花叔·花生），MIT 许可。
+via54Design 建立在以下开源项目的基础上，感谢所有贡献者：
+
+| 项目 | 许可 | 用途 |
+|------|------|------|
+| **[huashu-design](https://github.com/alchaincyf/huashu-design)** by alchaincyf（花叔·花生） | MIT | 基础设计模板引擎，本项目由此衍生 |
+| **[VTracer](https://github.com/visioncortex/vtracer)** | MIT | 照片→SVG 矢量化引擎 |
+| **[wazero](https://github.com/tetratelabs/wazero)** | Apache-2.0 | WebAssembly 运行时（Rust WASM 加速） |
+| **[mcp-go](https://github.com/mark3labs/mcp-go)** | MIT | MCP Server 框架 |
+| **[Extra-Strength Responsive Grids](https://github.com/johnpolacek/extra-strength-responsive-grids)** | — | 流体 CSS Grid 系统参考 |
+| **[Marp](https://github.com/marp-team/marp)** | MIT | Markdown 幻灯片生态（export markdown 兼容格式） |
+| **[golang-standards/project-layout](https://github.com/golang-standards/project-layout)** | — | Go 项目目录结构参考 |
+
+### 设计参考
+
+| 项目/资源 | 说明 |
+|-----------|------|
+| **Fountain screenplay format** ([fountain.io](https://fountain.io)) | 剧本格式标准（narrate 的 Fountain 输出） |
+| **Aristotle's Poetics / Syd Field's Screenplay** | 三幕剧叙事理论（three-act 模型） |
+| **Joseph Campbell's The Hero with a Thousand Faces** | 英雄之旅叙事理论（heros-journey 模型） |
+| **Cognitive Load Theory (Sweller, 1988)** | 认知弧叙事模型（cognitive-arc 模型） |
+| **Direct Response Marketing (Caples/Schwartz)** | 问题-解法叙事模型（problem-solution 模型） |
+| **Pinterest Waterfall / Masonry Layout** | 瀑布流布局参考（gallery-waterfall） |
+| **Apple Bento Grid Design Language** | Bento 便当格布局参考（bento-grid-2x2） |
+
+### 评价参考
+
+| 项目 | 说明 |
+|------|------|
+| **huobao-drama** (⭐12,623) | 一句话生成短剧，“叙事脚手架”模式验证 |
+| **presenterm** (⭐8,494) | 终端幻灯片工具，演示模式概念验证 |
+| **unioffice** (⭐4,875) | 纯 Go Office 文档库，PPTX 实现参考
