@@ -1,24 +1,113 @@
 # via54Design
 
-> 结构化模板引擎 + 设计方向顾问 + 质量门禁
+> 结构化模板引擎 + 叙事引擎 + 设计方向顾问 + 质量门禁
 >
-> 把人类的审美判断力，转化为机器可执行的确定性模板。
+> 把人类的创意灵感，转化为 AI 可执行的结构化故事与视觉。
 
-## 🚀 一句话部署
+---
 
-AI Agent / AI IDE 自动识别这条命令：
+## 🧠 核心创意工作流：人类 + AI 一起讲故事
+
+**via54Design 不是替代你创作，而是把你的灵感变成可执行的管线。**
+
+人类写一句开头 → AI 扩展叙事脚手架 → 人类确认方向 → AI 生成剧本/分镜 → 多场景动画 → 导出视频
+
+### 示例：从一句话到 90 秒品牌故事
+
+#### Step 1 — 人类写一句开头（人类独有的灵感）
+
+> "1920年代，一个中国裁缝在巴黎开了一家小店，
+> 他做的旗袍融入了 Art Deco 的几何线条。
+> 没有人想到，这件衣服会改变两个文明的时尚。"
+
+这一句里有人物（裁缝）、时代（1920s）、地点（巴黎）、冲突（东方 vs 西方）、悬念（改变时尚）。AI 无法凭空创造这个种子——它来自你。
+
+#### Step 2 — AI 扩展叙事脚手架
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/veawho/via54Design/main/scripts/install.sh)
+via54 narrate --seed "1920年代，一个中国裁缝在巴黎开了一家小店..." \
+  --model heros-journey --duration 90 --format json --output scaffold.json
 ```
 
-或在终端手动执行：
+AI 分析你的种子，匹配最合适的叙事模型，输出结构化脚手架：
+
+```
+📋 英雄之旅 (Hero's Journey)  90秒
+├── 第一幕·日常  (0-22s)  mood: calm      旁白: 每天，我们都...
+├── 第二幕·相遇  (22-44s) mood: curious   旁白: 直到有一天...
+├── 第三幕·蜕变  (44-66s) mood: excited   旁白: 不一样了...
+└── 第四幕·回归  (66-90s) mood: inspiring  旁白: 每一天...
+
+📋 分镜表: 12 个 shot（WIDE / MEDIUM / CLOSE-UP / DETAIL 循环）
+📋 Fountain 剧本骨架（4 幕 8 场景）
+📋 LLM 完整提示词（可直接喂给 Claude / GPT 生成完整剧本）
+```
+
+#### Step 3 — 人类选择叙事模型，确认方向
+
+你可以在 4 种叙事模型中选择，控制故事的节奏和情绪走向：
+
+| 模型 | 节拍 | 适合讲什么故事 |
+|------|------|---------------|
+| `three-act` | 设问 → 解答 → 号召 | 产品发布、品牌广告 |
+| `heros-journey` | 日常 → 相遇 → 蜕变 → 回归 | **品牌故事、纪录片** |
+| `cognitive-arc` | 钩子 → 基础 → 核心 → 案例 → 延展 → 总结 | 科普、教程 |
+| `problem-solution` | 痛点 → 方案 → 证明 → 行动 | 销售视频、Demo |
+
+（每个模型定义在 `templates/narratology/models/*.yaml`，你可以自由扩展）
+
+#### Step 4 — AI 生成多场景 HTML 动画
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/install.sh | bash
+via54 generate --from-narrative scaffold.json --output story.html
 ```
 
-部署后输入 `via54` 即可使用。
+每个叙事节拍自动映射为独立场景，情绪驱动配色切换：
+
+| 场景 | 时长 | 情绪 | 配色 | 旁白 |
+|------|------|------|------|------|
+| 日常（上海裁缝铺） | 22s | calm | moon-white | "每天，我们都..." |
+| 相遇（巴黎开店） | 22s | curious | ink-wash | "直到有一天..." |
+| 蜕变（Art Deco 旗袍） | 22s | excited | candy-duolingo | "不一样了..." |
+| 回归（影响时尚） | 24s | inspiring | warm-editorial | "每一天..." |
+
+#### Step 5 — 导出视频 + 配乐（可选）
+
+```bash
+via54 export render story.html --duration 90            # HTML → MP4
+via54 media add-music story.mp4 --mood=ad               # 加背景音乐
+```
+
+### 完整管线（一行命令）
+
+```bash
+via54 narrate --seed "你的故事开头" --model heros-journey --format json \
+  | via54 generate --from-narrative /dev/stdin --output story.html
+```
+
+---
+
+## 🗣️ 自然语言操作示例（给 AI 助手）
+
+把下面的任意一句话发给 AI（Claude / Cursor / Copilot），它能自动完成：
+
+| 你想做什么 | 对 AI 说 |
+|-----------|----------|
+| **构思故事** | "用 via54Design 帮我构思一个品牌故事，种子是：'一个中国裁缝在巴黎改变了时尚'" |
+| **全链路** | "从这句话开始，帮我做一个 60 秒的品牌故事动画：'一个农民用无人机种出了最好吃的大米'" |
+| **做 HTML** | "用 via54Design 生成一个暖色编辑风格的页面，标题叫'羽图鉴'" |
+| **检查质量** | "帮我检查这个 HTML 文件的质量: via54 quality --html demo.html" |
+| **提取风格** | "从我的 HTML 里提取配色和字体方案: via54 pattern --html demo.html" |
+| **加背景音乐** | "给这个视频配一首科技感 BGM: via54 media add-music demo.mp4 --mood=tech" |
+| **转 GIF** | "把视频转成 GIF: via54 media convert demo.mp4" |
+| **取素材图** | "帮我找一些鹦鹉的公共领域插画: via54 media fetch --query parrot" |
+| **录视频** | "把这个 HTML 录成 30 秒 1080p 视频: via54 export render demo.html --duration 30" |
+| **转 PDF** | "把这个页面导出为 PDF: via54 export pdf demo.html" |
+| **语音合成** | "把这段文字转成语音: via54 export tts --text '你好世界' --out hello.mp3" |
+| **矢量化** | "把我手写的 logo 草稿转成 SVG: via54 media trace --input sketch.jpg" |
+| **列出模板** | "看看有哪些设计模板可以用: via54 list" |
+
+---
 
 ## ⚡ 快速上手
 
@@ -26,10 +115,13 @@ curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/ins
 # 查看所有命令
 via54
 
-# 列出所有设计模板（配色26套 / 字体12套 / 布局3套）
+# 列出所有模板（配色40+ / 字体12 / 布局3 / 叙事模型4）
 via54 list
 
-# 生成一个页面
+# 叙事驱动：一句话 → 多场景 HTML 动画
+via54 narrate --seed "你的故事种子" --model three-act --format json | via54 generate --from-narrative /dev/stdin
+
+# 标准设计模板生成
 via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --title "我的设计" --output demo.html
 
 # 查看生成的HTML
@@ -40,131 +132,51 @@ xdg-open demo.html # Linux
 
 ---
 
-## 🗣️ 自然语言操作示例
+## 💻 命令参考
 
-### 给 AI 助手（Claude / Cursor / Copilot）的指令
+```bash
+via54                              # 帮助
+via54 version                      # 版本信息
+via54 list                         # 列出所有模板
 
-把下面任意一句话发给 AI，它能自动完成：
+# 叙事引擎 (Narrate) — 人类+AI协作讲故事
+via54 narrate --list                                          # 查看4种叙事模型
+via54 narrate --seed "一句话" --model three-act                # 输出叙事脚手架 (markdown)
+via54 narrate --seed "..." --model heros-journey --duration 60 # 指定时长和模型
+via54 narrate --seed "..." --format json --output scaffold.json # 输出JSON (供generate消费)
+via54 narrate --seed "..." --model cognitive-arc              # 四选一叙事模型
 
-| 你想做什么 | 对 AI 说 |
-|-----------|----------|
-| **做 HTML** | "用 via54Design 生成一个暖色编辑风格的页面，标题叫'羽图鉴'" |
-| **检查质量** | "帮我检查这个 HTML 文件的质量: via54 quality --html demo.html" |
-| **提取风格** | "从我的 HTML 里提取配色和字体方案: via54 pattern --html demo.html" |
-| **启动服务** | "启动 via54Design 的 MCP Server，我要在 Claude Desktop 里用" |
-| **加背景音乐** | "给这个视频配一首科技感 BGM: via54 media add-music demo.mp4 --mood=tech" |
-| **转 GIF** | "把视频转成 GIF: via54 media convert demo.mp4" |
-| **取素材图** | "帮我找一些鹦鹉的公共领域插画: via54 media fetch --query parrot" |
-| **录视频** | "把这个 HTML 录成 30 秒 1080p 视频: via54 export render demo.html --duration 30" |
-| **讲故事** | "用 via54Design 帮我构思一个品牌故事: via54 narrate --seed '让每个人都能创作' --model heros-journey" |
-| **全链路** | "把我的一句话想法做成多场景动画: via54 narrate --seed '一句话' --format json | via54 generate --from-narrative /dev/stdin" |
-| **转 PDF** | "把这个页面导出为 PDF: via54 export pdf demo.html" |
-| **语音合成** | "把这段文字转成语音: via54 export tts --text '你好世界' --out hello.mp3" |
-| **列出模板** | "看看有哪些设计模板可以用: via54 list" |
+# 叙事驱动生成 (全管线)
+via54 narrate --seed "你的故事" --format json | via54 generate --from-narrative /dev/stdin
 
-### 组合示例
+# 设计模板
+via54 generate --layout <id> --color <id> --font <id> --title "标题" --output out.html
+via54 generate --lettering-svg ./vector.svg --title "标题" --output out.html
+via54 generate --layout <id> --color <id> --font <id> --lettering-svg ./art.svg --title "标题" --output out.html
+via54 quality --html out.html
+via54 pattern --html out.html --name "项目名"
 
-```
-"帮我用 via54Design 做一个暖色编辑风格的品牌页面，检查质量，
- 然后录成 30 秒视频，再加一段科技感背景音乐。"
+# 媒体管线
+via54 media add-music input.mp4 --mood tech|ad|educational
+via54 media convert input.mp4
+via54 media fetch --query "关键词" --out ./img --count 3
+via54 media trace --input photo.jpg --output logo.svg       # 照片→SVG矢量化
+via54 media trace --input handwriting.jpg --output title.svg # 书法/签名→SVG
 
-→ 实际执行的命令:
-  via54 generate --layout hero-split --color warm-editorial --font serif-sans --title "品牌页" --output brand.html
-  via54 quality --html brand.html
-  via54 export render brand.html --duration 30
-  via54 media add-music brand.mp4 --mood=tech
-```
+# 导出
+via54 export render input.html --duration 30 --width 1920 --height 1080
+via54 export pdf input.html
+via54 export tts --text "你好" --out voice.mp3
 
-### 叙事管线示例
-
-```
-"帮我构思一个60秒的品牌故事，然后做成多场景动画"
-
-→ 实际执行的命令:
-  # Step 1: 叙事脚手架
-  via54 narrate --seed "让每个人都能创作" --model heros-journey --duration 60 --format json --output scaffold.json
-
-  # Step 2: 多场景 HTML 动画
-  via54 generate --from-narrative scaffold.json --output story.html
-
-  # Step 3 (可选): 录制视频
-  via54 export render story.html --duration 60
-
-  # Step 4 (可选): 配乐
-  via54 media add-music story.mp4 --mood=ad
-```
-
-叙事引擎支持 4 种模型，以 YAML 模板定义，可自由扩展：
-
-| 模型 | 中文名 | 节拍 | 适用场景 |
-|------|--------|------|----------|
-| `three-act` | 三幕剧 | 设问 → 解答 → 号召 | 产品发布、品牌广告 |
-| `heros-journey` | 英雄之旅 | 日常 → 相遇 → 蜕变 → 回归 | 品牌故事、纪录片 |
-| `cognitive-arc` | 认知弧 | 钩子 → 基础 → 核心 → 案例 → 延展 → 总结 | 科普、教程 |
-| `problem-solution` | 问题-解法 | 痛点 → 方案 → 证明 → 行动 | 销售视频、Demo |
-
-### 你的随意挥毫，都可以图形矢量化（LOGO、标题、矢量插画）
-
-支持任何手绘输入：毛笔书法、钢笔签名、Logo 草稿、插画线稿。VTracer 保留原始笔触质感，输出干净的 SVG path，不依赖任何字体文件或 OCR。
-
-```
-"把我手写的'山水之间'转成 SVG 标题，放到页面上"
-"这是我纸上画的 Logo 草稿，帮我矢量化"
-"把这个签名做成 SVG 放到品牌页脚"
-
-→ 实际执行的命令:
-  # ① 照片 → SVG 矢量化（一次）
-  via54 media trace --input ./any-sketch.jpg --output ./vector.svg
-
-  # ② SVG 嵌入设计（支持书法、Logo、插画任意图形）
-  via54 generate --lettering-svg ./vector.svg --color ink-wash --title "山水之间" --output index.html
-
-  # 也可以先处理再检查质量
-  via54 media trace --input ./logo-sketch.jpg --output ./logo.svg
-  via54 generate --layout hero-split --color ultramarine-deep --font sans-geometric-tech \
-    --lettering-svg ./logo.svg --title "品牌名" --output brand.html
-  via54 quality --html brand.html
-```
-
-### 自然语言查询模板
-
-```
-"有哪些中国传统配色可以用？"
-"帮我找一个适合书法标题的字体"
-"列出所有暗色配色方案"
-
-→ 实际执行的命令:
-  via54 list | grep chinese
-  via54 list | grep calligraphy
-  via54 list | grep dark
+# MCP Server (兼容 Claude Desktop / Cursor / Copilot / Hermes)
+via54 serve
 ```
 
 ---
 
-## 📦 手动安装
-
-### 依赖
-
-| 工具 | 用途 | 安装 |
-|------|------|------|
-| Go 1.21+ | 核心引擎 | [go.dev/dl](https://go.dev/dl/) |
-| ffmpeg | 视频/音频处理 | `brew install ffmpeg` / `apt install ffmpeg` |
-| Node.js 18+ | PPTX 导出 | [nodejs.org](https://nodejs.org/) |
-
-```bash
-# 编译
-go build -o via54 ./cmd/via54/
-
-# 安装 Playwright 浏览器
-npx playwright install chromium
-
-# 运行
-./via54
-```
-
 ## 🎨 配色模版一览
 
-20 套配色方案，每套包含 6 个语义角色（背景/正文/辅助/强调/强调2/边框）。
+40+ 套配色方案，每套包含 6 个语义角色（背景/正文/辅助/强调/强调2/边框）。
 
 ### 中国传统配色 (8)
 
@@ -180,8 +192,7 @@ npx playwright install chromium
 | `ink-wash` | 四季 | 极简·禅意 | `#C43C3A` 朱砂印 | 王维始创水墨画 |
 
 ```bash
-via54 generate --layout hero-split --color ink-wash --font cormorant-elegant --title "寒山寺" --output demo.html
-via54 generate --layout gallery --color moon-white --font system-utility --title "雨过天青" --output demo.html
+via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --title "寒山寺" --output demo.html
 ```
 
 ### 日系配色 (6)
@@ -189,16 +200,11 @@ via54 generate --layout gallery --color moon-white --font system-utility --title
 | 方案 | 来源 | 气质 | 强调色 | 文化背景 |
 |------|------|------|--------|----------|
 | `tsubaki-camellia` | 资深堂 | 优雅·知性 | `#BF3A2B` 椿色 | 山茶花口红传奇 |
-| `wabi-sabi` | 千利休茶道 | 残缺·空寂 | `#6B5B4A` 焦茶 | 侘寂美学发源 |
+| `wabi-sabi` | 千利休茶道 | 残缺·空寂 | `#6B5B4A` 焦茶 | 侘寂美学 |
 | `muji-minimal` | 原研哉 | 极简·功能 | `#B27C5A` 亚麻 | 空无的设计哲学 |
 | `sakura-blossom` | 花见 | 温柔·短暂 | `#E8A0B4` 薄紅 | 一期一会 |
 | `indigo-craft` | 阿波藍 | 匠人·深沉 | `#264C7B` 藍色 | Japan Blue |
 | `rinpa-gold` | 尾形光琳 | 华美·装饰 | `#C89B3C` 金 | 风神雷神屏风 |
-
-```bash
-via54 generate --layout hero-split --color tsubaki-camellia --font cormorant-elegant --title "銀座" --output demo.html
-via54 generate --layout gallery --color muji-minimal --font system-utility --title "無印" --output demo.html
-```
 
 ### 经典配色 (6)
 
@@ -222,59 +228,11 @@ via54 generate --layout gallery --color muji-minimal --font system-utility --tit
 | `neon-dark` | 赛博朋克 | 暗黑·霓虹 | `#FF2D95` 荧光粉 |
 | `earth-terracotta` | 返璞归真 | 大地·温暖 | `#C06C4C` 陶土橙 |
 
-```bash
-via54 generate --layout hero-split --color earth-terracotta --font serif-sans-editorial --title "Café" --output demo.html
-via54 generate --layout bento-grid --color neon-dark --font display-sans-bold --title "Cyber Dashboard" --output demo.html
-```
-
----
-
-## 💻 命令参考
-
-```bash
-via54                              # 帮助
-via54 version                      # 版本信息
-via54 list                         # 列出所有模板
-
-# 设计模板
-via54 generate --layout <id> --color <id> --font <id> --title "标题" --output out.html
-via54 generate --lettering-svg ./vector.svg --title "标题" --output out.html   # 手绘/Logo做标题
-via54 generate --layout <id> --color <id> --font <id> --lettering-svg ./art.svg --title "标题" --output out.html  # 模板+手绘组合
-via54 quality --html out.html
-via54 pattern --html out.html --name "项目名"
-
-# 媒体管线
-via54 media add-music input.mp4 --mood tech|ad|educational|tutorial
-via54 media convert input.mp4
-via54 media fetch --query "关键词" --out ./img --count 3
-via54 media trace --input photo.jpg --output logo.svg   # 照片→SVG矢量化
-via54 media trace --input logo-sketch.jpg --output logo.svg   # 手绘Logo→SVG
-via54 media trace --input handwriting.jpg --output title.svg  # 书法/签名→SVG
-
-# 叙事引擎 (Narrate)
-via54 narrate --list                                          # 查看4种叙事模型
-via54 narrate --seed "一句话" --model three-act                # 输出叙事脚手架 (markdown)
-via54 narrate --seed "..." --model heros-journey --duration 60 # 指定时长
-via54 narrate --seed "..." --format json --output scaffold.json # 输出JSON (供generate消费)
-via54 narrate --seed "..." --model cognitive-arc              # 四选一: three-act / heros-journey / cognitive-arc / problem-solution
-
-# 叙事驱动生成 (全管线)
-via54 narrate --seed "一句话想法" --format json | via54 generate --from-narrative /dev/stdin
-
-# 导出
-via54 export render input.html --duration 30 --width 1920 --height 1080
-via54 export pdf input.html
-via54 export tts --text "你好" --out voice.mp3
-
-# MCP Server (兼容 Claude Desktop / Cursor / Copilot)
-via54 serve
-```
-
 ---
 
 ## 🔤 字体模版一览
 
-12 套字体配对方案，每套包含显示(display)、正文(body)、等宽(mono)三层字体栈，层层降级。
+12 套字体配对方案，每套包含显示(display)、正文(body)、等宽(mono)三层字体栈。
 
 ### 中文排版 (6)
 
@@ -287,11 +245,6 @@ via54 serve
 | `calligraphy-accent` | 书法+黑体 | ZCOOL XiaoWei | Inter | 站酷小薇开源书法 |
 | `sc-sans-clean` | 中文无衬线 | Noto Sans SC | Noto Sans SC | Google Noto 项目 |
 
-```bash
-via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --title "寒山寺" --output demo.html
-via54 generate --layout hero-split --color tsubaki-camellia --font calligraphy-accent --title "銀座" --output demo.html
-```
-
 ### 国际排版 (6)
 
 | 方案 | 分类 | 显示字体 | 正文字体 | 灵感来源 |
@@ -303,14 +256,44 @@ via54 generate --layout hero-split --color tsubaki-camellia --font calligraphy-a
 | `mono-code` | 等宽主导 | JetBrains Mono | Inter | JetBrains/Cursor |
 | `playful-rounded` | 圆体亲和 | Baloo 2 | Nunito | Duolingo/Khan Academy |
 
-```bash
-via54 generate --layout bento-grid --color dark-terminal-blue --font mono-code --title "API Dashboard" --output demo.html
-via54 generate --layout hero-split --color earth-terracotta --font elegant-didone --title "Café de Flore" --output demo.html
-```
+---
+
+## 🎬 叙事模型一览
+
+4 种叙事模型，以 YAML 模板定义，可自由扩展。放在 `templates/narratology/models/` 下：
+
+| 模型 | 中文名 | 节拍 | 适用场景 |
+|------|--------|------|----------|
+| `three-act` | 三幕剧 | 设问 → 解答 → 号召 | 产品发布、品牌广告 |
+| `heros-journey` | 英雄之旅 | 日常 → 相遇 → 蜕变 → 回归 | 品牌故事、纪录片 |
+| `cognitive-arc` | 认知弧 | 钩子 → 基础 → 核心 → 案例 → 延展 → 总结 | 科普、教程 |
+| `problem-solution` | 问题-解法 | 痛点 → 方案 → 证明 → 行动 | 销售视频、Demo |
+
+添加新模型：只需在 `templates/narratology/models/` 下创建 YAML 文件并在 `registry.yaml` 注册，无需修改 Go 代码。
 
 ---
 
-## 💻 命令参考
+## 📦 安装
+
+```bash
+# 一行部署
+bash <(curl -s https://raw.githubusercontent.com/veawho/via54Design/main/scripts/install.sh)
+
+# 或手动编译
+go build -o via54 ./cmd/via54/
+```
+
+### 依赖
+
+| 工具 | 用途 | 安装 |
+|------|------|------|
+| Go 1.21+ | 核心引擎 | [go.dev/dl](https://go.dev/dl/) |
+| ffmpeg | 视频/音频处理 | `brew install ffmpeg` / `apt install ffmpeg` |
+| Node.js 18+ | PPTX 导出 | [nodejs.org](https://nodejs.org/) |
+
+---
+
+## 💻 MCP 配置
 
 **Claude Desktop** (`claude_desktop_config.json`):
 ```json
@@ -327,14 +310,28 @@ via54 generate --layout hero-split --color earth-terracotta --font elegant-didon
 ## 📐 架构
 
 ```
-┌──────────────────────┐
-│   你的审美知识        │ ← 不可替代的人类优势
-│   → YAML 模板        │ ← 结构化、可复用、可版本化
-├──────────────────────┤
-│   Go 核心引擎        │ ← 12MB 单二进制, 13 命令
-├──────────────────────┤
-│   MCP Server          │ ← Claude / Cursor / Copilot / Hermes
-└──────────────────────┘
+你的创意灵感                ← 不可替代的人类优势
+    │   通过 narrate --seed 注入
+    ▼
+┌─ 叙事引擎 ───────────────────────────┐
+│  YAML 模板定义 4 种叙事模型          │ ← 可扩展
+│  narrate 命令生成脚手架+剧本+分镜    │
+│  generate --from-narrative → 多场景   │
+└──────────────────────────────────────┘
+    │
+    ▼
+┌─ 设计模板引擎 ───────────────────────┐
+│  40+ 配色 / 12 字体 / 3 布局         │
+│  Go 核心引擎 (12MB 单二进制)         │
+│  MCP Server (Claude/Cursor/Hermes)   │
+└──────────────────────────────────────┘
+    │
+    ▼
+┌─ 媒体导出管线 ───────────────────────┐
+│  HTML → MP4 (Playwright)             │
+│  配乐 (ffmpeg) / TTS (Edge)          │
+│  照片→SVG (VTracer)                  │
+└──────────────────────────────────────┘
 ```
 
 ## 语言

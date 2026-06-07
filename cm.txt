@@ -1,1 +1,0 @@
-docs: add quick start CLI section to README

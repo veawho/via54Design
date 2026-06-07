@@ -7,6 +7,7 @@
 package narrate
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -475,7 +476,7 @@ const markdownTemplate = `# 🎬 叙事脚手架
 
 // ToJSON 输出结构化 JSON（可供 generate --from-narrative 消费）
 func (s *NarrativeScaffold) ToJSON() (string, error) {
-	data, err := yaml.Marshal(s)
+	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return "", err
 	}
