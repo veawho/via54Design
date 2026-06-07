@@ -1,0 +1,220 @@
+# 模板注册表 v1.1
+# huashu-design 结构化模板索引
+# 使用方式：LLM根据用户需求，按 tags/category/when 条件匹配模板
+
+layouts:
+  - id: hero-split-left-image
+    name: 左右分割式Hero（左图右文）
+    version: "1.0.0"
+    category: layout/hero
+    tags: [hero, split, editorial, image-left, full-bleed]
+    file: templates/layouts/hero-split-left-image.yaml
+
+  - id: bento-grid-2x2
+    name: Bento便当格2×2不等高卡片
+    version: "1.0.0"
+    category: layout/bento
+    tags: [bento, grid, cards, metrics, features]
+    file: templates/layouts/bento-grid-2x2.yaml
+
+  - id: gallery-waterfall
+    name: 画廊瀑布流（Masonry裁切画廊）
+    version: "1.0.0"
+    category: layout/gallery
+    tags: [gallery, waterfall, masonry, images, portfolio]
+    file: templates/layouts/gallery-waterfall.yaml
+
+color_schemes:
+  - id: warm-editorial-cream
+    name: 暖色出版物（奶油底+赤陶橙/Anthropic风）
+    version: "1.0.0"
+    category: color-scheme/warm
+    tags: [warm, editorial, cream, natural, premium, ai-product]
+    file: templates/color-schemes/warm-editorial-cream.yaml
+
+  - id: dark-terminal-blue
+    name: 暗色终端美学（近黑+紫蓝强调/Linear风）
+    version: "1.0.0"
+    category: color-scheme/dark
+    tags: [dark, terminal, tech, developer, bento, glassmorphism]
+    file: templates/color-schemes/dark-terminal-blue.yaml
+
+  - id: mono-brand-bold
+    name: 单色品牌撞色（满版主色+反白字/Spotify风）
+    version: "1.0.0"
+    category: color-scheme/mono
+    tags: [mono, bold, brand, poster, high-contrast]
+    file: templates/color-schemes/mono-brand-bold.yaml
+
+  - id: editorial-brutalist
+    name: 媒体粗野主义（纯黑白+超链接蓝/Bloomberg风）
+    version: "1.0.0"
+    category: color-scheme/editorial
+    tags: [editorial, brutalist, high-contrast, black-white, media]
+    file: templates/color-schemes/editorial-brutalist.yaml
+
+  - id: cosmic-retro
+    name: 复古未来太空图录（黑+奶油+钴蓝/Perplexity风）
+    version: "1.0.0"
+    category: color-scheme/cosmic
+    tags: [cosmic, retro, futuristic, dark, warm-dark]
+    file: templates/color-schemes/cosmic-retro.yaml
+
+  - id: neo-brutalist-vibrant
+    name: 新粗野主义撞色（电光紫+品红+亮黄/The Verge风）
+    version: "1.0.0"
+    category: color-scheme/vibrant
+    tags: [vibrant, brutalist, colorful, high-energy, youth]
+    file: templates/color-schemes/neo-brutalist-vibrant.yaml
+
+  - id: bauhaus-primary
+    name: 包豪斯三原色（红黄蓝+黑白/Khan Academy风）
+    version: "1.0.0"
+    category: color-scheme/bauhaus
+    tags: [bauhaus, primary, geometric, education, playful]
+    file: templates/color-schemes/bauhaus-primary.yaml
+
+  - id: swiss-monochrome
+    name: Swiss极致黑白（纯黑+纯白+灰阶/Vercel风）
+    version: "1.0.0"
+    category: color-scheme/monochrome
+    tags: [swiss, monochrome, minimal, clean, vercel]
+    file: templates/color-schemes/swiss-monochrome.yaml
+
+  - id: bento-dark-glass
+    name: Linear暗色发光+Bento玻璃拟态
+    version: "1.0.0"
+    category: color-scheme/dark-glass
+    tags: [dark, glass, bento, glow, gradient, saas]
+    file: templates/color-schemes/bento-dark-glass.yaml
+
+  - id: candy-duolingo
+    name: 糖果色凸起立体（绿+黄+天蓝/Duolingo风）
+    version: "1.0.0"
+    category: color-scheme/candy
+    tags: [candy, playful, friendly, game, rounded]
+    file: templates/color-schemes/candy-duolingo.yaml
+
+typography:
+  - id: serif-sans-editorial
+    name: 衬线标题+无衬线正文（编辑出版配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [editorial, serif, sans, warm, premium, readable]
+    file: templates/typography/serif-sans-editorial.yaml
+
+  - id: sans-geometric-tech
+    name: 几何无衬线+等宽（科技产品配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [tech, sans, geometric, mono, clean]
+    file: templates/typography/sans-geometric-tech.yaml
+
+  - id: display-sans-bold
+    name: 超粗Display+常规正文（大字报/发布会配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [bold, display, poster, keynote, big-type]
+    file: templates/typography/display-sans-bold.yaml
+
+  - id: serif-longform
+    name: 阅读级衬线正文（年报/长文配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [serif, longform, reading, editorial, annual-report]
+    file: templates/typography/serif-longform.yaml
+
+  - id: mono-terminal
+    name: 等宽字主角（终端/CLI产品配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [mono, terminal, cli, developer, tech]
+    file: templates/typography/mono-terminal.yaml
+
+  - id: playful-rounded
+    name: 圆润亲和字体（教育/游戏配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [playful, rounded, friendly, education, candy]
+    file: templates/typography/playful-rounded.yaml
+
+  - id: cormorant-elegant
+    name: 高反差衬线（奢侈/画廊配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [serif, elegant, luxury, gallery, editorial]
+    file: templates/typography/cormorant-elegant.yaml
+
+  - id: system-utility
+    name: 系统字栈（社区/文档/功能性配）
+    version: "1.0.0"
+    category: typography/pair
+    tags: [system, utility, functional, clean, accessible]
+    file: templates/typography/system-utility.yaml
+
+animations:
+  - id: hero-reveal-stagger
+    name: Hero渐进展开—逐元素错位入场
+    version: "1.0.0"
+    category: animation/hero
+    file: templates/animations/hero-reveal-stagger.yaml
+
+  - id: card-hover-lift
+    name: 卡片悬停抬升+阴影加深
+    version: "1.0.0"
+    category: animation/interaction
+    file: templates/animations/card-hover-lift.yaml
+
+video_edits:
+  - id: launch-film-30s
+    name: 30秒品牌宣传片（苹果发布会级）
+    version: "1.0.0"
+    category: video/launch-film
+    file: templates/video-edits/launch-film-30s.yaml
+
+  - id: educational-5min
+    name: 5分钟科普解说视频
+    version: "1.0.0"
+    category: video/educational
+    file: templates/video-edits/educational-5min.yaml
+
+  - id: product-demo-60s
+    name: 60秒产品功能演示
+    version: "1.0.0"
+    category: video/product-demo
+    file: templates/video-edits/product-demo-60s.yaml
+
+## 组合规则
+
+# 布局 × 配色 × 字体 × 动画 = 完整页面
+# 示例组合推荐：
+
+combinations:
+  - name: 暖色编辑Hero
+    layout: hero-split-left-image
+    color: warm-editorial-cream
+    font: serif-sans-editorial
+    animation: hero-reveal-stagger
+    suitable: [ai_product, brand_hero, landing_page]
+
+  - name: 暗色数据Bento
+    layout: bento-grid-2x2
+    color: dark-terminal-blue
+    font: sans-geometric-tech
+    animation: card-hover-lift
+    suitable: [dashboard, qbr, feature_showcase, saas]
+
+  - name: 瑞士极简画廊
+    layout: gallery-waterfall
+    color: swiss-monochrome
+    font: system-utility
+    suitable: [portfolio, gallery, moodboard, showcase]
+
+compatibility:
+  rules:
+    - "layout.full-bleed 与 color-scheme.dark 搭配效果最佳"
+    - "layout.editorial 与 color-scheme.warm 天然适配"
+    - "animation.interaction 与 layout.bento 搭配（卡片悬停）"
+    - "candy-duolingo 搭配 playful-rounded 字体效果最佳"
+    - "cosmic-retro 搭配 cormorant-elegant 字体效果最佳"
+    - "editorial-brutalist 搭配 display-sans-bold 字体效果最佳"

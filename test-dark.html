@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>数据仪表盘</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+--bg: #08090A;
+--bg-alt: #0B0D14;
+--text-primary: #F2F0EF;
+--text-secondary: #8B8B8B;
+--accent: #5E6AD2;
+--border: #1E1E24;
+  --size-display: clamp(36px, 5vw, 80px);
+  --size-h2: clamp(24px, 2.5vw, 40px);
+  --size-h3: clamp(18px, 1.3vw, 24px);
+  --size-body: clamp(15px, 1.1vw, 18px);
+  --size-small: 13px;
+  --size-caption: 11px;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif; line-height:1.7;
+  color: var(--text-primary, #1A1A1A);
+  background: var(--background, #FFFFFF);
+}
+h1,h2,h3,h4 { font-family: 'Inter', 'Geist', -apple-system, sans-serif; line-height:1.1; }
+code,pre { font-family: 'JetBrains Mono', 'Geist Mono', 'Fira Code', monospace; }
+a { color: var(--accent, inherit); text-decoration:none; }
+img { max-width: 100%%; height:auto; display:block; }
+.container { max-width:1200px; margin:0 auto; padding:0 40px; }
+@media (max-width:768px) { .container { padding:0 24px; } }
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: minmax(200px, auto);
+  gap: 1px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--border, #E8DFD4);
+}
+.bento-grid > * {
+  background: var(--bg, #fff);
+  padding: 48px 40px;
+}
+.bento-card__number {
+  font-size: clamp(40px, 5vw, 80px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.bento-card__label {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.bento-card__desc {
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 35ch;
+}
+.bento-card--hero {
+  grid-column: span 2;
+}
+.bento-card--hero .bento-card__number {
+  font-size: clamp(60px, 8vw, 120px);
+}
+.bento-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  transition: box-shadow 0.3s;
+}
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .bento-card--hero { grid-column: span 1; }
+}
+
+</style>
+</head>
+<body>
+<main>
+<section class="hero-split">
+  <div class="hero-split__image"><!-- img --></div>
+  <div class="hero-split__text">
+    <p class="hero-split__eyebrow">EYEBROW</p>
+    <h1 class="hero-split__headline">标题</h1>
+    <p class="hero-split__body">副标题</p>
+    <a class="hero-split__cta" href="#">CTA</a>
+  </div>
+</section>
+</main>
+</body>
+</html>

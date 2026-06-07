@@ -4,20 +4,23 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
+
+	"github.com/veawho/via54Design/internal/template"
 )
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("via54Design — 结构化设计模板引擎")
+		fmt.Println("via54Design -- 结构化设计模板引擎")
 		fmt.Println()
 		fmt.Println("用法:")
-		fmt.Println("  via54Design serve         启动 MCP Server")
-		fmt.Println("  via54Design generate ...   生成 HTML")
-		fmt.Println("  via54Design quality ...    质量门禁检查")
-		fmt.Println("  via54Design learn ...      从参考图学习模板")
+		fmt.Println("  via54Design serve            启动 MCP Server")
+		fmt.Println("  via54Design generate ...      模板组合生成HTML")
+		fmt.Println("  via54Design list              列出所有可用模板")
+		fmt.Println("  via54Design version           版本信息")
 		fmt.Println()
 		fmt.Println("文档: https://github.com/veawho/via54Design")
-		os.Exit(0)
+		return
 	}
 
 	switch os.Args[1] {
@@ -25,10 +28,8 @@ func main() {
 		cmdServe()
 	case "generate":
 		cmdGenerate()
-	case "quality":
-		cmdQuality()
-	case "learn":
-		cmdLearn()
+	case "list":
+		cmdList()
 	case "version":
 		fmt.Println("via54Design v0.1.0")
 	default:
@@ -37,48 +38,71 @@ func main() {
 	}
 }
 
+func baseDir() string {
+	// 尝试可执行文件所在目录
+	exe, _ := os.Executable()
+	dir := filepath.Dir(exe)
+	// 检查目录结构是否匹配
+	if _, err := os.Stat(filepath.Join(dir, "templates")); err == nil {
+		return dir
+	}
+	// 回退到当前工作目录
+	wd, _ := os.Getwd()
+	return wd
+}
+
 func cmdServe() {
-	fmt.Println("MCP Server 模式 — 通过 stdio JSON-RPC 暴露工具:")
-	fmt.Println("  - compose_template  (模板组合生成HTML)")
-	fmt.Println("  - quality_check     (质量门禁检查)")
-	fmt.Println("  - extract_patterns  (从HTML提取设计模式)")
-	fmt.Println("  - learn_reference   (从参考图学习模板)")
+	fmt.Println("MCP Server - 待实现")
 }
 
 func cmdGenerate() {
 	fs := flag.NewFlagSet("generate", flag.ExitOnError)
-	layout := fs.String("layout", "", "布局模板 ID")
-	color := fs.String("color", "", "配色模板 ID")
-	font := fs.String("font", "", "字体模板 ID")
+	layout := fs.String("layout", "", "布局模板ID")
+	color := fs.String("color", "", "配色模板ID")
+	font := fs.String("font", "", "字体模板ID")
+	title := fs.String("title", "via54Design", "页面标题")
 	output := fs.String("output", "output.html", "输出路径")
-	fs.Parse(os.Args[2:])
+	_ = fs.Parse(os.Args[2:])
 
 	if *layout == "" || *color == "" || *font == "" {
-		fmt.Fprintln(os.Stderr, "请指定 --layout, --color, --font")
+		fmt.Fprintln(os.Stderr, "请指定: --layout, --color, --font")
+		fmt.Fprintln(os.Stderr, "可用模板: via54Design list")
 		os.Exit(1)
 	}
-	fmt.Printf("生成中: %s + %s + %s → %s\n", *layout, *color, *font, *output)
+
+	eng, err := template.NewEngine(baseDir())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "引擎初始化失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	result, err := eng.Compose(*layout, *color, *font, *title)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "生成失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := result.SaveToFile(*output); err != nil {
+		fmt.Fprintf(os.Stderr, "写入文件失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("✅ 已生成: %s (%d bytes)\n", *output, len(result.HTML))
+	fmt.Printf("   布局: %s  |  配色: %s  |  字体: %s\n",
+		result.LayoutID, result.ColorID, result.FontID)
 }
 
-func cmdQuality() {
-	fs := flag.NewFlagSet("quality", flag.ExitOnError)
-	html := fs.String("html", "", "HTML 文件路径")
-	fs.Parse(os.Args[2:])
-	if *html == "" {
-		fmt.Fprintln(os.Stderr, "请指定 --html")
+func cmdList() {
+	eng, err := template.NewEngine(baseDir())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "引擎初始化失败: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("质量检查: %s\n", *html)
-}
-
-func cmdLearn() {
-	fs := flag.NewFlagSet("learn", flag.ExitOnError)
-	dir := fs.String("dir", "", "参考图目录")
-	name := fs.String("name", "unnamed", "模板名称")
-	fs.Parse(os.Args[2:])
-	if *dir == "" {
-		fmt.Fprintln(os.Stderr, "请指定 --dir")
-		os.Exit(1)
+	all := eng.Registry.ListAll()
+	for cat, entries := range all {
+		fmt.Printf("\n=== %s ===\n", cat)
+		for _, e := range entries {
+			fmt.Printf("  %-30s %s\n", e.ID, e.Name)
+		}
 	}
-	fmt.Printf("学习: %s → 模板 '%s'\n", *dir, *name)
 }
