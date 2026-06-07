@@ -64,6 +64,7 @@ func help() {
 	fmt.Println("  prompt ...         图片提示词 (scene→MJ/Kling/即梦/Gemini)")
 	fmt.Println("  forge ...           Forge Classic / A1111 生图")
 	fmt.Println("  comfyui ...         ComfyUI 工作流执行 (21模板)")
+	fmt.Println("  pipeline ...        LLM提示词管道 (扩展/翻译/存档)")
 	fmt.Println("  web ...            Web UI (全功能控制面板)")
 	fmt.Println("  version           版本信息")
 	fmt.Println()
