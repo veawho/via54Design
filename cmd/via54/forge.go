@@ -7,9 +7,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 
 	"github.com/veawho/via54Design/internal/workflow"
@@ -155,11 +158,51 @@ func cmdForge() {
 		fmt.Printf("   模型: %s | %d steps, cfg %.1f\n", tmpl.Model, payload["steps"], payload["cfg_scale"])
 		if *send {
 			fmt.Printf("   📤 发送到 localhost:7860...\n")
-			fmt.Printf("   curl -X POST http://localhost:7860/sdapi/v1/txt2img ...\n")
+			endpoint := "http://localhost:7860/sdapi/v1/txt2img"
+			if err := submitForge(endpoint, payload); err != nil {
+				fmt.Fprintf(os.Stderr, "❌ 发送失败: %v\n", err)
+				fmt.Printf("   💡 确保 Forge/A1111 运行中: http://localhost:7860\n")
+				os.Exit(1)
+			}
+			fmt.Printf("   ✅ 成功提交到 Forge/A1111\n")
 		} else {
 			fmt.Printf("   使用 --send 自动提交, 或手动粘贴到 Forge/A1111 WebUI\n")
 		}
 	} else {
 		fmt.Print(string(jsonData))
+		if *send {
+			fmt.Printf("\n   📤 发送到 localhost:7860...\n")
+			endpoint := "http://localhost:7860/sdapi/v1/txt2img"
+			if err := submitForge(endpoint, payload); err != nil {
+				fmt.Fprintf(os.Stderr, "❌ 发送失败: %v\n", err)
+				fmt.Printf("   💡 确保 Forge/A1111 运行中: http://localhost:7860\n")
+				os.Exit(1)
+			}
+			fmt.Printf("   ✅ 成功提交到 Forge/A1111\n")
+		}
 	}
+}
+
+func submitForge(endpoint string, payload map[string]interface{}) error {
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("序列化负载失败: %w", err)
+	}
+	resp, err := http.Post(endpoint, "application/json", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("HTTP请求失败: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		respBody, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("HTTP %d: %s", resp.StatusCode, string(respBody[:min(len(respBody), 500)]))
+	}
+	return nil
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }

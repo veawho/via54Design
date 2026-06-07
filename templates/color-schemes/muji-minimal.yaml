@@ -37,6 +37,16 @@ palette:
     hex: "#E3DFD8"
     name_zh: "薄墨"
     cultural_note: "极淡的灰色边界"
+
+
+css_variables: |
+  --bg: #FCFAF5;
+  --text-primary: #2A2A28;
+  --text-secondary: #8B8780;
+  --accent: #B27C5A;
+  --accent-alt: #C4BBAF;
+  --border: #E3DFD8;
+
 compatibility:
   layouts: [gallery-waterfall, hero-split-left-image, editorial-longform]
   fonts: [system-utility, serif-sans-editorial]

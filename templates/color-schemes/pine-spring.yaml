@@ -41,6 +41,16 @@ palette:
     name_zh: "象牙"
     cultural_note: "暖灰白分割线"
 
+
+
+css_variables: |
+  --bg: #F5F2EB;
+  --text-primary: #2C3E2D;
+  --text-secondary: #6B7F6B;
+  --accent: #5B8C5A;
+  --accent-alt: #C4A96A;
+  --border: #E0DBD0;
+
 compatibility:
   layouts: [hero-split-left-image, editorial-longform]
   fonts: [serif-sans-editorial, cormorant-elegant]

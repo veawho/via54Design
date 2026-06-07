@@ -1,0 +1,23 @@
+# via54Design — SVD 25-Frame Video Workflow Template
+# SPDX-License-Identifier: MIT
+id: svd_img2vid_ext
+name: "SVD 25-Frame Video"
+description: "Stable Video Diffusion extended 25-frame generation"
+type: img2img
+model: "svd.safetensors"
+params:
+  steps: 25
+  cfg: 3.0
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  denoise: 0.8
+  frames: 25
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/svd.safetensors"

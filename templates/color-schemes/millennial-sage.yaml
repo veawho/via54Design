@@ -37,6 +37,16 @@ palette:
     hex: "#EDE5E0"
     name_zh: "淡粉灰"
     cultural_note: "极淡边界"
+
+
+css_variables: |
+  --bg: #FAF5F0;
+  --text-primary: #2D3436;
+  --text-secondary: #8B8B8B;
+  --accent: #E8A0BF;
+  --accent-alt: #9CB6A3;
+  --border: #EDE5E0;
+
 compatibility:
   layouts: [hero-split-left-image, gallery-waterfall]
   fonts: [cormorant-elegant, serif-sans-editorial]

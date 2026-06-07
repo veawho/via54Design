@@ -1,0 +1,24 @@
+# via54Design — Playground v2.5 Workflow Template
+# SPDX-License-Identifier: MIT
+id: playground_v2
+name: "Playground v2.5"
+description: "Playground v2.5 aesthetic (1024×1024)"
+type: txt2img
+model: "playground_v2.5.safetensors"
+params:
+  steps: 50
+  cfg: 7.0
+  sampler: "dpmpp_2m"
+  scheduler: "karras"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/playground_v2.5.safetensors"

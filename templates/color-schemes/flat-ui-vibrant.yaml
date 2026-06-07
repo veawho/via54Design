@@ -37,6 +37,16 @@ palette:
     hex: "#ECF0F1"
     name_zh: "淡云灰"
     cultural_note: "极淡灰分割"
+
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #2C3E50;
+  --text-secondary: #7F8C8D;
+  --accent: #3498DB;
+  --accent-alt: #E74C3C;
+  --border: #ECF0F1;
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image]
   fonts: [sans-geometric-tech, display-sans-bold]

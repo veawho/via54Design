@@ -37,6 +37,16 @@ palette:
     hex: "#1E1E2A"
     name_zh: "暗紫灰"
     cultural_note: "几乎隐形的边界"
+
+
+css_variables: |
+  --bg: #0D0D12;
+  --text-primary: #E8E8F0;
+  --text-secondary: #7A7A8A;
+  --accent: #FF2D95;
+  --accent-alt: #00E5FF;
+  --border: #1E1E2A;
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image]
   fonts: [display-sans-bold, mono-terminal]

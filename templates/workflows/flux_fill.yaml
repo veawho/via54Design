@@ -1,0 +1,28 @@
+# via54Design — Flux Fill Inpainting Workflow Template
+# SPDX-License-Identifier: MIT
+id: flux_fill
+name: "Flux Fill (Inpainting)"
+description: "Flux Dev inpainting with mask input"
+type: txt2img
+model: "flux_dev.safetensors"
+vae: "flux_vae.safetensors"
+params:
+  steps: 28
+  cfg: 3.5
+  guidance: 3.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors"
+    path: "checkpoints/flux_dev.safetensors"
+  - url: "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors"
+    path: "vae/flux_vae.safetensors"

@@ -37,6 +37,16 @@ palette:
     hex: "#E8E0D8"
     name_zh: "生成色"
     cultural_note: "未漂白的天然丝绸色"
+
+
+css_variables: |
+  --bg: #FAF5F0;
+  --text-primary: #2D2323;
+  --text-secondary: #8A7D7A;
+  --accent: #BF3A2B;
+  --accent-alt: #D4A08A;
+  --border: #E8E0D8;
+
 compatibility:
   layouts: [hero-split-left-image, gallery-waterfall]
   fonts: [cormorant-elegant, serif-sans-editorial]

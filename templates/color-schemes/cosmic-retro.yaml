@@ -36,6 +36,16 @@ palette:
     hex: "#2A2A2A"
     name_zh: "深灰"
     cultural_note: "太空舱的分隔线"
+
+
+css_variables: |
+  --bg: #0A0A0A;
+  --text-primary: #F0EAD8;
+  --text-secondary: #A09888;
+  --accent: #2B4F91;
+  --accent-alt: #C9A84C;
+  --border: #2A2A2A;
+
 compatibility:
   layouts: [hero-split-left-image, gallery-waterfall]
   fonts: [cormorant-elegant, display-sans-bold]

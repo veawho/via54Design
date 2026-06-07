@@ -36,6 +36,16 @@ palette:
     hex: "#1C1C23"
     name_zh: "深灰"
     cultural_note: "发丝级分割线"
+
+
+css_variables: |
+  --bg: #08090A;
+  --text-primary: #E8E8ED;
+  --text-secondary: #8B8B9E;
+  --accent: #5E6AD2;
+  --accent-alt: #4EA7FC;
+  --border: #1C1C23;
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image]
   fonts: [sans-geometric-tech, mono-terminal]

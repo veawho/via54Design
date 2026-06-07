@@ -1,0 +1,24 @@
+# via54Design — SDXL Turbo Workflow Template
+# SPDX-License-Identifier: MIT
+id: sdxl_turbo
+name: "SDXL Turbo"
+description: "SDXL Turbo (1-4 steps, real-time)"
+type: txt2img
+model: "sdxl_turbo.safetensors"
+params:
+  steps: 4
+  cfg: 2.0
+  sampler: "dpmpp_sde"
+  scheduler: "karras"
+  seed: -1
+  width: 512
+  height: 512
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/sdxl_turbo.safetensors"

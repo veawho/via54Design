@@ -41,6 +41,16 @@ palette:
     name_zh: "米汤"
     cultural_note: "极淡米色，边界柔和"
 
+
+
+css_variables: |
+  --bg: #FDF6EE;
+  --text-primary: #3D1F1A;
+  --text-secondary: #8B6B5E;
+  --accent: #C23A2B;
+  --accent-alt: #D4A373;
+  --border: #E8DDD4;
+
 compatibility:
   layouts: [hero-split-left-image, editorial-longform]
   fonts: [serif-sans-editorial, cormorant-elegant]

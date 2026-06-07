@@ -41,6 +41,16 @@ palette:
     name_zh: "银灰"
     cultural_note: "淡银灰分割线"
 
+
+
+css_variables: |
+  --bg: #F7F6F2;
+  --text-primary: #1B2A3B;
+  --text-secondary: #5F6D7E;
+  --accent: #2E5CB8;
+  --accent-alt: #8B6B4E;
+  --border: #E0DED9;
+
 compatibility:
   layouts: [hero-split-left-image, bento-grid-2x2]
   fonts: [sans-geometric-tech, cormorant-elegant]

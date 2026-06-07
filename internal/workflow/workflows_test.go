@@ -75,8 +75,8 @@ func TestLoadRegistry(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadRegistry failed: %v", err)
 	}
-	if reg.Version != 1 {
-		t.Errorf("expected version 1, got %d", reg.Version)
+	if reg.Version != 2 {
+		t.Errorf("expected version 2, got %d", reg.Version)
 	}
 	if len(reg.Workflows) == 0 {
 		t.Fatal("expected at least 1 registry entry")
@@ -90,7 +90,7 @@ func TestBuildWorkflow_Txt2Img(t *testing.T) {
 		t.Fatalf("load template: %v", err)
 	}
 
-	result, err := BuildWorkflow(tmpl, "a cat in a hat", "ugly, blurry", nil)
+	result, err := BuildWorkflow(tmpl, "a cat in a hat", "ugly, blurry", nil, nil)
 	if err != nil {
 		t.Fatalf("BuildWorkflow failed: %v", err)
 	}
@@ -144,7 +144,7 @@ func TestBuildWorkflow_Img2Img(t *testing.T) {
 		t.Fatalf("load template: %v", err)
 	}
 
-	result, err := BuildWorkflow(tmpl, "a cat", "ugly", nil)
+	result, err := BuildWorkflow(tmpl, "a cat", "ugly", nil, nil)
 	if err != nil {
 		t.Fatalf("BuildWorkflow failed: %v", err)
 	}
@@ -180,7 +180,7 @@ func TestBuildWorkflow_Txt2Vid(t *testing.T) {
 		t.Fatalf("load template: %v", err)
 	}
 
-	result, err := BuildWorkflow(tmpl, "a cat walking", "ugly", nil)
+	result, err := BuildWorkflow(tmpl, "a cat walking", "ugly", nil, nil)
 	if err != nil {
 		t.Fatalf("BuildWorkflow failed: %v", err)
 	}
@@ -210,7 +210,7 @@ func TestBuildWorkflow_Overrides(t *testing.T) {
 		"width":    768,
 		"height":   768,
 	}
-	result, err := BuildWorkflow(tmpl, "test", "", overrides)
+	result, err := BuildWorkflow(tmpl, "test", "", overrides, nil)
 	if err != nil {
 		t.Fatalf("BuildWorkflow failed: %v", err)
 	}
@@ -248,7 +248,7 @@ func TestBuildWorkflow_FluxDev(t *testing.T) {
 
 	result, err := BuildWorkflow(tmpl, "test", "", map[string]interface{}{
 		"guidance": 3.5,
-	})
+	}, nil)
 	if err != nil {
 		t.Fatalf("BuildWorkflow failed: %v", err)
 	}
@@ -272,8 +272,8 @@ func TestBuildWorkflow_DeterministicSeed(t *testing.T) {
 
 	// Using a fixed seed should give deterministic output
 	overrides := map[string]interface{}{"seed": 42}
-	result1, _ := BuildWorkflow(tmpl, "cat", "", overrides)
-	result2, _ := BuildWorkflow(tmpl, "cat", "", overrides)
+	result1, _ := BuildWorkflow(tmpl, "cat", "", overrides, nil)
+	result2, _ := BuildWorkflow(tmpl, "cat", "", overrides, nil)
 
 	if string(result1.JSON) != string(result2.JSON) {
 		t.Error("same inputs should produce identical JSON")
@@ -287,7 +287,7 @@ func TestNegativePrompt(t *testing.T) {
 		t.Fatalf("load template: %v", err)
 	}
 
-	result, err := BuildWorkflow(tmpl, "cat", "bad quality, ugly", nil)
+	result, err := BuildWorkflow(tmpl, "cat", "bad quality, ugly", nil, nil)
 	if err != nil {
 		t.Fatalf("BuildWorkflow failed: %v", err)
 	}

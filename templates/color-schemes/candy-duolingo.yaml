@@ -36,6 +36,16 @@ palette:
     hex: "#E0E0E8"
     name_zh: "淡灰"
     cultural_note: "柔和边界"
+
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #1A1A2E;
+  --text-secondary: #6B6B80;
+  --accent: #58CC02;
+  --accent-alt: #FFC800;
+  --border: #E0E0E8;
+
 compatibility:
   layouts: [bento-grid-2x2, hero-split-left-image]
   fonts: [playful-rounded, sans-geometric-tech]

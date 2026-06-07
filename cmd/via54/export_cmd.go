@@ -69,6 +69,8 @@ func cmdExport() {
 		title := fs.String("title", "via54 演示文稿", "标题")
 		output := fs.String("output", "output.pptx", "输出路径")
 		widescreen := fs.Bool("16-9", true, "16:9 宽屏")
+		styleID := fs.String("style", "accent-bar", "PPTX风格: accent-bar, minimal, editorial, bold")
+		themeFile := fs.String("theme", "", "配色主题YAML路径 (可选)")
 		fs.Parse(os.Args[3:])
 
 		// 从叙事 JSON 或手动输入
@@ -103,7 +105,7 @@ func cmdExport() {
 			}
 		}
 
-		if err := export.ExportPPTX(slides, *output, *widescreen); err != nil {
+		if err := export.ExportPPTX(slides, *output, *widescreen, *styleID, *themeFile, baseDir()); err != nil {
 			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
 			os.Exit(1)
 		}
