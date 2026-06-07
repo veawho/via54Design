@@ -1,33 +1,39 @@
 #!/usr/bin/env bash
 # via54Design 跨平台编译脚本
-# Usage: bash scripts/build.sh [version]
-# Output: dist/via54Design-{os}-{arch}.zip
+# Usage: bash hack/build.sh [version]
+# Output: dist/via54Design-{os}-{arch}.zip (含 CLI + MCP 双二进制)
 
 set -euo pipefail
 
-VERSION="${1:-0.2.0}"
+VERSION="${1:-0.3.0}"
 OUTDIR="$(dirname "$0")/../dist"
 mkdir -p "$OUTDIR"
 
-echo "=== via54Design v$VERSION 跨平台编译 ==="
+echo "=== via54Design v$VERSION 跨平台编译 ===\n"
 
 build() {
     local GOOS="$1" GOARCH="$2" ext=""
     [ "$GOOS" = "windows" ] && ext=".exe"
     local NAME="via54-${GOOS}-${GOARCH}"
-    local BINARY="${OUTDIR}/${NAME}/via54${ext}"
+    local DIR="${OUTDIR}/${NAME}"
+    mkdir -p "$DIR"
 
-    mkdir -p "$(dirname "$BINARY")"
     echo "  → ${NAME}..."
 
-    GOOS="$GOOS" GOARCH="$GOARCH" cd "$(dirname "$0")/.." && go build -ldflags="-s -w -X main.version=$VERSION" \
-        -o "$BINARY" ./cmd/via54/
+    cd "$(dirname "$0")/.."
 
-    # Copy templates + scripts
-    cp -r templates "$OUTDIR/$NAME/"
-    cp -r scripts "$OUTDIR/$NAME/"
-    cp template-registry.yaml "$OUTDIR/$NAME/" 2>/dev/null || true
-    cp template-format.md "$OUTDIR/$NAME/" 2>/dev/null || true
+    # CLI 二进制
+    GOOS="$GOOS" GOARCH="$GOARCH" go build -ldflags="-s -w" \
+        -o "${DIR}/via54${ext}" ./cmd/via54/
+
+    # MCP Server 二进制
+    GOOS="$GOOS" GOARCH="$GOARCH" go build -ldflags="-s -w" \
+        -o "${DIR}/via54-mcp${ext}" ./cmd/mcp-server/
+
+    # Copy templates + docs
+    cp -r templates "$DIR/"
+    cp -r docs "$DIR/" 2>/dev/null || true
+    cp README.md "$DIR/"
 
     # Zip
     cd "$OUTDIR"

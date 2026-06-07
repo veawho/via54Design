@@ -150,6 +150,14 @@ func (s *Server) handleList(ctx context.Context, req mcp.CallToolRequest) (*mcp.
 
 func (s *Server) ServeStdio() error { return server.ServeStdio(s.mcp) }
 
+// ServeHTTP 启动 HTTP/SSE 传输模式 (用于远程 MCP 访问)
+func (s *Server) ServeHTTP(addr string) error {
+	// mcp-go 的 SSE 传输
+	sseServer := server.NewSSEServer(s.mcp, server.WithBaseURL("http://"+addr))
+	fmt.Fprintf(os.Stderr, "via54-mcp SSE endpoint: http://%s/sse\n", addr)
+	return sseServer.Start(addr)
+}
+
 func getArg[T any](args any, key string) T {
 	if m, ok := args.(map[string]interface{}); ok {
 		if v, ok := m[key]; ok { if vt, ok := v.(T); ok { return vt } }

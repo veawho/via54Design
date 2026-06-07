@@ -409,16 +409,32 @@ go build -o via54 ./cmd/via54/
 
 ---
 
-## 💻 MCP 配置
+# MCP 配置
+
+via54Design 提供独立 MCP Server 二进制 `via54-mcp`，与主 CLI 分开部署。
 
 **Claude Desktop** (`claude_desktop_config.json`):
 ```json
-{ "mcpServers": { "via54Design": { "command": "via54", "args": ["serve"] } } }
+{ "mcpServers": { "via54Design": { "command": "via54-mcp" } } }
 ```
 
 **Cursor** (`.cursor/mcp.json`):
 ```json
+{ "mcpServers": { "via54Design": { "command": "via54-mcp" } } }
+```
+
+**也可以使用主 CLI 的 serve 命令**（兼容旧配置）:
+```json
 { "mcpServers": { "via54Design": { "command": "via54", "args": ["serve"] } } }
+```
+
+**安装**:
+```bash
+# 编译两个二进制
+make all
+# 或分别编译
+go build -o via54-mcp ./cmd/mcp-server/
+go build -o via54 ./cmd/via54/
 ```
 
 ---
