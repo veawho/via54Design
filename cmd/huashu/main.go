@@ -9,6 +9,7 @@ import (
 	"github.com/veawho/via54Design/internal/mcp"
 	"github.com/veawho/via54Design/internal/pattern"
 	"github.com/veawho/via54Design/internal/quality"
+	"github.com/veawho/via54Design/internal/wasm"
 	"github.com/veawho/via54Design/internal/template"
 )
 
@@ -41,6 +42,12 @@ func main() {
 		cmdList()
 	case "version":
 		fmt.Println("via54Design v0.2.0")
+	we := wasm.NewEngine(baseDir())
+	if we.Available() {
+		fmt.Println("WASM: ✅ via54-engine loaded")
+	} else {
+		fmt.Println("WASM: ❌ not built (cd internal/wasm && bash build.sh)")
+	}
 	default:
 		fmt.Fprintf(os.Stderr, "未知命令: %s\n", os.Args[1])
 		os.Exit(1)

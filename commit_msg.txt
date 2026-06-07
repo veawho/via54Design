@@ -1,0 +1,15 @@
+feat: Rust WASM core + Go bridge
+
+internal/wasm/ — Rust template engine (compiles to WASM)
+  - Cargo.toml: wasm-bindgen + serde + serde_yaml
+  - src/types.rs: template type definitions
+  - src/parser.rs: YAML -> Rust struct parsing
+  - src/cssgen.rs: CSS variable/font/base generation
+  - src/html.rs: HTML assembly + compose pipeline
+  - src/lib.rs: WASM exports (compose/css_variables/font_imports)
+  - build.sh: wasm32-unknown-unknown build script
+  - bridge.go: Go WASM status check + fallback
+
+cmd/huashu/main.go: version shows WASM status
+  via54Design v0.2.0
+  WASM: available/not built indicator
