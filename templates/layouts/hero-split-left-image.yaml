@@ -160,7 +160,7 @@ css: |
   /* ── Tablet (768-1279px) — 堆叠 ── */
   @media (min-width: 768px) and (max-width: 1279px) {
     .layout-hero-split {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       aspect-ratio: auto;
       min-height: 100dvh;
     }
@@ -178,7 +178,7 @@ css: |
   /* ── Phone (<768px) ── */
   @media (max-width: 767px) {
     .layout-hero-split {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       aspect-ratio: auto;
       min-height: 100svh;
     }
@@ -202,7 +202,7 @@ css: |
   /* ── Container Query: 宽度 <600px 时适配小屏容器 ── */
   @container hero (max-width: 600px) {
     .layout-hero-split {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     .layout-hero-split__image {
       min-height: 30vh;

@@ -77,6 +77,9 @@ func (c *Checker) checkAccessibility() []Issue {
 	if noAlt > 0 {
 		issues = append(issues, Issue{"warning", "a11y", fmt.Sprintf("%d <img> missing alt text", noAlt)})
 	}
+	if !strings.Contains(c.html, ":focus") && !strings.Contains(c.html, "focus-visible") {
+		issues = append(issues, Issue{"warning", "a11y", "No :focus or :focus-visible styles"})
+	}
 	return issues
 }
 
