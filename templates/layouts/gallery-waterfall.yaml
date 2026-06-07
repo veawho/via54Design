@@ -92,7 +92,7 @@ css: |
     max-width: var(--layout-max-width, 1920px);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
     padding: 8px;
     min-height: 100dvh;
@@ -152,7 +152,7 @@ css: |
   /* ── TV (≥1920px) — 5列 ── */
   @media (min-width: 1920px) {
     .layout-gallery {
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       aspect-ratio: 16 / 9;
     }
     .layout-gallery__item {
@@ -173,7 +173,7 @@ css: |
   /* ── Tablet — 3列 ── */
   @media (min-width: 768px) and (max-width: 1279px) {
     .layout-gallery {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       aspect-ratio: auto;
       min-height: 100dvh;
       padding: 24px;
@@ -183,7 +183,7 @@ css: |
   /* ── Phone — 2列 ── */
   @media (max-width: 767px) {
     .layout-gallery {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       aspect-ratio: auto;
       min-height: 100svh;
       padding: 16px;
@@ -198,7 +198,7 @@ css: |
   /* ── Container Query ── */
   @container gallery (max-width: 400px) {
     .layout-gallery {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
