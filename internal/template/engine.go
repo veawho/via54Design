@@ -51,9 +51,9 @@ func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG s
 	}
 	result.CSSVars = buildCSSVariables(color, font)
 	result.FontImports = buildFontImports(font)
-	result.BaseCSS = buildBaseCSS(font)
+	result.BaseCSS = buildBaseCSS(font, layout)
 	result.LayoutCSS = layout.CSS
-	result.HTML = assembleHTML(result)
+	result.HTML = assembleHTML(result, layout)
 	return result, nil
 }
 
@@ -88,7 +88,6 @@ func buildCSSVariables(color *ColorSchemeTemplate, font *TypographyTemplate) str
 }
 
 func buildFontImports(font *TypographyTemplate) string {
-	// 优先使用显式定义的 google_fonts
 	if len(font.GoogleFonts) > 0 {
 		var b strings.Builder
 		b.WriteString(`<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,7 +100,6 @@ func buildFontImports(font *TypographyTemplate) string {
 		return b.String()
 	}
 
-	// 回退：从 fonts map 自动推断
 	gf := map[string]bool{
 		"Inter":true,"Geist":true,"JetBrains Mono":true,"Fraunces":true,
 		"Playfair Display":true,"Noto Serif SC":true,"Noto Sans SC":true,
@@ -121,12 +119,23 @@ func buildFontImports(font *TypographyTemplate) string {
 	return ""
 }
 
-func buildBaseCSS(font *TypographyTemplate) string {
+func buildBaseCSS(font *TypographyTemplate, layout *LayoutTemplate) string {
 	body := getOrDefault(font.Fonts, "body", "'Inter', sans-serif")
 	disp := getOrDefault(font.Fonts, "display", body)
 	mono := getOrDefault(font.Fonts, "mono", "'JetBrains Mono', monospace")
+
+	// Viewport lock for 16:9 baseline
+	vpLock := ""
+	if layout.Viewport.Baseline != "" {
+		vpLock = fmt.Sprintf(`/* 视口基准: %s */
+html { aspect-ratio: %s; margin: 0 auto; overflow: auto; }
+@media (max-aspect-ratio: %s) { html { aspect-ratio: auto; } }
+`, layout.Viewport.Baseline, layout.Viewport.Baseline, layout.Viewport.Baseline)
+	}
+
 	return fmt.Sprintf(`* { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; }
+%s
 body {
   font-family: %s; line-height:1.7;
   color: var(--text-primary, #1A1A1A);
@@ -135,24 +144,19 @@ body {
 h1,h2,h3,h4 { font-family: %s; line-height:1.1; }
 code,pre { font-family: %s; }
 a { color: var(--accent, inherit); text-decoration:none; }
-img { max-width: 100%%%%; height:auto; display:block; }
-.container { max-width:1200px; margin:0 auto; padding:0 40px; }
-@media (max-width:768px) { .container { padding:0 24px; } }`, body, disp, mono)
+img { max-width: 100%%; height:auto; display:block; }
+:root { --layout-max-width: %s; }`,
+		vpLock, body, disp, mono,
+		getLayoutMaxWidth(layout))
 }
 
-
-// displayName 从 name 字段提取中文名或英文名
-// DisplayName 获取模板中文名或英文名
-func DisplayName(name interface{}) string {
-	switch v := name.(type) {
-	case string:
-		return v
-	case map[string]interface{}:
-		if zh, ok := v["zh"]; ok { return zh.(string) }
-		if en, ok := v["en"]; ok { return en.(string) }
+func getLayoutMaxWidth(layout *LayoutTemplate) string {
+	if layout.Viewport.MaxWidth != "" {
+		return layout.Viewport.MaxWidth
 	}
-	return ""
+	return "1920px"
 }
+
 func getOrDefault(m map[string]string, key, def string) string {
 	if v, ok := m[key]; ok && v != "" {
 		return v
@@ -160,41 +164,99 @@ func getOrDefault(m map[string]string, key, def string) string {
 	return def
 }
 
-func assembleHTML(r *GenerationResult) string {
-	// SVG lettering: 用自定义 SVG 替换标题文字
+func assembleHTML(r *GenerationResult, layout *LayoutTemplate) string {
 	titleHTML := r.Title
 	if r.LetteringSVG != "" {
 		titleHTML = r.LetteringSVG
+	}
+
+	// Viewport meta with device adaptation
+	vpMeta := `<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">`
+
+	// 布局特有 HTML body 内容 (根据 layout ID 选择)
+	bodyContent := heroBodyHTML(titleHTML)
+	if layout.ID == "bento-grid-2x2" {
+		bodyContent = bentoBodyHTML()
+	} else if layout.ID == "gallery-waterfall" {
+		bodyContent = galleryBodyHTML()
 	}
 
 	return fmt.Sprintf(`<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+%s
 <title>%s</title>
 %s
 <style>
 %s
 %s
 %s
-.hero-split__lettering { max-width: 100%%; height: auto; display: block; margin-bottom: 24px; }
-.hero-split__lettering svg { width: 100%%; height: auto; max-height: 40vh; }
 </style>
 </head>
 <body>
-<main>
-<section class="hero-split">
-  <div class="hero-split__image"><!-- img --></div>
-  <div class="hero-split__text">
-    <div class="hero-split__lettering">%s</div>
-    <p class="hero-split__body">副标题</p>
-    <a class="hero-split__cta" href="#">CTA</a>
-  </div>
-</section>
-</main>
+<main>%s</main>
 </body>
-</html>`, r.Title, r.FontImports, r.CSSVars, r.BaseCSS, r.LayoutCSS, titleHTML)
+</html>`, vpMeta, r.Title, r.FontImports, r.CSSVars, r.BaseCSS, r.LayoutCSS, bodyContent)
+}
+
+func heroBodyHTML(titleHTML string) string {
+	return fmt.Sprintf(`
+<section class="layout-hero-split">
+  <div class="layout-hero-split__image"><!-- img placeholder --></div>
+  <div class="layout-hero-split__text">
+    <p class="layout-hero-split__eyebrow">EYEBROW</p>
+    <h1 class="layout-hero-split__headline">%s</h1>
+    <p class="layout-hero-split__body">副标题内容</p>
+    <a class="layout-hero-split__cta" href="#">CTA 按钮</a>
+  </div>
+</section>`, titleHTML)
+}
+
+func bentoBodyHTML() string {
+	return `
+<div class="layout-bento">
+  <div class="layout-bento__card">
+    <div class="layout-bento__card-icon">📊</div>
+    <div class="layout-bento__card-value">12,847</div>
+    <p class="layout-bento__card-label">月活用户</p>
+    <span class="layout-bento__card-trend up">↑ 23.5%</span>
+  </div>
+  <div class="layout-bento__card">
+    <div class="layout-bento__card-icon">💰</div>
+    <div class="layout-bento__card-value">$8.2M</div>
+    <p class="layout-bento__card-label">ARR</p>
+    <span class="layout-bento__card-trend up">↑ 12.1%</span>
+  </div>
+  <div class="layout-bento__card">
+    <div class="layout-bento__card-icon">🎯</div>
+    <div class="layout-bento__card-value">94.7%</div>
+    <p class="layout-bento__card-label">客户留存率</p>
+    <span class="layout-bento__card-trend down">↓ 0.3%</span>
+  </div>
+  <div class="layout-bento__card">
+    <div class="layout-bento__card-icon">🚀</div>
+    <div class="layout-bento__card-value">3,201</div>
+    <p class="layout-bento__card-label">活跃项目</p>
+    <span class="layout-bento__card-trend up">↑ 45.2%</span>
+  </div>
+</div>`
+}
+
+func galleryBodyHTML() string {
+	out := `<div class="layout-gallery">`
+	for i := 1; i <= 8; i++ {
+		out += fmt.Sprintf(`
+  <div class="layout-gallery__item">
+    <div class="layout-gallery__image" style="background:var(--accent-2,#ccc)"></div>
+    <div class="layout-gallery__caption">
+      <h3>作品 %d</h3>
+      <p>标签描述</p>
+    </div>
+  </div>`, i)
+	}
+	out += "</div>"
+	return out
 }
 
 func (r *GenerationResult) SaveToFile(path string) error {

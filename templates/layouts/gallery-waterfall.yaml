@@ -1,129 +1,211 @@
-# ─── 元数据 ───
+# via54Design 布局模板 v2
+# 画廊瀑布流 — 16:9 视频基准 · 四端适配
+# 参考: Pinterest Masonry + CSS Grid Auto-fill
 id: gallery-waterfall
-name: 画廊瀑布流 — Masonry裁切画廊
-version: "1.0.0"
-created: 2026-06-07
-author: via54
+name:
+  zh: "画廊瀑布流 (16:9)"
+  en: "Gallery Waterfall (16:9)"
+version: "2.0.0"
 category: layout/gallery
-tags: [gallery, waterfall, masonry, images, portfolio, showcase]
+tags: [gallery, waterfall, masonry, images, portfolio, 16-9, video-ready]
 
 when:
-  content_has: [multiple_images, portfolio_items]
-  suitable_for: [portfolio, gallery, product_showcase, moodboard]
-  min_images: 4
+  content_has: [images, portfolio_items, gallery, showcase]
+  suitable_for: [portfolio, gallery, moodboard, showcase, brand_gallery]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
 
 structure:
-  type: css-masonry
-  columns: 3
-  column_gap: 24px
-  row_gap: 24px
-  max_width: 1400px
-  margin: "0 auto"
-  padding: [80, 40]
+  type: grid-auto-fill
+  gap: "8px"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    section: "step-6"    # 52px
+    card: "step-3"       # 12px
+
+responsive:
+  - name: tv
+    min_width: 1920
+    font_scale: 1.2
+    safe_area: [60, 80, 60, 80]
+    spacing_scale: 1.2
+    columns: 5
+    ratio_lock: "16:9"
+
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    font_scale: 1.0
+    columns: 4
+    ratio_lock: "16:9"
+
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    font_scale: 0.9
+    spacing_scale: 0.8
+    columns: 3
+    safe_area: [0, 24, 0, 24]
+
+  - name: phone
+    min_width: 0
+    max_width: 767
+    font_scale: 0.75
+    spacing_scale: 0.6
+    columns: 2
+    safe_area: [0, 16, 0, 16]
 
 elements:
   - role: gallery-item
-    behavior: repeat
-    min_count: 4
-    style: no-frame
-    break_inside: avoid
-    margin_bottom: 24
-
+    tag: div
+    behavior: waterfall
+    style: masonry-tile
     children:
-      - role: image
-        width: 100%
-        display: block
-        border_radius: 0
-        hover: scale-102
-
-      - role: caption
-        tag: figcaption
-        font_size: 13px
-        line_height: 1.5
-        padding: [12, 0, 0, 0]
-        style: muted
-
+      - role: gallery-image
+        tag: div
+        behavior: cover
+        style: aspect-ratio-auto
+      - role: gallery-caption
+        tag: div
+        style: caption
         children:
-          - role: title
-            tag: strong
+          - role: caption-title
+            tag: h3
+            font_size: "clamp(13px, 1vw, 18px)"
             font_weight: 600
-            display: block
-          - role: subtitle
-            tag: span
-            font_size: 12px
+          - role: caption-desc
+            tag: p
+            font_size: "clamp(11px, 0.8vw, 14px)"
             opacity: 0.6
 
-# 备选方案：CSS columns 实现 masonry（兼容性更好）
-fallback_css: |
-  .gallery-masonry {
-    columns: 3;
-    column-gap: 24px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 80px 40px;
-  }
-  .gallery-masonry > * {
-    break-inside: avoid;
-    margin-bottom: 24px;
-  }
-  .gallery-masonry img {
+css: |
+  .layout-gallery {
+    container-type: inline-size;
+    container-name: gallery;
     width: 100%;
-    display: block;
-    transition: transform 0.4s;
-  }
-  .gallery-masonry img:hover {
-    transform: scale(1.02);
-  }
-  @media (max-width: 900px) {
-    .gallery-masonry { columns: 2; }
-  }
-  @media (max-width: 600px) {
-    .gallery-masonry { columns: 1; }
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 8px;
+    min-height: 100dvh;
   }
 
-primary_css: |
-  .gallery-masonry {
-    column-count: 3;
-    column-gap: 24px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 80px 40px;
+  /* ── Gallery Item ── */
+  .layout-gallery__item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    cursor: pointer;
+    aspect-ratio: auto;
+    transition: transform 0.3s;
   }
-  .gallery-masonry__item {
-    break-inside: avoid;
-    margin-bottom: 24px;
+  .layout-gallery__item:hover {
+    transform: scale(1.03);
+    z-index: 2;
   }
-  .gallery-masonry__item img {
+
+  .layout-gallery__image {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--accent-2, #e0e0e0);
+  }
+  .layout-gallery__image::before {
+    content: '';
     display: block;
-    transition: transform 0.4s ease;
+    padding-bottom: 75%;  /* 4:3 fallback */
   }
-  .gallery-masonry__item:hover img {
-    transform: scale(1.02);
+
+  .layout-gallery__caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 16px 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s;
   }
-  .gallery-masonry__caption {
-    padding: 12px 0 0;
-    font-size: 13px;
-    line-height: 1.5;
-    opacity: 0.7;
+  .layout-gallery__item:hover .layout-gallery__caption {
+    opacity: 1;
   }
-  .gallery-masonry__caption strong {
-    display: block;
+
+  .layout-gallery__caption h3 {
+    font-size: clamp(13px, 1vw, 18px);
     font-weight: 600;
+    margin-bottom: 4px;
   }
-  @media (max-width: 900px) { .gallery-masonry { column-count: 2; } }
-  @media (max-width: 600px) { .gallery-masonry { column-count: 1; } }
+  .layout-gallery__caption p {
+    font-size: clamp(11px, 0.8vw, 14px);
+    opacity: 0.8;
+  }
+
+  /* ── TV (≥1920px) — 5列 ── */
+  @media (min-width: 1920px) {
+    .layout-gallery {
+      grid-template-columns: repeat(5, 1fr);
+      aspect-ratio: 16 / 9;
+    }
+    .layout-gallery__item {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  /* ── Desktop ── */
+  @media (min-width: 1280px) and (max-width: 1919px) {
+    .layout-gallery {
+      aspect-ratio: 16 / 9;
+    }
+    .layout-gallery__item {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  /* ── Tablet — 3列 ── */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .layout-gallery {
+      grid-template-columns: repeat(3, 1fr);
+      aspect-ratio: auto;
+      min-height: 100dvh;
+      padding: 24px;
+    }
+  }
+
+  /* ── Phone — 2列 ── */
+  @media (max-width: 767px) {
+    .layout-gallery {
+      grid-template-columns: repeat(2, 1fr);
+      aspect-ratio: auto;
+      min-height: 100svh;
+      padding: 16px;
+      gap: 4px;
+    }
+    .layout-gallery__caption {
+      opacity: 1; /* 手机上始终显示 */
+      background: linear-gradient(transparent 20%, rgba(0,0,0,0.8) 80%);
+    }
+  }
+
+  /* ── Container Query ── */
+  @container gallery (max-width: 400px) {
+    .layout-gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 
 quality:
-  min_images: 4
-  min_image_width: 300
-  max_caption_length: 120
-
-examples:
-  - brand: cosmos.so
-    notes: "暗色画廊瀑布流，图下metadata小字"
-  - brand: Bottega Veneta
-    notes: "暗房黑底，内容至上UI退隐"
+  min_font_size: 11px
+  viewport_lock: "16:9"   # TV/Desktop 强制 16:9，Tablet/Phone 释放
 
 changelog:
-  "1.0.0": "从cosmos.so / Bottega Veneta画廊布局迁移"
+  "2.0.0": "16:9 基准 + TV(5列)/Desktop(4列)/Tablet(3列)/Phone(2列) 四端适配"
+  "1.0.0": "初始版"

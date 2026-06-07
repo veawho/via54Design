@@ -3,25 +3,25 @@
 # 使用方式：LLM根据用户需求，按 tags/category/when 条件匹配模板
 
 layouts:
-  - id: hero-split-left-image
-    name: 左右分割式Hero（左图右文）
-    version: "1.0.0"
+  - id: hero-split-16-9
+    name: 左右分割式Hero (16:9) — 多端适配
+    version: "2.0.0"
     category: layout/hero
-    tags: [hero, split, editorial, image-left, full-bleed]
+    tags: [hero, split, editorial, image-left, full-bleed, 16-9, video-ready]
     file: templates/layouts/hero-split-left-image.yaml
 
   - id: bento-grid-2x2
-    name: Bento便当格2×2不等高卡片
+    name: Bento便当格2×2 (16:9) — 多端适配
     version: "1.0.0"
     category: layout/bento
     tags: [bento, grid, cards, metrics, features]
     file: templates/layouts/bento-grid-2x2.yaml
 
   - id: gallery-waterfall
-    name: 画廊瀑布流（Masonry裁切画廊）
-    version: "1.0.0"
+    name: 画廊瀑布流 (16:9) — 多端适配
+    version: "2.0.0"
     category: layout/gallery
-    tags: [gallery, waterfall, masonry, images, portfolio]
+    tags: [gallery, waterfall, masonry, images, portfolio, 16-9, video-ready]
     file: templates/layouts/gallery-waterfall.yaml
 
 color_schemes:
@@ -331,7 +331,7 @@ video_edits:
     file: templates/video-edits/educational-explain-5min.yaml
 combinations:
   - name: 暖色编辑Hero
-    layout: hero-split-left-image
+    layout: hero-split-16-9
     color: warm-editorial-cream
     font: serif-sans-editorial
     animation: hero-reveal-stagger

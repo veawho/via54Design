@@ -1,20 +1,81 @@
 package template
 
+// ─── 布局模板类型 (v2 — 16:9 多端适配) ───
+
 type LayoutTemplate struct {
-	ID       string     `yaml:"id"`
-	Name interface{} `yaml:"name"`
-	Version  string     `yaml:"version"`
-	Category string     `yaml:"category"`
-	Tags     []string   `yaml:"tags"`
-	When     LayoutWhen `yaml:"when"`
-	Elems    []Element  `yaml:"elements"`
-	CSS      string     `yaml:"css"`
+	ID       string      `yaml:"id"`
+	Name     interface{} `yaml:"name"`
+	Version  string      `yaml:"version"`
+	Category string      `yaml:"category"`
+	Tags     []string    `yaml:"tags"`
+	When     LayoutWhen  `yaml:"when"`
+
+	Viewport  ViewportConfig    `yaml:"viewport"`
+	Structure LayoutStructure   `yaml:"structure"`
+	Spacing   SpacingScale      `yaml:"spacing,omitempty"`
+	Responsive []BreakpointDef  `yaml:"responsive"`
+	Elements  []Element         `yaml:"elements"`
+	CSS       string            `yaml:"css"`
 }
 
-type LayoutWhen struct {
-	ContentHas  []string `yaml:"content_has"`
-	SuitableFor []string `yaml:"suitable_for"`
+// ─── 视口配置 ───
+
+type ViewportConfig struct {
+	Baseline  string `yaml:"baseline"`            // "16:9"
+	MinHeight string `yaml:"min_height"`          // "100dvh"
+	MaxWidth  string `yaml:"max_width,omitempty"` // 可选最大宽度（TV 用）
 }
+
+// ─── 布局结构 ───
+
+type LayoutStructure struct {
+	Type      string `yaml:"type"`                // grid-2col / grid-3col / flex / bento
+	Ratio     string `yaml:"ratio,omitempty"`     // "5,7" / "1fr 1fr"
+	Cols      int    `yaml:"cols,omitempty"`       // 列数 (bento)
+	Rows      int    `yaml:"rows,omitempty"`       // 行数 (bento)
+	Gap       string `yaml:"gap,omitempty"`        // "24px"
+}
+
+// ─── 间距黄金比例 ───
+
+type SpacingScale struct {
+	Base     int                  `yaml:"base"`     // 4
+	Ratio    float64              `yaml:"ratio"`    // 1.618
+	Steps    []int                `yaml:"steps,omitempty"` // 自动生成
+	Semantic map[string]string    `yaml:"semantic,omitempty"` // {section: "step-7", card: "step-4"}
+}
+
+// ─── 响应式断点 ───
+// 参考: extra-strength-responsive-grids (⭐254) 流体栅格 + CSS Container Queries
+
+type BreakpointDef struct {
+	Name      string `yaml:"name"`                // tv / desktop / tablet / phone
+	MinWidth  int    `yaml:"min_width"`            // 1920 / 1280 / 768 / 0
+	MaxWidth  int    `yaml:"max_width,omitempty"`  // 可选上限
+
+	// 栅格覆盖
+	Columns   string `yaml:"columns,omitempty"`    // "5,7" / "1fr"
+	Stack     bool   `yaml:"stack,omitempty"`      // 是否堆叠
+
+	// 字体缩放
+	FontScale float64 `yaml:"font_scale"`          // 1.2 / 1.0 / 0.9 / 0.75
+
+	// 安全区域 (TV overscan / 手机刘海)
+	SafeArea []int `yaml:"safe_area,omitempty"`    // [top, right, bottom, left] px
+
+	// 间距缩放 (相对 base)
+	SpacingScale float64 `yaml:"spacing_scale,omitempty"` // 1.0 / 0.8 / 0.6
+
+	// 隐藏/显示元素 (按 role)
+	HideRoles  []string `yaml:"hide_roles,omitempty"`
+	StackOrder []string `yaml:"stack_order,omitempty"` // [text, image] 堆叠顺序
+
+	// 布局特定设置
+	FullBleed  *bool  `yaml:"full_bleed,omitempty"`
+	RatioLock  string `yaml:"ratio_lock,omitempty"`  // "16:9" / "4:3" / "auto"
+}
+
+// ─── 元素 ───
 
 type Element struct {
 	Role     string    `yaml:"role"`
@@ -23,19 +84,29 @@ type Element struct {
 	Tag      string    `yaml:"tag,omitempty"`
 	Style    string    `yaml:"style,omitempty"`
 	FontSize string    `yaml:"font_size,omitempty"`
+	ZIndex   int       `yaml:"z_index,omitempty"`
+	Padding  []int     `yaml:"padding,omitempty"`    // [top, right, bottom, left]
+	MaxWidth string    `yaml:"max_width,omitempty"`
 	Children []Element `yaml:"children,omitempty"`
 }
 
+// ─── 以下保留不动 ───
+
+type LayoutWhen struct {
+	ContentHas  []string `yaml:"content_has"`
+	SuitableFor []string `yaml:"suitable_for"`
+}
+
 type PaletteItem struct {
-	Role        string `yaml:"role"`
-	Hex         string `yaml:"hex"`
-	NameZh      string `yaml:"name_zh,omitempty"`
+	Role         string `yaml:"role"`
+	Hex          string `yaml:"hex"`
+	NameZh       string `yaml:"name_zh,omitempty"`
 	CulturalNote string `yaml:"cultural_note,omitempty"`
 }
 
 type ColorSchemeTemplate struct {
 	ID           string            `yaml:"id"`
-	Name interface{} `yaml:"name"`
+	Name         interface{}       `yaml:"name"`
 	Version      string            `yaml:"version"`
 	Tags         []string          `yaml:"tags"`
 	Source       string            `yaml:"source,omitempty"`
@@ -80,20 +151,20 @@ type TemplateRegistry struct {
 }
 
 type RegistryEntry struct {
-	ID       string   `yaml:"id"`
-	Name interface{} `yaml:"name"`
-	Version  string   `yaml:"version"`
-	Category string   `yaml:"category"`
-	Tags     []string `yaml:"tags"`
-	File     string   `yaml:"file"`
+	ID       string      `yaml:"id"`
+	Name     interface{} `yaml:"name"`
+	Version  string      `yaml:"version"`
+	Category string      `yaml:"category"`
+	Tags     []string    `yaml:"tags"`
+	File     string      `yaml:"file"`
 }
 
 type Combination struct {
-	Name interface{} `yaml:"name"`
-	Layout  string   `yaml:"layout"`
-	Color   string   `yaml:"color"`
-	Font    string   `yaml:"font"`
-	Suitable []string `yaml:"suitable"`
+	Name    interface{} `yaml:"name"`
+	Layout  string      `yaml:"layout"`
+	Color   string      `yaml:"color"`
+	Font    string      `yaml:"font"`
+	Suitable []string   `yaml:"suitable"`
 }
 
 type GenerationResult struct {
@@ -106,5 +177,5 @@ type GenerationResult struct {
 	CSSVars      string
 	BaseCSS      string
 	LayoutCSS    string
-	LetteringSVG string // 手写/书法 SVG path (可选)
+	LetteringSVG string
 }

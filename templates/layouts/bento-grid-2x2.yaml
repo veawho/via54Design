@@ -1,133 +1,207 @@
-# ─── 元数据 ───
+# via54Design 布局模板 v2
+# Bento Grid 2×2 — 16:9 视频基准 · 四端适配
+# 参考: CSS Grid + Bento 设计趋势 (Apple/Linear)
 id: bento-grid-2x2
-name: Bento便当格2×2不等高卡片
-version: "1.0.0"
-created: 2026-06-07
-author: via54
+name:
+  zh: "Bento 便当格 2×2"
+  en: "Bento Grid 2×2"
+version: "2.0.0"
 category: layout/bento
-tags: [bento, grid, cards, metrics, features, data]
+tags: [bento, grid, cards, metrics, features, 16-9, video-ready]
 
 when:
-  content_has: [multiple_cards, metrics, data_points]
-  suitable_for: [dashboard, feature_showcase, qbr, metrics_page]
-  min_cards: 3
-  max_cards: 8
+  content_has: [cards, metrics, features, data_points]
+  suitable_for: [dashboard, qbr, feature_showcase, saas, data_story]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
 
 structure:
-  type: css-grid
-  template: |
-    grid-template-areas:
-      "card-a card-a card-b"
-      "card-c card-d card-b"
-  gap: 1px
-  min_height: auto
-  max_width: 1200px
-  margin: "0 auto"
+  type: bento
+  cols: 2
+  rows: 2
+  gap: "4px"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    card_padding: "step-4"   # 20px
+    section_gap: "step-2"    # 8px
+
+responsive:
+  - name: tv
+    min_width: 1920
+    cols: 3
+    rows: 2
+    font_scale: 1.3
+    safe_area: [80, 100, 80, 100]
+    spacing_scale: 1.2
+
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    cols: 2
+    rows: 2
+    font_scale: 1.0
+
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    cols: 2
+    font_scale: 0.9
+    spacing_scale: 0.8
+    safe_area: [0, 24, 0, 24]
+
+  - name: phone
+    min_width: 0
+    max_width: 767
+    cols: 1
+    font_scale: 0.75
+    spacing_scale: 0.6
+    safe_area: [0, 16, 0, 16]
+    stack_order: [card1, card2, card3, card4]
 
 elements:
   - role: card
-    behavior: repeat
-    min_count: 3
-    max_count: 8
-    style: bordered-card
-    padding: [48, 40]
-    border_radius: 0
-    border_width: 1
-    hover: lift-shadow
-
+    tag: div
+    behavior: bento-tile
+    style: glass
+    padding: [32, 24]
     children:
-      - role: metric-number
-        tag: span
-        font_size: "clamp(40px, 5vw, 80px)"
+      - role: card-icon
+        tag: div
+        font_size: "clamp(24px, 2.5vw, 40px)"
+        style: icon
+      - role: card-value
+        tag: div
+        font_size: "clamp(32px, 4vw, 64px)"
         font_weight: 700
-        font_variant: tabular-nums
-        line_height: 1
-        margin_bottom: 8
-
-      - role: metric-label
+        style: stat
+      - role: card-label
         tag: p
-        font_size: 14px
-        letter_spacing: "0.05em"
-        text_transform: uppercase
-        margin_bottom: 16
-
-      - role: metric-description
-        tag: p
-        font_size: 15px
-        line_height: 1.6
-        max_width: 35ch
-
-    # 大卡片（跨2列）的覆盖
-    variants:
-      - role: hero-card
-        spans: [2, 1]  # columns, rows
-        children:
-          - role: metric-number
-            font_size: "clamp(60px, 8vw, 120px)"
-          - role: sparkline
-            type: svg-inline
-            height: 40
+        font_size: "clamp(12px, 0.9vw, 16px)"
+        style: label
+      - role: card-trend
+        tag: span
+        font_size: "clamp(11px, 0.8vw, 14px)"
+        style: trend
 
 css: |
-  .bento-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-auto-rows: minmax(200px, auto);
-    gap: 1px;
-    max-width: 1200px;
+  .layout-bento {
+    container-type: inline-size;
+    container-name: bento;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
     margin: 0 auto;
-    background: var(--border, #E8DFD4);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+    min-height: 100dvh;
+    padding: 4px;
   }
-  .bento-grid > * {
-    background: var(--bg, #fff);
-    padding: 48px 40px;
+
+  /* ── Bento Tile ── */
+  .layout-bento__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px 24px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.3s, box-shadow 0.3s;
   }
-  .bento-card__number {
-    font-size: clamp(40px, 5vw, 80px);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-    margin-bottom: 8px;
+  .layout-bento__card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   }
-  .bento-card__label {
-    font-size: 14px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
+
+  /* ── TV (≥1920px) — 3×2 ── */
+  @media (min-width: 1920px) {
+    .layout-bento {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      aspect-ratio: 16 / 9;
+    }
+    .layout-bento__card {
+      padding: 48px 36px;
+    }
   }
-  .bento-card__desc {
-    font-size: 15px;
-    line-height: 1.6;
-    max-width: 35ch;
+
+  /* ── Desktop ── */
+  @media (min-width: 1280px) and (max-width: 1919px) {
+    .layout-bento {
+      aspect-ratio: 16 / 9;
+    }
   }
-  .bento-card--hero {
-    grid-column: span 2;
+
+  /* ── Tablet — 2 列 ── */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .layout-bento {
+      grid-template-columns: 1fr 1fr;
+      aspect-ratio: auto;
+      min-height: 100dvh;
+      padding: 24px;
+      gap: 12px;
+    }
   }
-  .bento-card--hero .bento-card__number {
-    font-size: clamp(60px, 8vw, 120px);
+
+  /* ── Phone — 单列瀑布 ── */
+  @media (max-width: 767px) {
+    .layout-bento {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      aspect-ratio: auto;
+      min-height: 100svh;
+      padding: 16px;
+      gap: 16px;
+    }
   }
-  .bento-card:hover {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-    transition: box-shadow 0.3s;
-  }
-  @media (max-width: 768px) {
-    .bento-grid {
+
+  /* ── Container Query: 容器 <500px ── */
+  @container bento (max-width: 500px) {
+    .layout-bento {
       grid-template-columns: 1fr;
     }
-    .bento-card--hero { grid-column: span 1; }
   }
 
-quality:
-  min_font_size: 14px
-  max_cards_per_row: 5
-  min_contrast_ratio: 4.5:1
-  max_info_density: "3个数据/卡片"
+  /* ── 子元素 ── */
+  .layout-bento__card-icon {
+    font-size: clamp(24px, 2.5vw, 40px);
+    margin-bottom: clamp(8px, 1vw, 16px);
+  }
+  .layout-bento__card-value {
+    font-size: clamp(32px, 4vw, 64px);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .layout-bento__card-label {
+    font-size: clamp(12px, 0.9vw, 16px);
+    opacity: 0.6;
+    margin-bottom: clamp(4px, 0.5vw, 8px);
+  }
+  .layout-bento__card-trend {
+    font-size: clamp(11px, 0.8vw, 14px);
+  }
+  .layout-bento__card-trend.up { color: #22c55e; }
+  .layout-bento__card-trend.down { color: #ef4444; }
 
-examples:
-  - brand: Apple Keynote
-    notes: "Bento Grid时代，不等高卡片+metric spotlight"
-  - brand: Stripe Annual Letter
-    notes: "指标卡矩阵，数据锚点+sparkline"
+quality:
+  min_font_size: 11px
+  max_line_length: 40ch
+  min_contrast_ratio: 3:1
+  viewport_lock: "16:9"
 
 changelog:
-  "1.0.0": "从Apple Bento Grid + Stripe 年报指标卡迁移"
+  "2.0.0": "16:9 基准 + TV(3×2)/Desktop/Tablet/Phone 四端 + Container Queries"
+  "1.0.0": "初始版，仅 mobile 单断点"
