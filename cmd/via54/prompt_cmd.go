@@ -177,12 +177,22 @@ func cmdPromptRef() {
 }
 
 func listPromptPlatforms() {
-	fmt.Println("可用平台 (16维度控制):")
+	fmt.Println("可用平台 (26维度控制 v3.0):")
 	for _, p := range []struct{n, d string}{
-		{"midjourney", "Midjourney 图片生成 — 16维度 + 负面词库 + Token权重"},
-		{"kling", "可灵 AI 视频/图片"},
-		{"jimeng", "即梦 AI 图片生成"},
+		{"midjourney", "Midjourney 图片生成 — 26维度 + Token权重"},
+		{"flux", "Flux Pro 图片生成"},
+		{"dalle3", "DALL-E 3 / OpenAI"},
+		{"sd3", "Stable Diffusion 3.5 / SDXL"},
+		{"stable_diffusion", "Stable Diffusion (通用)"},
+		{"ideogram", "Ideogram 3"},
+		{"recraft", "Recraft V3"},
+		{"seedance", "Seedance 2.0"},
 		{"gemini", "Google Gemini Imagen"},
+		{"veo", "Google Veo 3 (视频)"},
+		{"sora", "OpenAI Sora (视频)"},
+		{"kling", "可灵 AI 视频/图片"},
+		{"pika", "Pika 4.0 (视频)"},
+		{"jimeng", "即梦 AI 图片生成"},
 	} {
 		fmt.Printf("  %-15s  %s\n", p.n, p.d)
 	}

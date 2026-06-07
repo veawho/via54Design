@@ -1,23 +1,24 @@
-# Gemini Imagen 提示词模板 v3 — 26 维度
-id: gemini
+# Seedance 2.0 提示词模板
+id: seedance
 name:
-  zh: "Gemini Imagen"
-  en: "Gemini Imagen"
-platform: gemini
-description: "Google Gemini Imagen 图片生成 — 26 维度精确控制"
-version: "3.0.0"
-format: gemini
+  zh: "Seedance 2.0"
+  en: "Seedance 2.0"
+platform: seedance
+description: "Seedance 2.0 视频生成 — 26 维度精确控制"
+version: "1.0.0"
+format: seedance
 params:
-  aspect_ratio: "16:9"
-  safety_filter: "off"
-  person_generation: "allow"
+  ar: "16:9"
+  steps: "30"
+  seed: "-1"
 
-# 平台负面词
+# 平台默认负面词
 negative:
-  - "blurry, distorted, low quality, bad anatomy"
-  - "watermark, text, signature"
-  - "overexposed, noise, artifacts"
-  - "nsfw, violent, gore, hateful"
+  - "blurry, low quality, distorted, deformed"
+  - "unnatural movement, jittery, shaky camera"
+  - "watermark, text, logo, signature, timestamp"
+  - "bad anatomy, extra limbs, missing fingers"
+  - "flickering, artifacts, morphing artifacts"
 
 sections:
   # ── SUBJECT ──
@@ -38,7 +39,7 @@ sections:
     label: "风格流派"
     category: style
     hint: "艺术运动/风格"
-    default: "摄影写实 (Photorealistic)"
+    default: "电影感 (Cinematic)"
     weighted: true
     options:
       - {value: "摄影写实 (Photorealistic)", label: "摄影写实", weight: 1.0}
@@ -56,7 +57,7 @@ sections:
     label: "媒介 (Medium)"
     category: style
     hint: "数字绘画/油画/摄影/水彩"
-    default: "digital art"
+    default: "cinematic video"
     options:
       - {value: "digital art", label: "数字艺术"}
       - {value: "oil on canvas", label: "布面油画"}
@@ -175,7 +176,7 @@ sections:
     label: "色调 (Color Palette)"
     category: color
     hint: "整体色调/配色方案"
-    default: "warm amber tones"
+    default: "cinematic color grading"
     weighted: true
     weight: 1.1
     options:
@@ -284,7 +285,7 @@ sections:
     label: "画质标签"
     category: quality
     hint: "质量关键词"
-    default: "masterpiece, highly detailed"
+    default: "cinematic, high quality, 4K, smooth motion"
     options:
       - {value: "masterpiece, highly detailed", label: "杰作级"}
       - {value: "trending on ArtStation", label: "ArtStation 热门"}

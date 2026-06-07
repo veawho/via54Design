@@ -1,23 +1,23 @@
-# Gemini Imagen 提示词模板 v3 — 26 维度
-id: gemini
+# Flux Pro 提示词模板
+id: flux
 name:
-  zh: "Gemini Imagen"
-  en: "Gemini Imagen"
-platform: gemini
-description: "Google Gemini Imagen 图片生成 — 26 维度精确控制"
-version: "3.0.0"
-format: gemini
+  zh: "Flux Pro"
+  en: "Flux Pro"
+platform: flux
+description: "Flux Pro 图片生成 — 26 维度精确控制"
+version: "1.0.0"
+format: flux
 params:
-  aspect_ratio: "16:9"
-  safety_filter: "off"
-  person_generation: "allow"
+  ar: "16:9"
+  steps: "28"
+  guidance: "3.5"
 
-# 平台负面词
+# 平台默认负面词
 negative:
-  - "blurry, distorted, low quality, bad anatomy"
-  - "watermark, text, signature"
-  - "overexposed, noise, artifacts"
-  - "nsfw, violent, gore, hateful"
+  - "blurry, low quality, distorted, deformed, ugly, bad anatomy"
+  - "extra limbs, missing fingers, bad hands, mutated"
+  - "watermark, signature, text, logo, username"
+  - "oversaturated, underexposed, noisy, grainy, low resolution"
 
 sections:
   # ── SUBJECT ──

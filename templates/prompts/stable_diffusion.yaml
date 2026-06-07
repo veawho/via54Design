@@ -1,23 +1,24 @@
-# Gemini Imagen 提示词模板 v3 — 26 维度
-id: gemini
+# SDXL / SD3 提示词模板
+id: stable_diffusion
 name:
-  zh: "Gemini Imagen"
-  en: "Gemini Imagen"
-platform: gemini
-description: "Google Gemini Imagen 图片生成 — 26 维度精确控制"
-version: "3.0.0"
-format: gemini
+  zh: "Stable Diffusion"
+  en: "Stable Diffusion"
+platform: stable_diffusion
+description: "Stable Diffusion XL / SD3 图片生成 — 26 维度精确控制"
+version: "1.0.0"
+format: stable_diffusion
 params:
-  aspect_ratio: "16:9"
-  safety_filter: "off"
-  person_generation: "allow"
+  ar: "16:9"
+  steps: "30"
+  cfg_scale: "7.5"
 
-# 平台负面词
+# 平台默认负面词
 negative:
-  - "blurry, distorted, low quality, bad anatomy"
-  - "watermark, text, signature"
-  - "overexposed, noise, artifacts"
-  - "nsfw, violent, gore, hateful"
+  - "ugly, deformed, disfigured, bad anatomy, gross proportions"
+  - "extra limbs, missing fingers, mutant, mutilated, cloned face"
+  - "watermark, text, signature, logo, username"
+  - "low quality, worst quality, noisy, blurry, out of focus"
+  - "nsfw, child, underage, monochrome"
 
 sections:
   # ── SUBJECT ──
@@ -284,7 +285,7 @@ sections:
     label: "画质标签"
     category: quality
     hint: "质量关键词"
-    default: "masterpiece, highly detailed"
+    default: "masterpiece, best quality, ultra detailed"
     options:
       - {value: "masterpiece, highly detailed", label: "杰作级"}
       - {value: "trending on ArtStation", label: "ArtStation 热门"}

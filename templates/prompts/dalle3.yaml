@@ -1,23 +1,23 @@
-# Gemini Imagen 提示词模板 v3 — 26 维度
-id: gemini
+# DALL-E 3 提示词模板
+id: dalle3
 name:
-  zh: "Gemini Imagen"
-  en: "Gemini Imagen"
-platform: gemini
-description: "Google Gemini Imagen 图片生成 — 26 维度精确控制"
-version: "3.0.0"
-format: gemini
+  zh: "DALL-E 3"
+  en: "DALL-E 3"
+platform: dalle3
+description: "OpenAI DALL-E 3 图片生成 — 26 维度精确控制"
+version: "1.0.0"
+format: dalle3
 params:
-  aspect_ratio: "16:9"
-  safety_filter: "off"
-  person_generation: "allow"
+  size: "1792x1024"
+  quality: "hd"
+  style: "vivid"
 
-# 平台负面词
+# 平台默认负面词
 negative:
-  - "blurry, distorted, low quality, bad anatomy"
-  - "watermark, text, signature"
-  - "overexposed, noise, artifacts"
-  - "nsfw, violent, gore, hateful"
+  - "blurry, low quality, distorted, deformed"
+  - "text, watermark, signature, logo"
+  - "extra limbs, bad anatomy, unnatural"
+  - "oversaturated, overprocessed"
 
 sections:
   # ── SUBJECT ──
@@ -159,7 +159,7 @@ sections:
     label: "光线 (Lighting)"
     category: lighting
     hint: "布光类型"
-    default: "cinematic lighting"
+    default: "natural lighting"
     weighted: true
     weight: 1.2
     options:
@@ -175,7 +175,7 @@ sections:
     label: "色调 (Color Palette)"
     category: color
     hint: "整体色调/配色方案"
-    default: "warm amber tones"
+    default: "vibrant colors"
     weighted: true
     weight: 1.1
     options:
@@ -284,7 +284,7 @@ sections:
     label: "画质标签"
     category: quality
     hint: "质量关键词"
-    default: "masterpiece, highly detailed"
+    default: "masterpiece, highly detailed, 8K"
     options:
       - {value: "masterpiece, highly detailed", label: "杰作级"}
       - {value: "trending on ArtStation", label: "ArtStation 热门"}

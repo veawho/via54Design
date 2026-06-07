@@ -1,23 +1,22 @@
-# Gemini Imagen 提示词模板 v3 — 26 维度
-id: gemini
+# Recraft V3 提示词模板
+id: recraft
 name:
-  zh: "Gemini Imagen"
-  en: "Gemini Imagen"
-platform: gemini
-description: "Google Gemini Imagen 图片生成 — 26 维度精确控制"
-version: "3.0.0"
-format: gemini
+  zh: "Recraft V3"
+  en: "Recraft V3"
+platform: recraft
+description: "Recraft V3 图片生成 — 26 维度精确控制"
+version: "1.0.0"
+format: recraft
 params:
-  aspect_ratio: "16:9"
-  safety_filter: "off"
-  person_generation: "allow"
+  ar: "16:9"
+  style: "digital_illustration"
 
-# 平台负面词
+# 平台默认负面词
 negative:
-  - "blurry, distorted, low quality, bad anatomy"
-  - "watermark, text, signature"
-  - "overexposed, noise, artifacts"
-  - "nsfw, violent, gore, hateful"
+  - "blurry, low quality, distorted, deformed"
+  - "ugly, bad anatomy, extra limbs"
+  - "watermark, text, signature, logo"
+  - "photorealistic, realistic photo (if illustration style)"
 
 sections:
   # ── SUBJECT ──
@@ -38,7 +37,7 @@ sections:
     label: "风格流派"
     category: style
     hint: "艺术运动/风格"
-    default: "摄影写实 (Photorealistic)"
+    default: "数字插画 (Digital Illustration)"
     weighted: true
     options:
       - {value: "摄影写实 (Photorealistic)", label: "摄影写实", weight: 1.0}
@@ -56,7 +55,7 @@ sections:
     label: "媒介 (Medium)"
     category: style
     hint: "数字绘画/油画/摄影/水彩"
-    default: "digital art"
+    default: "digital illustration"
     options:
       - {value: "digital art", label: "数字艺术"}
       - {value: "oil on canvas", label: "布面油画"}
@@ -159,7 +158,7 @@ sections:
     label: "光线 (Lighting)"
     category: lighting
     hint: "布光类型"
-    default: "cinematic lighting"
+    default: "soft lighting"
     weighted: true
     weight: 1.2
     options:
@@ -175,7 +174,7 @@ sections:
     label: "色调 (Color Palette)"
     category: color
     hint: "整体色调/配色方案"
-    default: "warm amber tones"
+    default: "vibrant colors"
     weighted: true
     weight: 1.1
     options:
@@ -284,7 +283,7 @@ sections:
     label: "画质标签"
     category: quality
     hint: "质量关键词"
-    default: "masterpiece, highly detailed"
+    default: "masterpiece, highly detailed, illustration"
     options:
       - {value: "masterpiece, highly detailed", label: "杰作级"}
       - {value: "trending on ArtStation", label: "ArtStation 热门"}
