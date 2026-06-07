@@ -164,7 +164,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
       <span class="status-dot offline" id="statusDot"></span>
       <span id="statusText" data-i18n="connecting">connecting...</span>
     </div>
-    <div class="lang-toggle" id="langToggle" onclick="toggleLang()">
+    <div class="lang-toggle" id="langToggle">
       <span class="active" data-lang="cn">中</span>
       <span data-lang="en">EN</span>
     </div>
@@ -568,7 +568,7 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     </div>
   </div>
   <div class="btn-row">
-    <button class="btn btn-primary" id="buildBtn" onclick="buildWorkflow()">⚡ <span data-i18n="buildJsonBtn">Build JSON</span></button>
+    <button class="btn btn-primary" id="buildBtn">⚡ <span data-i18n="buildJsonBtn">Build JSON</span></button>
   </div>
 </div>
 <div class="panel-output">
@@ -576,8 +576,8 @@ select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0
     <h3 data-i18n="jsonPreview">JSON Preview</h3>
     <div class="output-meta" id="outputMeta"></div>
     <div class="output-actions">
-      <button class="btn btn-secondary btn-sm" id="copyBtn" disabled onclick="copyWorkflow()">📋 <span data-i18n="copy">Copy</span></button>
-      <button class="btn btn-secondary btn-sm" id="downloadBtn" disabled onclick="downloadWorkflow()">⬇ <span data-i18n="download">Download</span></button>
+      <button class="btn btn-secondary btn-sm" id="copyBtn" disabled>📋 <span data-i18n="copy">Copy</span></button>
+      <button class="btn btn-secondary btn-sm" id="downloadBtn" disabled>⬇ <span data-i18n="download">Download</span></button>
     </div>
   </div>
   <div id="jsonPreview">Select a template and click <strong>Build JSON</strong> to generate a workflow.</div>
@@ -891,6 +891,13 @@ function toggleLang() {
   applyLang();
   showToast(currentLang === 'cn' ? '已切换至中文' : 'Switched to English', 'info', 2000);
 }
+
+
+/* ── Event binding (script at body end, DOM ready) ── */
+(function(){
+  var lt = document.getElementById('langToggle');
+  if (lt) lt.addEventListener('click', toggleLang);
+})();
 
 function applyLang() {
   const dict = i18n[currentLang];
