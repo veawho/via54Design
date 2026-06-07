@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""
-via54_pipeline.py — Prompt orchestrator for the via54Design prompt engine.
+"""via54_pipeline.py — Prompt orchestrator for the via54Design prompt engine.
+
+Copyright (C) 2026  via54 (veawho)
+
+SPDX-License-Identifier: MIT
 
 Architecture:
     User Scene (Chinese/English)

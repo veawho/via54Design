@@ -1,4 +1,8 @@
-// via54Design — 图片提示词 (Prompt) 命令 v2
+// via54Design — 图片提示词 (Prompt) 命令 v3
+//
+// Copyright (C) 2026  via54 (veawho)
+//
+// SPDX-License-Identifier: AGPL-3.0-only
 package main
 
 import (
