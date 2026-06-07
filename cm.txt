@@ -1,1 +1,8 @@
-docs: add CLI examples for trace and lettering-svg
+refactor: rename cmd/huashu/ → cmd/via54/ + move registry
+
+Directory changes:
+  cmd/huashu/ → cmd/via54/     (Go convention: cmd/<binary>)
+  root:/template-registry.yaml → templates/registry.yaml
+  root:/template-format.md     → references/template-format.md
+
+All internal references, build scripts, and docs updated.

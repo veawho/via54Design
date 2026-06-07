@@ -20,8 +20,8 @@ build() {
     mkdir -p "$(dirname "$BINARY")"
     echo "  → ${NAME}..."
 
-    GOOS="$GOOS" GOARCH="$GOARCH" go build -ldflags="-s -w -X main.version=$VERSION" \
-        -o "$BINARY" ./cmd/huashu/
+    GOOS="$GOOS" GOARCH="$GOARCH" cd "$(dirname "$0")/.." && go build -ldflags="-s -w -X main.version=$VERSION" \
+        -o "$BINARY" ./cmd/via54/
 
     # Copy templates + scripts
     cp -r templates "$OUTDIR/$NAME/"

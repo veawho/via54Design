@@ -105,7 +105,7 @@ curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/ins
 
 ```bash
 # 编译
-go build -o via54 ./cmd/huashu/
+go build -o via54 ./cmd/via54/
 
 # 安装 Playwright 浏览器
 npx playwright install chromium

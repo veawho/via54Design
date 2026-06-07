@@ -22,6 +22,7 @@ func NewRegistry(baseDir string) (*Registry, error) {
 
 func (r *Registry) load() error {
 	candidates := []string{
+		filepath.Join(r.BaseDir, "templates", "registry.yaml"),
 		filepath.Join(r.BaseDir, "core", "template-registry.yaml"),
 		filepath.Join(r.BaseDir, "template-registry.yaml"),
 	}
