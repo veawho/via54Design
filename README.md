@@ -20,6 +20,24 @@ curl -fsSL https://raw.githubusercontent.com/veawho/via54Design/main/scripts/ins
 
 部署后输入 `via54` 即可使用。
 
+## ⚡ 快速上手
+
+```bash
+# 查看所有命令
+via54
+
+# 列出所有设计模板（配色26套 / 字体12套 / 布局3套）
+via54 list
+
+# 生成一个页面
+via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --title "我的设计" --output demo.html
+
+# 查看生成的HTML
+open demo.html     # Mac
+start demo.html   # Windows
+xdg-open demo.html # Linux
+```
+
 ---
 
 ## 🗣️ 自然语言操作示例
