@@ -53,4 +53,11 @@ type BuildResult struct {
 	JSON       []byte
 	Injected   int // number of CLIPTextEncode nodes injected
 	TemplateID string
+	Keyframes  int // number of keyframes (0 if none)
+}
+
+// Keyframe defines a prompt change at a specific frame index.
+type Keyframe struct {
+	Frame  int    `json:"frame"`
+	Prompt string `json:"prompt"`
 }

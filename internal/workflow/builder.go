@@ -17,7 +17,8 @@ import (
 // BuildWorkflow converts a WorkflowTemplate + prompts into ComfyUI API JSON.
 // The template skeleton is a valid ComfyUI JSON with __PROMPT__ / __NEGATIVE__ placeholders.
 // overrides: steps, cfg, seed, width, height, sampler, scheduler, denoise, frames.
-func BuildWorkflow(tmpl *WorkflowTemplate, prompt, negativePrompt string, overrides map[string]interface{}) (*BuildResult, error) {
+// keyframes: optional time-varying prompts for video (each has Frame + Prompt).
+func BuildWorkflow(tmpl *WorkflowTemplate, prompt, negativePrompt string, overrides map[string]interface{}, keyframes []Keyframe) (*BuildResult, error) {
 	if tmpl == nil || tmpl.Skeleton == nil {
 		return nil, fmt.Errorf("workflow template %q has no skeleton", tmpl.ID)
 	}
@@ -159,6 +160,45 @@ func BuildWorkflow(tmpl *WorkflowTemplate, prompt, negativePrompt string, overri
 		}
 	}
 
+	// Handle keyframe scheduling (prompt travel for video)
+	kfCount := 0
+	if len(keyframes) > 0 {
+		// Sort keyframes by frame
+		sort.Slice(keyframes, func(i, j int) bool { return keyframes[i].Frame < keyframes[j].Frame })
+
+		// Create a BatchPromptSchedule node
+		// Format: "0" → "prompt at frame 0", "8" → "prompt at frame 8"
+		scheduleStr := ""
+		for i, kf := range keyframes {
+			if i > 0 {
+				scheduleStr += "\n"
+			}
+			scheduleStr += fmt.Sprintf("\"%d\"", kf.Frame) + ": \"" + kf.Prompt + "\","
+		}
+		// Fallback: if negative prompt node exists, use it for pre_text
+		preText := ""
+		if negativePrompt != "" {
+			preText = negativePrompt
+		}
+
+		kfNode := map[string]interface{}{
+			"class_type": "BatchPromptSchedule",
+			"inputs": map[string]interface{}{
+				"text":          scheduleStr,
+				"pre_text":      preText,
+				"appendix":      "",
+				"start_frame":   0,
+				"end_frame":     toInt(params["frames"], 16),
+				"frame_rate":    24,
+				"interpolation": "linear",
+			},
+		}
+		kfKey := strconv.Itoa(nextID)
+		newWf[kfKey] = kfNode
+		nextID++
+		kfCount = len(keyframes)
+	}
+
 	jsonData, err := json.MarshalIndent(newWf, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("marshal workflow: %w", err)
@@ -176,6 +216,7 @@ func BuildWorkflow(tmpl *WorkflowTemplate, prompt, negativePrompt string, overri
 		JSON:       jsonData,
 		Injected:   injected,
 		TemplateID: tmpl.ID,
+		Keyframes:  kfCount,
 	}, nil
 }
 

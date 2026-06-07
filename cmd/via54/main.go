@@ -40,6 +40,7 @@ func main() {
 	case "export":    cmdExport()
 	case "prompt":    cmdPrompt()
 	case "comfyui":   cmdComfyUI()
+	case "web":       cmdWeb()
 	case "version":   cmdVersion()
 	default:          help()
 	}
@@ -58,6 +59,7 @@ func help() {
 	fmt.Println("  media ...          媒体管线")
 	fmt.Println("  export ...         导出 (pptx/svg/json/markdown/video/pdf/tts)")
 	fmt.Println("  prompt ...         图片提示词 (scene→MJ/Kling/即梦/Gemini)")
+	fmt.Println("  web ...            Web UI (ComfyUI workflow control panel)")
 	fmt.Println("  version           版本信息")
 	fmt.Println()
 	fmt.Println("详见: https://github.com/veawho/via54Design")

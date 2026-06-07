@@ -1,0 +1,30 @@
+# via54Design — SD1.5 + OpenPose ControlNet Workflow
+# SPDX-License-Identifier: MIT
+id: controlnet_openpose
+name: "SD1.5 OpenPose ControlNet"
+description: "Stable Diffusion 1.5 with OpenPose skeleton ControlNet for pose-controlled generation"
+type: txt2img
+model: "v1-5-pruned-emaonly.safetensors"
+params:
+  steps: 25
+  cfg: 7.0
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 512
+  height: 512
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  positive_prompt: CLIPTextEncode
+  negative_prompt: CLIPTextEncode
+  controlnet: ControlNetLoader
+  controlnet_apply: ControlNetApply
+  preprocessor: OpenPosePreprocessor
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors"
+    path: "checkpoints/v1-5-pruned-emaonly.safetensors"
+  - url: "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_openpose.pth"
+    path: "controlnet/control_v11p_sd15_openpose.pth"
