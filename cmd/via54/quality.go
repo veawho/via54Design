@@ -32,7 +32,7 @@ func cmdQuality() {
 	fs.Parse(os.Args[2:])
 	if *htmlFile == "" { fmt.Fprintln(os.Stderr, "请指定 --html"); os.Exit(1) }
 	data, _ := os.ReadFile(*htmlFile)
-	report := quality.CheckHTML(string(data))
+		report := quality.New(string(data)).RunAllV2()
 	fmt.Printf("\n=== 质量门禁: %s ===\n", report.Verdict)
 	fmt.Printf("文件: %d bytes | CSS块: %d | 行: %d\n", report.HTMLSize, report.CSSBlocks, report.TotalLines)
 	fmt.Printf("问题: %d 错误 / %d 警告 / %d 信息\n\n", report.Summary["error"], report.Summary["warning"], report.Summary["info"])
