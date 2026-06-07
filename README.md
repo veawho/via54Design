@@ -115,8 +115,7 @@ via54 narrate --seed "你的故事开头" --model heros-journey --format json \
 # 查看所有命令
 via54
 
-# 列出所有模板（配色40+ / 字体12 / 布局3 / 叙事模型4）
-via54 list
+via54 list                         # 列出所有模板（配色40+ / 字体12 / 布局3 / 叙事模型4）
 
 # 叙事驱动：一句话 → 多场景 HTML 动画
 via54 narrate --seed "你的故事种子" --model three-act --format json | via54 generate --from-narrative /dev/stdin
@@ -255,6 +254,61 @@ via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --
 | `elegant-didone` | 迪多体高反差 | Playfair Display | Inter 300 | Vogue / Harper's |
 | `mono-code` | 等宽主导 | JetBrains Mono | Inter | JetBrains/Cursor |
 | `playful-rounded` | 圆体亲和 | Baloo 2 | Nunito | Duolingo/Khan Academy |
+
+---
+
+## 🧱 布局模板一览
+
+3 套布局模板，全部以 **16:9 视频基准** 设计，支持 **TV/Desktop/Tablet/Phone 四端适配**。CSS 自动编译 + 黄金比例间距 + 元素级响应式。
+
+| 模板 | 中文名 | 结构 | TV ≥1920 | Desktop 1280-1919 | Tablet 768-1279 | Phone <768 |
+|------|--------|------|----------|-------------------|-----------------|------------|
+| `hero-split-16-9` | 左右分割 Hero | 左图右文 5:7 | 5:7 分屏 ×1.3字 safe-area 120px | 5:7 标准 | 堆叠 text↑image↓ | 堆叠 ×0.72 无眉标 |
+| `bento-grid-2x2` | Bento 便当格 | 2×2 卡片 | **3×2 六格** ×1.3字 | 2×2 标准 | 2 列 | **1列瀑布** ×0.75 |
+| `gallery-waterfall` | 画廊瀑布流 | 自动填充网格 | **5列** 16:9锁定 | **4列** | **3列** | **2列** 常显标题 |
+
+```bash
+# 普通网页 — 自由布局
+via54 generate --layout hero-split-16-9 --color ink-wash --font ming-hei-editorial --title "品牌故事"
+
+# 演示模式 — 16:9 锁定 (PPT/视频输出)
+via54 generate --layout bento-grid-2x2 --color dark-terminal-blue --font mono-code --presentation
+
+# Bento 数据卡片
+via54 generate --layout bento-grid-2x2 --color dark-terminal-blue --font mono-code --title "Dashboard"
+
+# 画廊
+via54 generate --layout gallery-waterfall --color crimson-elegance --font calligraphy-accent --title "Gallery"
+```
+
+### 间距系统
+
+每个布局内置 **黄金比例间距** (`base=4, φ=1.618`)，以 CSS 变量注入：
+
+```css
+--space-step-1: 4px;   --space-step-2: 6px;    --space-step-3: 10px;
+--space-step-4: 17px;  --space-step-5: 27px;   --space-step-6: 44px;
+--space-step-7: 72px;  --space-step-8: 116px;  --space-step-9: 188px;
+--space-card: var(--space-step-5);   /* 27px */
+--space-section: var(--space-step-8); /* 116px */
+```
+
+### 响应式自动编译
+
+YAML `responsive[]` 自动生成 CSS `@media` 查询，覆盖 **columns/stack/safe_area/font_scale/hide_roles**，无需手写媒体查询。
+
+### 元素级响应式
+
+每个 Element 支持按断点配置 hide/order/fontSize/padding：
+
+```yaml
+- role: eyebrow
+  responsive:
+    phone:
+      hide: true
+    tablet:
+      font_size: "12px"
+```
 
 ---
 
