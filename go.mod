@@ -1,6 +1,8 @@
 module github.com/veawho/via54Design
 
-// SPDX-License-Identifier: MIT OR AGPL-3.0
+// SPDX-License-Identifier: AGPL-3.0-only OR MIT
+// Go source (internal/ + cmd/): AGPL-3.0-only
+// Templates/hack/docs: MIT
 
 go 1.26.2
 
