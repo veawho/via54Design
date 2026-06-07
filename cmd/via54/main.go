@@ -40,6 +40,7 @@ func main() {
 	case "export":    cmdExport()
 	case "prompt":    cmdPrompt()
 	case "comfyui":   cmdComfyUI()
+	case "forge":     cmdForge()
 	case "web":       cmdWeb()
 	case "version":   cmdVersion()
 	default:          help()
