@@ -1,7 +1,8 @@
 # via54Design — AI 工作上下文
 
-> 版本: v2.0 | 最后更新: 2026-06-08
-> 由 CLAUDE.md 迁移至此。所有 AI 工具在项目根目录发现此文件时会自动加载。
+> 版本: v3.0 | 最后更新: 2026-06-08
+> 由 CLAUDE.md 迁移至此。多AI工具兼容 — Claude Code / Cursor / Windsurf / Copilot / Cline 均自动发现。
+> 同步配置文件: `.cursorrules` (Cursor) · `.windsurfrules` (Windsurf) · `.github/copilot-instructions.md` (Copilot)
 
 ---
 
@@ -21,6 +22,69 @@
 | **AI助手** | 开发助手 | Go代码实现、Shell脚本、测试、文档 |
 
 **关键关系**: 人类提供灵感种子，AI结构化扩展。循环: 人写一句 → AI脚手架 → 人确认 → AI生成。
+
+---
+
+## AI 工具兼容表
+
+| 工具 | 自动读取的文件 | 状态 |
+|------|---------------|------|
+| **Claude Code** | `AGENTS.md` | ✅ 主上下文 |
+| **Cursor** | `.cursorrules` → `AGENTS.md` | ✅ 专用规则 |
+| **Windsurf** | `.windsurfrules` → `AGENTS.md` | ✅ 专用规则 |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | ✅ 专用指令 |
+| **Cline / CLI** | `AGENTS.md` | ✅ 兼容 |
+| **Continue.dev** | `AGENTS.md` / `.continuerc.json` | ✅ 兼容 |
+| **Aider** | `CONVENTIONS.md` (软链接) | ✅ 可手动链接 |
+| **Codex CLI** | `AGENTS.md` | ✅ 兼容 |
+| **CrewAI / AutoGen / LangGraph** | 系统提示词 / Agent 定义 | 🔧 需复制到 Agent 配置 |
+
+---
+
+## 与 Agent 框架集成
+
+### CrewAI (多Agent编排)
+```python
+# 在 CrewAI Agent 定义中引用此上下文
+agent = Agent(
+    role="via54Design Developer",
+    goal="Execute design template generation with deterministic Go output",
+    backstory="You operate the via54Design engine. See AGENTS.md for full context.",
+    allow_delegation=True,
+    tools=[Via54CLI()]
+)
+```
+
+### AutoGen / AG2
+```python
+# 在 AutoGen AssistantAgent system_prompt 中注入
+with open("AGENTS.md") as f:
+    context = f.read()
+agent = AssistantAgent(
+    name="via54Assistant",
+    system_message=f"You are the via54Design AI assistant.\n\n{context}"
+)
+```
+
+### LangGraph / LangChain
+```python
+# 在 LangGraph 节点中作为 system_prompt 注入
+from langchain_core.prompts import ChatPromptTemplate
+with open("AGENTS.md") as f:
+    agents_context = f.read()
+prompt = ChatPromptTemplate.from_messages([
+    ("system", f"You are the via54Design development assistant.\n\n{agents_context}"),
+    ("human", "{input}")
+])
+```
+
+### MCP Server 模式
+via54Design 自带 MCP Server (`cmd/mcp-server/`)，支持 MCP 协议的工具均可直接调用:
+```bash
+# Claude Desktop / Cursor / VS Code + MCP
+via54 serve  # 启动 stdio MCP Server
+# 提供: template.generate, template.list, prompt.generate, quality.assess, narrate.create
+```
 
 ---
 
