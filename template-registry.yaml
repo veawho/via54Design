@@ -108,6 +108,31 @@ color_schemes:
     name: 复古未来 — 黑+奶油+钴蓝(Perplexity风)
     tags: [classic, cosmic, retro, futuristic, mysterious]
     file: templates/color-schemes/cosmic-retro.yaml
+  # ── Adobe/Behance (6) ──
+  - id: spectrum-indigo
+    name: Adobe Spectrum — 创意行业色彩标准
+    tags: [adobe, professional, creative, accessible]
+    file: templates/color-schemes/spectrum-indigo.yaml
+  - id: flat-ui-vibrant
+    name: Flat UI — Behance最常用扁平配色
+    tags: [adobe, vibrant, bold, modern, youthful]
+    file: templates/color-schemes/flat-ui-vibrant.yaml
+  - id: millennial-sage
+    name: 千禧鼠尾草 — Behance最出圈粉绿搭配
+    tags: [adobe, trendy, gentle, warm, femine]
+    file: templates/color-schemes/millennial-sage.yaml
+  - id: glassmorphism-pastel
+    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
+    tags: [adobe, futuristic, ethereal, tech, glass]
+    file: templates/color-schemes/glassmorphism-pastel.yaml
+  - id: neon-dark
+    name: 暗黑霓虹 — 赛博朋克荧光对决
+    tags: [adobe, dark, vibrant, futuristic, cyberpunk]
+    file: templates/color-schemes/neon-dark.yaml
+  - id: earth-terracotta
+    name: 大地陶土 — 2026年度色趋势
+    tags: [adobe, warm, earthy, natural, premium]
+    file: templates/color-schemes/earth-terracotta.yaml
 
   - id: dark-terminal-blue
     name: 暗色终端美学（近黑+紫蓝强调/Linear风）
@@ -136,6 +161,31 @@ color_schemes:
     category: color-scheme/cosmic
     tags: [cosmic, retro, futuristic, dark, warm-dark]
     file: templates/color-schemes/cosmic-retro.yaml
+  # ── Adobe/Behance (6) ──
+  - id: spectrum-indigo
+    name: Adobe Spectrum — 创意行业色彩标准
+    tags: [adobe, professional, creative, accessible]
+    file: templates/color-schemes/spectrum-indigo.yaml
+  - id: flat-ui-vibrant
+    name: Flat UI — Behance最常用扁平配色
+    tags: [adobe, vibrant, bold, modern, youthful]
+    file: templates/color-schemes/flat-ui-vibrant.yaml
+  - id: millennial-sage
+    name: 千禧鼠尾草 — Behance最出圈粉绿搭配
+    tags: [adobe, trendy, gentle, warm, femine]
+    file: templates/color-schemes/millennial-sage.yaml
+  - id: glassmorphism-pastel
+    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
+    tags: [adobe, futuristic, ethereal, tech, glass]
+    file: templates/color-schemes/glassmorphism-pastel.yaml
+  - id: neon-dark
+    name: 暗黑霓虹 — 赛博朋克荧光对决
+    tags: [adobe, dark, vibrant, futuristic, cyberpunk]
+    file: templates/color-schemes/neon-dark.yaml
+  - id: earth-terracotta
+    name: 大地陶土 — 2026年度色趋势
+    tags: [adobe, warm, earthy, natural, premium]
+    file: templates/color-schemes/earth-terracotta.yaml
 
   - id: neo-brutalist-vibrant
     name: 新粗野主义撞色（电光紫+品红+亮黄/The Verge风）

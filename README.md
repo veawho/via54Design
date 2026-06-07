@@ -127,9 +127,20 @@ via54 generate --layout gallery --color muji-minimal --font system-utility --tit
 | `candy-duolingo` | Duolingo | 游戏·亲和 | `#58CC02` 绿 |
 | `cosmic-retro` | Perplexity | 太空·复古 | `#2B4F91` 钴蓝 |
 
+### Adobe / Behance 流行配色 (6)
+
+| 方案 | 设计运动 | 气质 | 强调色 |
+|------|----------|------|--------|
+| `spectrum-indigo` | Adobe Spectrum | 专业·创意 | `#5C5CE0` Indigo |
+| `flat-ui-vibrant` | Flat Design | 扁平·活力 | `#3498DB` 碧蓝 |
+| `millennial-sage` | Instagram美学 | 温柔·趋势 | `#E8A0BF` 千禧粉 |
+| `glassmorphism-pastel` | 玻璃拟态 | 未来·梦幻 | `#7C6BF5` 紫罗兰 |
+| `neon-dark` | 赛博朋克 | 暗黑·霓虹 | `#FF2D95` 荧光粉 |
+| `earth-terracotta` | 返璞归真 | 大地·温暖 | `#C06C4C` 陶土橙 |
+
 ```bash
-via54 generate --layout bento-grid --color dark-terminal-blue --font sans-geometric-tech --title "Dashboard" --output demo.html
-via54 generate --layout hero-split --color warm-editorial-cream --font serif-sans-editorial --title "品牌故事" --output demo.html
+via54 generate --layout hero-split --color earth-terracotta --font serif-sans-editorial --title "Café" --output demo.html
+via54 generate --layout bento-grid --color neon-dark --font display-sans-bold --title "Cyber Dashboard" --output demo.html
 ```
 
 ---

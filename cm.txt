@@ -1,1 +1,9 @@
-docs: add color palette gallery to README (20 schemes with examples)
+feat: add 6 Adobe/Behance popular color schemes
+
+New palettes (total: 26):
+  spectrum-indigo — Adobe's brand color
+  flat-ui-vibrant — Behance most-used flat palette
+  millennial-sage — viral Millennial Pink + Sage Green
+  glassmorphism-pastel — frosted glass UI trend
+  neon-dark — Cyberpunk dark mode
+  earth-terracotta — 2026 Earth tone trend

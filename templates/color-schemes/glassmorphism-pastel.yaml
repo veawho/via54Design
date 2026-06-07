@@ -1,0 +1,42 @@
+# via54Design Adobe/Behance配色
+# Glassmorphism — 玻璃拟态界的色彩
+id: glassmorphism-pastel
+name:
+  zh: "玻璃拟态"
+  en: "Glassmorphism Pastel"
+  ja: "グラスモーフィズム"
+metadata:
+  designer: via54 / Behance 2021-2023 全球趋势
+  platform: Behance / Dribbble / Apple Vision Pro
+  cultural_context: "玻璃拟态(Glassmorphism)是2021年起Behance上最热门的设计趋势。它模仿磨砂玻璃的效果：背景模糊、半透明、微妙的阴影和边框。Apple Vision Pro的发布将其推向新高度。它的配色核心是柔和的粉彩渐变，背景通常使用深色或渐变色以凸显玻璃的透明感。"
+  philosophy: "数字时代的质感。看得见，摸不着。"
+mood: [futuristic, ethereal, soft, tech, dreamy]
+season: winter
+palette:
+  - role: background
+    hex: "#0A0E27"
+    name_zh: "深空蓝"
+    cultural_note: "深蓝黑底，让玻璃发光"
+  - role: text_primary
+    hex: "#F0EFFF"
+    name_zh: "淡紫白"
+    cultural_note: "微紫的冷白"
+  - role: text_secondary
+    hex: "#A8B0D0"
+    name_zh: "灰蓝紫"
+    cultural_note: "辅助文字色"
+  - role: accent
+    hex: "#7C6BF5"
+    name_zh: "紫罗兰"
+    cultural_note: "Glassmorphism最常用的强调色"
+  - role: accent_alt
+    hex: "#6CD4FF"
+    name_zh: "天湖蓝"
+    cultural_note: "温暖的冷色，玻璃的高光"
+  - role: border
+    hex: "rgba(255,255,255,0.15)"
+    name_zh: "玻璃边框"
+    cultural_note: "半透明白边框，玻璃拟态的灵魂"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [sans-geometric-tech, mono-terminal]

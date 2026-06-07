@@ -1,0 +1,42 @@
+# via54Design Adobe/Behance配色
+# Neon Dark — 暗黑模式和荧光色的对决
+id: neon-dark
+name:
+  zh: "暗黑霓虹"
+  en: "Neon Dark"
+  ja: "ネオンダーク"
+metadata:
+  designer: via54 / Behance 2024-2026 主流趋势
+  platform: Behance / Dribbble / 游戏UI
+  cultural_context: "暗黑模式+霓虹荧光色是2024-2026年Behance上最强势的设计趋势。它源于赛博朋克(Cyberpunk)美学的普及——从《赛博朋克2077》到《银翼杀手》的视觉遗产，再到AI产品(如Perplexity、Cursor)对暗色界面的偏爱。黑底+荧光色的组合在所有设计平台上都获得最高的用户互动率。"
+  philosophy: "霓虹灯下的赛博空间。黑暗是画布，光是语言。"
+mood: [dark, vibrant, futuristic, energetic, bold]
+season: all
+palette:
+  - role: background
+    hex: "#0D0D12"
+    name_zh: "炭黑"
+    cultural_note: "赛博空间的底色"
+  - role: text_primary
+    hex: "#E8E8F0"
+    name_zh: "冷白"
+    cultural_note: "非纯白，微带蓝紫"
+  - role: text_secondary
+    hex: "#7A7A8A"
+    name_zh: "灰紫"
+    cultural_note: "暗夜中的辅助信息"
+  - role: accent
+    hex: "#FF2D95"
+    name_zh: "霓虹粉"
+    cultural_note: "最吸睛的荧光色，常用于游戏UI强调"
+  - role: accent_alt
+    hex: "#00E5FF"
+    name_zh: "霓虹青"
+    cultural_note: "暖粉的完美对比色，Cyberpunk经典组合"
+  - role: border
+    hex: "#1E1E2A"
+    name_zh: "暗紫灰"
+    cultural_note: "几乎隐形的边界"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [display-sans-bold, mono-terminal]

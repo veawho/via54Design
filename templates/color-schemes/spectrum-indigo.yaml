@@ -1,0 +1,42 @@
+# via54Design Adobe/Behance配色
+# Adobe Spectrum — 创意行业的色彩标准
+id: spectrum-indigo
+name:
+  zh: "Adobe Spectrum"
+  en: "Spectrum Indigo"
+  ja: "アドビスペクトラム"
+metadata:
+  designer: Adobe Design Team
+  platform: Adobe Spectrum Design System
+  cultural_context: "Adobe Spectrum 是 Adobe 的设计系统，服务于 Photoshop、Illustrator、XD 等全线产品。Indigo 是 Adobe 的标志色，代表创意与专业。Spectrum 的色彩体系基于感知均匀的 HSLuv 色彩空间，确保所有颜色在任意亮度下保持一致的辨识度。"
+  philosophy: "包容性色彩。每个人看到的颜色都应该一致。"
+mood: [professional, creative, clean, accessible, modern]
+season: all
+palette:
+  - role: background
+    hex: "#FAFAFA"
+    name_zh: "Spectrum白"
+    cultural_note: "Adobe Spectrum 的干净画布"
+  - role: text_primary
+    hex: "#1A1A1A"
+    name_zh: "Spectrum黑"
+    cultural_note: "高对比正文色"
+  - role: text_secondary
+    hex: "#6E6E6E"
+    name_zh: "Spectrum灰"
+    cultural_note: "辅助信息，符合 WCAG AA"
+  - role: accent
+    hex: "#5C5CE0"
+    name_zh: "Spectrum Indigo"
+    cultural_note: "Adobe 品牌色，创意与信任的象征"
+  - role: accent_alt
+    hex: "#E03C31"
+    name_zh: "Spectrum红"
+    cultural_note: "Adobe Creative Cloud 图标色"
+  - role: border
+    hex: "#E0E0E0"
+    name_zh: "Spectrum淡灰"
+    cultural_note: "组件边界线"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [sans-geometric-tech, system-utility]

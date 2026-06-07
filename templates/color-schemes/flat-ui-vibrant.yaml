@@ -1,0 +1,42 @@
+# via54Design Adobe/Behance配色
+# Flat UI — Behance上最常用的扁平配色
+id: flat-ui-vibrant
+name:
+  zh: "Flat UI"
+  en: "Flat UI Vibrant"
+  ja: "フラットUI"
+metadata:
+  designer: via54 / Flat UI Colors (Designmodo)
+  platform: Behance 最常用配色方案
+  cultural_context: "Flat UI Colors 是 Behance 和 Dribbble 上被引用最多的配色集之一。这套配色定义了2015-2020年扁平化设计的视觉标准，至今仍是UI设计入门的首选配色。其核心思想：高饱和、高对比、一个主色配一个强调色。"
+  philosophy: "扁平不意味着单调。色彩就是界面。"
+mood: [bold, vibrant, modern, youthful, clean]
+season: summer
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "纯白"
+    cultural_note: "高对比干净的画布"
+  - role: text_primary
+    hex: "#2C3E50"
+    name_zh: "午夜蓝"
+    cultural_note: "Flat UI 经典深色，比纯黑柔和"
+  - role: text_secondary
+    hex: "#7F8C8D"
+    name_zh: "灰"
+    cultural_note: "Designmodo 经典灰"
+  - role: accent
+    hex: "#3498DB"
+    name_zh: "碧蓝"
+    cultural_note: "Flat UI 中最常用的蓝色， Behance项目标配"
+  - role: accent_alt
+    hex: "#E74C3C"
+    name_zh: "朱红"
+    cultural_note: "Flat UI 经典红色，CTA按钮首选"
+  - role: border
+    hex: "#ECF0F1"
+    name_zh: "淡云灰"
+    cultural_note: "极淡灰分割"
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image]
+  fonts: [sans-geometric-tech, display-sans-bold]
