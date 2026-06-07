@@ -1,25 +1,27 @@
-# scripts/ — 遗留管线
+# scripts/ — 部署 & 编译
 
-本目录仅保留未被 Go 迁移的脚本。
+本目录仅保留部署和编译脚本，所有导出功能已全部迁移到 Go 引擎。
 
-## 保留
+| 文件 | 用途 | 语言 |
+|------|------|------|
+| `install.sh` | 一句话部署入口 | Bash (16行) |
+| `setup.sh` | 自动安装依赖 + 编译 + 配置 | Bash (~180行) |
+| `build.sh` | Go 跨平台编译分发 | Bash (~50行) |
 
-| 文件 | 原因 |
-|------|------|
-| `export_deck_pptx.mjs` | HTML→可编辑 PPTX，Go 无成熟替代 |
-| `export_deck_pdf.mjs` | deck→PDF (配套) |
-| `export_deck_stage_pdf.mjs` | deck→PDF (单文件版) |
-| `build.sh` | Go 跨平台编译 |
+## 已迁移到 Go 引擎
 
-## 已迁移到 Go
+所有导出功能已由 `via54 export` 命令覆盖，零外部运行时依赖：
 
-以下功能已合并到 Go 引擎：
-
-| 旧文件 | 迁移目标 | 新命令 |
-|--------|----------|--------|
-| add-music.sh → | `internal/media/media.go` → | `via54 media add-music` |
-| convert-formats.sh → | `internal/media/media.go` → | `via54 media convert` |
-| fetch_images.py → | `internal/media/fetch.go` → | `via54 media fetch` |
-| render-video.js → | `internal/export/render.go` → | `via54 export render` |
-| tts-doubao.mjs → | `internal/export/tts.go` → | `via54 export tts` |
-| verify.py → | `internal/quality/checker.go` → | `via54 quality` |
+| 功能 | 新命令 | 旧脚本（已删除） |
+|------|--------|-----------------|
+| PPTX 导出 | `via54 export pptx scaffold.json` | export_deck_pptx.mjs |
+| PDF 导出 | `via54 export pdf deck.html` | export_deck_pdf.mjs |
+| 单文件 PDF | `via54 export pdf deck.html` | export_deck_stage_pdf.mjs |
+| 视频渲染 | `via54 export render --format mp4/webm/hevc/frames/apng` | render-video.js |
+| TTS 语音 | `via54 export tts --text "你好"` | tts-doubao.mjs |
+| 视频转 GIF | `via54 media convert video.mp4` | convert-formats.sh |
+| 配乐 | `via54 media add-music video.mp4 --mood=tech` | add-music.sh |
+| 图片搜索 | `via54 media fetch --query "关键词"` | fetch_images.py |
+| SVG 导出 | `via54 export svg scaffold.json` | — (新增) |
+| JSON 导出 | `via54 export json scaffold.json` | — (新增) |
+| Markdown | `via54 export markdown scaffold.json` | — (新增) |
