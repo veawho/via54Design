@@ -171,6 +171,41 @@ via54 export tts --text "你好" --out voice.mp3
 via54 serve
 ```
 
+### 命令标志速查
+
+| 命令 | 标志 | 类型 | 默认值 | 说明 |
+|------|------|------|--------|------|
+| **generate** | `--layout` | string | — | 布局模板 ID (`via54 list` 查看) |
+| | `--color` | string | — | 配色模板 ID |
+| | `--font` | string | — | 字体模板 ID |
+| | `--title` | string | "via54Design" | 页面标题 |
+| | `--output` | string | "output.html" | 输出文件路径 |
+| | `--presentation` | bool | false | 16:9 演示锁定 (PPT/视频) |
+| | `--lettering-svg` | string | — | 手写/书法 SVG 路径 |
+| | `--from-narrative` | string | — | 叙事脚手架 JSON (via54 narrate --format json) |
+| **narrate** | `--seed` | string | **必填** | 一句话故事种子 |
+| | `--model` | string | "three-act" | 叙事模型 ID |
+| | `--duration` | int | 30 | 目标视频时长(秒) |
+| | `--format` | string | "markdown" | 输出格式 (markdown/json) |
+| | `--output` | string | stdout | 输出文件路径 |
+| | `--list` | bool | false | 列出所有叙事模型 |
+| **media** | `add-music` | `--mood` | string | "tech" | 配乐情绪 (tech/ad/educational) |
+| | `fetch` | `--query` | string | **必填** | 搜索关键词 |
+| | | `--out` | string | "./img" | 输出目录 |
+| | | `--count` | int | 2 | 每关键词张数 |
+| | `trace` | `--input` | string | **必填** | 输入图片路径 |
+| | | `--output` | string | — | 输出 SVG 路径 |
+| **export** | `render` | `--duration` | int | 10 | 时长(秒) |
+| | | `--width` | int | 1920 | 宽 |
+| | | `--height` | int | 1080 | 高 |
+| | `tts` | `--text` | string | **必填** | 文本 |
+| | | `--output` | string | "output.mp3" | 输出路径 |
+| | | `--voice` | string | — | 音色 |
+| **quality** | `--html` | string | **必填** | HTML 文件路径 |
+| | `--verbose` | bool | false | 显示 info 级问题 |
+| **pattern** | `--html` | string | **必填** | HTML 文件路径 |
+| | `--name` | string | "unnamed" | 作品名称 |
+
 ---
 
 ## 🎨 配色模版一览
