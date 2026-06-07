@@ -1,0 +1,10 @@
+# via54Design — Windsurf Rules
+
+See `.cursorrules` for full rules. Windsurf reads this file.
+主上下文: `AGENTS.md`
+
+## 核心规则
+- Go 标准库优先, 仅 mcp-go + yaml.v3 依赖
+- YAML 驱动所有设计数据
+- 所有 map 遍历用 sortedKeys() 保证确定性
+- SPDX 头部必在每 .go 文件
