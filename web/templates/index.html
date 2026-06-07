@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>via54Design</title>
+<style>
+
+/* ── Reduced Motion (Claude Design a11y) ── */
+@media(prefers-reduced-motion:no-preference){.tab-btn,.btn,.color-swatch,.lang-toggle span{transition:all 0.2s ease}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+/* ── Reset & Variables ── */
+:root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-card:#1c2128;--bg-input:#252a32;--border:#30363d;--text-primary:#e6edf3;--text-secondary:#8b949e;--text-dim:#484f58;--accent:#3fb950;--accent-hover:#4fdf60;--accent-subtle:rgba(63,185,80,0.12);--accent-blue:#58a6ff;--accent-red:#f85149;--accent-orange:#d29922;--accent-purple:#bc8cff;--font-mono:'Cascadia Code','JetBrains Mono','Fira Code','Consolas',monospace;--font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;--radius:8px;--radius-sm:6px;--transition:0.2s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6;overflow:hidden}
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+/* ── Header ── */
+.app-header{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;height:52px;flex-shrink:0}
+.app-header .logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text-primary)}
+.app-header .logo h1{font-size:17px;font-weight:500;letter-spacing:-0.3px;background:linear-gradient(135deg,#3fb950,#58a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.app-header .logo .version{font-size:10px;background:var(--accent-subtle);color:var(--accent);padding:1px 7px;border-radius:99px;font-weight:600;-webkit-text-fill-color:var(--accent)}
+.app-header .header-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+.app-header .status{font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:5px}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.status-dot.online{background:var(--accent);box-shadow:0 0 6px rgba(63,185,80,0.4)}
+.status-dot.offline{background:var(--accent-red);box-shadow:0 0 6px rgba(248,81,73,0.4)}
+/* ── Lang Toggle ── */
+.lang-toggle{display:flex;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;font-size:12px;font-weight:500;line-height:1}
+.lang-toggle span{padding:4px 10px;transition:all var(--transition);color:var(--text-dim)}
+.lang-toggle span.active{background:var(--accent);color:#000}
+.lang-toggle span:not(.active):hover{color:var(--text-secondary)}
+/* ── Nav Tabs ── */
+.tab-nav{background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;gap:0;overflow-x:auto;flex-shrink:0;padding:0 8px}
+.tab-nav::-webkit-scrollbar{height:3px}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text-dim);font-family:var(--font-sans);font-size:12.5px;font-weight:500;padding:10px 16px;cursor:pointer;transition:all var(--transition);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.tab-btn:hover{color:var(--text-secondary);background:rgba(255,255,255,0.03)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-subtle)}
+.tab-btn .tab-icon{font-size:14px}
+/* ── Main Layout ── */
+.app-main{display:flex;flex-direction:column;height:calc(100vh - 52px - 41px);overflow:hidden}
+.tab-content{display:none;flex:1;overflow:hidden}
+.tab-content.active{display:flex}
+/* ── Panel Layout ── */
+.panel-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;flex:1;overflow:hidden}
+@media(max-width:960px){.panel-split{grid-template-columns:1fr;overflow-y:auto}.panel-controls,.panel-output{overflow:visible!important;min-height:auto!important}}
+.panel-controls{padding:20px;overflow-y:auto;border-right:1px solid var(--border)}
+.panel-output{padding:20px;display:flex;flex-direction:column;overflow:hidden}
+.panel-output .output-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.panel-output .output-header h3{font-size:13px;font-weight:500;color:var(--text-secondary)}
+.panel-output .output-meta{font-size:11px;color:var(--text-dim);font-family:var(--font-mono)}
+.output-actions{display:flex;gap:6px}
+.output-actions .btn{flex:0;padding:5px 11px;font-size:11px}
+/* ── Form Elements ── */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12.5px;font-weight:500;color:var(--text-secondary);margin-bottom:5px}
+.form-group select,.form-group textarea{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:13px;padding:7px 10px;transition:border-color var(--transition);outline:none}
+.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-subtle)}
+.form-group select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238b949e'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.form-group select option{background:var(--bg-card)}
+.form-group textarea{resize:vertical;min-height:70px;font-family:var(--font-mono);font-size:12.5px;line-height:1.5}
+.form-group .input-hint{font-size:11px;color:var(--text-dim);margin-top:3px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:700px){.form-row-3{grid-template-columns:1fr 1fr}}
+@media(max-width:450px){.form-row-3{grid-template-columns:1fr}}
+/* ── Sliders ── */
+.slider-group{margin-bottom:10px}
+.slider-group .slider-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.slider-group .slider-header label{margin-bottom:0;font-size:11.5px}
+.slider-group .slider-header .slider-value{font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:600}
+input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:var(--bg-input);border-radius:2px;outline:none;cursor:pointer}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--bg-primary);cursor:pointer;transition:transform 0.15s}
+input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--bg-primary);cursor:pointer}
+
+/* ── Focus Visible (Claude Design a11y) ── */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.tab-btn:focus-visible{outline-offset:-2px}
+.btn:focus-visible{box-shadow:0 0 0 2px var(--accent)}
+select:focus-visible,input:focus-visible,textarea:focus-visible{box-shadow:0 0 0 2px var(--accent-subtle)}
+/* ── Buttons ── */
+.btn-row{display:flex;gap:8px;margin-top:4px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border:none;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;flex:1;justify-content:center}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-primary:disabled{background:var(--bg-input);color:var(--text-dim);cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-blue{background:var(--accent-blue);color:#000}
+.btn-blue:hover{background:#79c0ff}
+.btn-danger{background:var(--accent-red);color:#fff}
+.btn-danger:hover{background:#ff6b62}
+.btn-sm{padding:5px 10px;font-size:11px;flex:0}
+/* ── Output Preview ── */
+#jsonPreview,#outputPreview{flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word;tab-size:2;min-height:120px}
+#jsonPreview .key{color:#79c0ff}#jsonPreview .string{color:#a5d6ff}#jsonPreview .number{color:#79c0ff}#jsonPreview .boolean{color:#ffa657}#jsonPreview .null{color:#8b949e}
+/* ── Cards (color swatches etc) ── */
+.color-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;margin-bottom:10px}
+.color-swatch{width:100%;aspect-ratio:1;border-radius:var(--radius-sm);border:2px solid transparent;cursor:pointer;transition:all var(--transition);position:relative}
+.color-swatch:hover{border-color:var(--text-secondary);transform:scale(1.08)}
+.color-swatch.active{border-color:var(--accent);box-shadow:0 0 8px var(--accent-subtle)}
+.color-swatch .check{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:16px;opacity:0;transition:opacity var(--transition)}
+.color-swatch.active .check{opacity:1}
+.layout-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.layout-card{border:2px solid var(--border);border-radius:var(--radius);padding:12px 8px;cursor:pointer;text-align:center;transition:all var(--transition);background:var(--bg-card)}
+.layout-card:hover{border-color:var(--text-dim);background:var(--bg-input)}
+.layout-card.active{border-color:var(--accent);background:var(--accent-subtle)}
+.layout-card .layout-icon{font-size:28px;display:block;margin-bottom:4px}
+.layout-card .layout-label{font-size:11px;color:var(--text-secondary)}
+.layout-card.active .layout-label{color:var(--accent)}
+.font-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.font-chip{padding:4px 12px;border:1px solid var(--border);border-radius:99px;font-size:12px;cursor:pointer;transition:all var(--transition);background:var(--bg-card);color:var(--text-secondary)}
+.font-chip:hover{border-color:var(--text-dim);background:var(--bg-input)}
+.font-chip.active{background:var(--accent-subtle);border-color:var(--accent);color:var(--accent)}
+/* ── Tabs within form (for workflow builder) ── */
+.inner-tabs{display:flex;gap:0;margin-bottom:12px;background:var(--bg-card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);width:fit-content}
+.inner-tab{background:none;border:none;color:var(--text-dim);font-family:var(--font-sans);font-size:12px;font-weight:500;padding:6px 16px;cursor:pointer;transition:all var(--transition)}
+.inner-tab:hover{color:var(--text-secondary)}
+.inner-tab.active{color:var(--accent);background:var(--accent-subtle)}
+/* ── Placeholder ── */
+.placeholder-preview{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text-dim);font-size:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);min-height:200px}
+.placeholder-preview .placeholder-icon{font-size:40px;opacity:0.5}
+.placeholder-preview .placeholder-hint{font-size:12px;color:var(--text-dim)}
+/* ── iFrame preview ── */
+.preview-frame{flex:1;border:1px solid var(--border);border-radius:var(--radius);background:#fff;min-height:200px;width:100%}
+/* ── Toast ── */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:10px 18px;border-radius:var(--radius);font-size:13px;font-weight:500;color:#fff;opacity:0;transform:translateY(12px) scale(0.95);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);pointer-events:auto;max-width:360px;backdrop-filter:blur(8px)}
+.toast.show{opacity:1;transform:translateY(0) scale(1)}
+.toast.info{background:rgba(31,111,235,0.92);border:1px solid #1f6feb}
+.toast.success{background:rgba(35,134,54,0.92);border:1px solid #238636}
+.toast.error{background:rgba(218,54,51,0.92);border:1px solid #da3633}
+.toast.warn{background:rgba(210,153,34,0.92);border:1px solid #d29922}
+/* ── Spinner ── */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,0.2);border-top-color:#000;border-radius:50%;animation:spin 0.6s linear infinite}
+.spinner-light{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tab-content.active .panel-controls,.tab-content.active .panel-output{animation:fadeIn 0.25s ease}
+/* ── JSON Viewer additional ── */
+.json-viewer{flex:1;overflow:auto}
+.json-viewer .jv-key{color:#79c0ff}.json-viewer .jv-str{color:#a5d6ff}.json-viewer .jv-num{color:#79c0ff}.json-viewer .jv-bool{color:#ffa657}.json-viewer .jv-null{color:#8b949e}.json-viewer .jv-bracket{color:#8b949e}
+/* ── Responsive ── */
+@media(max-width:600px){.app-header{padding:0 12px;gap:8px}.tab-btn{padding:8px 10px;font-size:11px}.panel-controls,.panel-output{padding:12px}}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <a href="#" class="logo" onclick="switchTab(0);return false">
+    <h1>via54Design</h1>
+    <span class="version">v0.5</span>
+  </a>
+  <div class="header-actions">
+    <div class="status">
+      <span class="status-dot offline" id="statusDot"></span>
+      <span id="statusText" data-i18n="connecting">connecting...</span>
+    </div>
+    <div class="lang-toggle" id="langToggle" onclick="toggleLang()">
+      <span class="active" data-lang="cn">中</span>
+      <span data-lang="en">EN</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ TAB NAV ═══ -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="0">
+    <span class="tab-icon">🔧</span>
+    <span data-i18n="tabPrompt">Prompt Engine</span>
+  </button>
+  <button class="tab-btn" data-tab="1">
+    <span class="tab-icon">🎨</span>
+    <span data-i18n="tabDesign">Design Templates</span>
+  </button>
+  <button class="tab-btn" data-tab="2">
+    <span class="tab-icon">📖</span>
+    <span data-i18n="tabNarrate">Narrate Engine</span>
+  </button>
+  <button class="tab-btn" data-tab="3">
+    <span class="tab-icon">📦</span>
+    <span data-i18n="tabExport">Export Pipeline</span>
+  </button>
+  <button class="tab-btn" data-tab="4">
+    <span class="tab-icon">🎵</span>
+    <span data-i18n="tabMedia">Media Pipeline</span>
+  </button>
+  <button class="tab-btn" data-tab="5">
+    <span class="tab-icon">⚡</span>
+    <span data-i18n="tabWorkflow">Workflow Builder</span>
+  </button>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="app-main" id="appMain">
+
+<!-- ─── TAB 0: PROMPT ENGINE ─── -->
+<section class="tab-content active" data-tab="0">
+<div class="panel-split">
+<div class="panel-controls">
+  <div class="form-group">
+    <label data-i18n="sceneLabel">Scene Description</label>
+    <textarea id="promptScene" rows="3" placeholder="A cinematic wide shot of a neon-lit cyberpunk city at night, rain reflecting purple and blue lights..."></textarea>
+    <div class="input-hint" data-i18n="sceneHint">Describe the scene in natural language</div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label data-i18n="platformLabel">Target Platform</label>
+      <select id="promptPlatform">
+        <option value="midjourney">Midjourney</option>
+        <option value="flux" selected>Flux</option>
+        <option value="dalle3">DALL·E 3</option>
+        <option value="sd3">SD3</option>
+        <option value="stable_diffusion">Stable Diffusion</option>
+        <option value="ideogram">Ideogram</option>
+        <option value="recraft">Recraft</option>
+        <option value="seedance">Seedance</option>
+        <option value="gemini">Gemini</option>
+        <option value="veo">Veo</option>
+        <option value="sora">Sora</option>
+        <option value="kling">Kling</option>
+        <option value="pika">Pika</option>
+        <option value="jimeng">Jimeng</option>
+        <option value="comfyui">ComfyUI</option>
+        <option value="forge">Forge/A1111</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label data-i18n="formatLabel">Output Format</label>
+      <select id="promptFormat">
+        <option value="markdown">Markdown</option>
+        <option value="json">JSON</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label data-i18n="dimensionsLabel">Dimensions</label>
+      <select id="promptDimensions">
+        <option value="16:9">16:9 (Landscape)</option>
+        <option value="9:16">9:16 (Portrait)</option>
+        <option value="1:1">1:1 (Square)</option>
+        <option value="4:3">4:3 (Classic)</option>
+        <option value="3:2">3:2 (Photo)</option>
+        <option value="21:9">21:9 (Ultrawide)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label data-i18n="styleLabel">Style Preset</label>
+      <select id="promptStyle">
+        <option value="none">None</option>
+        <option value="cinematic">Cinematic</option>
+        <option value="anime">Anime</option>
+        <option value="photorealistic">Photorealistic</option>
+        <option value="painting">Painting</option>
+        <option value="3d_render">3D Render</option>
+        <option value="pixel_art">Pixel Art</option>
+        <option value="line_art">Line Art</option>
+        <option value="cyberpunk">Cyberpunk</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="minimalist">Minimalist</option>
+      </select>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="promptBuildBtn" onclick="buildPrompt()">✨ <span data-i18n="generatePromptBtn">Generate Prompt</span></button>
+  </div>
+</div>
+<div class="panel-output">
+  <div class="output-header">
+    <h3 data-i18n="promptPreview">Prompt Preview</h3>
+    <div class="output-meta" id="promptMeta"></div>
+    <div class="output-actions">
+      <button class="btn btn-secondary btn-sm" id="promptCopyBtn" disabled onclick="copyPrompt()">📋 <span data-i18n="copy">Copy</span></button>
+    </div>
+  </div>
+  <div id="promptPreview" class="placeholder-preview">
+    <div class="placeholder-icon">🔧</div>
+    <div class="placeholder-hint" data-i18n="promptPlaceholder">Describe a scene and click Generate Prompt</div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ─── TAB 1: DESIGN TEMPLATES ─── -->
+<section class="tab-content" data-tab="1">
+<div class="panel-split">
+<div class="panel-controls">
+  <div class="form-group">
+    <label data-i18n="layoutLabel">Layout Template</label>
+    <div class="layout-cards" id="layoutCards">
+      <div class="layout-card active" data-layout="hero" onclick="selectLayout(this)">
+        <span class="layout-icon">📰</span>
+        <span class="layout-label" data-i18n="layoutHero">Hero / Landing</span>
+      </div>
+      <div class="layout-card" data-layout="grid" onclick="selectLayout(this)">
+        <span class="layout-icon">📐</span>
+        <span class="layout-label" data-i18n="layoutGrid">Grid / Gallery</span>
+      </div>
+      <div class="layout-card" data-layout="article" onclick="selectLayout(this)">
+        <span class="layout-icon">📝</span>
+        <span class="layout-label" data-i18n="layoutArticle">Article / Blog</span>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label data-i18n="titleLabel">Title</label>
+      <input type="text" id="designTitle" value="via54Design" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:13px;padding:7px 10px;outline:none" placeholder="Enter title...">
+    </div>
+    <div class="form-group">
+      <label data-i18n="presentationLabel">Presentation Mode</label>
+      <select id="designPresentation">
+        <option value="false">No</option>
+        <option value="true">Yes (HTML slide deck)</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="colorLabel">Color Scheme</label>
+    <div class="color-grid" id="colorGrid"></div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="fontLabel">Font</label>
+    <div class="font-list" id="fontList"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="designGenBtn" onclick="generateDesign()">🎨 <span data-i18n="generateDesignBtn">Generate HTML</span></button>
+  </div>
+</div>
+<div class="panel-output">
+  <div class="output-header">
+    <h3 data-i18n="designPreview">Design Preview</h3>
+    <div class="output-meta" id="designMeta"></div>
+    <div class="output-actions">
+      <button class="btn btn-secondary btn-sm" id="designCopyBtn" disabled onclick="copyDesign()">📋 <span data-i18n="copyHTML">Copy HTML</span></button>
+      <button class="btn btn-secondary btn-sm" id="designExportBtn" disabled onclick="exportDesign()">📥 <span data-i18n="export">Export</span></button>
+    </div>
+  </div>
+  <iframe class="preview-frame" id="designFrame" srcdoc="<html><body style='background:#1c2128;display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#8b949e;font-size:14px;min-height:200px;margin:0'>✨ Select a layout and click Generate HTML</body></html>"></iframe>
+</div>
+</div>
+</section>
+
+<!-- ─── TAB 2: NARRATE ENGINE ─── -->
+<section class="tab-content" data-tab="2">
+<div class="panel-split">
+<div class="panel-controls">
+  <div class="form-group">
+    <label data-i18n="narrateSeedLabel">Story Seed</label>
+    <textarea id="narrateSeed" rows="4" placeholder="A young detective in a floating city discovers a secret that connects all the city's AI systems..."></textarea>
+    <div class="input-hint" data-i18n="narrateHint">A sentence or paragraph that seeds the narrative</div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="narrateModelLabel">Narrative Model</label>
+    <select id="narrateModel">
+      <option value="three-act">Three-Act Structure</option>
+      <option value="heros-journey">Hero's Journey</option>
+      <option value="cognitive-arc">Cognitive Arc</option>
+      <option value="problem-solution">Problem → Solution</option>
+    </select>
+    <div class="input-hint" data-i18n="modelHint">Each model structures the narrative differently</div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label data-i18n="durationLabel">Duration (scenes)</label>
+      <div class="slider-group">
+        <div class="slider-header">
+          <label for="narrateDuration">Scenes</label>
+          <span class="slider-value" id="narrateDurationVal">5</span>
+        </div>
+        <input type="range" id="narrateDuration" min="1" max="20" value="5" oninput="document.getElementById('narrateDurationVal').textContent=this.value">
+      </div>
+    </div>
+    <div class="form-group">
+      <label data-i18n="narrateFormatLabel">Output Format</label>
+      <select id="narrateFormat">
+        <option value="markdown">Markdown</option>
+        <option value="json">JSON (storyboard)</option>
+      </select>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="narrateGenBtn" onclick="generateNarrate()">📖 <span data-i18n="generateNarrateBtn">Generate Story</span></button>
+  </div>
+</div>
+<div class="panel-output">
+  <div class="output-header">
+    <h3 data-i18n="narratePreview">Story Output</h3>
+    <div class="output-meta" id="narrateMeta"></div>
+    <div class="output-actions">
+      <button class="btn btn-secondary btn-sm" id="narrateCopyBtn" disabled onclick="copyNarrate()">📋 <span data-i18n="copy">Copy</span></button>
+    </div>
+  </div>
+  <div id="narratePreview" class="placeholder-preview">
+    <div class="placeholder-icon">📖</div>
+    <div class="placeholder-hint" data-i18n="narratePlaceholder">Enter a seed and click Generate Story</div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ─── TAB 3: EXPORT PIPELINE ─── -->
+<section class="tab-content" data-tab="3">
+<div class="panel-split">
+<div class="panel-controls">
+  <div class="form-group">
+    <label data-i18n="exportTypeLabel">Export Type</label>
+    <select id="exportType">
+      <option value="pptx">📊 PowerPoint (PPTX)</option>
+      <option value="svg">🖼️ SVG</option>
+      <option value="json">📋 JSON</option>
+      <option value="markdown">📝 Markdown</option>
+      <option value="pdf">📄 PDF</option>
+      <option value="tts">🎤 Text-to-Speech (TTS)</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label data-i18n="exportSourceLabel">Source (file path or content)</label>
+    <textarea id="exportSource" rows="4" placeholder="Enter file path or paste content to export..."></textarea>
+    <div class="input-hint" data-i18n="exportHint">File path or raw content depending on export type</div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="exportOutputLabel">Output Path (optional)</label>
+    <input type="text" id="exportOutput" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:13px;padding:7px 10px;outline:none" placeholder="output/file.ext">
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="exportBtn" onclick="runExport()">📦 <span data-i18n="exportBtn">Export</span></button>
+  </div>
+</div>
+<div class="panel-output">
+  <div class="output-header">
+    <h3 data-i18n="exportResult">Export Result</h3>
+    <div class="output-meta" id="exportMeta"></div>
+    <div class="output-actions">
+      <button class="btn btn-secondary btn-sm" id="exportCopyBtn" disabled onclick="copyExport()">📋 <span data-i18n="copy">Copy</span></button>
+    </div>
+  </div>
+  <div id="exportPreview" class="placeholder-preview">
+    <div class="placeholder-icon">📦</div>
+    <div class="placeholder-hint" data-i18n="exportPlaceholder">Configure export options and click Export</div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ─── TAB 4: MEDIA PIPELINE ─── -->
+<section class="tab-content" data-tab="4">
+<div class="panel-split">
+<div class="panel-controls">
+  <div class="form-group">
+    <label data-i18n="mediaActionLabel">Action</label>
+    <select id="mediaAction" onchange="onMediaActionChange()">
+      <option value="add-music">🎵 Add Background Music</option>
+      <option value="convert">🔄 Convert Format</option>
+      <option value="trace">✏️ Trace (Photo → SVG)</option>
+      <option value="search">🔍 Image Search</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label data-i18n="mediaSourceLabel">Source</label>
+    <input type="text" id="mediaSource" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:13px;padding:7px 10px;outline:none" placeholder="Input file path, URL, or search query...">
+    <div class="input-hint" data-i18n="mediaSourceHint">File path, URL, or search query</div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="mediaTargetLabel">Target</label>
+    <input type="text" id="mediaTarget" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:13px;padding:7px 10px;outline:none" placeholder="Output file path...">
+  </div>
+  <div class="form-group" id="mediaParamsGroup">
+    <label data-i18n="mediaParamsLabel">Parameters (JSON)</label>
+    <textarea id="mediaParams" rows="2" placeholder='{"volume":0.5,"format":"mp3","quality":"high"}'></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="mediaExecBtn" onclick="executeMedia()">🎵 <span data-i18n="executeBtn">Execute</span></button>
+  </div>
+</div>
+<div class="panel-output">
+  <div class="output-header">
+    <h3 data-i18n="mediaResult">Media Result</h3>
+    <div class="output-meta" id="mediaMeta"></div>
+    <div class="output-actions">
+      <button class="btn btn-secondary btn-sm" id="mediaCopyBtn" disabled onclick="copyMedia()">📋 <span data-i18n="copy">Copy</span></button>
+    </div>
+  </div>
+  <div id="mediaPreview" class="placeholder-preview">
+    <div class="placeholder-icon">🎵</div>
+    <div class="placeholder-hint" data-i18n="mediaPlaceholder">Select an action and click Execute</div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ─── TAB 5: WORKFLOW BUILDER ─── -->
+<section class="tab-content" data-tab="5">
+<div class="panel-split">
+<div class="panel-controls">
+  <div class="inner-tabs" id="workflowInnerTabs">
+    <button class="inner-tab active" data-wf="comfyui" onclick="switchWorkflowFormat(this,'comfyui')">ComfyUI</button>
+    <button class="inner-tab" data-wf="forge" onclick="switchWorkflowFormat(this,'forge')">Forge/A1111</button>
+  </div>
+  <div class="form-group">
+    <label data-i18n="workflowTemplateLabel">Workflow Template</label>
+    <select id="modelSelect"><option value="">Loading templates...</option></select>
+    <div class="input-hint" id="templateDesc"></div>
+  </div>
+  <div class="form-group">
+    <label data-i18n="promptLabel">Prompt</label>
+    <textarea id="promptInput" placeholder="Enter your prompt here..." rows="4"></textarea>
+  </div>
+  <div class="form-group">
+    <label data-i18n="negPromptLabel">Negative Prompt</label>
+    <textarea id="negInput" style="border-color:rgba(248,81,73,0.3)" placeholder="Negative prompt (optional)" rows="3"></textarea>
+  </div>
+  <div class="form-row-3">
+    <div class="slider-group">
+      <div class="slider-header">
+        <label for="stepsSlider" data-i18n="stepsLabel">Steps</label>
+        <span class="slider-value" id="stepsValue">30</span>
+      </div>
+      <input type="range" id="stepsSlider" min="1" max="150" value="30" oninput="document.getElementById('stepsValue').textContent=this.value">
+    </div>
+    <div class="slider-group">
+      <div class="slider-header">
+        <label for="cfgSlider" data-i18n="cfgLabel">CFG Scale</label>
+        <span class="slider-value" id="cfgValue">7.5</span>
+      </div>
+      <input type="range" id="cfgSlider" min="1" max="30" step="0.5" value="7.5" oninput="document.getElementById('cfgValue').textContent=parseFloat(this.value).toFixed(1)">
+    </div>
+    <div class="slider-group">
+      <div class="slider-header">
+        <label for="seedSlider" data-i18n="seedLabel">Seed</label>
+        <span class="slider-value" id="seedValue">-1</span>
+      </div>
+      <input type="range" id="seedSlider" min="-1" max="2147483647" value="-1" oninput="document.getElementById('seedValue').textContent=this.value">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label data-i18n="widthLabel">Width</label>
+      <select id="wfWidth">
+        <option value="512">512</option>
+        <option value="768">768</option>
+        <option value="1024" selected>1024</option>
+        <option value="1280">1280</option>
+        <option value="1536">1536</option>
+        <option value="1920">1920</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label data-i18n="heightLabel">Height</label>
+      <select id="wfHeight">
+        <option value="512">512</option>
+        <option value="768">768</option>
+        <option value="1024" selected>1024</option>
+        <option value="1280">1280</option>
+        <option value="1536">1536</option>
+        <option value="1920">1920</option>
+      </select>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="buildBtn" onclick="buildWorkflow()">⚡ <span data-i18n="buildJsonBtn">Build JSON</span></button>
+  </div>
+</div>
+<div class="panel-output">
+  <div class="output-header">
+    <h3 data-i18n="jsonPreview">JSON Preview</h3>
+    <div class="output-meta" id="outputMeta"></div>
+    <div class="output-actions">
+      <button class="btn btn-secondary btn-sm" id="copyBtn" disabled onclick="copyWorkflow()">📋 <span data-i18n="copy">Copy</span></button>
+      <button class="btn btn-secondary btn-sm" id="downloadBtn" disabled onclick="downloadWorkflow()">⬇ <span data-i18n="download">Download</span></button>
+    </div>
+  </div>
+  <div id="jsonPreview">Select a template and click <strong>Build JSON</strong> to generate a workflow.</div>
+</div>
+</div>
+</section>
+
+</div><!-- /app-main -->
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- ═══ JAVASCRIPT ═══ -->
+<!-- ════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ── i18n Dictionary ── */
+const i18n = {
+  cn: {
+    connecting: '连接中...',
+    tabPrompt: '提示词引擎',
+    tabDesign: '设计模板',
+    tabNarrate: '叙事引擎',
+    tabExport: '导出管线',
+    tabMedia: '媒体管线',
+    tabWorkflow: '工作流构建器',
+    sceneLabel: '场景描述',
+    sceneHint: '用自然语言描述场景',
+    platformLabel: '目标平台 (17种)',
+    formatLabel: '输出格式',
+    dimensionsLabel: '画面比例',
+    styleLabel: '风格预设',
+    generatePromptBtn: '生成提示词',
+    promptPreview: '提示词预览',
+    copy: '复制',
+    promptPlaceholder: '描述场景后点击生成提示词',
+    layoutLabel: '布局模板',
+    layoutHero: '英雄/落地页',
+    layoutGrid: '网格/画廊',
+    layoutArticle: '文章/博客',
+    titleLabel: '标题',
+    presentationLabel: '演示模式',
+    colorLabel: '配色方案',
+    fontLabel: '字体',
+    generateDesignBtn: '生成 HTML',
+    designPreview: '设计预览',
+    copyHTML: '复制 HTML',
+    export: '导出',
+    narrateSeedLabel: '故事种子',
+    narrateHint: '一个句子或段落作为叙事起点',
+    narrateModelLabel: '叙事模型',
+    modelHint: '每种模型结构化叙事方式不同',
+    durationLabel: '时长 (场景数)',
+    narrateFormatLabel: '输出格式',
+    generateNarrateBtn: '生成故事',
+    narratePreview: '故事输出',
+    narratePlaceholder: '输入种子后点击生成故事',
+    exportTypeLabel: '导出类型',
+    exportSourceLabel: '源 (文件路径或内容)',
+    exportHint: '根据导出类型填写文件路径或原始内容',
+    exportOutputLabel: '输出路径 (可选)',
+    exportBtn: '导出',
+    exportResult: '导出结果',
+    exportPlaceholder: '配置导出选项后点击导出',
+    mediaActionLabel: '操作',
+    mediaSourceLabel: '源',
+    mediaSourceHint: '文件路径、URL或搜索关键词',
+    mediaTargetLabel: '目标',
+    mediaParamsLabel: '参数 (JSON)',
+    executeBtn: '执行',
+    mediaResult: '媒体结果',
+    mediaPlaceholder: '选择操作后点击执行',
+    workflowTemplateLabel: '工作流模板',
+    promptLabel: '提示词 (Prompt)',
+    negPromptLabel: '反向提示词 (Negative)',
+    stepsLabel: '步数',
+    cfgLabel: 'CFG 缩放',
+    seedLabel: '种子',
+    widthLabel: '宽度',
+    heightLabel: '高度',
+    buildJsonBtn: '构建 JSON',
+    jsonPreview: 'JSON 预览',
+    download: '下载',
+    toastBuilt: '工作流构建成功',
+    toastBuiltPrompt: '提示词生成成功',
+    toastDesigned: '设计生成成功',
+    toastNarrated: '故事生成成功',
+    toastExported: '导出成功',
+    toastMediaDone: '媒体操作完成',
+    toastCopied: '已复制到剪贴板',
+    toastError: '操作失败',
+    toastSelectTemplate: '请选择工作流模板',
+    toastEnterPrompt: '请输入提示词',
+    toastEnterScene: '请输入场景描述',
+    toastEnterSeed: '请输入故事种子',
+    toastEnterSource: '请输入源路径或内容',
+    toastEnterMediaSource: '请输入源路径或关键词',
+    healthOk: '在线',
+    healthOffline: '离线',
+  },
+  en: {
+    connecting: 'connecting...',
+    tabPrompt: 'Prompt Engine',
+    tabDesign: 'Design Templates',
+    tabNarrate: 'Narrate Engine',
+    tabExport: 'Export Pipeline',
+    tabMedia: 'Media Pipeline',
+    tabWorkflow: 'Workflow Builder',
+    sceneLabel: 'Scene Description',
+    sceneHint: 'Describe the scene in natural language',
+    platformLabel: 'Target Platform (17 platforms)',
+    formatLabel: 'Output Format',
+    dimensionsLabel: 'Dimensions',
+    styleLabel: 'Style Preset',
+    generatePromptBtn: 'Generate Prompt',
+    promptPreview: 'Prompt Preview',
+    copy: 'Copy',
+    promptPlaceholder: 'Describe a scene and click Generate Prompt',
+    layoutLabel: 'Layout Template',
+    layoutHero: 'Hero / Landing',
+    layoutGrid: 'Grid / Gallery',
+    layoutArticle: 'Article / Blog',
+    titleLabel: 'Title',
+    presentationLabel: 'Presentation Mode',
+    colorLabel: 'Color Scheme',
+    fontLabel: 'Font',
+    generateDesignBtn: 'Generate HTML',
+    designPreview: 'Design Preview',
+    copyHTML: 'Copy HTML',
+    export: 'Export',
+    narrateSeedLabel: 'Story Seed',
+    narrateHint: 'A sentence or paragraph that seeds the narrative',
+    narrateModelLabel: 'Narrative Model',
+    modelHint: 'Each model structures the narrative differently',
+    durationLabel: 'Duration (scenes)',
+    narrateFormatLabel: 'Output Format',
+    generateNarrateBtn: 'Generate Story',
+    narratePreview: 'Story Output',
+    narratePlaceholder: 'Enter a seed and click Generate Story',
+    exportTypeLabel: 'Export Type',
+    exportSourceLabel: 'Source (file path or content)',
+    exportHint: 'File path or raw content depending on export type',
+    exportOutputLabel: 'Output Path (optional)',
+    exportBtn: 'Export',
+    exportResult: 'Export Result',
+    exportPlaceholder: 'Configure export options and click Export',
+    mediaActionLabel: 'Action',
+    mediaSourceLabel: 'Source',
+    mediaSourceHint: 'File path, URL, or search query',
+    mediaTargetLabel: 'Target',
+    mediaParamsLabel: 'Parameters (JSON)',
+    executeBtn: 'Execute',
+    mediaResult: 'Media Result',
+    mediaPlaceholder: 'Select an action and click Execute',
+    workflowTemplateLabel: 'Workflow Template',
+    promptLabel: 'Prompt',
+    negPromptLabel: 'Negative Prompt',
+    stepsLabel: 'Steps',
+    cfgLabel: 'CFG Scale',
+    seedLabel: 'Seed',
+    widthLabel: 'Width',
+    heightLabel: 'Height',
+    buildJsonBtn: 'Build JSON',
+    jsonPreview: 'JSON Preview',
+    download: 'Download',
+    toastBuilt: 'Workflow built successfully',
+    toastBuiltPrompt: 'Prompt generated successfully',
+    toastDesigned: 'Design generated successfully',
+    toastNarrated: 'Story generated successfully',
+    toastExported: 'Export successful',
+    toastMediaDone: 'Media operation complete',
+    toastCopied: 'Copied to clipboard',
+    toastError: 'Operation failed',
+    toastSelectTemplate: 'Please select a workflow template',
+    toastEnterPrompt: 'Please enter a prompt',
+    toastEnterScene: 'Please enter a scene description',
+    toastEnterSeed: 'Please enter a story seed',
+    toastEnterSource: 'Please enter source path or content',
+    toastEnterMediaSource: 'Please enter source path or keyword',
+    healthOk: 'online',
+    healthOffline: 'offline',
+  }
+};
+
+/* ── State ── */
+let currentLang = 'cn';
+let activeTab = 0;
+let currentWorkflowFormat = 'comfyui';
+let currentJSON = null;
+let currentDesignHTML = null;
+let currentDesignLayout = 'hero';
+let currentDesignColor = '#3fb950';
+let currentDesignFont = 'Inter';
+let workflows = [];
+let workflowId = '';
+let nodeCount = 0;
+
+/* ── Helpers ── */
+const $ = (id) => document.getElementById(id);
+const qs = (sel) => document.querySelector(sel);
+const qsa = (sel) => document.querySelectorAll(sel);
+
+/* ── Toast system ── */
+function showToast(msg, type, duration) {
+  type = type || 'info';
+  duration = duration || 3000;
+  const tc = $('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  tc.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, duration);
+}
+
+/* ── Highlight JSON ── */
+function highlightJSON(j) {
+  if (typeof j !== 'string') j = JSON.stringify(j, null, 2);
+  j = j.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  j = j.replace(/(&quot;(?:[^&quot;\\]|\\.)*&quot;)\s*:/g,'<span class="key">$1</span>:');
+  j = j.replace(/&quot;((?:[^&quot;\\]|\\.)*)&quot;/g,'<span class="string">&quot;$1&quot;</span>');
+  j = j.replace(/\b(-?\d+\.?\d*(?:[eE][+-]?\d+)?)\b/g,'<span class="number">$1</span>');
+  j = j.replace(/\b(true|false)\b/g,'<span class="boolean">$1</span>');
+  j = j.replace(/\bnull\b/g,'<span class="null">null</span>');
+  return j;
+}
+
+/* ── Color schemes data (30+) ── */
+const colorSchemes = [
+  {name:'Emerald',color:'#3fb950'},{name:'Ocean',color:'#58a6ff'},{name:'Sunset',color:'#f0883e'},
+  {name:'Ruby',color:'#f85149'},{name:'Amethyst',color:'#bc8cff'},{name:'Gold',color:'#d29922'},
+  {name:'Teal',color:'#39d2c0'},{name:'Rose',color:'#ff7b9c'},{name:'Lime',color:'#7ee787'},
+  {name:'Sky',color:'#79c0ff'},{name:'Coral',color:'#ffa657'},{name:'Plum',color:'#c68fff'},
+  {name:'Mint',color:'#56d4dd'},{name:'Blush',color:'#ff9eb5'},{name:'Slate',color:'#8b949e'},
+  {name:'Ivory',color:'#f0e6d3'},{name:'Navy',color:'#1f3a5f'},{name:'Forest',color:'#2d6a4f'},
+  {name:'Wine',color:'#6b2d5c'},{name:'Copper',color:'#b87333'},{name:'Steel',color:'#4a6fa5'},
+  {name:'Sage',color:'#84a98c'},{name:'Lavender',color:'#9b9bcf'},{name:'Peach',color:'#f5a47a'},
+  {name:'Tangerine',color:'#ff8c42'},{name:'Cerulean',color:'#2997ff'},{name:'Jade',color:'#00a86b'},
+  {name:'Magenta',color:'#c724b1'},{name:'Crimson',color:'#dc143c'},{name:'Azure',color:'#007fff'},
+  {name:'Chartreuse',color:'#7fff00'},{name:'Indigo',color:'#4b0082'}
+];
+
+/* ── Fonts data (12) ── */
+const fontList = [
+  'Inter','Space Grotesk','JetBrains Mono','DM Sans','Outfit','Plus Jakarta Sans',
+  'Manrope','Satoshi','Clash Display','Cabinet Grotesk','General Sans','Staatliches'
+];
+
+/* ── Populate color grid ── */
+function initColorGrid() {
+  const grid = $('colorGrid');
+  grid.innerHTML = '';
+  colorSchemes.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'color-swatch' + (s.color === currentDesignColor ? ' active' : '');
+    div.style.background = s.color;
+    div.dataset.color = s.color;
+    div.title = s.name;
+    div.innerHTML = '<span class="check">✓</span>';
+    div.addEventListener('click', () => {
+      qsa('.color-swatch').forEach(c => c.classList.remove('active'));
+      div.classList.add('active');
+      currentDesignColor = s.color;
+    });
+    grid.appendChild(div);
+  });
+}
+
+/* ── Populate font list ── */
+function initFontList() {
+  const fl = $('fontList');
+  fl.innerHTML = '';
+  fontList.forEach((f, i) => {
+    const span = document.createElement('span');
+    span.className = 'font-chip' + (f === currentDesignFont ? ' active' : '');
+    span.textContent = f;
+    span.dataset.font = f;
+    span.addEventListener('click', () => {
+      qsa('.font-chip').forEach(c => c.classList.remove('active'));
+      span.classList.add('active');
+      currentDesignFont = f;
+    });
+    fl.appendChild(span);
+  });
+}
+
+/* ── Layout selection ── */
+function selectLayout(el) {
+  qsa('.layout-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentDesignLayout = el.dataset.layout;
+}
+
+/* ── Tab switching ── */
+function switchTab(idx) {
+  activeTab = idx;
+  qsa('.tab-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
+  qsa('.tab-content').forEach((c,i) => c.classList.toggle('active', i === idx));
+}
+
+/* ── Language toggle ── */
+function toggleLang() {
+  currentLang = currentLang === 'cn' ? 'en' : 'cn';
+  qsa('.lang-toggle span').forEach(s => s.classList.toggle('active', s.dataset.lang === currentLang));
+  applyLang();
+  showToast(currentLang === 'cn' ? '已切换至中文' : 'Switched to English', 'info', 2000);
+}
+
+function applyLang() {
+  const dict = i18n[currentLang];
+  qsa('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (dict[key]) el.textContent = dict[key];
+  });
+  // Update status text
+  const dot = $('statusDot');
+  const st = $('statusText');
+  if (dot.classList.contains('online')) {
+    st.textContent = dict.healthOk || (currentLang === 'cn' ? '在线' : 'online');
+  } else {
+    st.textContent = dict.healthOffline || (currentLang === 'cn' ? '离线' : 'offline');
+  }
+}
+
+/* ── Workflow format tabs ── */
+function switchWorkflowFormat(el, fmt) {
+  currentWorkflowFormat = fmt;
+  qsa('.inner-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── Media action change ── */
+function onMediaActionChange() {
+  const action = $('mediaAction').value;
+  const ph = $('mediaSource').placeholder;
+  const hint = $('mediaSource').nextElementSibling;
+  const dict = i18n[currentLang];
+  if (action === 'search') {
+    $('mediaSource').placeholder = currentLang === 'cn' ? '搜索关键词...' : 'Search keyword...';
+    $('mediaTarget').placeholder = currentLang === 'cn' ? '保存路径 (可选)' : 'Save path (optional)';
+    if (hint) hint.textContent = dict.mediaSourceHint || 'Search keyword for image search';
+  } else if (action === 'add-music') {
+    $('mediaSource').placeholder = currentLang === 'cn' ? '视频文件路径...' : 'Video file path...';
+    $('mediaTarget').placeholder = currentLang === 'cn' ? '输出文件路径...' : 'Output file path...';
+    if (hint) hint.textContent = currentLang === 'cn' ? '视频文件路径' : 'Video file path';
+  } else {
+    $('mediaSource').placeholder = currentLang === 'cn' ? '输入文件路径...' : 'Input file path...';
+    $('mediaTarget').placeholder = currentLang === 'cn' ? '输出文件路径...' : 'Output file path...';
+    if (hint) hint.textContent = dict.mediaSourceHint || 'File path, URL, or search query';
+  }
+}
+
+/* ── Health check (shared) ── */
+async function checkHealth() {
+  try {
+    const r = await fetch('/api/health');
+    const d = await r.json();
+    if (d.status === 'ok') {
+      $('statusDot').className = 'status-dot online';
+      const dict = i18n[currentLang];
+      $('statusText').textContent = (dict && dict.healthOk) || 'online';
+      return true;
+    }
+    throw new Error('unhealthy');
+  } catch(e) {
+    $('statusDot').className = 'status-dot offline';
+    const dict = i18n[currentLang];
+    $('statusText').textContent = (dict && dict.healthOffline) || 'offline';
+    return false;
+  }
+}
+
+/* ── Workflow Builder ── */
+async function loadTemplates() {
+  try {
+    const r = await fetch('/api/templates');
+    const d = await r.json();
+    workflows = d.templates || d;
+    const ms = $('modelSelect');
+    ms.innerHTML = '<option value="">— Select a workflow —</option>';
+    const lst = Array.isArray(workflows) ? workflows : [];
+    lst.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t.id;
+      o.textContent = (t.name || t.id) + (t.type ? ' [' + t.type + ']' : '');
+      ms.appendChild(o);
+    });
+    if (lst.length > 0) ms.options[0].textContent = '— ' + lst.length + ' workflows available —';
+    ms.addEventListener('change', () => {
+      const id = ms.value;
+      if (!id) { $('templateDesc').textContent = ''; return; }
+      const tpl = workflows.find(t => t.id === id);
+      if (tpl) {
+        const parts = [];
+        if (tpl.description) parts.push(tpl.description);
+        if (tpl.model) parts.push('Model: ' + tpl.model);
+        if (tpl.params) parts.push(tpl.params);
+        $('templateDesc').textContent = parts.join(' · ');
+      }
+    });
+  } catch(e) {
+    $('modelSelect').innerHTML = '<option value="">Error loading templates</option>';
+  }
+}
+
+async function buildWorkflow() {
+  const wid = $('modelSelect').value;
+  const prompt = $('promptInput').value.trim();
+  const dict = i18n[currentLang];
+  if (!wid) { showToast(dict.toastSelectTemplate || 'Please select a workflow template', 'error'); return; }
+  if (!prompt) { showToast(dict.toastEnterPrompt || 'Please enter a prompt', 'error'); return; }
+  const btn = $('buildBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Building...';
+  try {
+    const r = await fetch('/api/build', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        workflow_id: wid,
+        prompt: prompt,
+        negative: $('negInput').value,
+        steps: parseInt($('stepsSlider').value, 10),
+        cfg: parseFloat($('cfgSlider').value),
+        seed: parseInt($('seedSlider').value, 10),
+        width: parseInt($('wfWidth').value, 10),
+        height: parseInt($('wfHeight').value, 10),
+        format: currentWorkflowFormat
+      })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Build failed');
+    currentJSON = d.json;
+    nodeCount = d.nodes || 0;
+    workflowId = wid;
+    try {
+      const o = JSON.parse(d.json);
+      $('jsonPreview').innerHTML = highlightJSON(JSON.stringify(o, null, 2));
+    } catch(e) {
+      $('jsonPreview').textContent = d.json;
+    }
+    $('outputMeta').textContent = (currentWorkflowFormat === 'forge' ? 'Forge' : 'ComfyUI') + ' · ' + nodeCount + ' nodes · ' + wid;
+    $('copyBtn').disabled = false;
+    $('downloadBtn').disabled = false;
+    showToast(dict.toastBuilt || 'Workflow built successfully', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⚡ <span data-i18n="buildJsonBtn">Build JSON</span>';
+    applyLang();
+  }
+}
+
+async function copyWorkflow() {
+  if (!currentJSON) return;
+  try {
+    const o = JSON.parse(currentJSON);
+    await navigator.clipboard.writeText(JSON.stringify(o, null, 2));
+    showToast(i18n[currentLang].toastCopied, 'success');
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = JSON.stringify(JSON.parse(currentJSON), null, 2);
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast(i18n[currentLang].toastCopied, 'success');
+  }
+}
+
+function downloadWorkflow() {
+  if (!currentJSON) return;
+  try {
+    const o = JSON.parse(currentJSON);
+    const b = new Blob([JSON.stringify(o, null, 2)], {type:'application/json'});
+    const u = URL.createObjectURL(b);
+    const a = document.createElement('a');
+    a.href = u;
+    a.download = workflowId + '_workflow.json';
+    a.click();
+    URL.revokeObjectURL(u);
+  } catch(e) { /* ignore */ }
+}
+
+/* ── Tab 0: Prompt Engine ── */
+async function buildPrompt() {
+  const scene = $('promptScene').value.trim();
+  const dict = i18n[currentLang];
+  if (!scene) { showToast(dict.toastEnterScene || 'Please enter a scene description', 'error'); return; }
+  const btn = $('promptBuildBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  try {
+    const r = await fetch('/api/prompt', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        scene: scene,
+        platform: $('promptPlatform').value,
+        format: $('promptFormat').value
+      })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Generation failed');
+    const pp = $('promptPreview');
+    if (d.prompt) {
+      pp.className = '';
+      pp.style.cssText = 'flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word';
+      pp.textContent = d.prompt;
+    } else if (d.result) {
+      pp.className = '';
+      pp.style.cssText = 'flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word';
+      pp.textContent = typeof d.result === 'string' ? d.result : JSON.stringify(d.result, null, 2);
+    } else {
+      pp.className = '';
+      pp.style.cssText = 'flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word';
+      pp.textContent = JSON.stringify(d, null, 2);
+    }
+    $('promptMeta').textContent = $('promptPlatform').value + ' · ' + $('promptFormat').value;
+    $('promptCopyBtn').disabled = false;
+    showToast(dict.toastBuiltPrompt || 'Prompt generated successfully', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ <span data-i18n="generatePromptBtn">Generate Prompt</span>';
+    applyLang();
+  }
+}
+
+function copyPrompt() {
+  const text = $('promptPreview').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(i18n[currentLang].toastCopied, 'success');
+  });
+}
+
+/* ── Tab 1: Design Templates ── */
+async function generateDesign() {
+  const title = $('designTitle').value.trim();
+  const btn = $('designGenBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  try {
+    const r = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        layout: currentDesignLayout,
+        color: currentDesignColor,
+        font: currentDesignFont,
+        title: title || 'via54Design',
+        presentation: $('designPresentation').value === 'true'
+      })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Generation failed');
+    const html = d.html || d.result || d.content || JSON.stringify(d, null, 2);
+    currentDesignHTML = html;
+    $('designFrame').srcdoc = html;
+    $('designMeta').textContent = currentDesignLayout + ' · ' + currentDesignFont;
+    $('designCopyBtn').disabled = false;
+    $('designExportBtn').disabled = false;
+    showToast(i18n[currentLang].toastDesigned || 'Design generated successfully', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🎨 <span data-i18n="generateDesignBtn">Generate HTML</span>';
+    applyLang();
+  }
+}
+
+function copyDesign() {
+  if (!currentDesignHTML) return;
+  navigator.clipboard.writeText(currentDesignHTML).then(() => {
+    showToast(i18n[currentLang].toastCopied, 'success');
+  });
+}
+
+function exportDesign() {
+  if (!currentDesignHTML) return;
+  const b = new Blob([currentDesignHTML], {type:'text/html'});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a');
+  a.href = u;
+  a.download = 'via54_design.html';
+  a.click();
+  URL.revokeObjectURL(u);
+}
+
+/* ── Tab 2: Narrate Engine ── */
+async function generateNarrate() {
+  const seed = $('narrateSeed').value.trim();
+  const dict = i18n[currentLang];
+  if (!seed) { showToast(dict.toastEnterSeed || 'Please enter a story seed', 'error'); return; }
+  const btn = $('narrateGenBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  try {
+    const r = await fetch('/api/narrate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        seed: seed,
+        model: $('narrateModel').value,
+        duration: parseInt($('narrateDuration').value, 10),
+        format: $('narrateFormat').value
+      })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Generation failed');
+    const np = $('narratePreview');
+    const content = d.story || d.content || d.result || JSON.stringify(d, null, 2);
+    np.className = '';
+    np.style.cssText = 'flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word';
+    np.textContent = content;
+    $('narrateMeta').textContent = $('narrateModel').value + ' · ' + $('narrateDuration').value + ' scenes';
+    $('narrateCopyBtn').disabled = false;
+    showToast(dict.toastNarrated || 'Story generated successfully', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📖 <span data-i18n="generateNarrateBtn">Generate Story</span>';
+    applyLang();
+  }
+}
+
+function copyNarrate() {
+  const text = $('narratePreview').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(i18n[currentLang].toastCopied, 'success');
+  });
+}
+
+/* ── Tab 3: Export Pipeline ── */
+async function runExport() {
+  const source = $('exportSource').value.trim();
+  const dict = i18n[currentLang];
+  if (!source) { showToast(dict.toastEnterSource || 'Please enter source path or content', 'error'); return; }
+  const btn = $('exportBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Exporting...';
+  try {
+    const r = await fetch('/api/export', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type: $('exportType').value,
+        source: source,
+        output: $('exportOutput').value.trim()
+      })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Export failed');
+    const ep = $('exportPreview');
+    const content = d.result || d.content || d.path || d.message || JSON.stringify(d, null, 2);
+    ep.className = '';
+    ep.style.cssText = 'flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word';
+    ep.textContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+    $('exportMeta').textContent = $('exportType').value + ' · done';
+    $('exportCopyBtn').disabled = false;
+    showToast(dict.toastExported || 'Export successful', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📦 <span data-i18n="exportBtn">Export</span>';
+    applyLang();
+  }
+}
+
+function copyExport() {
+  const text = $('exportPreview').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(i18n[currentLang].toastCopied, 'success');
+  });
+}
+
+/* ── Tab 4: Media Pipeline ── */
+async function executeMedia() {
+  const source = $('mediaSource').value.trim();
+  const dict = i18n[currentLang];
+  if (!source) { showToast(dict.toastEnterMediaSource || 'Please enter source path or keyword', 'error'); return; }
+  const btn = $('mediaExecBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Executing...';
+  let params = {};
+  try {
+    const pStr = $('mediaParams').value.trim();
+    if (pStr) params = JSON.parse(pStr);
+  } catch(e) { /* use empty params */ }
+  try {
+    const r = await fetch('/api/media', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: $('mediaAction').value,
+        source: source,
+        target: $('mediaTarget').value.trim(),
+        params: params
+      })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Media operation failed');
+    const mp = $('mediaPreview');
+    const content = d.result || d.path || d.message || d.url || d.output || JSON.stringify(d, null, 2);
+    mp.className = '';
+    mp.style.cssText = 'flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word';
+    mp.textContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
+    $('mediaMeta').textContent = $('mediaAction').value + ' · done';
+    $('mediaCopyBtn').disabled = false;
+    showToast(dict.toastMediaDone || 'Media operation complete', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🎵 <span data-i18n="executeBtn">Execute</span>';
+    applyLang();
+  }
+}
+
+function copyMedia() {
+  const text = $('mediaPreview').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(i18n[currentLang].toastCopied, 'success');
+  });
+}
+
+/* ── Tab click handlers ── */
+qsa('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(parseInt(btn.dataset.tab, 10)));
+});
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    if (activeTab === 0) buildPrompt();
+    else if (activeTab === 1) generateDesign();
+    else if (activeTab === 2) generateNarrate();
+    else if (activeTab === 3) runExport();
+    else if (activeTab === 4) executeMedia();
+    else if (activeTab === 5) buildWorkflow();
+  }
+});
+
+/* ── Init ── */
+async function init() {
+  initColorGrid();
+  initFontList();
+  await checkHealth();
+  await loadTemplates();
+  applyLang();
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
