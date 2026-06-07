@@ -18,6 +18,10 @@ func GeneratePrompt(scene string, platform string, refImage string, baseDir stri
 		Fields: make(map[string]string), Weights: make(map[string]float64),
 		Negative: NegativeBank[platform], Params: tmpl.Params, RefImage: refImage,
 	}
+	// Fallback: if NegativeBank has no entry for this platform, use YAML template's negative
+	if s.Negative == nil && len(tmpl.Negative) > 0 {
+		s.Negative = tmpl.Negative
+	}
 	for _, sec := range tmpl.Sections {
 		val := sec.Default
 		if val == "" { val = fmt.Sprintf("（LLM填充：%s）", sec.Hint) }
