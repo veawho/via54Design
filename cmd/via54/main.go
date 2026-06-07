@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 package main
 
 // via54Design — 衍生自 huashu-design (MIT) by alchaincyf

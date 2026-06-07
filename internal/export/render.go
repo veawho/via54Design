@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 // via54Design — 视频渲染管线
 // 使用 Playwright 录制 HTML + ffmpeg 转码多格式输出
 package export

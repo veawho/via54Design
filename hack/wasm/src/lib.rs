@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 pub mod types;
 pub mod parser;
 pub mod cssgen;

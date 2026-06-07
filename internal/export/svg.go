@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 // via54Design — SVG 矢量导出
 // 每个叙事 scene → 独立 SVG 文件 (16:9 矢量，可无限缩放)
 package export

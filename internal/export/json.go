@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 // via54Design — JSON 结构化导出
 // 从叙事 scaffold 或 HTML 提取结构化 scene 数据
 package export

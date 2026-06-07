@@ -20,10 +20,10 @@
 
 ## 具体规定
 - `templates/` 目录下的 YAML 模板文件：MIT
-- `scripts/` 目录下的 Shell 脚本：MIT
+- `hack/` 目录下的 Shell/Rust 脚本：MIT
+- `docs/` 目录下的文档：MIT
 - `internal/` 目录下的 Go 源代码：AGPL-3.0
 - `cmd/` 目录下的 Go 入口：AGPL-3.0
-- `references/` 目录下的文档：CC BY 4.0
 
 ─────────────────────────────────────────
 

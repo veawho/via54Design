@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 // via54Design — 叙事引擎 (Narrate Engine)
 // 从一句话到完整故事大纲 + Fountain 剧本 + 分镜表
 // 参考: huobao-drama (⭐12.6k) + Fountain screenplay format

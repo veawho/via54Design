@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 // via54Design — PPTX 导出器
 // 纯 Go 实现，零外部依赖。PPTX = ZIP + XML。
 // 替代 scripts/export_deck_pptx.mjs (Node.js + html2pptx.js)

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 package export
 
 // RenderResult Playwright 渲染结果

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 package template
 
 // ─── 布局模板类型 (v2 — 16:9 多端适配) ───

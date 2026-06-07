@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 // via54Design — Markdown 导出 (Marp 兼容)
 // 输出可直接喂给 Marp (⭐11,917) 的 markdown 幻灯片
 package export

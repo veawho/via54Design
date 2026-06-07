@@ -462,12 +462,14 @@ docs/       ← 模板格式规范 + 故障恢复指南
 
 ## 许可
 
-双许可：**MIT OR AGPL-3.0**
+双许可：**MIT OR AGPL-3.0** (SPDX: `MIT OR AGPL-3.0`)
 
-- `templates/` YAML 模板：MIT
-- `hack/` Shell/Rust 脚本：MIT
-- `internal/` Go 源代码：AGPL-3.0
-- `docs/` 文档：MIT
+| 目录 | 许可 | 说明 |
+|------|------|------|
+| `templates/` | MIT | YAML 模板定义 |
+| `hack/` | MIT | 部署/编译脚本 + Rust WASM |
+| `docs/` | MIT | 文档 |
+| `internal/` + `cmd/` | AGPL-3.0 | Go 源代码 |
 
 ## 致谢
 

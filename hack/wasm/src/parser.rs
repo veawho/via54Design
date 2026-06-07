@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 use crate::types::{ColorScheme, LayoutTemplate, Typography};
 use serde_yaml;
 

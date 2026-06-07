@@ -1,5 +1,7 @@
 module github.com/veawho/via54Design
 
+// SPDX-License-Identifier: MIT OR AGPL-3.0
+
 go 1.26.2
 
 require (
