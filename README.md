@@ -11,19 +11,19 @@
 
 > 文章本天成，妙手偶得之。
 > 粹然无疵瑕，岂复须人为？
-> 君看古彝器，巧拙两无施。
-> 汉最近先秦，固已殊淳漓。
-> 胡部何为者，豪竹杂哀丝。
-> 后夔不复作，千载谁与期？
 > 宋·陆游《文章》
 
-**via54Design 不是替代你创作，而是把你赋予你一双抓住灵感的妙手**
+**via54Design 不是替代你创作，而是赋予你一双抓住灵感的妙手。**
 
-从故事到影片的灵感妙手：人类写一句开头 → AI 扩展叙事脚手架 → 人类确认方向 → AI 生成剧本/分镜 → 多场景动画 → 导出视频
+人类的灵感是弥散而跳动的，AI 是结构化的、可控的。via54Design 在这两者之间搭建桥梁——把人类的"一句话灵感"转化为 AI 可执行的叙事脚手架，再通过模板引擎输出视频、演示文稿、创意图片。
 
-### 示例：从一句话到 90 秒品牌故事
+---
 
-#### Step 1 — 人类写一句开头（人类独有的灵感）
+### 第一部分：故事 → 视频能力
+
+#### 从一句话到 90 秒品牌故事
+
+**Step 1 — 人类写一句开头（人类独有的灵感）**
 
 > "1920年代，一个中国裁缝在巴黎开了一家小店，
 > 他做的旗袍融入了 Art Deco 的几何线条。
@@ -31,7 +31,7 @@
 
 这一句里有人物（裁缝）、时代（1920s）、地点（巴黎）、冲突（东方 vs 西方）、悬念（改变时尚）。AI 无法凭空创造这个种子——它来自你。
 
-#### Step 2 — AI 扩展叙事脚手架
+**Step 2 — AI 扩展叙事脚手架**
 
 ```bash
 via54 narrate --seed "1920年代，一个中国裁缝在巴黎开了一家小店..." \
@@ -52,20 +52,20 @@ AI 分析你的种子，匹配最合适的叙事模型，输出结构化脚手�
 📋 LLM 完整提示词（可直接喂给 Claude / GPT 生成完整剧本）
 ```
 
-#### Step 3 — 人类选择叙事模型，确认方向
+**Step 3 — 人类选择叙事模型，确认方向**
 
 你可以在 4 种叙事模型中选择，控制故事的节奏和情绪走向：
 
 | 模型 | 节拍 | 适合讲什么故事 |
 |------|------|---------------|
 | `three-act` | 设问 → 解答 → 号召 | 产品发布、品牌广告 |
-| `heros-journey` | 日常 → 相遇 → 蜕变 → 回归 | **品牌故事、纪录片** |
+| `heros-journey` | 日常 → 相遇 → 蜕变 → 回归 | 品牌故事、纪录片 |
 | `cognitive-arc` | 钩子 → 基础 → 核心 → 案例 → 延展 → 总结 | 科普、教程 |
 | `problem-solution` | 痛点 → 方案 → 证明 → 行动 | 销售视频、Demo |
 
-（每个模型定义在 `templates/narratology/models/*.yaml`，你可以自由扩展）
+每个模型定义在 `templates/narratology/models/*.yaml`，你可以自由扩展。
 
-#### Step 4 — AI 生成多场景 HTML 动画
+**Step 4 — AI 生成多场景 HTML 动画**
 
 ```bash
 via54 generate --from-narrative scaffold.json --output story.html
@@ -80,19 +80,139 @@ via54 generate --from-narrative scaffold.json --output story.html
 | 蜕变（Art Deco 旗袍） | 22s | excited | candy-duolingo | "不一样了..." |
 | 回归（影响时尚） | 24s | inspiring | warm-editorial | "每一天..." |
 
-#### Step 5 — 导出视频 + 配乐（可选）
+**Step 5 — 导出视频 + 配乐**
 
 ```bash
-via54 export render story.html --duration 90            # HTML → MP4
-via54 media add-music story.mp4 --mood=ad               # 加背景音乐
+via54 export render story.html --duration 90 --format mp4   # HTML → MP4
+via54 media add-music story.mp4 --mood=ad                    # 背景音乐
 ```
 
-### 完整管线（一行命令）
+支持多格式：`mp4` / `webm` (VP9) / `hevc` (H.265) / `frames` (PNG序列) / `apng`。
+
+**完整管线（一行命令）**
 
 ```bash
 via54 narrate --seed "你的故事开头" --model heros-journey --format json \
-  | via54 generate --from-narrative /dev/stdin --output story.html
+  | via54 generate --from-narrative /dev/stdin --output story.html --presentation
 ```
+
+---
+
+### 第二部分：故事 → 演示能力
+
+同一个叙事脚手架，可以导出多种演示格式，无需重新创作。
+
+**Step 1 — 相同的叙事种子**
+
+```bash
+via54 narrate --seed "1920年代，一个中国裁缝在巴黎..." \
+  --model heros-journey --duration 90 --format json --output scaffold.json
+```
+
+**Step 2 — 导出为 PPTX 演示文稿**
+
+```bash
+via54 export pptx scaffold.json --output story.pptx
+```
+
+- 纯 Go 实现，零外部依赖（不依赖 Node.js / unioffice）
+- 每幕一张幻灯片，情绪映射强调色（左侧装饰条）
+- 16:9 宽屏，标题 + 旁白 + 页码
+- 文字直接在 PPT 中可编辑
+
+**Step 3 — 导出为 Markdown 幻灯片（Marp 兼容）**
+
+```bash
+via54 export markdown scaffold.json --output slides.md
+npx @marp-team/marp-cli slides.md --pptx    # 转 PPTX
+npx @marp-team/marp-cli slides.md --pdf     # 转 PDF
+npx @marp-team/marp-cli slides.md --html    # 转 HTML
+```
+
+- 兼容 Marp (⭐11,917) 幻灯片生态
+- 情绪标注为 CSS class，可用自定义主题
+- 支持 YAML frontmatter（title / author / theme）
+
+**Step 4 — 导出为结构化 JSON**
+
+```bash
+via54 export json scaffold.json --output scenes.json
+```
+
+- 包含 timing（start_sec / end_sec）
+- 可供外部工具或自定义管线消费
+
+**Step 5 — 导出为 PDF**
+
+```bash
+via54 export pdf story.html --output story.pdf
+```
+
+---
+
+### 第三部分：故事 → 创意图片能力
+
+同一个叙事脚手架，还可以导出为矢量图片，用于海报、社交媒体、印刷等场景。
+
+**Step 1 — 叙事脚手架 → SVG 矢量场景**
+
+```bash
+via54 narrate --seed "1920年代，一个中国裁缝在巴黎..." \
+  --model heros-journey --duration 90 --format json --output scaffold.json
+
+via54 export svg scaffold.json --output ./scenes
+```
+
+输出 `./scenes/` 目录，每幕生成一个独立 SVG 文件：
+
+```
+scenes/
+├── scene-001-日常-(ordinary_world).svg   # 22s
+├── scene-002-相遇-(call_to_adventure).svg  # 22s
+├── scene-003-蜕变-(transformation).svg     # 22s
+└── scene-004-回归-(return).svg             # 24s
+```
+
+**SVG 特性**：
+
+- 16:9 viewBox，无限缩放不失真
+- 情绪映射配色：
+  - `calm` → 绿色调 `#f0f4e8`
+  - `curious` → 暖白调 `#f5f0e6`
+  - `excited` → 深绿调 `#1a3a1a`
+  - `inspiring` → 暖黄调 `#fdf6e3`
+- 12px 强调色装饰条（左侧）
+- 旁白以斜体呈现（底部半透明背景）
+- 页码标注（1/4, 2/4, 3/4, 4/4）
+
+**Step 2 — 照片 → SVG 矢量化**
+
+```bash
+via54 media trace --input logo-sketch.jpg --output logo.svg     # 手绘Logo → 矢量
+via54 media trace --input handwriting.jpg --output title.svg     # 书法 → 矢量
+via54 media trace --input photo.jpg --output portrait.svg        # 照片 → 矢量
+```
+
+基于 VTracer (⭐6,150) 引擎，保留原始笔触质感。
+
+**Step 3 — 矢量标题嵌入设计**
+
+```bash
+via54 generate --lettering-svg ./title.svg --color ink-wash \
+  --font calligraphy-accent --title "山水之间" --output poster.html
+```
+
+书法/手写标题直接嵌入 HTML 设计，不依赖任何字体文件。
+
+---
+
+### 三种能力对比
+
+| 能力 | 输入 | 输出 | 引擎 | 依赖 |
+|------|------|------|------|------|
+| 🎬 **故事→视频** | 一句话 → 叙事JSON | MP4/WebM/HEVC + 配乐 | narrate + generate + Playwright | 需 ffmpeg |
+| 📊 **故事→演示** | 一句话 → 叙事JSON | PPTX / Markdown / JSON / PDF | **纯 Go** | **零** |
+| 🎨 **故事→创意图片** | 一句话 → 叙事JSON | SVG 矢量文件 | **纯 Go** + VTracer | 需 VTracer (trace) |
 
 ---
 
@@ -182,8 +302,9 @@ via54 export json --output scenes.json scaffold.json                            
 via54 export markdown --output slides.md scaffold.json                                   # Marp 兼容幻灯片
 via54 export tts --text "你好" --out voice.mp3                                           # 语音合成
 
-# MCP Server (兼容 Claude Desktop / Cursor / Copilot / Hermes)
+# MCP Server (独立二进制: via54-mcp, 兼容: via54 serve)
 via54 serve
+# 推荐使用独立二进制: via54-mcp
 ```
 
 ### 命令标志速查
@@ -392,11 +513,12 @@ YAML `responsive[]` 自动生成 CSS `@media` 查询，覆盖 **columns/stack/sa
 ## 📦 安装
 
 ```bash
-# 一行部署
-bash <(curl -s https://raw.githubusercontent.com/veawho/via54Design/main/hack/install.sh)
-
-# 或手动编译
+# 编译两个二进制
 go build -o via54 ./cmd/via54/
+go build -o via54-mcp ./cmd/mcp-server/
+
+# 或使用 Makefile
+make all
 ```
 
 ### 依赖
@@ -472,9 +594,10 @@ go build -o via54 ./cmd/via54/
 │  图片搜索 (Wikimedia/Unsplash)          │
 └─────────────────────────────────────────┘
 
-cmd/via54/  ← 10 个文件 (主入口 + 9 子命令)
-hack/       ← 构建/部署脚本
-docs/       ← 模板格式规范 + 故障恢复指南
+cmd/via54/   ← CLI (10 文件, 主入口 + 9 子命令)
+cmd/mcp-server/  ← MCP Server 独立二进制
+hack/        ← 构建/部署脚本
+docs/        ← 模板格式规范 + 故障恢复指南
 ```
 
 ## 语言
