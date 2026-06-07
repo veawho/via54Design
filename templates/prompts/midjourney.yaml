@@ -1,12 +1,12 @@
-# Midjourney 提示词模板
-# 格式: "subject, environment, lighting, style, mood, composition" + --params
+# Midjourney 提示词模板 v2 — 16 维度控制
+# 参考: designer-image (10维度) + CLIP Interrogator + image-gen-pipeline (7分类)
 id: midjourney
 name:
   zh: "Midjourney"
   en: "Midjourney"
 platform: midjourney
-description: "Midjourney 图片生成"
-version: "1.0.0"
+description: "Midjourney 图片生成 — 16 维度精确控制"
+version: "2.0.0"
 format: midjourney
 params:
   ar: "16:9"
@@ -14,59 +14,170 @@ params:
   style: "raw"
   s: "250"
 
+# 平台默认负面词
+negative:
+  - "blurry, low quality, distorted, deformed, ugly, bad anatomy"
+  - "extra limbs, missing fingers, bad hands"
+  - "watermark, signature, text, logo"
+  - "oversaturated, underexposed, noise, grainy"
+
 sections:
+  # ── SUBJECT ──
   - id: subject
     label: "主体 (Subject)"
-    hint: "描述主要人物/物体/场景"
-    default: "（LLM填充：主体描述）"
+    category: subject
+    hint: "主对象描述（动作、姿态、表情）"
+    weighted: true
+    weight: 1.0
+  - id: secondary
+    label: "辅助 (Secondary)"
+    category: subject
+    hint: "次要元素、背景人物/物体"
+    weighted: true
 
-  - id: environment
-    label: "环境 (Environment)"
-    hint: "背景/环境/氛围"
-    default: "（LLM填充：环境描述）"
+  # ── STYLE ──
+  - id: art_movement
+    label: "风格流派"
+    category: style
+    hint: "艺术运动/风格"
+    default: "摄影写实 (Photorealistic)"
+    weighted: true
+    options:
+      - {value: "摄影写实 (Photorealistic)", label: "摄影写实", weight: 1.0}
+      - {value: "赛博朋克 (Cyberpunk)", label: "赛博朋克", weight: 1.2}
+      - {value: "水墨画 (Ink Wash Painting)", label: "水墨画", weight: 1.1}
+      - {value: "浮世绘 (Ukiyo-e)", label: "浮世绘", weight: 1.3}
+      - {value: "电影感 (Cinematic)", label: "电影感", weight: 1.2}
+      - {value: "3D 渲染 (3D Render)", label: "3D 渲染", weight: 1.0}
+  - id: artist_ref
+    label: "艺术家参考"
+    category: style
+    hint: "参考艺术家/导演"
+    weighted: true
+  - id: medium
+    label: "媒介 (Medium)"
+    category: style
+    hint: "数字绘画/油画/摄影/水彩"
+    default: "digital art"
+    options:
+      - {value: "digital art", label: "数字艺术"}
+      - {value: "oil on canvas", label: "布面油画"}
+      - {value: "film photography", label: "胶片摄影"}
+      - {value: "watercolor", label: "水彩"}
 
+  # ── COMPOSITION ──
+  - id: camera_shot
+    label: "镜头 (Camera Shot)"
+    category: comp
+    hint: "景别/镜头类型"
+    default: "medium shot"
+    weighted: true
+    options:
+      - {value: "close-up", label: "特写", weight: 1.1}
+      - {value: "medium shot", label: "中景", weight: 1.0}
+      - {value: "wide shot", label: "远景", weight: 1.0}
+      - {value: "bird's eye view", label: "鸟瞰", weight: 1.2}
+      - {value: "dutch angle", label: "斜角", weight: 1.3}
+  - id: composition_type
+    label: "构图 (Composition)"
+    category: comp
+    hint: "构图方式"
+    default: "rule of thirds"
+    options:
+      - {value: "rule of thirds", label: "三分法"}
+      - {value: "centered", label: "居中"}
+      - {value: "symmetry", label: "对称"}
+      - {value: "golden ratio", label: "黄金螺旋"}
+      - {value: "leading lines", label: "引导线"}
+  - id: depth_of_field
+    label: "景深 (DOF)"
+    category: comp
+    hint: "景深控制"
+    default: "shallow depth of field"
+    options:
+      - {value: "shallow depth of field", label: "浅景深"}
+      - {value: "deep focus", label: "全景深"}
+      - {value: "bokeh", label: "散景"}
+
+  # ── LIGHTING ──
   - id: lighting
     label: "光线 (Lighting)"
-    hint: "光线类型和方向"
-    default: "自然光"
+    category: lighting
+    hint: "布光类型"
+    default: "cinematic lighting"
+    weighted: true
+    weight: 1.2
     options:
-      - {value: "自然光", label: "自然光"}
-      - {value: "黄金时刻", label: "Golden Hour"}
-      - {value: "电影布光", label: "Cinematic Lighting"}
-      - {value: "伦勃朗光", label: "Rembrandt Lighting"}
-      - {value: "霓虹光", label: "Neon Lighting"}
-      - {value: "剪影", label: "Silhouette"}
+      - {value: "golden hour", label: "黄金时刻", weight: 1.2}
+      - {value: "cinematic lighting", label: "电影布光", weight: 1.3}
+      - {value: "volumetric lighting", label: "体积光", weight: 1.2}
+      - {value: "rim lighting", label: "轮廓光", weight: 1.1}
+      - {value: "neon lighting", label: "霓虹灯光", weight: 1.3}
+      - {value: "studio softbox", label: "影室柔光箱", weight: 1.0}
 
-  - id: style
-    label: "风格 (Style)"
-    hint: "艺术风格/流派"
-    default: "摄影写实"
+  # ── COLOR ──
+  - id: color_palette
+    label: "色调 (Color Palette)"
+    category: color
+    hint: "整体色调/配色方案"
+    default: "warm amber tones"
+    weighted: true
+    weight: 1.1
     options:
-      - {value: "摄影写实", label: "Photorealistic"}
-      - {value: "电影感", label: "Cinematic"}
-      - {value: "水墨画", label: "Ink Wash Painting"}
-      - {value: "赛博朋克", label: "Cyberpunk"}
-      - {value: "浮世绘", label: "Ukiyo-e"}
-      - {value: "3D 渲染", label: "3D Render"}
+      - {value: "cyberpunk purple+cyan", label: "赛博朋克紫青"}
+      - {value: "warm amber tones", label: "暖琥珀色"}
+      - {value: "monochrome blue", label: "单色蓝"}
+      - {value: "pastel", label: "粉彩"}
+      - {value: "high contrast", label: "高对比度"}
+      - {value: "teal and orange", label: "青橙调"}
 
-  - id: mood
-    label: "情绪 (Mood)"
-    hint: "整体情绪氛围"
-    default: "平静"
+  # ── ENVIRONMENT ──
+  - id: environment
+    label: "场景 (Environment)"
+    category: env
+    hint: "环境/场景描述"
+    weighted: true
+  - id: era
+    label: "年代 (Era)"
+    category: env
+    hint: "历史时期/未来年代"
     options:
-      - {value: "平静", label: "Calm"}
-      - {value: "神秘", label: "Mysterious"}
-      - {value: "振奋", label: "Uplifting"}
-      - {value: "忧郁", label: "Melancholic"}
-      - {value: "未来感", label: "Futuristic"}
+      - {value: "1920s", label: "1920年代"}
+      - {value: "futuristic 2088", label: "未来2088"}
+      - {value: "medieval", label: "中世纪"}
+      - {value: "prehistoric", label: "史前"}
 
-  - id: composition
-    label: "构图 (Composition)"
-    hint: "镜头/构图方式"
-    default: "中景"
+  # ── DETAIL ──
+  - id: texture
+    label: "材质 (Texture)"
+    category: detail
+    hint: "表面质感"
+    default: "detailed textures"
     options:
-      - {value: "特写", label: "Close-up"}
-      - {value: "中景", label: "Medium Shot"}
-      - {value: "远景", label: "Wide Shot"}
-      - {value: "俯视", label: "Top-down"}
-      - {value: "仰视", label: "Low Angle"}
+      - {value: "metallic", label: "金属质感"}
+      - {value: "translucent", label: "半透明"}
+      - {value: "rough", label: "粗糙"}
+      - {value: "glossy", label: "光泽"}
+      - {value: "velvet", label: "天鹅绒"}
+  - id: effects
+    label: "特效 (Effects)"
+    category: detail
+    hint: "视觉效果"
+    weighted: true
+    options:
+      - {value: "glowing", label: "发光"}
+      - {value: "particle effects", label: "粒子效果"}
+      - {value: "lens flare", label: "镜头光晕"}
+      - {value: "god rays", label: "上帝光"}
+
+  # ── QUALITY ──
+  - id: quality_tags
+    label: "画质标签"
+    category: quality
+    hint: "质量关键词"
+    default: "masterpiece, highly detailed"
+    options:
+      - {value: "masterpiece, highly detailed", label: "杰作级"}
+      - {value: "trending on ArtStation", label: "ArtStation 热门"}
+      - {value: "award winning photography", label: "获奖摄影"}
+      - {value: "8K, ultra detailed", label: "8K 超精细"}
