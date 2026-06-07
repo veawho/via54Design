@@ -1,4 +1,4 @@
-// via54Design — Web UI HTTP Handlers
+// via54Design — Web UI HTTP Handlers (全功能版)
 //
 // Copyright (C) 2026  via54 (veawho)
 //
@@ -13,7 +13,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/veawho/via54Design/internal/workflow"
@@ -22,11 +24,9 @@ import (
 //go:embed templates/index.html
 var embeddedFiles embed.FS
 
-// baseDir caches the project base directory
 var baseDir string
 
 func init() {
-	// Try to find the project root
 	candidates := []string{".", "..", "../.."}
 	for _, c := range candidates {
 		path := filepath.Join(c, "templates", "workflows")
@@ -36,11 +36,9 @@ func init() {
 			return
 		}
 	}
-	// Fallback: use CWD
 	baseDir, _ = os.Getwd()
 }
 
-// Handler returns an HTTP handler for the web UI.
 func Handler(bd string) http.Handler {
 	if bd != "" {
 		baseDir = bd
@@ -50,6 +48,11 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/health", handleHealth)
 	mux.HandleFunc("/api/templates", handleTemplates)
 	mux.HandleFunc("/api/build", handleBuild)
+	mux.HandleFunc("/api/prompt", handlePrompt)
+	mux.HandleFunc("/api/generate", handleGenerate)
+	mux.HandleFunc("/api/narrate", handleNarrate)
+	mux.HandleFunc("/api/export", handleExport)
+	mux.HandleFunc("/api/media", handleMedia)
 	return mux
 }
 
@@ -70,8 +73,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
-		"status":  "ok",
-		"version": "v0.5.0",
+		"status": "ok", "version": "v0.6.0",
 	})
 }
 
@@ -79,7 +81,7 @@ func handleTemplates(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	reg, err := workflow.LoadRegistry(baseDir)
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode([]interface{}{})
 		return
 	}
 	json.NewEncoder(w).Encode(reg.Workflows)
@@ -87,34 +89,29 @@ func handleTemplates(w http.ResponseWriter, r *http.Request) {
 
 func handleBuild(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
 	if r.Method != "POST" {
 		json.NewEncoder(w).Encode(map[string]string{"error": "use POST"})
 		return
 	}
 
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-		return
-	}
-
 	var req map[string]interface{}
-	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON"})
-		return
-	}
+	body, _ := io.ReadAll(r.Body)
+	json.Unmarshal(body, &req)
 
 	workflowID, _ := req["workflow_id"].(string)
 	prompt, _ := req["prompt"].(string)
-	negative, _ := req["negative"].(string)
+	neg, _ := req["negative"].(string)
+	format, _ := req["format"].(string)
+	if format == "" {
+		format = "comfyui"
+	}
+
 	if workflowID == "" || prompt == "" {
 		json.NewEncoder(w).Encode(map[string]string{"error": "workflow_id and prompt required"})
 		return
 	}
 
-	// Build overrides
-	overrides := make(map[string]interface{})
+	overrides := map[string]interface{}{}
 	if v, ok := req["steps"].(float64); ok {
 		overrides["steps"] = int(v)
 	}
@@ -131,86 +128,279 @@ func handleBuild(w http.ResponseWriter, r *http.Request) {
 		overrides["height"] = int(v)
 	}
 
+	if format == "forge" {
+		fp := map[string]interface{}{
+			"prompt": prompt, "negative_prompt": neg,
+			"steps": 30, "cfg_scale": 7.5, "width": 1024, "height": 1024,
+			"sampler_name": "Euler", "save_images": true,
+		}
+		if v, ok := overrides["steps"].(int); ok {
+			fp["steps"] = v
+		}
+		if v, ok := overrides["cfg"].(float64); ok {
+			fp["cfg_scale"] = v
+		}
+		if v, ok := overrides["seed"].(int); ok {
+			fp["seed"] = v
+		}
+		res := map[string]interface{}{
+			"format": "forge_a1111", "template": workflowID,
+			"api_payload": fp, "api_endpoint": "http://localhost:7860/sdapi/v1/txt2img",
+		}
+		j, _ := json.MarshalIndent(res, "", "  ")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"json": string(j), "nodes": 1, "format": "forge",
+		})
+		return
+	}
+
+	// ComfyUI mode
 	tmpl, err := workflow.LoadWorkflowTemplate(workflowID, baseDir)
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
-	// Parse optional keyframes
-	kfInput, _ := req["keyframes"].(string)
 	var kfs []workflow.Keyframe
-	if kfInput != "" {
-		for _, kf := range strings.Split(kfInput, ",") {
-			kf = strings.TrimSpace(kf)
-			if kf == "" { continue }
-			parts := strings.SplitN(kf, ":", 2)
-			if len(parts) == 2 {
-				frame := 0
-				fmt.Sscanf(parts[0], "%d", &frame)
-				kfs = append(kfs, workflow.Keyframe{Frame: frame, Prompt: strings.TrimSpace(parts[1])})
-			}
-		}
-	}
-
-	// Determine output format (comfyui or forge)
-	outputFormat, _ := req["format"].(string)
-	if outputFormat == "" {
-		outputFormat = "comfyui"
-	}
-
-	var resultJSON []byte
-	nodeCount := 0
-	injected := 0
-	kfCount := 0
-
-	if outputFormat == "forge" {
-		// Build Forge/A1111 API payload
-		forgePayload := map[string]interface{}{
-			"prompt":          prompt,
-			"negative_prompt": negative,
-			"steps":           30,
-			"cfg_scale":       7.5,
-			"width":           1024,
-			"height":          1024,
-			"sampler_name":    "Euler",
-			"save_images":     true,
-		}
-		if v, ok := overrides["steps"].(int); ok { forgePayload["steps"] = v }
-		if v, ok := overrides["cfg"].(float64); ok { forgePayload["cfg_scale"] = v }
-		if v, ok := overrides["width"].(int); ok { forgePayload["width"] = v }
-		if v, ok := overrides["height"].(int); ok { forgePayload["height"] = v }
-		if v, ok := overrides["seed"].(int); ok { forgePayload["seed"] = v }
-
-		resultMap := map[string]interface{}{
-			"format":       "forge_a1111",
-			"template":     workflowID,
-			"api_payload":  forgePayload,
-			"api_endpoint": "http://localhost:7860/sdapi/v1/txt2img",
-		}
-		resultJSON, _ = json.MarshalIndent(resultMap, "", "  ")
-		nodeCount = 1
-		injected = 1
-		kfCount = 0
-	} else {
-		// Build ComfyUI workflow JSON (default)
-		result, err := workflow.BuildWorkflow(tmpl, prompt, negative, overrides, kfs)
-		if err != nil {
-			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
-			return
-		}
-		resultJSON = result.JSON
-		nodeCount = len(strings.Split(string(result.JSON), "\n")) / 3
-		injected = result.Injected
-		kfCount = result.Keyframes
+	result, err := workflow.BuildWorkflow(tmpl, prompt, neg, overrides, kfs)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"json":      string(resultJSON),
-		"nodes":     nodeCount,
-		"injected":  injected,
-		"keyframes": kfCount,
-		"template":  workflowID,
-		"format":    outputFormat,
+		"json": string(result.JSON), "nodes": len(strings.Split(string(result.JSON), "\n")) / 3,
+		"template": result.TemplateID, "format": "comfyui",
+	})
+}
+
+func handlePrompt(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != "POST" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "use POST"})
+		return
+	}
+
+	var req map[string]interface{}
+	body, _ := io.ReadAll(r.Body)
+	json.Unmarshal(body, &req)
+
+	scene, _ := req["scene"].(string)
+	platform, _ := req["platform"].(string)
+	outFormat, _ := req["format"].(string)
+	if scene == "" || platform == "" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "scene and platform required"})
+		return
+	}
+	if outFormat == "" {
+		outFormat = "markdown"
+	}
+
+	// Execute via54 prompt CLI
+	exe := filepath.Join(baseDir, "via54.exe")
+	args := []string{"prompt", "--scene", scene, "--platform", platform, "--format", outFormat}
+	cmd := exec.Command(exe, args...)
+	cmd.Dir = baseDir
+	out, err := cmd.Output()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("exec error: %v", err)})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"output":   string(out),
+		"platform": platform,
+		"format":   outFormat,
+		"length":   len(out),
+	})
+}
+
+func handleGenerate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != "POST" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "use POST"})
+		return
+	}
+
+	var req map[string]interface{}
+	body, _ := io.ReadAll(r.Body)
+	json.Unmarshal(body, &req)
+
+	layout, _ := req["layout"].(string)
+	color, _ := req["color"].(string)
+	font, _ := req["font"].(string)
+	title, _ := req["title"].(string)
+	presentation, _ := req["presentation"].(bool)
+	if layout == "" {
+		layout = "hero-split-16-9"
+	}
+	if color == "" {
+		color = "ink-wash"
+	}
+	if font == "" {
+		font = "ming-hei-editorial"
+	}
+	if title == "" {
+		title = "via54Design"
+	}
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	args := []string{
+		"generate", "--layout", layout, "--color", color,
+		"--font", font, "--title", title,
+	}
+	if presentation {
+		args = append(args, "--presentation")
+	}
+	cmd := exec.Command(exe, args...)
+	cmd.Dir = baseDir
+	out, err := cmd.Output()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("exec error: %v", err)})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"html": string(out), "layout": layout, "color": color,
+		"font": font, "title": title, "length": len(out),
+	})
+}
+
+func handleNarrate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != "POST" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "use POST"})
+		return
+	}
+
+	var req map[string]interface{}
+	body, _ := io.ReadAll(r.Body)
+	json.Unmarshal(body, &req)
+
+	seed, _ := req["seed"].(string)
+	model, _ := req["model"].(string)
+	outFormat, _ := req["format"].(string)
+	duration := 30
+	if v, ok := req["duration"].(float64); ok {
+		duration = int(v)
+	}
+	if seed == "" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "seed required"})
+		return
+	}
+	if model == "" {
+		model = "three-act"
+	}
+	if outFormat == "" {
+		outFormat = "markdown"
+	}
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	args := []string{
+		"narrate", "--seed", seed, "--model", model,
+		"--duration", strconv.Itoa(duration), "--format", outFormat,
+	}
+	cmd := exec.Command(exe, args...)
+	cmd.Dir = baseDir
+	out, err := cmd.Output()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("exec error: %v", err)})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"output": string(out), "model": model,
+		"duration": duration, "length": len(out),
+	})
+}
+
+func handleExport(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != "POST" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "use POST"})
+		return
+	}
+
+	var req map[string]interface{}
+	body, _ := io.ReadAll(r.Body)
+	json.Unmarshal(body, &req)
+
+	expType, _ := req["type"].(string)
+	source, _ := req["source"].(string)
+	output, _ := req["output"].(string)
+	if expType == "" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "export type required"})
+		return
+	}
+	if output == "" {
+		output = fmt.Sprintf("output.%s", expType)
+	}
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	args := []string{"export", expType}
+	if source != "" {
+		args = append(args, source)
+	}
+	args = append(args, "--output", output)
+	cmd := exec.Command(exe, args...)
+	cmd.Dir = baseDir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": fmt.Sprintf("exec error: %v", err),
+			"output": string(out),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message": string(out), "type": expType,
+		"output": output, "success": true,
+	})
+}
+
+func handleMedia(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != "POST" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "use POST"})
+		return
+	}
+
+	var req map[string]interface{}
+	body, _ := io.ReadAll(r.Body)
+	json.Unmarshal(body, &req)
+
+	action, _ := req["action"].(string)
+	source, _ := req["source"].(string)
+	target, _ := req["target"].(string)
+	paramsStr, _ := req["params"].(string)
+	if action == "" {
+		json.NewEncoder(w).Encode(map[string]string{"error": "action required"})
+		return
+	}
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	args := []string{"media", action}
+	if source != "" {
+		args = append(args, source)
+	}
+	if target != "" {
+		args = append(args, target)
+	}
+	if paramsStr != "" {
+		args = append(args, paramsStr)
+	}
+	cmd := exec.Command(exe, args...)
+	cmd.Dir = baseDir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": fmt.Sprintf("exec error: %v", err), "output": string(out),
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message": string(out), "action": action, "success": true,
 	})
 }
