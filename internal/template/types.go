@@ -24,6 +24,17 @@ type ViewportConfig struct {
 	Baseline  string `yaml:"baseline"`            // "16:9"
 	MinHeight string `yaml:"min_height"`          // "100dvh"
 	MaxWidth  string `yaml:"max_width,omitempty"` // 可选最大宽度（TV 用）
+
+	// 演示模式:
+	//   开启: 锁定 16:9, 生成 PPT/视频级输出
+	//   关闭: 自由网页布局
+	//   CLI 通过 --presentation 控制, PPT/PPTX/演示文稿 关键词自动激活
+	PresentationMode bool `yaml:"presentation_mode,omitempty"`
+	Presentation     struct {
+		RatioLock string `yaml:"ratio_lock,omitempty"` // "16:9"
+		FitMode   string `yaml:"fit_mode,omitempty"`   // "contain" / "cover" / "fill"
+		BgColor   string `yaml:"bg_color,omitempty"`   // 演示背景色（超出16:9区域）
+	} `yaml:"presentation,omitempty"`
 }
 
 // ─── 布局结构 ───
@@ -178,4 +189,5 @@ type GenerationResult struct {
 	BaseCSS      string
 	LayoutCSS    string
 	LetteringSVG string
+	PresentationMode bool // 是否启用 16:9 演示锁定
 }

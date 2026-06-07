@@ -21,10 +21,10 @@ func NewEngine(baseDir string) (*Engine, error) {
 }
 
 func (e *Engine) Compose(layoutID, colorID, fontID, title string) (*GenerationResult, error) {
-	return e.ComposeWithSVG(layoutID, colorID, fontID, title, "")
+	return e.ComposeWithSVG(layoutID, colorID, fontID, title, "", false)
 }
 
-func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG string) (*GenerationResult, error) {
+func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG string, presentationMode bool) (*GenerationResult, error) {
 	lp, _ := e.Registry.ResolveLayout(layoutID)
 	cp, _ := e.Registry.ResolveColorScheme(colorID)
 	fp, _ := e.Registry.ResolveTypography(fontID)
@@ -48,10 +48,11 @@ func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG s
 		FontID:   fontID,
 		Title:    title,
 		LetteringSVG: letteringSVG,
+		PresentationMode: presentationMode,
 	}
 	result.CSSVars = buildCSSVariables(color, font)
 	result.FontImports = buildFontImports(font)
-	result.BaseCSS = buildBaseCSS(font, layout)
+	result.BaseCSS = buildBaseCSS(font, layout, presentationMode)
 	result.LayoutCSS = layout.CSS
 	result.HTML = assembleHTML(result, layout)
 	return result, nil
@@ -119,17 +120,39 @@ func buildFontImports(font *TypographyTemplate) string {
 	return ""
 }
 
-func buildBaseCSS(font *TypographyTemplate, layout *LayoutTemplate) string {
+func buildBaseCSS(font *TypographyTemplate, layout *LayoutTemplate, presentationMode bool) string {
 	body := getOrDefault(font.Fonts, "body", "'Inter', sans-serif")
 	disp := getOrDefault(font.Fonts, "display", body)
 	mono := getOrDefault(font.Fonts, "mono", "'JetBrains Mono', monospace")
 
-	// Viewport lock for 16:9 baseline
+	// Viewport lock — 仅在演示模式激活 16:9
 	vpLock := ""
-	if layout.Viewport.Baseline != "" {
-		vpLock = fmt.Sprintf(`/* 视口基准: %s */
-html { aspect-ratio: %s; margin: 0 auto; overflow: auto; }
-@media (max-aspect-ratio: %s) { html { aspect-ratio: auto; } }
+	if presentationMode && layout.Viewport.Baseline != "" {
+		vpLock = fmt.Sprintf(`/* 演示模式: 16:9 锁定 */
+.presentation-mode {
+  aspect-ratio: %s;
+  margin: 0 auto;
+  max-height: 100dvh;
+  overflow: hidden;
+  background: var(--presentation-bg, #000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.presentation-mode > .layout-hero-split,
+.presentation-mode > .layout-bento,
+.presentation-mode > .layout-gallery {
+  aspect-ratio: %s;
+  max-height: 100dvh;
+}
+@media (max-aspect-ratio: %s) {
+  .presentation-mode > .layout-hero-split,
+  .presentation-mode > .layout-bento,
+  .presentation-mode > .layout-gallery {
+    width: auto;
+    height: 100dvh;
+  }
+}
 `, layout.Viewport.Baseline, layout.Viewport.Baseline, layout.Viewport.Baseline)
 	}
 
@@ -179,6 +202,13 @@ func assembleHTML(r *GenerationResult, layout *LayoutTemplate) string {
 		bodyContent = bentoBodyHTML()
 	} else if layout.ID == "gallery-waterfall" {
 		bodyContent = galleryBodyHTML()
+	}
+
+	// 演示模式：外层包裹 .presentation-mode 容器
+	bodyWrapper := ""
+	if r.PresentationMode {
+		bodyWrapper = `<div class="presentation-mode">\n  ` + bodyContent + `\n</div>`
+		bodyContent = bodyWrapper
 	}
 
 	return fmt.Sprintf(`<!DOCTYPE html>

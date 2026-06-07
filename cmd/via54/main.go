@@ -98,6 +98,7 @@ func cmdGenerate() {
 	output := fs.String("output", "output.html", "输出路径")
 	letteringSVG := fs.String("lettering-svg", "", "SVG lettering 文件路径 (手写/书法文字)")
 	fromNarrative := fs.String("from-narrative", "", "叙事脚手架 JSON 路径 (via54 narrate --format json 的输出)")
+	presentation := fs.Bool("presentation", false, "演示模式: 锁定 16:9 (PPT/视频输出)")
 	fs.Parse(os.Args[2:])
 
 	bd := baseDir()
@@ -106,7 +107,7 @@ func cmdGenerate() {
 
 	// ── 叙事驱动生成 ──
 	if *fromNarrative != "" {
-		generateFromNarrative(eng, *fromNarrative, *layout, *color, *font, *output)
+		generateFromNarrative(eng, *fromNarrative, *layout, *color, *font, *output, *presentation)
 		return
 	}
 
@@ -121,9 +122,9 @@ func cmdGenerate() {
 		if *layout == "" { *layout = "hero-split-left-image" }
 		if *color == "" { *color = "ink-wash" }
 		if *font == "" { *font = "serif-sans-editorial" }
-		result, err = eng.ComposeWithSVG(*layout, *color, *font, *title, string(data))
+		result, err = eng.ComposeWithSVG(*layout, *color, *font, *title, string(data), *presentation)
 	} else {
-		result, err = eng.Compose(*layout, *color, *font, *title)
+		result, err = eng.ComposeWithSVG(*layout, *color, *font, *title, "", *presentation)
 	}
 	if err != nil { fmt.Fprintf(os.Stderr, "生成失败: %v\n", err); os.Exit(1) }
 	result.SaveToFile(*output)
@@ -131,7 +132,7 @@ func cmdGenerate() {
 }
 
 // generateFromNarrative 从叙事脚手架 JSON 生成多场景 HTML 动画
-func generateFromNarrative(eng *template.Engine, narrativePath, layoutOverride, colorOverride, fontOverride, output string) {
+func generateFromNarrative(eng *template.Engine, narrativePath, layoutOverride, colorOverride, fontOverride, output string, presentationMode bool) {
 	data, err := os.ReadFile(narrativePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "读取叙事文件失败: %v\n", err)
@@ -212,8 +213,8 @@ body { font-family: system-ui; overflow-x: hidden; }
 		}
 
 		// 每个场景用独立配色生成
-		sceneResult, err := eng.Compose(lID, sceneColor, fID,
-			fmt.Sprintf("%s — %s", scaffold.Seed, beat.Act))
+		sceneResult, err := eng.ComposeWithSVG(lID, sceneColor, fID,
+			fmt.Sprintf("%s — %s", scaffold.Seed, beat.Act), "", presentationMode)
 		if err != nil {
 			// fallback: plain scene
 			sceneResult = &template.GenerationResult{
