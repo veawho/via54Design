@@ -138,7 +138,7 @@ via54                              # 帮助
 via54 version                      # 版本信息
 via54 list                         # 列出所有模板
 
-# 叙事引擎 (Narrate) — 人类+AI协作讲故事
+# 叙事引擎 — 人类+AI协作讲故事
 via54 narrate --list                                          # 查看4种叙事模型
 via54 narrate --seed "一句话" --model three-act                # 输出叙事脚手架 (markdown)
 via54 narrate --seed "..." --model heros-journey --duration 60 # 指定时长和模型
@@ -162,10 +162,16 @@ via54 media fetch --query "关键词" --out ./img --count 3
 via54 media trace --input photo.jpg --output logo.svg       # 照片→SVG矢量化
 via54 media trace --input handwriting.jpg --output title.svg # 书法/签名→SVG
 
-# 导出
-via54 export render input.html --duration 30 --width 1920 --height 1080
-via54 export pdf input.html
-via54 export tts --text "你好" --out voice.mp3
+# 导出 (纯 Go，零外部依赖)
+via54 export render input.html --duration 30 --width 1920 --height 1080 --format mp4   # MP4 视频
+via54 export render input.html --format webm                                            # WebM (VP9)
+via54 export render input.html --format frames                                          # PNG 序列帧
+via54 export pdf input.html                                                              # PDF
+via54 export pptx --output deck.pptx scaffold.json                                       # PPTX 演示文稿 (从叙事)
+via54 export svg --output ./scenes scaffold.json                                         # SVG 矢量稿 (每场景独立文件)
+via54 export json --output scenes.json scaffold.json                                     # 结构化场景数据
+via54 export markdown --output slides.md scaffold.json                                   # Marp 兼容幻灯片
+via54 export tts --text "你好" --out voice.mp3                                           # 语音合成
 
 # MCP Server (兼容 Claude Desktop / Cursor / Copilot / Hermes)
 via54 serve
@@ -198,6 +204,18 @@ via54 serve
 | **export** | `render` | `--duration` | int | 10 | 时长(秒) |
 | | | `--width` | int | 1920 | 宽 |
 | | | `--height` | int | 1080 | 高 |
+| | | `--format` | string | "mp4" | 视频格式: mp4/webm/hevc/frames/apng |
+| | `pdf` | `--output` | string | — | 输出路径 |
+| | `pptx` | `--output` | string | "output.pptx" | 输出路径 |
+| | | `--16-9` | bool | true | 16:9 宽屏 |
+| | | `--title` | string | "via54 演示文稿" | 标题 |
+| | `svg` | `--output` | string | "./svg-scenes" | 输出目录 |
+| | | `--width` | int | 1920 | 宽 |
+| | | `--height` | int | 1080 | 高 |
+| | `json` | `--output` | string | "scenes.json" | 输出路径 |
+| | `markdown` | `--output` | string | "story.md" | 输出路径 |
+| | | `--title` | string | "via54 演示文稿" | 标题 |
+| | | `--author` | string | "via54Design" | 作者 |
 | | `tts` | `--text` | string | **必填** | 文本 |
 | | | `--output` | string | "output.mp3" | 输出路径 |
 | | | `--voice` | string | — | 音色 |

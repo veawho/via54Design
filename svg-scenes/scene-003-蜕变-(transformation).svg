@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1a3a1a"/>
+      <stop offset="100%" stop-color="#1a3a1a" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect x="0" y="0" width="12" height="1080" fill="#66ff66"/>
+  <text x="60" y="80" font-family="system-ui" font-size="18" fill="#ffffff" opacity="0.6" letter-spacing="4">蜕变 (TRANSFORMATION)</text>
+  <text x="60" y="160" font-family="system-ui" font-size="48" font-weight="700" fill="#ffffff">蜕变 (transformation)</text>
+  
+  <rect x="60" y="940" width="1800" height="80" rx="8" fill="#66ff66" opacity="0.1"/>
+  <text x="80" y="990" font-family="system-ui" font-size="28" font-style="italic" fill="#ffffff">不一样了...</text>
+  <text x="1860" y="1050" font-family="system-ui" font-size="16" fill="#ffffff" opacity="0.4" text-anchor="end">3 / 4</text>
+</svg>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fdf6e3"/>
+      <stop offset="100%" stop-color="#fdf6e3" stop-opacity="0.95"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect x="0" y="0" width="12" height="1080" fill="#dd8844"/>
+  <text x="60" y="80" font-family="system-ui" font-size="18" fill="#1a1a1a" opacity="0.6" letter-spacing="4">回归 (RETURN)</text>
+  <text x="60" y="160" font-family="system-ui" font-size="48" font-weight="700" fill="#1a1a1a">回归 (return)</text>
+  
+  <rect x="60" y="940" width="1800" height="80" rx="8" fill="#dd8844" opacity="0.1"/>
+  <text x="80" y="990" font-family="system-ui" font-size="28" font-style="italic" fill="#1a1a1a">每一天...</text>
+  <text x="1860" y="1050" font-family="system-ui" font-size="16" fill="#1a1a1a" opacity="0.4" text-anchor="end">4 / 4</text>
+</svg>
