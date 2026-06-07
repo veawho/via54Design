@@ -1,0 +1,17 @@
+# via54Design — ComfyUI workflow template
+id: sdxl_upscale
+name: "SDXL 2x Upscale"
+description: "SDXL upscale with ESRGAN 4x"
+type: txt2img
+model: "sd_xl_base_1.0.safetensors"
+params:
+  steps: 30
+  cfg: 7.5
+models:
+  - url: ""
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

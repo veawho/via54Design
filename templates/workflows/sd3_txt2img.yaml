@@ -1,0 +1,17 @@
+# via54Design — ComfyUI workflow template
+id: sd3_txt2img
+name: "SD3.5 Text-to-Image"
+description: "Stable Diffusion 3.5 Medium text-to-image"
+type: txt2img
+model: "sd3.5_medium.safetensors"
+params:
+  steps: 30
+  cfg: 4.5
+models:
+  - url: ""
+    path: "checkpoints/sd3.5_medium.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

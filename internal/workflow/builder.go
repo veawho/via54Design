@@ -1,4 +1,4 @@
-// via54Design — ComfyUI Workflow Builder
+// via54Design — ComfyUI Workflow Builder (数据驱动 v2)
 //
 // Copyright (C) 2026  via54 (veawho)
 //
@@ -15,10 +15,24 @@ import (
 )
 
 // BuildWorkflow converts a WorkflowTemplate + prompts into ComfyUI API JSON.
-// overrides can contain keys like "steps", "cfg", "seed", "width", "height",
-// "sampler", "scheduler", "denoise", "frames".
+// The template skeleton is a valid ComfyUI JSON with __PROMPT__ / __NEGATIVE__ placeholders.
+// overrides: steps, cfg, seed, width, height, sampler, scheduler, denoise, frames.
 func BuildWorkflow(tmpl *WorkflowTemplate, prompt, negativePrompt string, overrides map[string]interface{}) (*BuildResult, error) {
-	// Merge template params with overrides
+	if tmpl == nil || tmpl.Skeleton == nil {
+		return nil, fmt.Errorf("workflow template %q has no skeleton", tmpl.ID)
+	}
+
+	// Deep-copy the skeleton
+	skJSON, err := json.Marshal(tmpl.Skeleton)
+	if err != nil {
+		return nil, fmt.Errorf("marshal skeleton: %w", err)
+	}
+	var wfMap map[string]interface{}
+	if err := json.Unmarshal(skJSON, &wfMap); err != nil {
+		return nil, fmt.Errorf("unmarshal skeleton: %w", err)
+	}
+
+	// Merge params with overrides
 	params := make(map[string]interface{})
 	for k, v := range tmpl.Params {
 		params[k] = v
@@ -26,314 +40,130 @@ func BuildWorkflow(tmpl *WorkflowTemplate, prompt, negativePrompt string, overri
 	for k, v := range overrides {
 		params[k] = v
 	}
-
-	// Ensure seed is set
-	if seed, ok := params["seed"]; ok {
-		if s, ok := seed.(int); ok && s == -1 {
+	if s, ok := params["seed"]; ok {
+		if si, ok := s.(int); ok && si == -1 {
 			params["seed"] = rand.Intn(1<<31 - 1)
 		}
 	}
+	if _, ok := params["width"]; !ok {
+		params["width"] = 1024
+	}
+	if _, ok := params["height"]; !ok {
+		params["height"] = 1024
+	}
 
-	nodes := make(map[string]*ComfyUINode)
+	// First pass: collect sorted keys
+	var oldKeys []string
+	for k := range wfMap {
+		oldKeys = append(oldKeys, k)
+	}
+	sort.Strings(oldKeys)
+
+	// Renumber nodes sequentially
+	nodeIDMap := make(map[string]string) // old → new
 	nextID := 1
+	newWf := make(map[string]interface{})
 
-	// Helper to generate sequential node IDs
-	nodeID := func() string {
-		id := strconv.Itoa(nextID)
+	for _, oldKey := range oldKeys {
+		rawNode := wfMap[oldKey].(map[string]interface{})
+		classType, _ := rawNode["class_type"].(string)
+		inputs, _ := rawNode["inputs"].(map[string]interface{})
+		newInputs := make(map[string]interface{})
+
+		if inputs != nil {
+			for ik, iv := range inputs {
+				switch v := iv.(type) {
+				case string:
+					switch v {
+					case "__PROMPT__":
+						newInputs[ik] = prompt
+					case "__NEGATIVE__":
+						newInputs[ik] = negativePrompt
+					case "__MODEL__":
+						newInputs[ik] = tmpl.Model
+					default:
+						newInputs[ik] = iv
+					}
+				case []interface{}:
+					newInputs[ik] = iv // keep connection ref as-is
+				default:
+					newInputs[ik] = iv
+				}
+			}
+
+			// Apply overrides to KSampler
+			if classType == "KSampler" || classType == "KSamplerAdvanced" {
+				if v, ok := params["seed"]; ok {
+					newInputs["seed"] = toInt(v, 0)
+				}
+				if v, ok := params["steps"]; ok {
+					newInputs["steps"] = toInt(v, 30)
+				}
+				if v, ok := params["cfg"]; ok {
+					newInputs["cfg"] = toFloat(v, 7.5)
+				}
+				if v, ok := params["sampler"]; ok {
+					newInputs["sampler_name"] = v
+				}
+				if v, ok := params["scheduler"]; ok {
+					newInputs["scheduler"] = v
+				}
+				if v, ok := params["denoise"]; ok {
+					newInputs["denoise"] = toFloat(v, 1.0)
+				}
+			}
+
+			// Apply overrides to EmptyLatentImage
+			if classType == "EmptyLatentImage" {
+				if v, ok := params["width"]; ok {
+					newInputs["width"] = toInt(v, 1024)
+				}
+				if v, ok := params["height"]; ok {
+					newInputs["height"] = toInt(v, 1024)
+				}
+				if v, ok := params["frames"]; ok {
+					newInputs["batch_size"] = toInt(v, 1)
+				}
+			}
+		}
+
+		node := map[string]interface{}{
+			"class_type": classType,
+			"inputs":     newInputs,
+		}
+		newKey := strconv.Itoa(nextID)
+		nodeIDMap[oldKey] = newKey
+		newWf[newKey] = node
 		nextID++
-		return id
 	}
 
-	// Track node IDs for connections
-	var (
-		checkpointID string
-		positiveID   string
-		negativeID   string
-		samplerID    string
-		latentID     string
-		vaeDecodeID  string
-		saveImageID  string
-	)
-
-	switch tmpl.Type {
-	case "txt2img":
-		// 1. CheckpointLoaderSimple
-		checkpointID = nodeID()
-		nodes[checkpointID] = &ComfyUINode{
-			ClassType: "CheckpointLoaderSimple",
-			Inputs: map[string]interface{}{
-				"ckpt_name": tmpl.Model,
-			},
+	// Second pass: remap connection references
+	for _, rawNode := range newWf {
+		node := rawNode.(map[string]interface{})
+		inputs, _ := node["inputs"].(map[string]interface{})
+		if inputs == nil {
+			continue
 		}
-
-		// 2. CLIPTextEncode (positive prompt)
-		positiveID = nodeID()
-		nodes[positiveID] = &ComfyUINode{
-			ClassType: "CLIPTextEncode",
-			Inputs: map[string]interface{}{
-				"text": prompt,
-				"clip": []interface{}{checkpointID, 1},
-			},
+		for ik, iv := range inputs {
+			arr, ok := iv.([]interface{})
+			if !ok || len(arr) != 2 {
+				continue
+			}
+			refID, ok := arr[0].(string)
+			if !ok {
+				continue
+			}
+			if newID, exists := nodeIDMap[refID]; exists {
+				inputs[ik] = []interface{}{newID, arr[1]}
+			}
 		}
-
-		// 3. CLIPTextEncode (negative prompt)
-		negativeID = nodeID()
-		nodes[negativeID] = &ComfyUINode{
-			ClassType: "CLIPTextEncode",
-			Inputs: map[string]interface{}{
-				"text": negativePrompt,
-				"clip": []interface{}{checkpointID, 1},
-			},
-		}
-
-		// 4. EmptyLatentImage
-		latentID = nodeID()
-		width := toInt(params["width"], 1024)
-		height := toInt(params["height"], 1024)
-		batchSize := 1
-		if bs, ok := params["batch_size"]; ok {
-			batchSize = toInt(bs, 1)
-		}
-		nodes[latentID] = &ComfyUINode{
-			ClassType: "EmptyLatentImage",
-			Inputs: map[string]interface{}{
-				"width":      width,
-				"height":     height,
-				"batch_size": batchSize,
-			},
-		}
-
-		// 5. KSampler
-		samplerID = nodeID()
-		nodes[samplerID] = &ComfyUINode{
-			ClassType: "KSampler",
-			Inputs: map[string]interface{}{
-				"seed":          toInt(params["seed"], 0),
-				"steps":         toInt(params["steps"], 30),
-				"cfg":           toFloat(params["cfg"], 7.5),
-				"sampler_name":  toString(params["sampler"], "euler"),
-				"scheduler":     toString(params["scheduler"], "normal"),
-				"denoise":       toFloat(params["denoise"], 1.0),
-				"model":         []interface{}{checkpointID, 0},
-				"positive":      []interface{}{positiveID, 0},
-				"negative":      []interface{}{negativeID, 0},
-				"latent_image":  []interface{}{latentID, 0},
-			},
-		}
-
-		// 6. VAEDecode
-		vaeDecodeID = nodeID()
-		nodes[vaeDecodeID] = &ComfyUINode{
-			ClassType: "VAEDecode",
-			Inputs: map[string]interface{}{
-				"samples": []interface{}{samplerID, 0},
-				"vae":     []interface{}{checkpointID, 2},
-			},
-		}
-
-		// 7. SaveImage
-		saveImageID = nodeID()
-		nodes[saveImageID] = &ComfyUINode{
-			ClassType: "SaveImage",
-			Inputs: map[string]interface{}{
-				"images":     []interface{}{vaeDecodeID, 0},
-				"filename_prefix": "via54",
-			},
-		}
-
-	case "img2img":
-		// 1. LoadImage
-		loadImageID := nodeID()
-		nodes[loadImageID] = &ComfyUINode{
-			ClassType: "LoadImage",
-			Inputs: map[string]interface{}{
-				"image": "", // user must provide
-			},
-		}
-
-		// 2. CheckpointLoaderSimple
-		checkpointID = nodeID()
-		nodes[checkpointID] = &ComfyUINode{
-			ClassType: "CheckpointLoaderSimple",
-			Inputs: map[string]interface{}{
-				"ckpt_name": tmpl.Model,
-			},
-		}
-
-		// 3. VAEEncode (for img2img input)
-		vaeEncodeID := nodeID()
-		nodes[vaeEncodeID] = &ComfyUINode{
-			ClassType: "VAEEncode",
-			Inputs: map[string]interface{}{
-				"pixels": []interface{}{loadImageID, 0},
-				"vae":    []interface{}{checkpointID, 2},
-			},
-		}
-
-		// 4. CLIPTextEncode (positive prompt)
-		positiveID = nodeID()
-		nodes[positiveID] = &ComfyUINode{
-			ClassType: "CLIPTextEncode",
-			Inputs: map[string]interface{}{
-				"text": prompt,
-				"clip": []interface{}{checkpointID, 1},
-			},
-		}
-
-		// 5. CLIPTextEncode (negative prompt)
-		negativeID = nodeID()
-		nodes[negativeID] = &ComfyUINode{
-			ClassType: "CLIPTextEncode",
-			Inputs: map[string]interface{}{
-				"text": negativePrompt,
-				"clip": []interface{}{checkpointID, 1},
-			},
-		}
-
-		// 6. KSampler
-		samplerID = nodeID()
-		nodes[samplerID] = &ComfyUINode{
-			ClassType: "KSampler",
-			Inputs: map[string]interface{}{
-				"seed":          toInt(params["seed"], 0),
-				"steps":         toInt(params["steps"], 30),
-				"cfg":           toFloat(params["cfg"], 7.5),
-				"sampler_name":  toString(params["sampler"], "euler"),
-				"scheduler":     toString(params["scheduler"], "normal"),
-				"denoise":       toFloat(params["denoise"], 0.6),
-				"model":         []interface{}{checkpointID, 0},
-				"positive":      []interface{}{positiveID, 0},
-				"negative":      []interface{}{negativeID, 0},
-				"latent_image":  []interface{}{vaeEncodeID, 0},
-			},
-		}
-
-		// 7. VAEDecode
-		vaeDecodeID = nodeID()
-		nodes[vaeDecodeID] = &ComfyUINode{
-			ClassType: "VAEDecode",
-			Inputs: map[string]interface{}{
-				"samples": []interface{}{samplerID, 0},
-				"vae":     []interface{}{checkpointID, 2},
-			},
-		}
-
-		// 8. SaveImage
-		saveImageID = nodeID()
-		nodes[saveImageID] = &ComfyUINode{
-			ClassType: "SaveImage",
-			Inputs: map[string]interface{}{
-				"images":          []interface{}{vaeDecodeID, 0},
-				"filename_prefix": "via54",
-			},
-		}
-		_ = vaeEncodeID
-		_ = loadImageID
-
-	case "txt2vid":
-		// 1. CheckpointLoaderSimple
-		checkpointID = nodeID()
-		nodes[checkpointID] = &ComfyUINode{
-			ClassType: "CheckpointLoaderSimple",
-			Inputs: map[string]interface{}{
-				"ckpt_name": tmpl.Model,
-			},
-		}
-
-		// 2. CLIPTextEncode (positive prompt)
-		positiveID = nodeID()
-		nodes[positiveID] = &ComfyUINode{
-			ClassType: "CLIPTextEncode",
-			Inputs: map[string]interface{}{
-				"text": prompt,
-				"clip": []interface{}{checkpointID, 1},
-			},
-		}
-
-		// 3. CLIPTextEncode (negative prompt)
-		negativeID = nodeID()
-		nodes[negativeID] = &ComfyUINode{
-			ClassType: "CLIPTextEncode",
-			Inputs: map[string]interface{}{
-				"text": negativePrompt,
-				"clip": []interface{}{checkpointID, 1},
-			},
-		}
-
-		// 4. EmptyLatentImage (with batch_size = frames)
-		latentID = nodeID()
-		frames := toInt(params["frames"], 16)
-		width := toInt(params["width"], 512)
-		height := toInt(params["height"], 512)
-		nodes[latentID] = &ComfyUINode{
-			ClassType: "EmptyLatentImage",
-			Inputs: map[string]interface{}{
-				"width":      width,
-				"height":     height,
-				"batch_size": frames,
-			},
-		}
-
-		// 5. KSampler
-		samplerID = nodeID()
-		nodes[samplerID] = &ComfyUINode{
-			ClassType: "KSampler",
-			Inputs: map[string]interface{}{
-				"seed":          toInt(params["seed"], 0),
-				"steps":         toInt(params["steps"], 25),
-				"cfg":           toFloat(params["cfg"], 7.0),
-				"sampler_name":  toString(params["sampler"], "euler"),
-				"scheduler":     toString(params["scheduler"], "normal"),
-				"denoise":       toFloat(params["denoise"], 1.0),
-				"model":         []interface{}{checkpointID, 0},
-				"positive":      []interface{}{positiveID, 0},
-				"negative":      []interface{}{negativeID, 0},
-				"latent_image":  []interface{}{latentID, 0},
-			},
-		}
-
-		// 6. VAEDecode
-		vaeDecodeID = nodeID()
-		nodes[vaeDecodeID] = &ComfyUINode{
-			ClassType: "VAEDecode",
-			Inputs: map[string]interface{}{
-				"samples": []interface{}{samplerID, 0},
-				"vae":     []interface{}{checkpointID, 2},
-			},
-		}
-
-		// 7. SaveImage (video frames will be saved as frame sequence)
-		saveImageID = nodeID()
-		nodes[saveImageID] = &ComfyUINode{
-			ClassType: "SaveImage",
-			Inputs: map[string]interface{}{
-				"images":          []interface{}{vaeDecodeID, 0},
-				"filename_prefix": "via54_video",
-			},
-		}
-
-	default:
-		return nil, fmt.Errorf("unsupported workflow type: %s", tmpl.Type)
 	}
 
-	// Build the JSON as a map (ComfyUI expects string keys for node IDs)
-	wfMap := make(map[string]*ComfyUINode)
-	// Sort keys for deterministic output
-	var keys []string
-	for k := range nodes {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	for _, k := range keys {
-		wfMap[k] = nodes[k]
-	}
-
-	jsonData, err := json.MarshalIndent(wfMap, "", "  ")
+	jsonData, err := json.MarshalIndent(newWf, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("marshal workflow: %w", err)
 	}
 
-	// Count injected prompts
 	injected := 0
 	if prompt != "" {
 		injected++
@@ -379,13 +209,6 @@ func toFloat(v interface{}, defaultVal float64) float64 {
 		if f, err := strconv.ParseFloat(val, 64); err == nil {
 			return f
 		}
-	}
-	return defaultVal
-}
-
-func toString(v interface{}, defaultVal string) string {
-	if s, ok := v.(string); ok {
-		return s
 	}
 	return defaultVal
 }

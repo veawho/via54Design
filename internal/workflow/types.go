@@ -8,15 +8,16 @@ package workflow
 
 // WorkflowTemplate represents a ComfyUI workflow template loaded from YAML.
 type WorkflowTemplate struct {
-	ID          string            `yaml:"id"`
-	Name        string            `yaml:"name"`
-	Description string            `yaml:"description"`
-	Model       string            `yaml:"model"`
-	VAE         string            `yaml:"vae,omitempty"`
-	Type        string            `yaml:"type"` // txt2img, img2img, txt2vid
+	ID          string                 `yaml:"id"`
+	Name        string                 `yaml:"name"`
+	Description string                 `yaml:"description"`
+	Model       string                 `yaml:"model"`
+	VAE         string                 `yaml:"vae,omitempty"`
+	Type        string                 `yaml:"type"` // txt2img, img2img, txt2vid
 	Params      map[string]interface{} `yaml:"params"`
-	Nodes       map[string]string `yaml:"nodes"` // logical name -> ComfyUI class_type
-	Models      []ModelDownload   `yaml:"models,omitempty"`
+	Nodes       map[string]string      `yaml:"nodes"` // logical name -> ComfyUI class_type
+	Skeleton    map[string]interface{} `json:"-" yaml:"-"` // full node graph (loaded from .skeleton.json)
+	Models      []ModelDownload        `yaml:"models,omitempty"`
 }
 
 // ModelDownload describes a model to auto-download.

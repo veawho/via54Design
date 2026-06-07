@@ -1,6 +1,6 @@
-# via54Design — ComfyUI Workflow Template Registry
-# SPDX-License-Identifier: MIT
-version: 1
+# via54Design — ComfyUI 工作流模板注册表 v2
+# 数据驱动: 加新模板只需 +.yaml + .skeleton.json, 无需改Go代码
+version: 2
 workflows:
   - id: sdxl_txt2img
     name: "SDXL Text-to-Image"
@@ -14,27 +14,87 @@ workflows:
     type: img2img
     model: "sd_xl_base_1.0.safetensors"
     params: "30 steps, cfg 7.5, denoise 0.6"
+  - id: sdxl_inpaint
+    name: "SDXL Inpainting"
+    description: "SDXL inpainting with mask input"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, mask input"
+  - id: sdxl_upscale
+    name: "SDXL 2x Upscale"
+    description: "SDXL 2x upscale with ESRGAN model"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "ESRGAN 4x upscale"
   - id: flux_dev_txt2img
     name: "Flux Dev Text-to-Image"
     description: "Flux Dev text-to-image with guidance scale 3.5"
     type: txt2img
     model: "flux_dev.safetensors"
     params: "28 steps, guidance 3.5"
+  - id: flux_img2img
+    name: "Flux Dev Image-to-Image"
+    description: "Flux Dev image-to-image"
+    type: img2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, guidance 3.5, denoise 0.5"
   - id: sd15_txt2img
     name: "SD 1.5 Text-to-Image"
     description: "Stable Diffusion 1.5 at 512×512, fast generation"
     type: txt2img
     model: "v1-5-pruned-emaonly.safetensors"
     params: "20 steps, cfg 7.5, 512×512"
+  - id: sd3_txt2img
+    name: "SD3.5 Text-to-Image"
+    description: "Stable Diffusion 3.5 Medium text-to-image"
+    type: txt2img
+    model: "sd3.5_medium.safetensors"
+    params: "30 steps, cfg 4.5"
   - id: animatediff_txt2vid
     name: "AnimateDiff Text-to-Video"
     description: "AnimateDiff text-to-video with motion module (16 frames)"
     type: txt2vid
     model: "majicmixRealistic_v7.safetensors"
     params: "25 steps, 16 frames, 512×512"
+  - id: hunyuan_txt2vid
+    name: "HunyuanVideo Text-to-Video"
+    description: "HunyuanVideo text-to-video (129 frames)"
+    type: txt2vid
+    model: "hunyuan_video.safetensors"
+    params: "50 steps, 129 frames"
   - id: wan_txt2vid
     name: "Wan2.1 Text-to-Video"
     description: "Wan2.1 text-to-video (81 frames, camera controls)"
     type: txt2vid
     model: "wan2.1_ttt.safetensors"
     params: "50 steps, 81 frames, 832×480"
+  - id: ltxv_txt2vid
+    name: "LTXV Text-to-Video"
+    description: "LTXV (Lightricks) text-to-video"
+    type: txt2vid
+    model: "ltxv.safetensors"
+    params: "30 steps, 25 frames"
+  - id: mochi_txt2vid
+    name: "Mochi 1 Text-to-Video"
+    description: "Mochi 1 (Genmo) text-to-video"
+    type: txt2vid
+    model: "mochi.safetensors"
+    params: "50 steps, 31 frames"
+  - id: cosmos_txt2vid
+    name: "Cosmos Text-to-Video"
+    description: "Cosmos (NVIDIA) text-to-video"
+    type: txt2vid
+    model: "cosmos.safetensors"
+    params: "30 steps, 17 frames"
+  - id: svd_img2vid
+    name: "SVD Image-to-Video"
+    description: "Stable Video Diffusion image-to-video"
+    type: img2img
+    model: "svd.safetensors"
+    params: "25 steps, cfg 3.0, 14 frames"
+  - id: controlnet_canny
+    name: "SD Canny ControlNet"
+    description: "SD1.5 + Canny edge ControlNet"
+    type: txt2img
+    model: "v1-5-pruned-emaonly.safetensors"
+    params: "20 steps, cfg 7.0, canny"
