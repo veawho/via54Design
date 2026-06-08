@@ -212,6 +212,118 @@ python test_20_rounds.py   # 全方位压力/冒烟/稳定性/可用性/易用�
 
 ---
 
+## 🖥️ 双模式运行配置 (v0.5.0 新增)
+
+via54Design 支持**两种运行模式**，根据硬件自动检测并锁定。
+
+### 模式 A: 全量运行 (≥16GB RAM + ≥12GB VRAM)
+
+适用于配备独立 GPU 的工作站 / AI 设计师。
+
+| 组件 | 内存 | 说明 |
+|------|------|------|
+| via54.exe | 20MB | 核心引擎（必装） |
+| ComfyUI / Forge | 8-12GB VRAM | 本地生图（可选） |
+| vtracer | 50MB | 位图→SVG 矢量化 |
+| 在线 API | 0 常驻 | LLM/视频/音乐按需调用 |
+
+**适用场景**: 专业图像生产、AI 训练、离线工作流
+
+### 模式 B: 最小化运行 (16GB RAM, 无独显)
+
+适用于笔记本 / 轻量办公 / 演示环境。
+
+| 组件 | 内存 | 说明 |
+|------|------|------|
+| via54.exe | 20MB | 唯一本地常驻 |
+| msedge.exe + opencli | 300MB (按需) | 浏览器自动化 |
+| 在线 API | 0 常驻 | **全部走云端** |
+
+**适用场景**: 海报/PPT/网页设计、临时演示、成本敏感
+
+### 核心铁律: 两种模式都不包含本地 LLM
+
+| 原因 | 详情 |
+|------|------|
+| **质量** | 7B 本地模型远不如 GPT-4/Claude/SenseNova |
+| **内存** | 7B 模型常驻 4-10GB RAM 严重浪费 |
+| **场景** | 设计任务以确定性模板为主，LLM 仅辅助提示词 |
+| **成本** | 在线 API 按需付费优于硬件一次性投入 |
+
+**所有 LLM 推理一律走在线 API**:
+- SenseNova (`sensenova-6.7-flash-lite` / `deepseek-v4-flash`)
+- OpenAI (`gpt-4o` / `dalle-3`)
+- Claude (`claude-sonnet-4`)
+
+### 模式自动检测
+
+```bash
+# 首次启动: 自动检测硬件 + 推荐模式
+bash scripts/detect_mode.sh
+
+# 输出示例:
+# =========================================
+#   via54Design 模式检测
+# =========================================
+# 内存: 16GB
+# GPU: 无独立显卡
+#
+# 推荐: 模式 B (最小化运行)
+# 理由: 16GB RAM 适合最小化模式 (via54 + 在线 API)
+# =========================================
+#
+# [1] 确认  [2] 切换  [3] 跳过
+```
+
+### 模式锁定文件
+
+检测完成后写入 `.via54-mode`：
+
+```yaml
+mode: B                    # A = 全量 / B = 最小化
+
+hardware:
+  ram_gb: 16
+  vram_gb: 0
+  gpu: "Intel UHD Graphics"
+
+# 模式 B 配置 (16GB 内存)
+local_services:
+  - via54.exe (20MB)
+  - msedge.exe + opencli (按需)
+
+online_services:
+  - sensenova-u1-fast (生图)
+  - sensenova-6.7-flash-lite (LLM)
+  - openai/dall-e-3 (生图)
+  - kling-ai (生视频)
+  - suno (生音乐)
+
+# 显式禁用
+disabled_services:
+  - Ollama 本地 LLM
+  - ComfyUI/Forge
+```
+
+### 模式对比
+
+| 维度 | 模式 A (全量) | 模式 B (最小化) |
+|------|---------------|-----------------|
+| **内存需求** | 16GB RAM + 12GB VRAM | 16GB RAM |
+| **本地生图** | ✅ ComfyUI/Forge | ❌ 在线 API |
+| **本地矢量化** | ✅ vtracer | ✅ vtracer (可选) |
+| **本地 LLM** | ❌ 在线 API | ❌ 在线 API |
+| **离线能力** | 生图可离线 | 完全依赖网络 |
+| **成本模型** | 硬件一次性 | 按需付费 |
+| **启动时间** | 30-60s (加载模型) | <1s (仅 via54) |
+
+**切换建议**:
+- 主力做设计/AI 训练 → 模式 A
+- 主力做办公/演示/轻设计 → 模式 B
+- 不确定 → 先用模式 B，需求增长再升级
+
+---
+
 ## 📜 许可
 
 - Go 源码: `AGPL-3.0-only`
@@ -456,6 +568,9 @@ via54Design/
 ├── test_samples/       测试样本
 ├── AGENTS.md           AI工作上下文
 ├── SOUL.md             Hermes灵魂定义
+├── .via54-mode         双模式锁定 (A=全量 / B=最小化)
+├── scripts/
+│   └── detect_mode.sh  模式自动检测脚本
 ├── Makefile            标准构建自动化
 ├── LICENSE             双许可(MIT OR AGPL-3.0)
 └── README.md           项目文档
@@ -468,6 +583,7 @@ via54Design/
 3. **独立运行优先** — 所有核心功能不依赖 Forge/ComfyUI
 4. **确定性输出** — 所有 map 遍历前排序 key，同输入同输出
 5. **API first** — 所有功能通过 REST API 可调用，Web UI 只是前端
+6. **双模式自适应** — 硬件检测 + 模式锁定 (模式A全量 / 模式B最小化)
 
 ---
 
