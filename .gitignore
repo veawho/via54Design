@@ -1,10 +1,20 @@
-# Binaries
+# Binaries (all platforms)
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
 huashu
+
+# Built project binaries (no extension on Linux/macOS)
+via54
+via54-mcp
+via54_new.exe
+via54_test.exe
+via54.exe~
+
+# Build output
+dist/
 
 # Test binary
 *.test

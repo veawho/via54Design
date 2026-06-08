@@ -148,6 +148,42 @@ via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/std
 
 ---
 
+## 🖥️ 平台支持
+
+| 平台 | 架构 | 二进制 | Web UI | PDF/视频导出 |
+|------|------|--------|:------:|:----------:|
+| **macOS** Intel | amd64 | `via54-darwin-amd64` | ✅ 原生 | 需 Node.js + ffmpeg |
+| **macOS** Apple Silicon | arm64 | `via54-darwin-arm64` | ✅ 原生 | 需 Node.js + ffmpeg |
+| **Linux** | amd64 | `via54-linux-amd64` | ✅ 原生 | 需 Node.js + ffmpeg |
+| **Linux** ARM (RPi/Graviton) | arm64 | `via54-linux-arm64` | ✅ 原生 | 需 Node.js + ffmpeg |
+| **Windows** | amd64 | `via54-windows-amd64.exe` | ✅ 原生 | 需 Node.js + ffmpeg |
+
+> **核心功能（提示词/叙事/设计/导出PPTX/JSON/SVG）100% 纯 Go，零外部依赖。**
+> PDF导出和视频渲染需 Node.js + Playwright + ffmpeg —— 可选功能，Web UI 不需要。
+
+**快速安装:**
+```bash
+# macOS (Intel 或 Apple Silicon)
+bash hack/setup_macos.sh
+
+# Linux (apt/dnf/pacman 自动检测)
+bash hack/setup_linux.sh
+
+# Windows (下载二进制 + 安装 Node.js)
+# 下载: https://github.com/veawho/via54Design/releases
+# Node.js: https://nodejs.org
+```
+
+**手动编译 (需要 Go 1.21+):**
+```bash
+make build          # 当前平台 CLI
+make build-mcp      # MCP Server
+make cross          # 5 平台交叉编译
+make release        # 打包为 zip 发布包
+```
+
+---
+
 ## 📜 许可
 
 - Go 源码: `AGPL-3.0-only`
@@ -156,8 +192,9 @@ via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/std
 ## 🚀 快速开始
 
 ```bash
-# 下载二进制
-curl -L https://github.com/veawho/via54Design/releases/latest/download/via54.exe -o via54.exe
+# 下载对应平台的二进制
+# macOS/Linux:
+curl -L https://github.com/veawho/via54Design/releases/latest/download/via54-$(uname -s | tr A-Z a-z)-$(uname -m | sed s/x86_64/amd64/ | sed s/aarch64/arm64/).zip -o via54.zip
 
 # 查看所有命令
 via54
