@@ -351,32 +351,51 @@ API 端点（16 个）：
 
 ```
 via54Design/
-├── cmd/via54/          CLI 入口 (14 子命令)
+├── cmd/
+│   ├── via54/          13 文件 — CLI 入口 (main + 10子命令)
+│   └── mcp-server/     MCP Server 独立二进制
 ├── internal/
-│   ├── export/         PPTX/PDF/SVG/MD/JSON 导出 (纯 Go)
-│   ├── narrate/        叙事引擎 (4 模型, YAML 驱动)
-│   ├── prompt/         Prompt 工程 (17 平台, 26 维)
-│   ├── pipeline/       LLM 管线编排
-│   ├── workflow/       ComfyUI 工作流引擎 (30 模板)
+│   ├── export/         导出引擎 (纯Go: pptx/svg/json/markdown/pdf/tts)
+│   ├── mcp/            MCP Server 实现
+│   ├── media/          媒体管线 (下载/矢量化/配乐)
+│   ├── narrate/        叙事引擎 (4模型, 剧本/分镜)
+│   ├── pattern/        设计模式提取
+│   ├── prompt/         提示词引擎 v2.2 (6模块)
+│   │   ├── types.go    类型定义
+│   │   ├── generator.go 生成器 (16维度)
+│   │   ├── templates.go 模板加载 + 负面词库
+│   │   ├── quality.go  质量评估
+│   │   ├── version.go  版本管理
+│   │   └── render.go   Markdown/JSON渲染
 │   ├── quality/        质量门禁
-│   ├── template/       模板注册中心
-│   ├── media/          媒体管线
-│   └── mcp/            MCP Server
-├── web/
-│   ├── handler.go      API 端点 (16 个)
-│   └── templates/      HTML 模板
-├── scripts/
-│   ├── img2prompt.py   图片分析→提示词
-│   ├── doc2ppt.py      文档→PPT 框架
-│   └── storyboard2video.py  多图→叙事→视频脚本
+│   ├── template/       模板引擎 (布局/配色/字体)
+│   └── wasm/           WASM桥接 (Rust加速)
 ├── templates/
-│   ├── color-schemes/  31 配色 YAML
-│   ├── typography/     12 字体 YAML
-│   ├── layouts/        3 布局 YAML
-│   ├── narratology/    4 叙事模型 YAML
-│   ├── pptx-styles/    4 PPTX 风格 YAML
-│   └── workflows/      30 ComfyUI 工作流
-└── go.mod              纯 Go，零外部运行时
+│   ├── prompts/        4平台提示词模板 (YAML)
+│   ├── layouts/        3布局模板 (16:9, 四端适配)
+│   ├── color-schemes/  30+配色方案
+│   ├── typography/     12字体定义
+│   ├── narratology/    4叙事模型
+│   └── registry.yaml   模板注册表
+├── web/                Web界面 (Go handler + HTML/JS)
+│   ├── handler.go      28KB HTTP处理器
+│   └── templates/      HTML模板 + JS
+├── hack/               构建/部署脚本
+│   ├── build.sh        Go跨平台编译 (CLI+MCP双二进制)
+│   ├── install.sh      一键部署入口
+│   ├── setup.sh        完整安装脚本
+│   └── wasm/           Rust WASM源码
+├── docs/
+│   ├── prompts/        镜头/布光/配色/构图/质量参考
+│   ├── template-format.md 模板格式规范
+│   ├── failure-recovery.md 故障恢复指南
+│   └── deployment-guide.md 部署文档
+├── test_samples/       测试样本
+├── AGENTS.md           AI工作上下文
+├── SOUL.md             Hermes灵魂定义
+├── Makefile            标准构建自动化
+├── LICENSE             双许可(MIT OR AGPL-3.0)
+└── README.md           项目文档
 ```
 
 ### 设计哲学
@@ -406,19 +425,3 @@ via54Design/
 - Go 源码: `AGPL-3.0-only`
 - 模板/脚本/文档: `MIT`
 - 参见: `LICENSE` 和 `ACKNOWLEDGMENTS`
-## 📊 对比参考项目
-
-| 类别 | 参考项目 | ⭐ | via54 差异化 |
-|------|---------|---|-------------|
-| Prompt 工程 | easy-sd, sd-webui-forge | 10k-12k | 17 平台统一引擎，YAML 驱动，26 维控制 |
-| PPT 生成 | banana-slides | 14.8k | 叙事驱动的 PPT 生成，4 种叙事模型→幻灯片 |
-| 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
-| ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
-| 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
-
----
-
-## 📜 许可
-
-- Go 源码: `AGPL-3.0-only`
-- 模板/脚本/文档: `MIT`

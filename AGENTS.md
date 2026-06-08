@@ -153,30 +153,50 @@ via54 serve  # 启动 stdio MCP Server
 ```
 via54Design/
 ├── cmd/
-│   ├── via54/          # CLI 入口 (13个子命令)
-│   └── mcp-server/     # MCP Server 入口
+│   ├── via54/          CLI 入口 (13个子命令)
+│   └── mcp-server/     MCP Server 入口
 ├── internal/
-│   ├── export/         # 导出: pptx/svg/json/markdown
-│   ├── media/          # 媒体管线 (下载/追踪)
-│   ├── narrate/        # 叙事引擎 (4模型)
-│   ├── pattern/        # 设计模式提取
-│   ├── prompt/         # 提示词引擎 (26维度)
-│   ├── quality/        # 质量门禁
-│   ├── template/       # 模板引擎 (布局/配色/字体)
-│   └── wasm/           # WASM桥接
+│   ├── export/         导出引擎 (纯Go: pptx/svg/json/markdown/pdf/tts)
+│   ├── mcp/            MCP Server 实现
+│   ├── media/          媒体管线 (下载/矢量化/配乐)
+│   ├── narrate/        叙事引擎 (4模型, 剧本/分镜)
+│   ├── pattern/        设计模式提取
+│   ├── prompt/         提示词引擎 v2.2 (6模块)
+│   │   ├── types.go
+│   │   ├── generator.go
+│   │   ├── templates.go
+│   │   ├── quality.go
+│   │   ├── version.go
+│   │   └── render.go
+│   ├── quality/        质量门禁
+│   ├── template/       模板引擎 (布局/配色/字体)
+│   └── wasm/           WASM桥接 (Rust)
 ├── templates/
-│   ├── prompts/        # 14平台 × 26维度 YAML
-│   ├── layouts/        # 3种布局模板
-│   ├── color-schemes/  # 30+配色方案
-│   ├── typography/     # 12字体定义
-│   └── narratology/    # 4种叙事模型
-├── hack/
-│   └── via54_pipeline.py  # LLM编排管道 (1713行, 零依赖)
+│   ├── prompts/        4平台提示词模板 YAML
+│   ├── layouts/        3布局模板 (16:9, 四端响应)
+│   ├── color-schemes/  30+配色方案
+│   ├── typography/     12字体定义
+│   ├── narratology/    4叙事模型
+│   └── registry.yaml   模板注册表
+├── web/                Web界面
+│   ├── handler.go      28KB HTTP处理器
+│   └── templates/      HTML模板 + JS
+├── hack/               构建/部署脚本
+│   ├── build.sh        Go跨平台编译 (CLI+MCP)
+│   ├── install.sh      一键部署
+│   ├── setup.sh        完整安装
+│   └── wasm/           Rust WASM源码
 ├── docs/
-│   └── prompts/        # 镜头/布光/配色/构图参考
-├── AGENTS.md           # ← 本文件 (AI工作上下文)
-├── go.mod              # Go模块+许可声明
-└── README.md           # 项目文档
+│   ├── prompts/        镜头/布光/配色/构图参考
+│   ├── template-format.md
+│   ├── failure-recovery.md
+│   └── deployment-guide.md
+├── test_samples/       测试样本
+├── AGENTS.md           ← 本文件 (AI工作上下文)
+├── SOUL.md             Hermes灵魂定义
+├── Makefile            标准构建自动化
+├── LICENSE             双许可 (MIT OR AGPL-3.0)
+└── README.md           项目文档
 ```
 
 ---

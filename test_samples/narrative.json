@@ -1,0 +1,9 @@
+{
+  "title": "Test Presentation",
+  "beats": [
+    {"act": "封面", "voiceover": "via54Design 演示模板测试", "mood": "inspiring"},
+    {"act": "核心观点", "voiceover": "简约高效的演示文稿生成", "mood": "informative"},
+    {"act": "案例分析", "voiceover": "多云原生架构十大趋势", "mood": "curious"},
+    {"act": "总结", "voiceover": "via54 让设计更简单", "mood": "confident"}
+  ]
+}
