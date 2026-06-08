@@ -1,6 +1,13 @@
 #### 致敬Aaron Swartz & Tim Berners-Lee
 ## 人类的灵感与创造力，因互联网与AI而永生
 开发思路：让弥散而跳动的人类灵感与AI碰撞出惊艳的故事；将历久弥新的人类经验，用于规范LLM生产力的可控性。
+
+<div align="center">
+
+[**🇨🇳 中文**](#) · [**🇬🇧 English**](./README_EN.md)
+
+</div>
+
 >
 > 如切如磋，如琢如磨。——《诗经·卫风·淇奥》
 
@@ -484,3 +491,9 @@ via54Design/
 - Go 源码: `AGPL-3.0-only`
 - 模板/脚本/文档: `MIT`
 - 参见: `LICENSE` 和 `ACKNOWLEDGMENTS`
+
+---
+
+## 🇬🇧 English Version
+
+Read this README in English: [**README_EN.md**](./README_EN.md)
