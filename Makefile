@@ -52,6 +52,15 @@ build-mcp: ## 编译 MCP Server 独立二进制
 test: ## 运行所有测试
 	go test ./... -v -count=1 -timeout 60s 2>&1 || echo "(no tests yet)"
 
+test-e2e: ## 20 轮端到端功能测试
+	python test_20_rounds.py
+
+test-stress: ## 200 轮连续压力测试 (持久性)
+	python test_stress_200.py
+
+test-concurrent: ## Web API 并发/吞吐压力测试
+	python test_concurrent.py
+
 lint: ## 运行静态检查
 	go vet ./...
 
