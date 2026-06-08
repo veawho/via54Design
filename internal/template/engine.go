@@ -44,9 +44,18 @@ func (e *Engine) Compose(layoutID, colorID, fontID, title string) (*GenerationRe
 }
 
 func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG string, presentationMode bool) (*GenerationResult, error) {
-	lp, _ := e.Registry.ResolveLayout(layoutID)
-	cp, _ := e.Registry.ResolveColorScheme(colorID)
-	fp, _ := e.Registry.ResolveTypography(fontID)
+	lp, err := e.Registry.ResolveLayout(layoutID)
+	if err != nil {
+		return nil, fmt.Errorf("布局 %q: %w", layoutID, err)
+	}
+	cp, err := e.Registry.ResolveColorScheme(colorID)
+	if err != nil {
+		return nil, fmt.Errorf("配色 %q: %w", colorID, err)
+	}
+	fp, err := e.Registry.ResolveTypography(fontID)
+	if err != nil {
+		return nil, fmt.Errorf("字体 %q: %w", fontID, err)
+	}
 
 	layout, err := loadYAML[LayoutTemplate](lp)
 	if err != nil {
