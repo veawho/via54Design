@@ -15,7 +15,7 @@ go build -o via54.exe ./cmd/via54/
 go vet ./...
 ./via54.exe prompt --scene "..." --platform midjourney
 ./via54.exe prompt list
-python hack/via54_pipeline.py --help
+python test_20_rounds.py             # 20轮端到端测试
 ```
 
 ## 架构速览

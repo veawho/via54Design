@@ -173,7 +173,7 @@ via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/std
 |------------|-------|--------|--------|--------------|
 | 🎬 Story → Video | sentence → narrative JSON | Video script / ComfyUI workflow | narrate + storyboard2video | Optional Forge/ComfyUI |
 | 📊 Story → Presentation | sentence → narrative JSON | PPTX / Markdown / PDF / SVG | **pure Go** | **none** |
-| 🎨 Story → Imagery | sentence → narrative JSON | Structured prompts (17 platforms) / SVG | **pure Go** + Python (img2prompt) | **none** (Python optional) |
+| 🎨 Story → Imagery | sentence → narrative JSON | Structured prompts (17 platforms) / SVG | **pure Go** | **none** |
 
 ---
 
@@ -279,12 +279,9 @@ via54 prompt --scene "scene description" --platform flux
 via54 prompt --list                                       # list all 17 platforms
 ```
 
-Image-to-prompt (Python + Pillow required):
-
-```bash
-python scripts/img2prompt.py photo.jpg
-python scripts/img2prompt.py photo.jpg --desc "additional description"
-```
+Image-to-prompt (planned, not yet implemented):
+- TODO: local VLM image analysis
+- Current workaround: use the `--ref` flag to attach a reference image path to the prompt output
 
 | Platform | Format | Distinguishing features |
 |----------|--------|-------------------------|
