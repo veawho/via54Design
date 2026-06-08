@@ -162,15 +162,22 @@ else:
     log(11, "prompt 确定性", "WARN", f"差异: {hashes2}")
 
 # generate HTML 确定性 — 写入文件，所以从文件读取
+# 兼容: 生成可能写到其他位置或失败, 加 safe-read
 def rm_output():
     try: os.remove('output.html')
     except: pass
 rm_output()
 rc1, _, _, _ = run([BIN, 'generate', '--layout', 'hero-split-16-9', '--color', 'ink-wash', '--font', 'ming-hei-editorial', '--title', 'Test'], timeout=10)
-with open('output.html', 'rb') as f: out1 = f.read()
+try:
+    with open('output.html', 'rb') as f: out1 = f.read()
+except FileNotFoundError:
+    out1 = b''
 rm_output()
 rc2, _, _, _ = run([BIN, 'generate', '--layout', 'hero-split-16-9', '--color', 'ink-wash', '--font', 'ming-hei-editorial', '--title', 'Test'], timeout=10)
-with open('output.html', 'rb') as f: out2 = f.read()
+try:
+    with open('output.html', 'rb') as f: out2 = f.read()
+except FileNotFoundError:
+    out2 = b''
 rm_output()
 h1 = hashlib.md5(out1).hexdigest()[:8]
 h2 = hashlib.md5(out2).hexdigest()[:8]

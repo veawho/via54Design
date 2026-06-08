@@ -6,16 +6,20 @@ BINARY    := via54
 BINARY_MCP := via54-mcp
 VERSION   := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 LDFLAGS   := -ldflags="-s -w -X main.Version=$(VERSION)"
+# GOFLAGS=-buildvcs=false disables VCS stamping (e.g. git commit hash embedded in binary).
+# Required for exFAT / FAT32 filesystems which don't support file locking and may corrupt
+# the VCS status read. Has no effect on NTFS or any modern filesystem with proper locking.
+GOFLAGS   ?= -buildvcs=false
 
 .PHONY: all build build-mcp test clean install lint wasm cross
 
 all: build build-mcp
 
 build: ## 编译 CLI 二进制
-	go build $(LDFLAGS) -o $(BINARY) ./cmd/via54/
+	go build $(GOFLAGS) $(LDFLAGS) -o $(BINARY) ./cmd/via54/
 
 build-mcp: ## 编译 MCP Server 独立二进制
-	go build $(LDFLAGS) -o $(BINARY_MCP) ./cmd/mcp-server/
+	go build $(GOFLAGS) $(LDFLAGS) -o $(BINARY_MCP) ./cmd/mcp-server/
 
 test: ## 运行所有测试
 	go test ./... -v -count=1 -timeout 60s 2>&1 || echo "(no tests yet)"
