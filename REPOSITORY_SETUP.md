@@ -1,127 +1,92 @@
-# Repository settings — manual configuration
+# Repository settings
 
-> These files document the GitHub repository settings that cannot be set via git.
-> Apply them in the GitHub web UI: https://github.com/veawho/via54Design/settings
+> 本项目 (veawho/via54Design) 的设置已通过 `gh CLI` **自动完成**。
+> 本文件作为配置参考保留。
 
-## 1. About (top-right of repo page)
+## ✅ 1. About (top-right of repo page) — **已完成**
 
-**Description** (160 chars max):
+**Description** (158 chars):
 ```
 Design template engine + narrative engine + media pipeline. 17 AI image platforms, 4 narrative models, HTMX Web UI, MCP Server. Pure Go single binary, zero runtime deps.
 ```
 
-**Website**:
-```
-https://github.com/veawho/via54Design
-```
+**Website**: `https://github.com/veawho/via54Design`
 
-**Topics** (max 20, comma-separated):
+**Topics** (20 个 — GitHub 上限):
 ```
-ai, art, cli, comfyui, design-system, design-templates, golang, html,
-image-generation, mcp, model-context-protocol, narratology, pptx,
-prompt-engineering, sdwebui, stable-diffusion, storyboard, svg,
-template-engine, video-generation, yaml
+ai, cli, comfyui, golang, mcp, prompt-engineering, stable-diffusion, yaml,
+design-system, design-templates, forge, image-generation, model-context-protocol,
+narratology, pptx, sdwebui, storyboard, svg, template-engine, video-generation
 ```
 
 ---
 
-## 2. Social Preview
+## ⚠️ 2. Social Preview
 
-Recommended: 1280×640 PNG showing the via54Design logo + a 3-panel preview
-(CLI menu, generated HTML, exported PPTX).
+推荐尺寸 1280×640 PNG。上传到 Settings → Social preview。
 
-A draft SVG is available at `docs/social-preview.svg` — export to PNG using
-any modern browser or `rsvg-convert`.
+## ✅ 3. Features — **已完成**
 
----
+| Feature | 状态 |
+|---------|------|
+| Issues | ✅ 启用 |
+| Discussions | ✅ 启用 (6 个默认分类) |
+| Squash merging | ✅ 启用 |
+| Auto-delete head branches | ✅ 启用 |
+| Required conversation resolution | ✅ 启用 |
 
-## 3. Features (checkbox in About sidebar)
+## ✅ 4. Issue & PR templates — **已完成**
 
-Enable these in the repository settings:
+位于 `.github/ISSUE_TEMPLATE/`:
+- `bug_report.md`
+- `feature_request.md`
+- `template_request.md`
+- `question.md`
+- `pull_request_template.md`
 
-- [x] ✅ Issues
-- [x] ✅ Pull requests
-- [x] ✅ Discussions
-- [x] ✅ Projects
-- [x] ✅ Wiki (optional)
-- [x] ✅ Sponsorship (if applicable)
-- [x] ✅ Preserve this repository
-- [x] ✅ Automatically delete head branches
-- [x] ✅ Allow squash merging
-- [x] ✅ Allow merge commits
-- [ ] Allow rebase merging (off, prefer linear history)
-- [ ] Allow auto-merge
+## ⚠️ 5. Discussions categories — **API 限制，需手动**
 
----
+**已存在 6 个默认分类** (无法通过 API 创建更多):
 
-## 4. Issue & PR templates
+| Category | Slug | 用途 |
+|----------|------|------|
+| Announcements | `/announcements` | Releases, breaking changes |
+| General | `/general` | 通用讨论 |
+| Ideas | `/ideas` | Feature brainstorming |
+| Polls | `/polls` | 投票 |
+| Q&A | `/q-a` | Usage questions |
+| Show and tell | `/show-and-tell` | Templates, generated outputs |
 
-Located in `.github/ISSUE_TEMPLATE/`:
+> **GitHub GraphQL 与 REST API 都不支持** 创建 Discussion 分类。
+> 访问 https://github.com/veawho/via54Design/settings/categories 手动添加。
 
-- `bug_report.md` — bug reports
-- `feature_request.md` — new CLI/API/MCP features
-- `template_request.md` — new YAML template (color/font/layout/narrative/prompt)
-- `question.md` — usage questions
+## ✅ 6. Branch protection (`main`) — **已完成**
 
-PR template: `.github/ISSUE_TEMPLATE/pull_request_template.md`
+```json
+{
+  "required_status_checks": { "strict": true, "contexts": ["build"] },
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true,
+    "require_last_push_approval": true
+  },
+  "required_linear_history": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_conversation_resolution": true
+}
+```
 
----
+## ✅ 7. Labels — **已完成 (18 个)**
 
-## 5. Discussions categories
+9 个 GitHub 默认 + 9 个项目专用:
+- `bug` `enhancement` `documentation` `good first issue` `help wanted`
+- `question` `wontfix` `duplicate` `invalid`
+- **项目专用**: `template` `mcp` `web-ui` `go` `security`
+- **优先级**: `priority/high` `priority/medium` `priority/low`
+- **流程**: `needs-triage`
 
-Recommended categories (enable in Settings → Features → Discussions → Set up discussions):
-
-| Category | Purpose |
-|----------|---------|
-| 📣 **Announcements** | Releases, breaking changes (admin-only) |
-| 💡 **Ideas** | Feature brainstorming before opening an Issue |
-| 🙏 **Q&A** | Usage questions, troubleshooting |
-| 🎨 **Show and tell** | Templates, generated outputs, workflows |
-| 🤝 **Contributors** | How to contribute, design discussions |
-| 📚 **Resources** | Tutorials, blog posts, integrations |
-
----
-
-## 6. Branch protection (`main`)
-
-Recommended rules:
-
-- [x] Require pull request reviews before merging (1 approval)
-- [x] Require status checks to pass before merging
-  - Select: `Build & Test` (configured in CI)
-- [x] Require branches to be up to date before merging
-- [x] Require linear history (squash or rebase)
-- [x] Do not allow force pushes
-- [x] Do not allow deletions
-
----
-
-## 7. Labels
-
-Default labels to ensure exist:
-
-| Label | Color | Description |
-|-------|-------|-------------|
-| `bug` | `#d73a4a` | Something isn't working |
-| `enhancement` | `#a2eeef` | New feature or request |
-| `documentation` | `#0075ca` | Improvements or additions to docs |
-| `good first issue` | `#7057ff` | Good for newcomers |
-| `help wanted` | `#008672` | Extra attention is needed |
-| `question` | `#d876e3` | Further information is requested |
-| `template` | `#fbca04` | YAML template addition |
-| `wontfix` | `#ffffff` | This will not be worked on |
-| `duplicate` | `#cfd3d7` | This issue or PR already exists |
-| `needs-triage` | `#ededed` | Awaiting maintainer review |
-| `mcp` | `#7b68ee` | Related to MCP Server |
-| `web-ui` | `#ffa500` | Related to HTMX Web UI |
-| `go` | `#00add8` | Go language change |
-| `security` | `#ee0701` | Security issue |
-
----
-
-## 8. Releases
-
-Recommended release notes format (see `RELEASING.md`):
+## 📦 8. Releases — 模板
 
 ```markdown
 ## v0.x.0 — YYYY-MM-DD
@@ -141,36 +106,48 @@ Recommended release notes format (see `RELEASING.md`):
 **Full changelog**: https://github.com/veawho/via54Design/compare/v0.x-1...v0.x.0
 ```
 
+## ✅ 9. SECURITY.md — **已完成**
+
+`SECURITY.md` 在仓库根目录。90 天协调披露策略。
+
 ---
 
-## 9. SECURITY.md
+## 📊 自动完成 vs 手动完成 (总结)
 
-Create `.github/SECURITY.md` (or `SECURITY.md` at repo root) for vulnerability
-disclosure policy. Use the GitHub-recommended structure:
+| 项 | 状态 | 方法 |
+|----|------|------|
+| About 描述 | ✅ 自动 | `gh repo edit --description` |
+| 20 Topics | ✅ 自动 | `gh api PUT /repos/.../topics` |
+| Discussions 启用 | ✅ 自动 | `gh repo edit --enable-discussions` |
+| 18 Labels | ✅ 自动 | `gh label create` |
+| 分支保护 | ✅ 自动 | `gh api PUT /branches/main/protection` |
+| Squash merge | ✅ 自动 | `gh repo edit --enable-squash-merge` |
+| Auto-delete branches | ✅ 自动 | `gh repo edit --delete-branch-on-merge` |
+| **Discussion 分类** | ⚠️ 手动 | GitHub UI (API 限制) |
+| **首个 Release** | ⚠️ 手动 | `gh release create` |
+| **Social preview** | ⚠️ 手动 | 上传 1280×640 PNG |
 
-```markdown
-# Security Policy
+## 🔧 复现命令
 
-## Supported Versions
-| Version | Supported |
-|---------|-----------|
-| v0.4.x  | ✅ |
-| v0.3.x  | ✅ |
-| < v0.3  | ❌ |
+```bash
+# 仓库基础
+gh repo edit veawho/via54Design \
+  --description "..." \
+  --homepage "https://github.com/veawho/via54Design" \
+  --enable-discussions --enable-issues \
+  --enable-squash-merge --delete-branch-on-merge
 
-## Reporting a Vulnerability
-Please report security issues to **via54@users.noreply.github.com** (or open a
-private security advisory on GitHub). Do not file a public Issue.
+# Topics
+gh api -X PUT repos/veawho/via54Design/topics \
+  -f 'names[]=ai' -f 'names[]=cli' ...  (20 个)
+
+# Labels
+for label in "template|fbca04|YAML template addition" "mcp|7b68ee|MCP Server" "web-ui|ffa500|HTMX Web UI" ...; do
+  IFS='|' read -r name color desc <<< "$label"
+  gh label create "$name" --color "$color" --description "$desc"
+done
+
+# 分支保护
+gh api -X PUT repos/veawho/via54Design/branches/main/protection \
+  --input protection.json
 ```
-
----
-
-## 10. FUNDING.yml
-
-If accepting sponsorships, create `.github/FUNDING.yml`:
-
-```yaml
-github: [veawho]
-```
-
----
