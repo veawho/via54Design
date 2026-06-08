@@ -21,6 +21,10 @@ docs/**              linguist-documentation
 # ────────────────────────────────────────
 # 测试套件 — 标记为 documentation, 不在主语言栏显示 Python
 test_20_rounds.py    linguist-documentation
+# Python 测试套件 (冗余声明, 安全)
+*.py                 linguist-documentation
+hack/*.py            linguist-documentation
+scripts/*.py         linguist-documentation
 
 # YAML 模板数据 — 不计入语言统计
 templates/**         linguist-detectable=false
