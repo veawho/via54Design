@@ -128,7 +128,7 @@ narratology, pptx, sdwebui, storyboard, svg, template-engine, video-generation
 | 分支保护 | ✅ 自动 | `gh api PUT /branches/main/protection` |
 | Squash merge | ✅ 自动 | `gh repo edit --enable-squash-merge` |
 | Auto-delete branches | ✅ 自动 | `gh repo edit --delete-branch-on-merge` |
-| **首个 Release** | ⚠️ 手动 | `gh release create` |
+| **v0.4.0 Release + 5 zip** | ✅ 自动 | `gh release create` + `gh release upload` |
 | **Social preview** | ⚠️ 手动 | 上传 1280×640 PNG |
 
 ## 🔧 复现命令
@@ -154,4 +154,12 @@ done
 # 分支保护
 gh api -X PUT repos/veawho/via54Design/branches/main/protection \
   --input protection.json
+
+# 创建 release (5 平台 zip)
+git tag -a v0.4.0 -m "v0.4.0: ..."
+git push origin v0.4.0
+gh release create v0.4.0 --title "v0.4.0" --notes-file /tmp/release.md --target main
+for f in dist/*.zip; do
+  gh release upload v0.4.0 "$f" --clobber
+done
 ```
