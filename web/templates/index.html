@@ -1,35 +1,30 @@
-<!-- via54Design WebUI v2 — Intent-Driven Design. Saved 2026-06-08. DO NOT UPLOAD YET -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>via54Design — 设计引擎</title>
+<title>via54Design — 设计引擎 (HTMX)</title>
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
 <style>
-/* ── Reduced Motion ── */
-@media(prefers-reduced-motion:no-preference){.ph-card,.intent-btn,.status-chip,.hero-section,.flow-step-card{transition:all 0.25s ease}}
+@media(prefers-reduced-motion:no-preference){.ph-card,.intent-btn,.status-chip{transition:all 0.25s ease}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
-/* ── Design Tokens ── */
 :root{--bg:#0c0c10;--bg-elevated:#14141d;--bg-card:#1a1a26;--bg-inset:#22223a;--border:#2a2a44;--border-subtle:#1e1e32;--text-primary:#e6e6f0;--text-secondary:#9898b4;--text-dim:#60607a;--accent:#6c63ff;--accent-hover:#7f78ff;--accent-subtle:rgba(108,99,255,0.1);--accent2:#ff6b9d;--accent3:#43e4b0;--accent4:#ffb347;--radius:10px;--radius-sm:6px;--font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;--font-mono:'JetBrains Mono','Cascadia Code','Fira Code',monospace;--space-1:4px;--space-2:7px;--space-3:11px;--space-4:18px;--space-5:29px;--space-6:47px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);background:var(--bg);color:var(--text-primary);line-height:1.7;overflow-x:hidden}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text-primary);line-height:1.7;overflow-x:hidden;display:flex;flex-direction:column;min-height:100vh}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 ::selection{background:var(--accent-subtle);color:var(--accent)}
-.hero-section{text-align:center;padding:var(--space-6) var(--space-4) var(--space-5);border-bottom:1px solid var(--border-subtle);position:relative}
-.hero-section::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:120px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+
+/* Hero */
+.hero-section{text-align:center;padding:var(--space-6) var(--space-4) var(--space-4);border-bottom:1px solid var(--border-subtle)}
 .hero-role{font-size:clamp(22px,4vw,36px);font-weight:500;letter-spacing:-0.5px;margin-bottom:var(--space-2)}
 .hero-role em{font-style:normal;background:linear-gradient(135deg,var(--accent),var(--accent3));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-tagline{font-size:clamp(13px,1.8vw,16px);color:var(--text-secondary);max-width:560px;margin:0 auto var(--space-4)}
-.hero-tags{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center}
-.hero-tag{padding:4px 14px;border-radius:99px;font-size:12px;background:var(--accent-subtle);color:var(--accent);border:1px solid transparent;font-weight:500}
-.hero-tag.not{background:rgba(255,107,157,0.08);color:var(--accent2);border-color:rgba(255,107,157,0.15)}
-.hero-tag.not::before{content:'\2715 ';opacity:0.6}
-.principles-bar{background:var(--bg-elevated);border-bottom:1px solid var(--border-subtle);padding:var(--space-3) var(--space-4)}
-.principles-bar .principle-header{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim)}
-.principle-header .p0-badge{background:var(--accent2);color:#fff;padding:1px 8px;border-radius:3px;font-size:9px;font-weight:700}
+.hero-tagline{font-size:clamp(13px,1.8vw,16px);color:var(--text-secondary);max-width:560px;margin:0 auto var(--space-3)}
+
+/* Status bar */
+.principles-bar{background:var(--bg-elevated);border-bottom:1px solid var(--border-subtle);padding:var(--space-2) var(--space-4)}
 .status-grid{display:flex;flex-wrap:wrap;gap:var(--space-2)}
 .status-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;background:var(--bg-card);border:1px solid var(--border)}
 .status-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -37,523 +32,87 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text-primary)
 .dot.warn{background:var(--accent4);box-shadow:0 0 6px rgba(255,179,71,0.3)}
 .dot.off{background:var(--accent2);box-shadow:0 0 6px rgba(255,107,157,0.3)}
 .status-chip .label{color:var(--text-secondary)}.status-chip .val{color:var(--text-primary);font-weight:500}
-/* ── Intent-Driven Workflow ── */
-.workflow-section{flex:1;overflow:auto;display:flex;flex-direction:column}
+
+/* Intent bar */
 .intent-bar{display:flex;gap:8px;padding:16px 20px;background:var(--bg-elevated);border-bottom:1px solid var(--border-subtle);overflow-x:auto;flex-shrink:0}
-.intent-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 20px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);cursor:pointer;min-width:100px;flex-shrink:0;font-family:var(--font-sans)}
+.intent-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 20px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-card);cursor:pointer;min-width:100px;flex-shrink:0;font-family:var(--font-sans);color:var(--text-primary);font-size:13px;text-decoration:none}
 .intent-btn:hover{border-color:var(--text-dim);background:var(--bg-elevated)}
-.intent-btn.active{border-color:var(--accent);background:var(--accent-subtle)}
+.intent-btn.active,.intent-btn:focus{border-color:var(--accent);background:var(--accent-subtle);outline:none}
 .intent-btn .intent-icon{font-size:22px}
-.intent-btn .intent-label{font-size:13px;font-weight:600;color:var(--text-primary)}
-.intent-btn .intent-desc{font-size:10px;color:var(--text-dim)}
+.intent-btn .intent-label{font-size:13px;font-weight:600}
+
+/* Workflow content */
 .workflow-content{flex:1;overflow:auto;padding:20px}
-.intent-pane{display:none;animation:fadeIn 0.25s ease}
-.intent-pane.active{display:block}
 .flow-steps{display:flex;gap:16px;flex-wrap:wrap}
 .flow-step-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;flex:1;min-width:260px;position:relative}
 .step-badge{position:absolute;top:-8px;left:12px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
 .flow-step-card h3{font-size:14px;font-weight:600;margin-bottom:10px}
 .flow-step-card textarea,.flow-step-card select,.flow-step-card input{width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-sans);font-size:12.5px;padding:7px 10px;outline:none}
 .flow-step-card textarea:focus,.flow-step-card select:focus,.flow-step-card input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-subtle)}
-.flow-step-card select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='%2360607a'%3E%3Cpath d='M2 3.5l3.5 4 3.5-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-.upload-mini{color:var(--text-secondary);font-size:12px;cursor:pointer;transition:border-color 0.2s}
-.upload-mini:hover{border-color:var(--accent)!important;color:var(--accent)}
+.flow-step-card select{appearance:none;cursor:pointer}
 .output-area{background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-family:var(--font-mono);font-size:12px;line-height:1.5;overflow:auto;white-space:pre-wrap;word-break:break-word;color:var(--text-secondary)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-row{display:flex;gap:8px;margin-top:6px}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border:none;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;justify-content:center;flex:1}
-.btn:active{transform:scale(0.97)}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#fff;border:none;padding:7px 16px;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-sans);font-size:13px;font-weight:500}
 .btn-primary:hover{background:var(--accent-hover)}
-.btn-secondary{background:var(--bg-inset);color:var(--text-primary);border:1px solid var(--border)}
-.btn-secondary:hover{background:var(--border)}
-.color-strip{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
-.color-swatch{width:32px;height:32px;border-radius:var(--radius-sm);border:2px solid transparent;cursor:pointer}
-.color-swatch.active{border-color:var(--accent);box-shadow:0 0 8px var(--accent-subtle)}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+.upload-mini{font-size:12px;color:var(--text-secondary);transition:border-color 0.2s}
+.upload-mini:hover{border-color:var(--accent)!important;color:var(--accent)}
+
+/* HTMX indicator */
+.htmx-indicator{display:none}
+.htmx-request .htmx-indicator{display:inline}
+.htmx-request.htmx-indicator{display:inline}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.intent-pane{animation:fadeIn 0.2s ease}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero-section">
-  <div class="hero-role">你是用 <em>via54Design</em> 做设计的</div>
-  <p class="hero-tagline">结构化设计引擎 · Prompt 生成 · 模板组合 · 质量门禁 · Forge 集成</p>
-  <div class="hero-tags">
-    <span class="hero-tag">🎬 动画/视频</span>
-    <span class="hero-tag">📄 演示文稿</span>
-    <span class="hero-tag">🎨 提示词工程</span>
-    <span class="hero-tag">🖼️ 设计模板</span>
-    <span class="hero-tag not">不适用 Web App</span>
-    <span class="hero-tag not">不适用 CMS</span>
-    <span class="hero-tag not">不适用 后端系统</span>
-  </div>
-  <div class="mode-badge" id="modeBadge" style="margin-top:var(--space-3);display:inline-flex;align-items:center;gap:6px;padding:3px 14px;border-radius:99px;font-size:11px;font-weight:600;background:var(--accent3);color:#000">⏻ 引擎就绪</div>
-</section>
+<!-- Hero -->
+<div class="hero-section">
+  <div class="hero-role">via54<em>Design</em></div>
+  <div class="hero-tagline">把人类的灵感种子，转化为 AI 可执行的叙事脚手架</div>
+</div>
 
-<!-- STATUS BAR -->
-<section class="principles-bar">
-  <div class="principle-header"><span class="p0-badge">#0</span> 核心原则 · 事实验证先于假设</div>
-  <div class="status-grid">
-    <div class="status-chip"><span class="dot" id="s0"></span><span class="label">Engine</span><span class="val" id="stProv">—</span></div>
-    <div class="status-chip"><span class="dot" id="s1"></span><span class="label">Templates</span><span class="val" id="stTemplates">—</span></div>
-    <div class="status-chip"><span class="dot" id="s5"></span><span class="label">Binary</span><span class="val" id="stBinary">—</span></div>
-    <div class="status-chip" style="border-color:transparent;background:transparent;font-size:10px;color:var(--text-dim);gap:2px;padding:5px 6px">│</div>
-    <div class="status-chip"><span class="dot warn" id="s2"></span><span class="label">Forge</span><span class="val" id="stForge">未连接</span></div>
-  </div>
-</section>
+<!-- Status Bar (HTMX auto-loader) -->
+<div class="principles-bar">
+  <div hx-get="/api/htmx/status" hx-trigger="load, every 30s" hx-target="this"></div>
+</div>
 
-<!-- WORKFLOW (Intent-Driven) -->
-<!-- ══════════════════════════════════════════════════
-     第三部分 · 设计方向顾问 (Intent-Driven Flow)
-     ══════════════════════════════════════════════════ -->
-<section class="workflow-section">
-  <!-- Intent Selector -->
-  <div class="intent-bar" id="intentBar">
-    <button class="intent-btn" data-intent="design">
-      <span class="intent-icon">🎨</span>
-      <span class="intent-label">做设计</span>
-      <span class="intent-desc">HTML / 幻灯片</span>
-    </button>
-    <button class="intent-btn" data-intent="prompt">
-      <span class="intent-icon">📝</span>
-      <span class="intent-label">写提示词</span>
-      <span class="intent-desc">文本 / 图片 → Prompt</span>
-    </button>
-    
-    <button class="intent-btn" data-intent="video">
-      <span class="intent-icon">🎬</span>
-      <span class="intent-label">做视频</span>
-      <span class="intent-desc">故事板 → 脚本</span>
-    </button>
-    <button class="intent-btn" data-intent="forge">
-      <span class="intent-icon">⚡</span>
-      <span class="intent-label">提交 Forge</span>
-      <span class="intent-desc">Prompt → 出图</span>
-    </button>
-  </div>
+<!-- Intent Bar (HTMX pane switcher) -->
+<div class="intent-bar" role="tablist">
+  <a href="#" class="intent-btn active" role="tab"
+     hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+    <span class="intent-icon">🎨</span>
+    <span class="intent-label">做设计</span>
+  </a>
+  <a href="#" class="intent-btn" role="tab"
+     hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+    <span class="intent-icon">📝</span>
+    <span class="intent-label">写提示词</span>
+  </a>
+  <a href="#" class="intent-btn" role="tab"
+     hx-get="/api/htmx/pane?intent=present" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+    <span class="intent-icon">📊</span>
+    <span class="intent-label">做演示</span>
+  </a>
+  <a href="#" class="intent-btn" role="tab"
+     hx-get="/api/htmx/pane?intent=video" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+    <span class="intent-icon">🎬</span>
+    <span class="intent-label">做视频</span>
+  </a>
+  <a href="#" class="intent-btn" role="tab"
+     hx-get="/api/htmx/pane?intent=forge" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+    <span class="intent-icon">⚡</span>
+    <span class="intent-label">提交 Forge</span>
+  </a>
+</div>
 
-  <div class="workflow-content" id="workflowContent">
+<!-- Pane Container (HTMX target for all pane switching) -->
+<div id="pane-container" class="workflow-content" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
+  <div style="text-align:center;padding:40px;color:var(--text-dim)">⏳ 加载中...</div>
+</div>
 
-    <!-- Intent: 做设计 -->
-    <div class="intent-pane" data-intent="design">
-      <div class="flow-steps">
-        <div class="flow-step-card">
-          <div class="step-badge">1</div>
-          <h3>描述场景</h3>
-          <textarea id="dScene" rows="2" placeholder="Describe your design..."></textarea>
-          <div class="form-row" style="margin-top:8px">
-            <select id="dLayout"><option>Hero / Landing</option><option>Grid / Gallery</option><option>Article / Blog</option></select>
-            <select id="dMode"><option value="false">网页</option><option value="true">演示文稿</option></select>
-          </div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">2</div>
-          <h3>选择风格</h3>
-          <div class="color-strip" id="dColors">
-            <div class="color-swatch active" style="background:#6c63ff"></div>
-            <div class="color-swatch" style="background:#ff6b9d"></div>
-            <div class="color-swatch" style="background:#43e4b0"></div>
-            <div class="color-swatch" style="background:#ffb347"></div>
-            <div class="color-swatch" style="background:#e74c3c"></div>
-          </div>
-          <select id="dFont" style="margin-top:8px"><option>Serif + Sans</option><option>Sans (科技)</option><option>Display Bold</option></select>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">3</div>
-          <h3>生成</h3>
-          <input type="text" id="dTitle" value="via54Design" placeholder="标题">
-          <div class="btn-row" style="margin-top:8px">
-            <button class="btn btn-primary" id="dGenBtn">🎨 生成 HTML</button>
-          </div>
-          <div class="output-area" id="dOutput" style="margin-top:8px;min-height:50px;font-size:11px"></div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">4</div>
-          <h3>📄 从文档生成</h3>
-          <div class="upload-mini" id="dUploadZone" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center;cursor:pointer;margin-bottom:8px">
-            📁 上传 Word/PPT/TXT/MD/图片
-            <input type="file" id="dFileInput" accept=".docx,.pptx,.md,.txt,.png,.jpg" style="display:none">
-          </div>
-          <div id="dFileInfo" style="display:none;font-size:11px;color:var(--text-secondary);margin-bottom:6px"></div>
-          <textarea id="dNarrateSeed" rows="1" placeholder="或输入一句话故事种子..."></textarea>
-          <div class="btn-row" style="margin-top:6px">
-            <button class="btn btn-secondary" id="dNarrateBtn">📖 生成叙事框架</button>
-            <button class="btn btn-primary" id="dDocBtn">📊 生成 PPT 框架</button>
-          </div>
-          <div class="output-area" id="dDocOutput" style="margin-top:6px;min-height:50px;font-size:11px"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Intent: 写提示词 -->
-    <div class="intent-pane" data-intent="prompt">
-      <div class="flow-steps">
-        <div class="flow-step-card">
-          <div class="step-badge">1</div>
-          <h3>输入场景 / 上传图片</h3>
-          <textarea id="pScene" rows="2" placeholder="Describe the scene..."></textarea>
-          <div class="form-row" style="margin-top:8px">
-            <select id="pPlatform"><option value="flux">Flux</option><option value="midjourney">Midjourney</option><option value="forge">Forge</option><option value="sdxl">SDXL</option></select>
-            <select id="pRatio"><option>16:9</option><option>1:1</option><option>9:16</option></select>
-          </div>
-          <div class="upload-mini" id="pUploadZone" style="margin-top:8px;border:1px dashed var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center;cursor:pointer;font-size:12px;color:var(--text-dim)">
-            📁 或上传图片分析
-            <input type="file" id="pFileInput" accept="image/*" style="display:none">
-          </div>
-          <div id="pPreview" style="display:none;margin-top:6px;text-align:center">
-            <img id="pPreviewImg" style="max-height:80px;border-radius:4px">
-          </div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">2</div>
-          <h3>生成 & 调试</h3>
-          <div class="btn-row"><button class="btn btn-primary" id="pGenBtn">✨ 生成提示词</button></div>
-          <div class="output-area" id="pOutput" style="margin-top:8px;min-height:60px;font-size:11px"></div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">3</div>
-          <h3>提交 Forge</h3>
-          <div class="status-chip" style="margin-bottom:6px"><span class="dot warn" id="pForgeDot"></span><span class="val" id="pForgeText">检测中...</span></div>
-          <div class="btn-row"><button class="btn btn-secondary" id="pForgeBtn">⚡ 提交生成</button></div>
-          <div class="output-area" id="pForgeOut" style="margin-top:6px;min-height:40px;font-size:11px"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Intent: 做视频 -->
-    <div class="intent-pane" data-intent="video">
-      <div class="flow-steps">
-        <div class="flow-step-card">
-          <div class="step-badge">1</div>
-          <h3>上传故事板</h3>
-          <div class="upload-mini" id="vbUploadZone" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;margin-bottom:8px">
-            🎬 上传故事板图片（可多选）
-            <input type="file" id="vbFileInput" accept="image/*" multiple style="display:none">
-          </div>
-          <div id="vbPreviews" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px"></div>
-          <div class="form-row">
-            <select id="vbModel"><option value="three-act">三幕结构</option><option value="heros-journey">英雄之旅</option></select>
-            <input type="number" id="vbDuration" value="30" min="5" max="300" placeholder="时长(s)" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px">
-          </div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">2</div>
-          <h3>生成视频脚本</h3>
-          <div class="btn-row"><button class="btn btn-primary" id="vbGenBtn">🎬 生成脚本</button></div>
-          <div class="output-area" id="vbOutput" style="margin-top:8px;min-height:80px;font-size:11px;display:none"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Intent: 提交 Forge -->
-    <div class="intent-pane" data-intent="forge">
-      <div class="flow-steps">
-        <div class="flow-step-card">
-          <div class="step-badge">1</div>
-          <h3>提示词</h3>
-          <textarea id="fPrompt" rows="3" placeholder="Paste your prompt here..."></textarea>
-          <div class="form-row" style="margin-top:8px">
-            <input type="text" id="fNeg" placeholder="负面提示词" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px;width:100%">
-            <select id="fWorkflow"><option value="sdxl_txt2img">SDXL</option><option value="flux_dev_txt2img">Flux</option></select>
-          </div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">2</div>
-          <h3>参数</h3>
-          <div class="form-row">
-            <div class="form-group"><label>Steps</label><input type="number" id="fSteps" value="30" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px;width:100%"></div>
-            <div class="form-group"><label>CFG</label><input type="number" id="fCfg" value="7.5" step="0.5" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px;width:100%"></div>
-          </div>
-          <div class="status-chip" style="margin-bottom:6px"><span class="dot" id="fStatusDot"></span><span class="val" id="fStatusText">检测中...</span></div>
-          <div class="btn-row"><button class="btn btn-primary" id="fSubmitBtn">⚡ 提交生成</button></div>
-        </div>
-        <div class="flow-step-card">
-          <div class="step-badge">3</div>
-          <h3>结果</h3>
-          <div class="output-area" id="fOutput" style="min-height:60px;font-size:11px">等待提交...</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<script>
-/* ── I18N ── */
-const i18n = { cn: {off:"未连接"}, en: {off:"Offline"} }
-let lang = "cn"
-function t(k){return i18n[lang][k]||k}
-
-/* ── Status Check ── */
-async function checkStatus(){
-  const badge=document.getElementById("modeBadge")
-  // Engine
-  try{
-    const r=await fetch("/api/health");const d=await r.json()
-    document.getElementById("s0").className="dot ok";document.getElementById("stProv").textContent="✓ "+d.version
-    badge.textContent="⏻ 引擎就绪";badge.style.background="var(--accent3)"
-  }catch(e){
-    document.getElementById("s0").className="dot off";document.getElementById("stProv").textContent=t("off")
-    badge.textContent="⚠️ 引擎未响应";badge.style.background="var(--accent4)"
-  }
-  // Templates
-  try{
-    const r=await fetch("/api/templates");const d=await r.json()
-    document.getElementById("s1").className="dot ok";document.getElementById("stTemplates").textContent=d.length+" templates"
-  }catch(e){document.getElementById("s1").className="dot warn";document.getElementById("stTemplates").textContent="?"
-  }
-  // Binary
-  document.getElementById("s5").className="dot ok";document.getElementById("stBinary").textContent="via54.exe"
-  // Forge
-  try{
-    const r=await fetch("http://localhost:7860/sdapi/v1/sd-models",{signal:AbortSignal.timeout(2000)})
-    const d=await r.json();const n=Array.isArray(d)?d.length:0
-    document.getElementById("s2").className="dot ok";document.getElementById("stForge").textContent=n>0?"✓ "+n+" models":"✓ Online"
-  }catch(e){
-    document.getElementById("s2").className="dot warn";document.getElementById("stForge").textContent="未连接"
-  }
-}
-checkStatus()
-
-// ── Intent-Driven Workflow ──
-let currentIntent = 'design'
-let uploadedImagePath = ''
-let s2pPath = ''
-let vbPaths = []
-
-// Intent switching
-document.querySelectorAll('.intent-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.intent-btn').forEach(b => b.classList.remove('active'))
-    document.querySelectorAll('.intent-pane').forEach(p => p.classList.remove('active'))
-    btn.classList.add('active')
-    currentIntent = btn.dataset.intent
-    document.querySelector(`.intent-pane[data-intent="${currentIntent}"]`).classList.add('active')
-  })
-})
-// Default: first intent
-document.querySelector('.intent-btn').click()
-
-// ── Color Swatch Selection ──
-document.addEventListener('click',function(e){
-  const sw=e.target.closest('.color-swatch')
-  if(sw){
-    sw.closest('.color-strip').querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active'))
-    sw.classList.add('active')
-  }
-})
-
-
-// ── Intent: 做设计 ──
-document.getElementById('dGenBtn').addEventListener('click', async function() {
-  const title = document.getElementById('dTitle').value || 'via54Design'
-  const pres = document.getElementById('dMode').value === 'true'
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 生成中...'
-  try {
-    const r = await fetch('/api/generate', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({title, layout:'hero', color:'ink-wash', font:'ming-hei-editorial', presentation:pres}) })
-    const d = await r.json()
-    document.getElementById('dOutput').textContent = d.html ? `✅ 已生成 (${d.length} bytes)` : (d.error || 'No output')
-  } catch(e) { document.getElementById('dOutput').textContent = 'Error: '+e.message }
-  btn.disabled = false; btn.textContent = '🎨 生成 HTML'
-
-// ── Design: Document Upload → PPT ──
-let dDocPath = ''
-document.getElementById('dUploadZone').addEventListener('click', () => document.getElementById('dFileInput').click())
-document.getElementById('dFileInput').addEventListener('change', async () => {
-  const f = document.getElementById('dFileInput').files[0]; if(!f) return
-  const fd = new FormData(); fd.append('file', f)
-  try {
-    const r = await fetch('/api/upload', { method:'POST', body: fd })
-    const d = await r.json()
-    if(d.path){ dDocPath = d.path; document.getElementById('dFileInfo').style.display = 'block'; document.getElementById('dFileInfo').textContent = '📎 '+f.name }
-  } catch(e) {}
-})
-
-document.getElementById('dDocBtn').addEventListener('click', async function() {
-  const seed = document.getElementById('dNarrateSeed').value || ''
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 生成中...'
-  const out = document.getElementById('dDocOutput')
-  
-  if(dDocPath){
-    const r = await fetch('/api/story2ppt', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({path:dDocPath, prompt:seed}) })
-    const d = await r.json()
-    out.textContent = d.error || (d.slides||[]).map((s,i)=>'  '+(i+1)+'. '+s.title).join('\n')+'\n\n'+d.user_guidance
-  } else if(seed) {
-    const r = await fetch('/api/narrate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({seed, model:'three-act', duration:30, format:'markdown'}) })
-    const d = await r.json()
-    out.textContent = d.output || d.error
-  } else { out.textContent = '请上传文件或输入故事种子' }
-  btn.disabled = false; btn.textContent = '📊 生成 PPT 框架'
-})
-
-document.getElementById('dNarrateBtn').addEventListener('click', async function() {
-  const seed = document.getElementById('dNarrateSeed').value
-  if(!seed){ document.getElementById('dDocOutput').textContent = '请输入故事种子'; return }
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 生成中...'
-  try {
-    const r = await fetch('/api/narrate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({seed, model:'three-act', duration:30, format:'markdown'}) })
-    const d = await r.json()
-    document.getElementById('dDocOutput').textContent = d.output || d.error || 'No output'
-  } catch(e) { document.getElementById('dDocOutput').textContent = 'Error: '+e.message }
-  btn.disabled = false; btn.textContent = '📖 生成叙事框架'
-})
-})
-
-// ── Intent: 写提示词 ──
-document.getElementById('pUploadZone').addEventListener('click', () => document.getElementById('pFileInput').click())
-document.getElementById('pFileInput').addEventListener('change', async () => {
-  const f = document.getElementById('pFileInput').files[0]
-  if (!f) return
-  const fd = new FormData(); fd.append('image', f)
-  try {
-    const r = await fetch('/api/upload', { method:'POST', body: fd })
-    const d = await r.json()
-    if (d.url) { uploadedImagePath = d.path; document.getElementById('pPreview').style.display = 'block'; document.getElementById('pPreviewImg').src = d.url }
-  } catch(e) {}
-})
-
-document.getElementById('pGenBtn').addEventListener('click', async function() {
-  const scene = document.getElementById('pScene').value || 'test scene'
-  const platform = document.getElementById('pPlatform').value
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 生成中...'
-  try {
-    const r = await fetch('/api/prompt', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({scene, platform, format:'markdown'}) })
-    const d = await r.json()
-    document.getElementById('pOutput').textContent = d.output || d.error || 'No output'
-  } catch(e) { document.getElementById('pOutput').textContent = 'Error: '+e.message }
-  btn.disabled = false; btn.textContent = '✨ 生成提示词'
-})
-
-// Forge status in prompt tab
-async function checkPForge() {
-  try {
-    const r = await fetch('http://localhost:7860/sdapi/v1/sd-models', {signal:AbortSignal.timeout(3000)})
-    const d = await r.json(); const n = Array.isArray(d) ? d.length : 0
-    document.getElementById('pForgeDot').className = 'dot ok'
-    document.getElementById('pForgeText').textContent = n > 0 ? `✅ 已连接 (${n} 模型)` : '✅ 已连接'
-  } catch(e) {
-    document.getElementById('pForgeDot').className = 'dot off'
-    document.getElementById('pForgeText').textContent = '❌ 未连接'
-  }
-}
-checkPForge()
-
-document.getElementById('pForgeBtn').addEventListener('click', async function() {
-  const prompt = document.getElementById('pOutput').textContent
-  if (!prompt || prompt.startsWith('Error') || prompt.startsWith('⏳')) { document.getElementById('pForgeOut').textContent = '请先生成提示词'; return }
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 提交中...'
-  try {
-    const r = await fetch('/api/regen', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt, workflow:'sdxl_txt2img'}) })
-    const d = await r.json()
-    document.getElementById('pForgeOut').textContent = d.offline_mode ? '⚠️ Forge 未运行。提示词已就绪可手动提交' : (d.submitted ? '✅ 已提交到 Forge!' : JSON.stringify(d))
-  } catch(e) { document.getElementById('pForgeOut').textContent = 'Error: '+e.message }
-  btn.disabled = false; btn.textContent = '⚡ 提交生成'
-})
-
-// ── Intent: 做演示 (已合并到设计) ──
-document.getElementById('s2pUploadZone').addEventListener('click', () => document.getElementById('s2pFileInput').click())
-document.getElementById('s2pFileInput').addEventListener('change', async () => {
-  const f = document.getElementById('s2pFileInput').files[0]; if (!f) return
-  const fd = new FormData(); fd.append('file', f)
-  try {
-    const r = await fetch('/api/upload', { method:'POST', body: fd })
-    const d = await r.json()
-    if (d.path) { s2pPath = d.path; document.getElementById('s2pFileInfo').style.display = 'block'; document.getElementById('s2pFileInfo').textContent = `📎 ${f.name}` }
-  } catch(e) {}
-})
-
-document.getElementById('s2pGenBtn').addEventListener('click', async function() {
-  const desc = document.getElementById('s2pDesc').value || ''
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 分析中...'
-  const guidance = document.getElementById('s2pGuidance'); guidance.style.display = 'block'; guidance.textContent = '分析中...'
-  const frames = document.getElementById('s2pFrames'); frames.style.display = 'block'
-  
-  if (s2pPath) {
-    try {
-      const r = await fetch('/api/story2ppt', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({path:s2pPath, prompt:desc}) })
-      const d = await r.json()
-      if (d.error) { guidance.textContent = d.error; return }
-      guidance.textContent = d.user_guidance || `✅ ${d.type||'文件'}，${d.total_slides} 页框架`
-      frames.textContent = (d.slides||[]).map((s,i) => `${i+1}. ${s.title||s.type}`).join('\n')
-    } catch(e) { guidance.textContent = 'Error: '+e.message }
-  } else if (desc) {
-    try {
-      const r = await fetch('/api/narrate', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({seed:desc, model:'three-act', duration:30, format:'markdown'}) })
-      const d = await r.json()
-      guidance.textContent = '📖 基于叙事种子生成的演示框架'
-      frames.textContent = d.output || d.error || 'No output'
-    } catch(e) { guidance.textContent = 'Error: '+e.message }
-  } else { guidance.textContent = '请上传文件或输入描述'; frames.style.display = 'none' }
-  btn.disabled = false; btn.textContent = '📊 生成框架'
-})
-
-// ── Intent: 做视频 ──
-document.getElementById('vbUploadZone').addEventListener('click', () => document.getElementById('vbFileInput').click())
-document.getElementById('vbFileInput').addEventListener('change', async () => {
-  const files = Array.from(document.getElementById('vbFileInput').files)
-  const previews = document.getElementById('vbPreviews'); previews.innerHTML = ''; vbPaths = []
-  for (const f of files) {
-    const fd = new FormData(); fd.append('image', f)
-    try {
-      const r = await fetch('/api/upload', { method:'POST', body: fd })
-      const d = await r.json()
-      if (d.path) { vbPaths.push(d.path); const img = document.createElement('img'); img.src = d.url; img.style.cssText = 'width:50px;height:50px;object-fit:cover;border-radius:4px'; previews.appendChild(img) }
-    } catch(e) {}
-  }
-})
-
-document.getElementById('vbGenBtn').addEventListener('click', async function() {
-  if (!vbPaths.length) { document.getElementById('vbOutput').style.display = 'block'; document.getElementById('vbOutput').textContent = '请先上传故事板图片'; return }
-  const model = document.getElementById('vbModel').value; const duration = parseInt(document.getElementById('vbDuration').value) || 30
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 生成中...'
-  document.getElementById('vbOutput').style.display = 'block'; document.getElementById('vbOutput').textContent = '分析图片并构建叙事...'
-  try {
-    const r = await fetch('/api/storyboard', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({paths:vbPaths, model, duration, single: vbPaths.length===1}) })
-    const d = await r.json()
-    let out = ''
-    if (d.narrative_scaffold) {
-      out += `📖 ${d.narrative_scaffold.model_name} | ${d.narrative_scaffold.total_duration}s\n`
-      ;(d.narrative_scaffold.beats||[]).forEach(b => { out += `\n${b.name} (${b.start_time}s-${b.start_time+b.duration}s) [${b.mood}]` })
-    }
-    if (d.video_prompts) { out += '\n\n📝 Prompts:\n'; d.video_prompts.forEach(p => { out += `\nScene ${p.scene} (${p.duration}s): ${p.prompt.substring(0,80)}` }) }
-    document.getElementById('vbOutput').textContent = out || JSON.stringify(d, null, 2).substring(0, 1000)
-  } catch(e) { document.getElementById('vbOutput').textContent = 'Error: '+e.message }
-  btn.disabled = false; btn.textContent = '🎬 生成脚本'
-})
-
-// ── Intent: 提交 Forge ──
-async function checkFForge() {
-  try {
-    const r = await fetch('http://localhost:7860/sdapi/v1/sd-models', {signal:AbortSignal.timeout(3000)})
-    const d = await r.json(); const n = Array.isArray(d) ? d.length : 0
-    document.getElementById('fStatusDot').className = 'dot ok'
-    document.getElementById('fStatusText').textContent = n > 0 ? `✅ 已连接 (${n} 模型)` : '✅ 已连接'
-  } catch(e) {
-    document.getElementById('fStatusDot').className = 'dot off'
-    document.getElementById('fStatusText').textContent = '❌ 未运行'
-  }
-}
-checkFForge()
-
-document.getElementById('fSubmitBtn').addEventListener('click', async function() {
-  const prompt = document.getElementById('fPrompt').value
-  const negative = document.getElementById('fNeg').value
-  const workflow = document.getElementById('fWorkflow').value
-  if (!prompt) { document.getElementById('fOutput').textContent = '请先输入提示词'; return }
-  const btn = this; btn.disabled = true; btn.textContent = '⏳ 提交中...'
-  try {
-    const r = await fetch('/api/regen', { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({prompt, negative, workflow}) })
-    const d = await r.json()
-    document.getElementById('fOutput').textContent = d.submitted ? `✅ 已提交到 Forge！\n工作流: ${d.workflow}` : (d.offline_mode ? '⚠️ Forge 未运行。提示词已就绪：\n\n' + prompt : JSON.stringify(d))
-  } catch(e) { document.getElementById('fOutput').textContent = 'Error: '+e.message }
-  btn.disabled = false; btn.textContent = '⚡ 提交生成'
-})
-</script>
 </body>
 </html>

@@ -26,6 +26,11 @@ import (
 )
 
 //go:embed templates/index.html
+//go:embed templates/pane_design.html
+//go:embed templates/pane_prompt.html
+//go:embed templates/pane_present.html
+//go:embed templates/pane_video.html
+//go:embed templates/pane_forge.html
 var embeddedFiles embed.FS
 
 var baseDir string
@@ -65,6 +70,18 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/video-prompt", handleVideoPrompt)
 	mux.HandleFunc("/api/story2ppt", handleStory2PPT)
 	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir(uploadDir()))))
+
+	// ── HTMX endpoints (return HTML fragments, no JS) ──
+	mux.HandleFunc("/api/htmx/status", handleHTMXStatus)
+	mux.HandleFunc("/api/htmx/pane", handleHTMXPane)
+	mux.HandleFunc("/api/htmx/generate", handleHTMXGenerate)
+	mux.HandleFunc("/api/htmx/prompt", handleHTMXPrompt)
+	mux.HandleFunc("/api/htmx/narrate", handleHTMXNarrate)
+	mux.HandleFunc("/api/htmx/upload", handleHTMXUpload)
+	mux.HandleFunc("/api/htmx/regen", handleHTMXRegen)
+	mux.HandleFunc("/api/htmx/story2ppt", handleHTMXStory2PPT)
+	mux.HandleFunc("/api/htmx/storyboard", handleHTMXStoryboard)
+	mux.HandleFunc("/api/htmx/forge-status", handleHTMXForgeStatus)
 	return mux
 }
 
@@ -853,4 +870,288 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 
 	result := vision.Story2PPT(docPath, userPrompt)
 	json.NewEncoder(w).Encode(result)
+}
+
+// ═══════════════════════════════════════════════════════
+// HTMX Handlers — return HTML fragments, no JS required
+// ═══════════════════════════════════════════════════════
+
+func htmxWrite(w http.ResponseWriter, html string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte(html))
+}
+
+func htmxError(w http.ResponseWriter, msg string) {
+	htmxWrite(w, `<div class="output-area" style="color:var(--accent2)">❌ `+msg+`</div>`)
+}
+
+func handleHTMXStatus(w http.ResponseWriter, r *http.Request) {
+	// Engine status
+	engineDot, engineText := "dot off", "未连接"
+	if resp, err := http.Get("http://localhost:8642/health"); err == nil {
+		defer resp.Body.Close()
+		engineDot, engineText = "dot ok", "✓ v0.6.0"
+		_ = resp.Body.Close()
+	}
+
+	// Forge status
+	forgeDot, forgeText := "dot off", "未连接"
+	if resp, err := http.Get("http://localhost:7860/sdapi/v1/sd-models"); err == nil {
+		defer resp.Body.Close()
+		forgeDot, forgeText = "dot ok", "✓ 已连接"
+	}
+
+	// Templates
+	tplDot, tplText := "dot off", "?"
+	if _, err := workflow.LoadRegistry(baseDir); err == nil {
+		tplDot, tplText = "dot ok", "✓ templates"
+	}
+
+	htmxWrite(w, fmt.Sprintf(`
+<div class="status-grid">
+  <span class="status-chip"><span class="dot %s"></span><span class="label">引擎</span><span class="val">%s</span></span>
+  <span class="status-chip"><span class="dot %s"></span><span class="label">模板</span><span class="val">%s</span></span>
+  <span class="status-chip"><span class="dot ok"></span><span class="label">二进制</span><span class="val">via54.exe</span></span>
+  <span class="status-chip"><span class="dot %s"></span><span class="label">Forge</span><span class="val">%s</span></span>
+</div>`, engineDot, engineText, tplDot, tplText, forgeDot, forgeText))
+}
+
+func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
+	intent := r.URL.Query().Get("intent")
+	names := map[string]string{
+		"design": "pane_design.html",
+		"prompt": "pane_prompt.html",
+		"present": "pane_present.html",
+		"video":   "pane_video.html",
+		"forge":   "pane_forge.html",
+	}
+	file, ok := names[intent]
+	if !ok {
+		file = "pane_design.html"
+	}
+	data, err := embeddedFiles.ReadFile("templates/" + file)
+	if err != nil {
+		htmxError(w, "pane not found: "+file)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(data)
+}
+
+func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+
+	title := r.FormValue("title")
+	if title == "" { title = "via54Design" }
+	mode := r.FormValue("mode")
+	pres := mode == "presentation"
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	args := []string{"generate", "--layout", "hero", "--color", "ink-wash", "--font", "ming-hei-editorial", "--title", title}
+	if pres { args = append(args, "--presentation") }
+	cmd := exec.Command(exe, args...)
+	cmd.Dir = baseDir
+	out, err := cmd.Output()
+	if err != nil {
+		htmxError(w, fmt.Sprintf("生成失败: %v", err))
+		return
+	}
+	htmxWrite(w, fmt.Sprintf(`<div class="output-area">✅ 已生成 (%d bytes)<br><br><a href="/api/htmx/download?name=%s" class="btn-small">📥 下载 HTML</a></div>`, len(out), title))
+}
+
+func handleHTMXPrompt(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+
+	scene := r.FormValue("scene")
+	platform := r.FormValue("platform")
+	if scene == "" { htmxError(w, "请输入场景描述"); return }
+	if platform == "" { platform = "midjourney" }
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	cmd := exec.Command(exe, "prompt", "--scene", scene, "--platform", platform, "--format", "markdown")
+	cmd.Dir = baseDir
+	out, err := cmd.Output()
+	if err != nil {
+		htmxError(w, fmt.Sprintf("生成失败: %v", err))
+		return
+	}
+	escaped := strings.ReplaceAll(string(out), "<", "&lt;")
+	escaped = strings.ReplaceAll(escaped, ">", "&gt;")
+	htmxWrite(w, `<div class="output-area"><pre style="white-space:pre-wrap">`+escaped+`</pre></div>`)
+}
+
+func handleHTMXNarrate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+
+	seed := r.FormValue("seed")
+	if seed == "" { htmxError(w, "请输入故事种子"); return }
+	model := r.FormValue("model")
+	if model == "" { model = "three-act" }
+	durationStr := r.FormValue("duration")
+	duration := 30
+	if d, err := strconv.Atoi(durationStr); err == nil && d > 0 { duration = d }
+
+	exe := filepath.Join(baseDir, "via54.exe")
+	cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", model, "--duration", strconv.Itoa(duration), "--format", "markdown")
+	cmd.Dir = baseDir
+	out, err := cmd.Output()
+	if err != nil {
+		htmxError(w, fmt.Sprintf("生成失败: %v", err))
+		return
+	}
+	escaped := strings.ReplaceAll(string(out), "<", "&lt;")
+	escaped = strings.ReplaceAll(escaped, ">", "&gt;")
+	htmxWrite(w, `<div class="output-area"><pre style="white-space:pre-wrap">`+escaped+`</pre></div>`)
+}
+
+func handleHTMXUpload(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseMultipartForm(32 << 20); err != nil { htmxError(w, err.Error()); return }
+
+	field := r.FormValue("_field")
+	if field == "" { field = "image" }
+	file, header, err := r.FormFile(field)
+	if err != nil { htmxError(w, "文件未上传"); return }
+	defer file.Close()
+
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+	filename := fmt.Sprintf("img_%d%s", time.Now().UnixNano(), ext)
+	dst := filepath.Join(uploadDir(), filename)
+	out, err := os.Create(dst)
+	if err != nil { htmxError(w, "保存失败"); return }
+	defer out.Close()
+	io.Copy(out, file)
+
+	url := "/uploads/" + filename
+	htmxWrite(w, fmt.Sprintf(`<input type="hidden" name="_path" value="%s">
+<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+  <img src="%s" style="width:40px;height:40px;object-fit:cover;border-radius:4px">
+  <span style="font-size:12px;color:var(--text-secondary)">%s (%d bytes)</span>
+</div>`, dst, url, header.Filename, header.Size))
+}
+
+func handleHTMXRegen(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+
+	prompt := r.FormValue("prompt")
+	workflowID := r.FormValue("workflow")
+	if workflowID == "" { workflowID = "sdxl_txt2img" }
+	if prompt == "" { htmxError(w, "请先生成提示词"); return }
+
+	payload, _ := json.Marshal(map[string]interface{}{
+		"prompt": prompt, "negative_prompt": r.FormValue("negative"),
+		"steps": 30, "cfg_scale": 7.5, "width": 1024, "height": 1024,
+	})
+
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Post("http://localhost:7860/sdapi/v1/txt2img", "application/json", bytes.NewReader(payload))
+	if err != nil {
+		htmxWrite(w, fmt.Sprintf(`<div class="output-area">⚠️ Forge 未运行<br><br>提示词就绪 (%d chars)<br><code style="font-size:11px">via54 forge --workflow %s --prompt "..." --send</code></div>`, len(prompt), workflowID))
+		return
+	}
+	defer resp.Body.Close()
+	htmxWrite(w, `<div class="output-area" style="color:var(--accent3)">✅ 已提交到 Forge! (工作流: `+workflowID+`)</div>`)
+}
+
+func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+
+	path := r.FormValue("_path")
+	seed := r.FormValue("seed")
+
+	out := ""
+	if path != "" {
+		result := vision.Story2PPT(path, seed)
+		if slides, ok := result["slides"].([]interface{}); ok {
+			for i, s := range slides {
+				if m, ok := s.(map[string]interface{}); ok {
+					title, _ := m["title"].(string)
+					out += fmt.Sprintf("<li>%d. %s</li>\n", i+1, title)
+				}
+			}
+		}
+		if out == "" {
+			if errStr, ok := result["error"].(string); ok {
+				htmxError(w, errStr); return
+			}
+			out = "<li>分析完成</li>"
+		}
+		htmxWrite(w, `<div class="output-area"><ol>`+out+`</ol></div>`)
+	} else if seed != "" {
+		exe := filepath.Join(baseDir, "via54.exe")
+		cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", "three-act", "--duration", "30", "--format", "markdown")
+		cmd.Dir = baseDir
+		result, err := cmd.Output()
+		if err != nil { htmxError(w, err.Error()); return }
+		escaped := strings.ReplaceAll(string(result), "<", "&lt;")
+		htmxWrite(w, `<div class="output-area"><pre style="white-space:pre-wrap">`+escaped+`</pre></div>`)
+	} else {
+		htmxError(w, "请上传文件或输入故事种子")
+	}
+}
+
+func handleHTMXStoryboard(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if err := r.ParseMultipartForm(64 << 20); err != nil {
+		htmxError(w, err.Error()); return
+	}
+
+	files := r.MultipartForm.File["images"]
+	if len(files) == 0 { htmxError(w, "请上传至少一张故事板图片"); return }
+
+	model := r.FormValue("model")
+	if model == "" { model = "three-act" }
+	duration := 30
+	if d, err := strconv.Atoi(r.FormValue("duration")); err == nil && d > 0 { duration = d }
+
+	var paths []string
+	for _, fh := range files {
+		f, err := fh.Open()
+		if err != nil { continue }
+		ext := strings.ToLower(filepath.Ext(fh.Filename))
+		filename := fmt.Sprintf("sb_%d%s", time.Now().UnixNano(), ext)
+		dst := filepath.Join(uploadDir(), filename)
+		out, _ := os.Create(dst)
+		io.Copy(out, f)
+		out.Close(); f.Close()
+		paths = append(paths, dst)
+	}
+
+	result := vision.ProcessStoryboard(paths, model, duration, "", len(files) == 1)
+
+	var html string
+	if scaffold, ok := result["narrative_scaffold"].(map[string]interface{}); ok {
+		name, _ := scaffold["model_name"].(string)
+		td, _ := scaffold["total_duration"].(float64)
+		html = fmt.Sprintf("<div class='output-area'><strong>📖 %s | %ds</strong><br>", name, int(td))
+		if beats, ok := scaffold["beats"].([]interface{}); ok {
+			for _, b := range beats {
+				if m, ok := b.(map[string]interface{}); ok {
+					n, _ := m["name"].(string)
+					st, _ := m["start_time"].(float64)
+					d, _ := m["duration"].(float64)
+					mo, _ := m["mood"].(string)
+					html += fmt.Sprintf("  <br>%s (%ds-%ds) [%s]", n, int(st), int(st+d), mo)
+				}
+			}
+		}
+		html += "</div>"
+	} else {
+		html = fmt.Sprintf("<div class='output-area'>%s</div>", result)
+	}
+	htmxWrite(w, html)
+}
+
+func handleHTMXForgeStatus(w http.ResponseWriter, r *http.Request) {
+	dot, text := "dot off", "❌ 未运行"
+	if resp, err := http.Get("http://localhost:7860/sdapi/v1/sd-models"); err == nil {
+		defer resp.Body.Close()
+		dot, text = "dot ok", "✅ 已连接"
+	}
+	htmxWrite(w, fmt.Sprintf(`<span class="status-chip"><span class="dot %s"></span>%s</span>`, dot, text))
 }
