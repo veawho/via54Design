@@ -43,7 +43,7 @@ func NewEngine(baseDir string) *Engine {
 }
 
 func (e *Engine) Available() bool { return e.available }
-func (e *Engine) Path() string   { return e.wasmPath }
+func (e *Engine) Path() string    { return e.wasmPath }
 
 func (e *Engine) Compose(layoutYAML, colorYAML, fontYAML, title string) (string, error) {
 	if !e.available {

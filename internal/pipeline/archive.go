@@ -21,12 +21,12 @@ import (
 
 // PromptScaffold represents the full prompt scaffold with all dimension fields.
 type PromptScaffold struct {
-	Scene        string            `json:"scene"`
-	Platform     string            `json:"platform"`
-	Fields       map[string]string `json:"fields"`
-	Negative     []string          `json:"negative"`
-	OriginalScene string           `json:"original_scene,omitempty"`
-	RawPrompt    string            `json:"raw_prompt,omitempty"`
+	Scene         string            `json:"scene"`
+	Platform      string            `json:"platform"`
+	Fields        map[string]string `json:"fields"`
+	Negative      []string          `json:"negative"`
+	OriginalScene string            `json:"original_scene,omitempty"`
+	RawPrompt     string            `json:"raw_prompt,omitempty"`
 }
 
 // ArchiveRecord is a single entry in the JSONL archive.

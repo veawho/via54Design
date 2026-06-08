@@ -15,7 +15,7 @@ type WorkflowTemplate struct {
 	VAE         string                 `yaml:"vae,omitempty"`
 	Type        string                 `yaml:"type"` // txt2img, img2img, txt2vid
 	Params      map[string]interface{} `yaml:"params"`
-	Nodes       map[string]string      `yaml:"nodes"` // logical name -> ComfyUI class_type
+	Nodes       map[string]string      `yaml:"nodes"`      // logical name -> ComfyUI class_type
 	Skeleton    map[string]interface{} `json:"-" yaml:"-"` // full node graph (loaded from .skeleton.json)
 	Models      []ModelDownload        `yaml:"models,omitempty"`
 }
@@ -38,8 +38,8 @@ type WorkflowRegistryEntry struct {
 
 // WorkflowRegistry is the top-level registry structure.
 type WorkflowRegistry struct {
-	Version   int                      `yaml:"version"`
-	Workflows []WorkflowRegistryEntry  `yaml:"workflows"`
+	Version   int                     `yaml:"version"`
+	Workflows []WorkflowRegistryEntry `yaml:"workflows"`
 }
 
 // ComfyUINode represents a single node in the ComfyUI API JSON format.

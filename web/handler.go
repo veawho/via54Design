@@ -125,9 +125,13 @@ func handleBuild(w http.ResponseWriter, r *http.Request) {
 
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	workflowID, _ := req["workflow_id"].(string)
@@ -215,9 +219,13 @@ func handlePrompt(w http.ResponseWriter, r *http.Request) {
 
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	scene, _ := req["scene"].(string)
@@ -259,9 +267,13 @@ func handleGenerate(w http.ResponseWriter, r *http.Request) {
 
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	layout, _ := req["layout"].(string)
@@ -313,9 +325,13 @@ func handleNarrate(w http.ResponseWriter, r *http.Request) {
 
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	seed, _ := req["seed"].(string)
@@ -364,9 +380,13 @@ func handleExport(w http.ResponseWriter, r *http.Request) {
 
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	expType, _ := req["type"].(string)
@@ -391,7 +411,7 @@ func handleExport(w http.ResponseWriter, r *http.Request) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Sprintf("exec error: %v", err),
+			"error":  fmt.Sprintf("exec error: %v", err),
 			"output": string(out),
 		})
 		return
@@ -412,9 +432,13 @@ func handleMedia(w http.ResponseWriter, r *http.Request) {
 
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	action, _ := req["action"].(string)
@@ -514,9 +538,13 @@ func handleAnalyze(w http.ResponseWriter, r *http.Request) {
 	}
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	imgPath, _ := req["path"].(string)
@@ -555,9 +583,13 @@ func handleImg2Prompt(w http.ResponseWriter, r *http.Request) {
 	}
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	imgPath, _ := req["path"].(string)
@@ -619,9 +651,13 @@ func handleRegen(w http.ResponseWriter, r *http.Request) {
 	}
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	prompt, _ := req["prompt"].(string)
@@ -656,15 +692,15 @@ func handleRegen(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// Forge not available - not an error, just return the prompt info
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"success":       true,
-			"submitted":     false,
-			"workflow":      workflowID,
-			"message":       "后端（Forge）未连接，提示词已就绪可手动提交",
-			"hint":          "启动 Forge 后重试，或复制下方 payload 手动 POST",
-			"prompt_info":   info,
-			"api_payload":   payload,
-			"api_endpoint":  "http://localhost:7860/sdapi/v1/txt2img",
-			"offline_mode":  true,
+			"success":      true,
+			"submitted":    false,
+			"workflow":     workflowID,
+			"message":      "后端（Forge）未连接，提示词已就绪可手动提交",
+			"hint":         "启动 Forge 后重试，或复制下方 payload 手动 POST",
+			"prompt_info":  info,
+			"api_payload":  payload,
+			"api_endpoint": "http://localhost:7860/sdapi/v1/txt2img",
+			"offline_mode": true,
 		})
 		return
 	}
@@ -676,8 +712,8 @@ func handleRegen(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true, "submitted": true, "workflow": workflowID,
 		"forge_response": forgeResult,
-		"images": forgeResult["images"],
-		"info":   forgeResult["info"],
+		"images":         forgeResult["images"],
+		"info":           forgeResult["info"],
 	})
 }
 
@@ -706,7 +742,9 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		model = r.FormValue("model")
-		if model == "" { model = "three-act" }
+		if model == "" {
+			model = "three-act"
+		}
 		if d, err := strconv.Atoi(r.FormValue("duration")); err == nil && d > 0 {
 			duration = d
 		}
@@ -716,14 +754,26 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 		files := r.MultipartForm.File["images"]
 		for _, fh := range files {
 			f, err := fh.Open()
-			if err != nil { continue }
+			if err != nil {
+				continue
+			}
 			ext := strings.ToLower(filepath.Ext(fh.Filename))
-			if ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".webp" { f.Close(); continue }
+			if ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".webp" {
+				f.Close()
+				continue
+			}
 			filename := fmt.Sprintf("sb_%d_%s", time.Now().UnixNano(), fh.Filename)
 			dst := filepath.Join(uploadDir(), filename)
 			out, err := os.Create(dst)
-			if err != nil { f.Close(); continue }
-			if _, err := io.Copy(out, f); err != nil { out.Close(); f.Close(); continue }
+			if err != nil {
+				f.Close()
+				continue
+			}
+			if _, err := io.Copy(out, f); err != nil {
+				out.Close()
+				f.Close()
+				continue
+			}
 			out.Close()
 			f.Close()
 			paths = append(paths, dst)
@@ -731,21 +781,33 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var req map[string]interface{}
 		body, err := io.ReadAll(r.Body)
-		if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+			return
+		}
 		if err := json.Unmarshal(body, &req); err != nil {
-			json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+			json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+			return
 		}
 		if p, ok := req["paths"].([]interface{}); ok {
 			for _, pp := range p {
 				if s, ok := pp.(string); ok {
-					if !filepath.IsAbs(s) { s = filepath.Join(baseDir, s) }
+					if !filepath.IsAbs(s) {
+						s = filepath.Join(baseDir, s)
+					}
 					paths = append(paths, s)
 				}
 			}
 		}
-		if m, ok := req["model"].(string); ok { model = m }
-		if d, ok := req["duration"].(float64); ok && d > 0 { duration = int(d) }
-		if d, ok := req["desc"].(string); ok { desc = d }
+		if m, ok := req["model"].(string); ok {
+			model = m
+		}
+		if d, ok := req["duration"].(float64); ok && d > 0 {
+			duration = int(d)
+		}
+		if d, ok := req["desc"].(string); ok {
+			desc = d
+		}
 		singleMode, _ = req["single"].(bool)
 	}
 
@@ -767,15 +829,21 @@ func handleVideoPrompt(w http.ResponseWriter, r *http.Request) {
 	}
 	var req map[string]interface{}
 	body, err := io.ReadAll(r.Body)
-	if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+		return
+	}
 	if err := json.Unmarshal(body, &req); err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+		return
 	}
 
 	imgPath, _ := req["path"].(string)
 	desc, _ := req["desc"].(string)
 	workflow, _ := req["workflow"].(string)
-	if workflow == "" { workflow = "animatediff_txt2vid" }
+	if workflow == "" {
+		workflow = "animatediff_txt2vid"
+	}
 
 	if imgPath == "" {
 		log.Printf("handleVideoPrompt: path required")
@@ -851,9 +919,13 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 	} else {
 		var req map[string]interface{}
 		body, err := io.ReadAll(r.Body)
-		if err != nil { json.NewEncoder(w).Encode(map[string]string{"error": "read body: "+err.Error()}); return }
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]string{"error": "read body: " + err.Error()})
+			return
+		}
 		if err := json.Unmarshal(body, &req); err != nil {
-			json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: "+err.Error()}); return
+			json.NewEncoder(w).Encode(map[string]string{"error": "invalid JSON: " + err.Error()})
+			return
 		}
 		docPath, _ = req["path"].(string)
 		userPrompt, _ = req["prompt"].(string)
@@ -928,8 +1000,8 @@ func handleHTMXStatus(w http.ResponseWriter, r *http.Request) {
 func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 	intent := r.URL.Query().Get("intent")
 	names := map[string]string{
-		"design": "pane_design.html",
-		"prompt": "pane_prompt.html",
+		"design":  "pane_design.html",
+		"prompt":  "pane_prompt.html",
 		"present": "pane_present.html",
 		"video":   "pane_video.html",
 		"forge":   "pane_forge.html",
@@ -947,10 +1019,15 @@ func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-
 func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
-	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
 	exePath := selfPath()
 	if _, statErr := os.Stat(exePath); statErr != nil {
 		htmxError(w, fmt.Sprintf("selfPath binary not found: %s - %v", exePath, statErr))
@@ -958,19 +1035,29 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title := r.FormValue("title")
-	if title == "" { title = "via54Design" }
+	if title == "" {
+		title = "via54Design"
+	}
 	mode := r.FormValue("mode")
 	layout := r.FormValue("layout")
-	if layout == "" { layout = "hero-split-16-9" }
+	if layout == "" {
+		layout = "hero-split-16-9"
+	}
 	color := r.FormValue("color")
-	if color == "" { color = "ink-wash" }
+	if color == "" {
+		color = "ink-wash"
+	}
 	font := r.FormValue("font")
-	if font == "" { font = "ming-hei-editorial" }
+	if font == "" {
+		font = "ming-hei-editorial"
+	}
 	pres := mode == "presentation"
 
 	exe := selfPath()
 	args := []string{"generate", "--layout", layout, "--color", color, "--font", font, "--title", title}
-	if pres { args = append(args, "--presentation") }
+	if pres {
+		args = append(args, "--presentation")
+	}
 	cmd := exec.Command(exe, args...)
 	cmd.Dir = baseDir
 	out, err := cmd.CombinedOutput()
@@ -982,13 +1069,24 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHTMXPrompt(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
-	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
 
 	scene := r.FormValue("scene")
 	platform := r.FormValue("platform")
-	if scene == "" { htmxError(w, "请输入场景描述"); return }
-	if platform == "" { platform = "midjourney" }
+	if scene == "" {
+		htmxError(w, "请输入场景描述")
+		return
+	}
+	if platform == "" {
+		platform = "midjourney"
+	}
 
 	exe := selfPath()
 	cmd := exec.Command(exe, "prompt", "--scene", scene, "--platform", platform, "--format", "markdown")
@@ -1004,16 +1102,29 @@ func handleHTMXPrompt(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHTMXNarrate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
-	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
 
 	seed := r.FormValue("seed")
-	if seed == "" { htmxError(w, "请输入故事种子"); return }
+	if seed == "" {
+		htmxError(w, "请输入故事种子")
+		return
+	}
 	model := r.FormValue("model")
-	if model == "" { model = "three-act" }
+	if model == "" {
+		model = "three-act"
+	}
 	durationStr := r.FormValue("duration")
 	duration := 30
-	if d, err := strconv.Atoi(durationStr); err == nil && d > 0 { duration = d }
+	if d, err := strconv.Atoi(durationStr); err == nil && d > 0 {
+		duration = d
+	}
 
 	exe := selfPath()
 	cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", model, "--duration", strconv.Itoa(duration), "--format", "markdown")
@@ -1029,20 +1140,34 @@ func handleHTMXNarrate(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHTMXUpload(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
-	if err := r.ParseMultipartForm(32 << 20); err != nil { htmxError(w, err.Error()); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseMultipartForm(32 << 20); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
 
 	field := r.FormValue("_field")
-	if field == "" { field = "image" }
+	if field == "" {
+		field = "image"
+	}
 	file, header, err := r.FormFile(field)
-	if err != nil { htmxError(w, "文件未上传"); return }
+	if err != nil {
+		htmxError(w, "文件未上传")
+		return
+	}
 	defer file.Close()
 
 	ext := strings.ToLower(filepath.Ext(header.Filename))
 	filename := fmt.Sprintf("img_%d%s", time.Now().UnixNano(), ext)
 	dst := filepath.Join(uploadDir(), filename)
 	out, err := os.Create(dst)
-	if err != nil { htmxError(w, "保存失败"); return }
+	if err != nil {
+		htmxError(w, "保存失败")
+		return
+	}
 	defer out.Close()
 	io.Copy(out, file)
 
@@ -1055,13 +1180,24 @@ func handleHTMXUpload(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHTMXRegen(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
-	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
 
 	prompt := r.FormValue("prompt")
 	workflowID := r.FormValue("workflow")
-	if workflowID == "" { workflowID = "sdxl_txt2img" }
-	if prompt == "" { htmxError(w, "请先生成提示词"); return }
+	if workflowID == "" {
+		workflowID = "sdxl_txt2img"
+	}
+	if prompt == "" {
+		htmxError(w, "请先生成提示词")
+		return
+	}
 
 	payload, _ := json.Marshal(map[string]interface{}{
 		"prompt": prompt, "negative_prompt": r.FormValue("negative"),
@@ -1079,8 +1215,14 @@ func handleHTMXRegen(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
-	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
 
 	path := r.FormValue("_path")
 	seed := r.FormValue("seed")
@@ -1098,7 +1240,8 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 		}
 		if out == "" {
 			if errStr, ok := result["error"].(string); ok {
-				htmxError(w, errStr); return
+				htmxError(w, errStr)
+				return
 			}
 			out = "<li>分析完成</li>"
 		}
@@ -1108,7 +1251,10 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 		cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", "three-act", "--duration", "30", "--format", "markdown")
 		cmd.Dir = baseDir
 		result, err := cmd.Output()
-		if err != nil { htmxError(w, err.Error()); return }
+		if err != nil {
+			htmxError(w, err.Error())
+			return
+		}
 		escaped := strings.ReplaceAll(string(result), "<", "&lt;")
 		htmxWrite(w, `<div class="output-area"><pre style="white-space:pre-wrap">`+escaped+`</pre></div>`)
 	} else {
@@ -1117,29 +1263,43 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHTMXStoryboard(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" { htmxError(w, "use POST"); return }
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
 	if err := r.ParseMultipartForm(64 << 20); err != nil {
-		htmxError(w, err.Error()); return
+		htmxError(w, err.Error())
+		return
 	}
 
 	files := r.MultipartForm.File["images"]
-	if len(files) == 0 { htmxError(w, "请上传至少一张故事板图片"); return }
+	if len(files) == 0 {
+		htmxError(w, "请上传至少一张故事板图片")
+		return
+	}
 
 	model := r.FormValue("model")
-	if model == "" { model = "three-act" }
+	if model == "" {
+		model = "three-act"
+	}
 	duration := 30
-	if d, err := strconv.Atoi(r.FormValue("duration")); err == nil && d > 0 { duration = d }
+	if d, err := strconv.Atoi(r.FormValue("duration")); err == nil && d > 0 {
+		duration = d
+	}
 
 	var paths []string
 	for _, fh := range files {
 		f, err := fh.Open()
-		if err != nil { continue }
+		if err != nil {
+			continue
+		}
 		ext := strings.ToLower(filepath.Ext(fh.Filename))
 		filename := fmt.Sprintf("sb_%d%s", time.Now().UnixNano(), ext)
 		dst := filepath.Join(uploadDir(), filename)
 		out, _ := os.Create(dst)
 		io.Copy(out, f)
-		out.Close(); f.Close()
+		out.Close()
+		f.Close()
 		paths = append(paths, dst)
 	}
 

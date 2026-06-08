@@ -43,8 +43,12 @@ type SVGScene struct {
 
 // ExportSVG 从场景列表生成多个 SVG 文件
 func ExportSVG(scenes []SVGScene, outputDir string, width, height int) ([]string, error) {
-	if width <= 0 { width = 1920 }
-	if height <= 0 { height = 1080 }
+	if width <= 0 {
+		width = 1920
+	}
+	if height <= 0 {
+		height = 1080
+	}
 
 	os.MkdirAll(outputDir, 0755)
 	var paths []string
@@ -76,16 +80,24 @@ func ExportSVG(scenes []SVGScene, outputDir string, width, height int) ([]string
 
 	for _, s := range scenes {
 		bg := moodBg[s.Mood]
-		if bg == "" { bg = "#f5f0e6" }
+		if bg == "" {
+			bg = "#f5f0e6"
+		}
 		tc := moodText[s.Mood]
-		if tc == "" { tc = "#1a1a1a" }
+		if tc == "" {
+			tc = "#1a1a1a"
+		}
 		ac := moodAccent[s.Mood]
-		if ac == "" { ac = "#C43C3A" }
+		if ac == "" {
+			ac = "#C43C3A"
+		}
 
 		bodyLines := strings.Split(s.Body, "\n")
 		var bodySVG strings.Builder
 		for i, line := range bodyLines {
-			if line == "" { continue }
+			if line == "" {
+				continue
+			}
 			y := 120 + i*40
 			bodySVG.WriteString(fmt.Sprintf(
 				`    <text x="100" y="%d" font-family="system-ui" font-size="24" fill="%s">%s</text>`,

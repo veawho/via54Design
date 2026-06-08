@@ -132,9 +132,9 @@ func (c *Checker) checkCSS() []Issue {
 func (c *Checker) checkContent() []Issue {
 	var issues []Issue
 
-	checks := []struct{
-		pattern string
-		desc string
+	checks := []struct {
+		pattern  string
+		desc     string
 		severity string
 	}{
 		{"<section[^>]*>\\s*</section>", "empty <section>", "warning"},
@@ -152,7 +152,7 @@ func (c *Checker) checkContent() []Issue {
 
 	imgRe := regexp.MustCompile("(?i)<img[^>]+src=")
 	if len(imgRe.FindAllString(c.html, -1)) == 0 &&
-	   !strings.Contains(c.html, "background-image") {
+		!strings.Contains(c.html, "background-image") {
 		issues = append(issues, Issue{"info", "content", "No <img> tags"})
 	}
 

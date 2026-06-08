@@ -204,11 +204,11 @@ func TestBuildWorkflow_Overrides(t *testing.T) {
 	}
 
 	overrides := map[string]interface{}{
-		"steps":    40,
-		"cfg":      10.0,
-		"seed":     12345,
-		"width":    768,
-		"height":   768,
+		"steps":  40,
+		"cfg":    10.0,
+		"seed":   12345,
+		"width":  768,
+		"height": 768,
 	}
 	result, err := BuildWorkflow(tmpl, "test", "", overrides, nil)
 	if err != nil {

@@ -18,10 +18,10 @@ import (
 
 // ProviderPreset defines an LLM provider preset.
 type ProviderPreset struct {
-	Endpoint     string `json:"endpoint"`
-	Model        string `json:"model"`
-	KeyRequired  bool   `json:"key_required"`
-	Description  string `json:"description"`
+	Endpoint    string `json:"endpoint"`
+	Model       string `json:"model"`
+	KeyRequired bool   `json:"key_required"`
+	Description string `json:"description"`
 }
 
 // ProviderPresets is the built-in provider table.
@@ -63,39 +63,39 @@ var ProviderPresets = map[string]ProviderPreset{
 // DimensionFields lists the 36 semantic expansion dimensions.
 var DimensionFields = []string{
 	// core subject
-	"subject",        // 主体对象
-	"secondary",      // 辅助元素
+	"subject",   // 主体对象
+	"secondary", // 辅助元素
 	// style
-	"art_movement",   // 风格流派
-	"artist_ref",     // 艺术家参考
-	"medium",         // 媒介
-	"genre",          // 类型/题材
-	"hair",           // 发型/发色
-	"pose",           // 姿态/动态
+	"art_movement", // 风格流派
+	"artist_ref",   // 艺术家参考
+	"medium",       // 媒介
+	"genre",        // 类型/题材
+	"hair",         // 发型/发色
+	"pose",         // 姿态/动态
 	// composition
-	"camera_shot",    // 景别
+	"camera_shot",      // 景别
 	"composition_type", // 构图
-	"depth_of_field", // 景深
-	"view",           // 视角/视点
-	"format",         // 画幅
+	"depth_of_field",   // 景深
+	"view",             // 视角/视点
+	"format",           // 画幅
 	// lighting
-	"lighting",       // 光线
+	"lighting", // 光线
 	// color
-	"color_palette",  // 色彩
+	"color_palette", // 色彩
 	// environment
-	"environment",    // 环境
-	"weather",        // 天气
-	"era",            // 时代
-	"time",           // 时间
+	"environment", // 环境
+	"weather",     // 天气
+	"era",         // 时代
+	"time",        // 时间
 	// detail
-	"texture",        // 纹理
-	"effects",        // 效果
-	"material",       // 材质
-	"face",           // 面部
-	"detail",         // 细节
+	"texture",  // 纹理
+	"effects",  // 效果
+	"material", // 材质
+	"face",     // 面部
+	"detail",   // 细节
 	// quality
-	"quality_tags",   // 质量标签
-	"emotion",        // 情绪/氛围
+	"quality_tags", // 质量标签
+	"emotion",      // 情绪/氛围
 	// video control
 	"camera_movement",  // 运镜类型
 	"motion_intensity", // 运动强度
@@ -127,8 +127,8 @@ type ChatMessage struct {
 
 // ContentPart is a part of a multimodal message.
 type ContentPart struct {
-	Type     string       `json:"type"`
-	Text     string       `json:"text,omitempty"`
+	Type     string        `json:"type"`
+	Text     string        `json:"text,omitempty"`
 	ImageURL *ImageURLPart `json:"image_url,omitempty"`
 }
 

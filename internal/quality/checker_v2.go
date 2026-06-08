@@ -87,17 +87,17 @@ func (c *Checker) checkAccessibility() []Issue {
 func (c *Checker) checkAntiCliche() []Issue {
 	var issues []Issue
 	cliches := map[string]string{
-		"cutting-edge":         "Avoid 'cutting-edge' - be specific",
-		"leverage":             "Avoid 'leverage' - use concrete verbs",
-		"game-changer":         "Avoid 'game-changer' - show impact",
-		"revolutionary":        "Avoid 'revolutionary' - demonstrate value",
-		"disruptive":           "Avoid 'disruptive' - describe innovation",
-		"synergy":              "Avoid 'synergy' - describe collaboration",
+		"cutting-edge":          "Avoid 'cutting-edge' - be specific",
+		"leverage":              "Avoid 'leverage' - use concrete verbs",
+		"game-changer":          "Avoid 'game-changer' - show impact",
+		"revolutionary":         "Avoid 'revolutionary' - demonstrate value",
+		"disruptive":            "Avoid 'disruptive' - describe innovation",
+		"synergy":               "Avoid 'synergy' - describe collaboration",
 		"think outside the box": "Avoid cliche - describe approach",
-		"deep dive":            "Avoid 'deep dive' - describe analysis",
-		"circle back":          "Avoid 'circle back' - describe follow-up",
-		"low-hanging fruit":    "Avoid cliche - describe quick wins",
-		"best-in-class":        "Avoid 'best-in-class' - show comparison",
+		"deep dive":             "Avoid 'deep dive' - describe analysis",
+		"circle back":           "Avoid 'circle back' - describe follow-up",
+		"low-hanging fruit":     "Avoid cliche - describe quick wins",
+		"best-in-class":         "Avoid 'best-in-class' - show comparison",
 	}
 	lower := strings.ToLower(c.html)
 	for cliche, msg := range cliches {

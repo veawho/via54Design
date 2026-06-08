@@ -40,9 +40,13 @@ func loadTemplate(platform, baseDir string) *PromptTemplate {
 	}
 	for _, path := range candidates {
 		data, err := os.ReadFile(path)
-		if err != nil { continue }
+		if err != nil {
+			continue
+		}
 		var t PromptTemplate
-		if err := yaml.Unmarshal(data, &t); err == nil && t.ID != "" { return &t }
+		if err := yaml.Unmarshal(data, &t); err == nil && t.ID != "" {
+			return &t
+		}
 	}
 	return nil
 }

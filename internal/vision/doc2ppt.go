@@ -576,10 +576,10 @@ func extractFromPPTX(path string) map[string]interface{} {
 
 	if pres.SldIDLst == nil {
 		return map[string]interface{}{
-			"type":   "pptx",
-			"title":  strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
-			"total_slides": 0,
-			"slides": slides,
+			"type":            "pptx",
+			"title":           strings.TrimSuffix(filepath.Base(path), filepath.Ext(path)),
+			"total_slides":    0,
+			"slides":          slides,
 			"content_preview": "",
 		}
 	}
@@ -723,11 +723,11 @@ func extractFromImage(path string) map[string]interface{} {
 // generateGuidance generates guidance text for the user.
 func generateGuidance(ctype string, content map[string]interface{}) string {
 	guides := map[string]string{
-		"docx": "📄 检测到 Word 文档。已提取章节结构，建议逐章确认标题，\n然后选择配色方案和字体，点击「生成完整演示」。",
+		"docx":     "📄 检测到 Word 文档。已提取章节结构，建议逐章确认标题，\n然后选择配色方案和字体，点击「生成完整演示」。",
 		"markdown": "📝 检测到 Markdown 文件。已解析标题层级，\n建议补充每节的核心要点（每节 3-5 个 bullet），然后生成。",
-		"pptx": "📊 检测到已有 PPTX 文件。已提取每页文本和图片信息，\n可以选择保留原始风格或应用 via54 模板重新设计。",
-		"image": "🖼️ 检测到图片。已分析视觉特征（色彩/亮度/情绪），\n建议基于「",
-		"text": "📃 检测到纯文本。已自动分段，建议标注各段标题，\n并补充关键数据和图片需求。",
+		"pptx":     "📊 检测到已有 PPTX 文件。已提取每页文本和图片信息，\n可以选择保留原始风格或应用 via54 模板重新设计。",
+		"image":    "🖼️ 检测到图片。已分析视觉特征（色彩/亮度/情绪），\n建议基于「",
+		"text":     "📃 检测到纯文本。已自动分段，建议标注各段标题，\n并补充关键数据和图片需求。",
 	}
 	guide, ok := guides[ctype]
 	if !ok {

@@ -159,13 +159,13 @@ func vtracerPath() (string, error) {
 
 // TraceImageOpts VTracer 选项
 type TraceImageOpts struct {
-	Input       string // 输入图片路径
-	Output      string // 输出 SVG 路径
-	Hierarchical int   // 层次细节 (0-1, 默认0)
-	Threshold    int   // 二值化阈值 (0-255, 默认180)
-	PreDenoise   int   // 预降噪 (0-20, 默认1)
-	ColorPrecision int // 颜色精度 (默认6)
-	CornerThreshold int // 角点阈值 (默认98)
+	Input           string // 输入图片路径
+	Output          string // 输出 SVG 路径
+	Hierarchical    int    // 层次细节 (0-1, 默认0)
+	Threshold       int    // 二值化阈值 (0-255, 默认180)
+	PreDenoise      int    // 预降噪 (0-20, 默认1)
+	ColorPrecision  int    // 颜色精度 (默认6)
+	CornerThreshold int    // 角点阈值 (默认98)
 }
 
 // DefaultTraceOpts 书法矢量化推荐参数
