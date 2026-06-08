@@ -44,21 +44,25 @@ narratology, pptx, sdwebui, storyboard, svg, template-engine, video-generation
 - `question.md`
 - `pull_request_template.md`
 
-## ⚠️ 5. Discussions categories — **API 限制，需手动**
+## ⚠️ 5. Discussions categories — **✅ 全部完成 (8 个)**
 
-**已存在 6 个默认分类** (无法通过 API 创建更多):
+**6 个默认 + 2 个新建**:
 
-| Category | Slug | 用途 |
-|----------|------|------|
-| Announcements | `/announcements` | Releases, breaking changes |
-| General | `/general` | 通用讨论 |
-| Ideas | `/ideas` | Feature brainstorming |
-| Polls | `/polls` | 投票 |
-| Q&A | `/q-a` | Usage questions |
-| Show and tell | `/show-and-tell` | Templates, generated outputs |
+| Category | Slug | 描述 | 状态 |
+|----------|------|------|------|
+| 📢 Announcements | `/announcements` | Updates from maintainers | 默认 |
+| 💛 Contributors | `/contributors` | How to contribute, code review, design discussions | ✨ **新建** |
+| 💬 General | `/general` | Chat about anything and everything here | 默认 |
+| 💡 Ideas | `/ideas` | Share ideas for new features | 默认 |
+| 📊 Polls | `/polls` | Take a vote from the community | 默认 |
+| 🙏 Q&A | `/q-a` | Ask the community for help | 默认 |
+| 📚 Resources | `/resources` | Tutorials, blog posts, third-party integrations | ✨ **新建** |
+| 🙌 Show and tell | `/show-and-tell` | Show off something you've made | 默认 |
 
-> **GitHub GraphQL 与 REST API 都不支持** 创建 Discussion 分类。
-> 访问 https://github.com/veawho/via54Design/settings/categories 手动添加。
+> **GitHub API 限制**: Discussion 分类**只能**通过 UI 添加，GraphQL/REST 都不支持创建端点。
+> 实际路径: `https://github.com/<user>/<repo>/discussions` → Categories 旁的 🖊️ 铅笔图标 → New category
+> 每个分类有 4 种 Discussion Format: Open-ended / Q&A / Announcement / Poll
+> (旧版路径 `/settings/categories` 已废弃，返回 404)
 
 ## ✅ 6. Branch protection (`main`) — **已完成**
 
@@ -119,11 +123,11 @@ narratology, pptx, sdwebui, storyboard, svg, template-engine, video-generation
 | About 描述 | ✅ 自动 | `gh repo edit --description` |
 | 20 Topics | ✅ 自动 | `gh api PUT /repos/.../topics` |
 | Discussions 启用 | ✅ 自动 | `gh repo edit --enable-discussions` |
+| 8 Discussion 分类 (6+2) | ✅ **手动** (UI) | /discussions → 🖊️ → New category |
 | 18 Labels | ✅ 自动 | `gh label create` |
 | 分支保护 | ✅ 自动 | `gh api PUT /branches/main/protection` |
 | Squash merge | ✅ 自动 | `gh repo edit --enable-squash-merge` |
 | Auto-delete branches | ✅ 自动 | `gh repo edit --delete-branch-on-merge` |
-| **Discussion 分类** | ⚠️ 手动 | GitHub UI (API 限制) |
 | **首个 Release** | ⚠️ 手动 | `gh release create` |
 | **Social preview** | ⚠️ 手动 | 上传 1280×640 PNG |
 
