@@ -7,11 +7,20 @@
 huashu
 
 # Built project binaries (no extension on Linux/macOS)
-via54
+# Use leading slash + extension OR explicit binary name to avoid matching directories
+/via54.exe
+/via54
+via54-mcp.exe
 via54-mcp
 via54_new.exe
 via54_test.exe
 via54.exe~
+
+# Explicit binary paths under cmd/ (don't match the cmd/via54/ directory)
+/cmd/via54/via54
+/cmd/via54/via54.exe
+/cmd/via54/via54-mcp
+/cmd/via54/via54-mcp.exe
 
 # Build output
 dist/
