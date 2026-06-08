@@ -1,17 +1,45 @@
 # via54Design Makefile
 # Standard Go project build automation
 # Builds: via54 (CLI) + via54-mcp (MCP Server)
-
+#
+# --- GOFLAGS environment variable ---
+# GOFLAGS controls additional flags passed to all `go build` invocations.
+# Default: -buildvcs=false (safe for exFAT/FAT32 without file locking)
+# Override:  GOFLAGS="-v" make build   (your own flags)
+# Disable:   GOFLAGS="" make build      (VCS stamping enabled, may fail on exFAT)
+#
+# Why -buildvcs=false by default?
+#   Go 1.18+ embeds VCS info (commit hash) in the binary. Reading this requires
+#   file locking on .git/. On exFAT/FAT32/SD cards (no file locking), the read
+#   may corrupt the git index. -buildvcs=false skips this read entirely.
+#   No effect on NTFS, APFS, ext4, btrfs. Safe everywhere.
+#
 BINARY    := via54
 BINARY_MCP := via54-mcp
 VERSION   := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 LDFLAGS   := -ldflags="-s -w -X main.Version=$(VERSION)"
-# GOFLAGS=-buildvcs=false disables VCS stamping (e.g. git commit hash embedded in binary).
-# Required for exFAT / FAT32 filesystems which don't support file locking and may corrupt
-# the VCS status read. Has no effect on NTFS or any modern filesystem with proper locking.
-GOFLAGS   ?= -buildvcs=false
 
-.PHONY: all build build-mcp test clean install lint wasm cross
+# Auto-detect exFAT/FAT32 filesystems (no file locking).
+# On these filesystems, -buildvcs=false is REQUIRED to avoid "dubious ownership"
+# errors and possible .git/ index corruption. The check uses df's fstype column.
+ifeq ($(shell uname -s),Darwin)
+  # macOS: stat -f %T  returns filesystem type. exFAT = "exfat", FAT32 = "msdos".
+  REPO_FS := $(shell cd $(dir $(abspath $(lastword $(MAKEFILE_LIST)))) && stat -f %T . 2>/dev/null)
+  NEEDS_NO_VCS := $(filter exfat msdos,$(REPO_FS))
+else ifeq ($(shell uname -s),Linux)
+  # Linux: df --output=fstype .  works on most systems. exFAT = "exfat", FAT32 = "vfat".
+  REPO_FS := $(shell cd $(dir $(abspath $(lastword $(MAKEFILE_LIST)))) && df --output=fstype . 2>/dev/null | tail -1 | tr -d ' ')
+  NEEDS_NO_VCS := $(filter exfat vfat msdos,$(REPO_FS))
+else
+  # Windows / other: assume NTFS (no detection needed; VCS works fine).
+  NEEDS_NO_VCS :=
+endif
+
+# Default GOFLAGS: include -buildvcs=false if on exFAT/FAT32, otherwise empty.
+# User can override via environment: GOFLAGS="-v" make build
+GOFLAGS   ?= $(if $(NEEDS_NO_VCS),-buildvcs=false,)
+
+.PHONY: all build build-mcp test clean install install-mcp lint wasm cross release help fs-check
 
 all: build build-mcp
 
@@ -37,6 +65,22 @@ install: build ## 安装 CLI 到 GOPATH/bin
 install-mcp: build-mcp ## 安装 MCP Server 到 GOPATH/bin
 	go install $(LDFLAGS) ./cmd/mcp-server/
 
+fs-check: ## 检测当前文件系统类型 (exFAT/FAT32/NTFS/APFS)
+	@echo "Current filesystem:"
+	@case "$$(uname -s)" in
+	  Darwin)  echo "  macOS:  $$(stat -f %T .)" ;;
+	  Linux)   echo "  Linux:  $$(df --output=fstype . 2>/dev/null | tail -1)" ;;
+	  MINGW*|MSYS*) echo "  Windows: NTFS (assumed)" ;;
+	  *)       echo "  Unknown: $$(uname -s)" ;;
+	esac
+	@echo ""
+	@echo "GOFLAGS in effect: '$(GOFLAGS)'"
+	@if [ -n "$(NEEDS_NO_VCS)" ]; then \
+		echo "  ⚠️  Detected exFAT/FAT32 — -buildvcs=false is REQUIRED"; \
+	else \
+		echo "  ✓  Modern filesystem detected — GOFLAGS empty (no override needed)"; \
+	fi
+
 wasm: ## 编译 Rust WASM 引擎 (需要 Rust)
 	cd hack/wasm && bash build.sh
 
@@ -46,11 +90,11 @@ cross: ## 跨平台编译 (CLI + MCP 双二进制, 5 平台)
 	@for binary in ./cmd/via54/ ./cmd/mcp-server/; do \
 		name=via54; \
 		[ "$$binary" = "./cmd/mcp-server/" ] && name=via54-mcp; \
-		GOOS=darwin  GOARCH=amd64 go build $(LDFLAGS) -o dist/$$name-darwin-amd64     $$binary; \
-		GOOS=darwin  GOARCH=arm64 go build $(LDFLAGS) -o dist/$$name-darwin-arm64     $$binary; \
-		GOOS=linux   GOARCH=amd64 go build $(LDFLAGS) -o dist/$$name-linux-amd64      $$binary; \
-		GOOS=linux   GOARCH=arm64 go build $(LDFLAGS) -o dist/$$name-linux-arm64      $$binary; \
-		GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o dist/$$name-windows-amd64.exe $$binary; \
+		GOOS=darwin  GOARCH=amd64 go build $(GOFLAGS) $(LDFLAGS) -o dist/$$name-darwin-amd64     $$binary; \
+		GOOS=darwin  GOARCH=arm64 go build $(GOFLAGS) $(LDFLAGS) -o dist/$$name-darwin-arm64     $$binary; \
+		GOOS=linux   GOARCH=amd64 go build $(GOFLAGS) $(LDFLAGS) -o dist/$$name-linux-amd64      $$binary; \
+		GOOS=linux   GOARCH=arm64 go build $(GOFLAGS) $(LDFLAGS) -o dist/$$name-linux-arm64      $$binary; \
+		GOOS=windows GOARCH=amd64 go build $(GOFLAGS) $(LDFLAGS) -o dist/$$name-windows-amd64.exe $$binary; \
 	done
 	@echo "=== 编译完成 ==="
 	@ls -lh dist/ | grep -v "^total" | awk '{print $$5, $$NF}' | column -t
