@@ -22,13 +22,14 @@ import (
 	"os"
 
 	"github.com/veawho/via54Design/internal/mcp"
+	"github.com/veawho/via54Design/internal/util"
 )
 
 func main() {
 	httpAddr := flag.String("http", "", "HTTP 监听地址 (如 :8080)")
 	flag.Parse()
 
-	srv, err := mcp.New(baseDir())
+	srv, err := mcp.New(util.FindBaseDir())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "MCP 初始化失败: %v\n", err)
 		os.Exit(1)
@@ -47,29 +48,4 @@ func main() {
 			os.Exit(1)
 		}
 	}
-}
-
-func baseDir() string {
-	exe, _ := os.Executable()
-	dir := exe
-	// Walk up to find templates/ directory
-	for i := 0; i < 5; i++ {
-		if _, err := os.Stat(dir + "/templates"); err == nil {
-			return dir
-		}
-		parent := dir[:len(dir)-1]
-		lastSlash := parent
-		for j := len(parent) - 1; j >= 0; j-- {
-			if parent[j] == '/' || parent[j] == '\\' {
-				lastSlash = parent[:j]
-				break
-			}
-		}
-		if lastSlash == parent || lastSlash == "" {
-			break
-		}
-		dir = lastSlash
-	}
-	wd, _ := os.Getwd()
-	return wd
 }
