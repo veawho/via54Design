@@ -19,6 +19,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/veawho/via54Design/internal/export"
@@ -214,6 +215,11 @@ func buildScenesFromNarrative(narrativePath string) []export.SVGScene {
 	}
 	var sc map[string]interface{}
 	if err := yaml.Unmarshal(data, &sc); err != nil {
+		// errors.As: 提取 yaml 详细错误
+		var yamlErr *yaml.TypeError
+		if errors.As(err, &yamlErr) {
+			fmt.Fprintf(os.Stderr, "yaml 解析错误: %v\n", yamlErr)
+		}
 		return nil
 	}
 	beats, ok := sc["beats"].([]interface{})
@@ -249,6 +255,11 @@ func buildSceneDataFromNarrative(narrativePath string) []export.SceneData {
 	}
 	var sc map[string]interface{}
 	if err := yaml.Unmarshal(data, &sc); err != nil {
+		// errors.As: 提取 yaml 详细错误
+		var yamlErr *yaml.TypeError
+		if errors.As(err, &yamlErr) {
+			fmt.Fprintf(os.Stderr, "yaml 解析错误: %v\n", yamlErr)
+		}
 		return nil
 	}
 	beats, ok := sc["beats"].([]interface{})

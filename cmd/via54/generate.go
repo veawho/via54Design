@@ -19,6 +19,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/veawho/via54Design/internal/narrate"
@@ -92,7 +93,13 @@ func generateFromNarrative(eng *template.Engine, narrativePath, layoutOverride, 
 
 	var scaffold narrate.NarrativeScaffold
 	if err := yaml.Unmarshal(data, &scaffold); err != nil {
-		fmt.Fprintf(os.Stderr, "解析叙事文件失败: %v\n", err)
+		// errors.As: 提取 yaml 详细错误位置 (line/column)
+		var yamlErr *yaml.TypeError
+		if errors.As(err, &yamlErr) {
+			fmt.Fprintf(os.Stderr, "解析叙事文件失败 (yaml 类型错误): %v\n", yamlErr)
+		} else {
+			fmt.Fprintf(os.Stderr, "解析叙事文件失败: %v\n", err)
+		}
 		os.Exit(1)
 	}
 

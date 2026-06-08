@@ -23,6 +23,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
+
+	"github.com/veawho/via54Design/internal/util"
 )
 
 type Registry struct {
@@ -84,10 +86,10 @@ func (r *Registry) resolve(entries []RegistryEntry, id string) (string, error) {
 					return p, nil
 				}
 			}
-			return "", fmt.Errorf("template file not found: %s", e.File)
+			return "", util.WrapNotFound(nil, "template file not found: %s", e.File)
 		}
 	}
-	return "", fmt.Errorf("template not found: %s", id)
+	return "", util.WrapNotFound(nil, "template not found: %s", id)
 }
 
 func (r *Registry) ListAll() map[string][]RegistryEntry {
