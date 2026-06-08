@@ -241,10 +241,10 @@ via54 (Go CLI) ← 结构化执行: 模板组合/叙事/导出/质量门禁
 - 压力测试: 200次连续生成无错误
 
 ### Git 惯例
-- 提交信息: `type: 描述`
-- type: `feat` / `fix` / `refactor` / `docs` / `license` / `test`
-- 每次大改动后必须有 `git push`
-- 变更清单附在提交信息尾部
+# 提交信息: `type: 描述`
+# type: `feat` / `fix` / `refactor` / `docs` / `license` / `test`
+# 每次大改动后必须有 `git push`
+# 变更清单附在提交信息尾部
 
 ### 常见陷阱 (AI 注意)
 - `empty_scene` 返回 exit=1 是正确行为，不是 bug
@@ -252,6 +252,8 @@ via54 (Go CLI) ← 结构化执行: 模板组合/叙事/导出/质量门禁
 - `baseDir()` 在 prompt_cmd.go 中未定义 → 由 `main.go` 的 `baseDir()` 提供
 - `lab_dispatch.py` 派单到子 agent 时用 Python，不是 Shell
 - Provider 为 `ollama/hermes/local` 时不需 API key
+- **平台 ID**: 真实 ID 是 `hero-split-16-9 / bento-grid-2x2 / gallery-waterfall`，不是 `hero`
+- **generate 输出**: 写到 `output.html` 文件，不是 stdout
 
 ---
 

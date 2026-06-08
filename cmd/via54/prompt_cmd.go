@@ -86,6 +86,14 @@ func cmdPromptGenerate() {
 		os.Exit(1)
 	}
 
+	// 验证平台
+	if !isValidPlatform(*platform) {
+		fmt.Fprintf(os.Stderr, "❌ 未知平台: %q\n", *platform)
+		fmt.Fprintf(os.Stderr, "可用平台: %s\n", strings.Join(listPlatforms(), ", "))
+		fmt.Fprintln(os.Stderr, "运行 `via54 prompt list` 查看完整列表")
+		os.Exit(1)
+	}
+
 	s, err := prompt.GeneratePrompt(*scene, *platform, *ref, bd)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "生成失败: %v\n", err)
@@ -182,29 +190,31 @@ func cmdPromptRef() {
 }
 
 func listPromptPlatforms() {
+	platforms := listPlatforms()
 	fmt.Println("可用平台 (36维度控制 v3.1 — 含视频参数):")
-	for _, p := range []struct{n, d string}{
-		{"midjourney", "Midjourney 图片生成 — 26维度 + Token权重"},
-		{"flux", "Flux Pro 图片生成"},
-		{"dalle3", "DALL-E 3 / OpenAI"},
-		{"sd3", "Stable Diffusion 3.5 / SDXL"},
-		{"stable_diffusion", "Stable Diffusion (通用)"},
-		{"ideogram", "Ideogram 3"},
-		{"recraft", "Recraft V3"},
-		{"seedance", "Seedance 2.0"},
-		{"gemini", "Google Gemini Imagen"},
-		{"jimeng", "即梦 AI 图片生成"},
-		// Video platforms
-		{"veo", "Google Veo 3 (视频) — 36维度"},
-		{"sora", "OpenAI Sora (视频) — 36维度"},
-		{"kling", "可灵 AI 视频/图片 — 36维度"},
-		{"pika", "Pika 4.0 (视频) — 36维度"},
-		{"video_generic", "通用视频生成 — 36维度 (含10维视频控制)"},
-		{"video_camera", "相机运镜视频 — 聚焦运镜控制"},
-		{"video_keyframe", "关键帧视频 — 多镜头关键帧描述"},
-	} {
-		fmt.Printf("  %-20s  %s\n", p.n, p.d)
+	for _, p := range platforms {
+		fmt.Printf("  %s\n", p)
 	}
+}
+
+// listPlatforms 返回所有有效平台列表
+func listPlatforms() []string {
+	return []string{
+		"midjourney", "flux", "dalle3", "sd3", "stable_diffusion",
+		"ideogram", "recraft", "seedance", "gemini", "jimeng",
+		"veo", "sora", "kling", "pika",
+		"video_generic", "video_camera", "video_keyframe",
+	}
+}
+
+// isValidPlatform 检查平台名是否在支持列表中
+func isValidPlatform(p string) bool {
+	for _, v := range listPlatforms() {
+		if v == p {
+			return true
+		}
+	}
+	return false
 }
 
 func cmdPromptGallery() {

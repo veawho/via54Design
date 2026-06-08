@@ -232,7 +232,7 @@ func handlePrompt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execute via54 prompt CLI
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	args := []string{"prompt", "--scene", scene, "--platform", platform, "--format", outFormat}
 	cmd := exec.Command(exe, args...)
 	cmd.Dir = baseDir
@@ -282,7 +282,7 @@ func handleGenerate(w http.ResponseWriter, r *http.Request) {
 		title = "via54Design"
 	}
 
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	args := []string{
 		"generate", "--layout", layout, "--color", color,
 		"--font", font, "--title", title,
@@ -336,7 +336,7 @@ func handleNarrate(w http.ResponseWriter, r *http.Request) {
 		outFormat = "markdown"
 	}
 
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	args := []string{
 		"narrate", "--seed", seed, "--model", model,
 		"--duration", strconv.Itoa(duration), "--format", outFormat,
@@ -380,7 +380,7 @@ func handleExport(w http.ResponseWriter, r *http.Request) {
 		output = fmt.Sprintf("output.%s", expType)
 	}
 
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	args := []string{"export", expType}
 	if source != "" {
 		args = append(args, source)
@@ -426,7 +426,7 @@ func handleMedia(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	args := []string{"media", action}
 	if source != "" {
 		args = append(args, source)
@@ -593,7 +593,7 @@ func handleImg2Prompt(w http.ResponseWriter, r *http.Request) {
 	// Generate the base prompt from image analysis
 	scene := vision.BuildPromptFromAnalysisMap(analysis, userDesc)
 
-	cli := filepath.Join(baseDir, "via54.exe")
+	cli := selfPath()
 	args := []string{"prompt", "--scene", scene, "--platform", platform, "--format", "markdown"}
 	cmd2 := exec.Command(cli, args...)
 	cmd2.Dir = baseDir
@@ -876,6 +876,15 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 // HTMX Handlers — return HTML fragments, no JS required
 // ═══════════════════════════════════════════════════════
 
+// selfPath returns the path to the current executable (cross-platform)
+func selfPath() string {
+	exe, err := os.Executable()
+	if err != nil {
+		return "via54"
+	}
+	return exe
+}
+
 func htmxWrite(w http.ResponseWriter, html string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(html))
@@ -938,23 +947,35 @@ func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+
 func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" { htmxError(w, "use POST"); return }
 	if err := r.ParseForm(); err != nil { htmxError(w, err.Error()); return }
+	exePath := selfPath()
+	if _, statErr := os.Stat(exePath); statErr != nil {
+		htmxError(w, fmt.Sprintf("selfPath binary not found: %s - %v", exePath, statErr))
+		return
+	}
 
 	title := r.FormValue("title")
 	if title == "" { title = "via54Design" }
 	mode := r.FormValue("mode")
+	layout := r.FormValue("layout")
+	if layout == "" { layout = "hero-split-16-9" }
+	color := r.FormValue("color")
+	if color == "" { color = "ink-wash" }
+	font := r.FormValue("font")
+	if font == "" { font = "ming-hei-editorial" }
 	pres := mode == "presentation"
 
-	exe := filepath.Join(baseDir, "via54.exe")
-	args := []string{"generate", "--layout", "hero", "--color", "ink-wash", "--font", "ming-hei-editorial", "--title", title}
+	exe := selfPath()
+	args := []string{"generate", "--layout", layout, "--color", color, "--font", font, "--title", title}
 	if pres { args = append(args, "--presentation") }
 	cmd := exec.Command(exe, args...)
 	cmd.Dir = baseDir
-	out, err := cmd.Output()
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		htmxError(w, fmt.Sprintf("生成失败: %v", err))
+		htmxError(w, fmt.Sprintf("生成失败: %v\n<pre style='font-size:11px'>%s</pre>", err, string(out)))
 		return
 	}
 	htmxWrite(w, fmt.Sprintf(`<div class="output-area">✅ 已生成 (%d bytes)<br><br><a href="/api/htmx/download?name=%s" class="btn-small">📥 下载 HTML</a></div>`, len(out), title))
@@ -969,7 +990,7 @@ func handleHTMXPrompt(w http.ResponseWriter, r *http.Request) {
 	if scene == "" { htmxError(w, "请输入场景描述"); return }
 	if platform == "" { platform = "midjourney" }
 
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	cmd := exec.Command(exe, "prompt", "--scene", scene, "--platform", platform, "--format", "markdown")
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
@@ -994,7 +1015,7 @@ func handleHTMXNarrate(w http.ResponseWriter, r *http.Request) {
 	duration := 30
 	if d, err := strconv.Atoi(durationStr); err == nil && d > 0 { duration = d }
 
-	exe := filepath.Join(baseDir, "via54.exe")
+	exe := selfPath()
 	cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", model, "--duration", strconv.Itoa(duration), "--format", "markdown")
 	cmd.Dir = baseDir
 	out, err := cmd.Output()
@@ -1083,7 +1104,7 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 		}
 		htmxWrite(w, `<div class="output-area"><ol>`+out+`</ol></div>`)
 	} else if seed != "" {
-		exe := filepath.Join(baseDir, "via54.exe")
+		exe := selfPath()
 		cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", "three-act", "--duration", "30", "--format", "markdown")
 		cmd.Dir = baseDir
 		result, err := cmd.Output()
