@@ -49,6 +49,24 @@ else
   echo "  ⚠️ 无法获取最新版本，手动编译: make build build-mcp"
 fi
 
+# ── 文件系统检测 (仅当用户从源码编译时) ──
+echo ""
+echo "[fs-check] 检测文件系统..."
+FS_TYPE=$(stat -f %T . 2>/dev/null || echo "unknown")
+case "$FS_TYPE" in
+  exfat|msdos)
+    echo "  ⚠️  当前在 exFAT/FAT32 卷上编译"
+    echo "  提示: 已发布二进制已包含 -buildvcs=false, 可直接用"
+    echo "  若从源码编译, Makefile 会自动添加该标志 (无需手动)"
+    ;;
+  apfs|hfs)
+    echo "  ✓  APFS/HFS+ — 文件锁正常, 无需特殊处理"
+    ;;
+  *)
+    echo "  未知文件系统: $FS_TYPE"
+    ;;
+esac
+
 echo ""
 echo "=== 完成 ==="
 echo "运行 via54 web 启动 Web UI"

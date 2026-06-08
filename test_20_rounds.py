@@ -9,7 +9,7 @@ import os
 import json
 import hashlib
 
-REPO = r'C:\Users\via54\AppData\Local\Temp\via54Design'
+REPO = os.path.dirname(os.path.abspath(__file__))
 BIN = os.path.join(REPO, 'via54_test.exe')
 if os.path.exists(os.path.join(REPO, 'via54.exe')):
     BIN = os.path.join(REPO, 'via54.exe')
@@ -32,7 +32,7 @@ def run(cmd, timeout=30, cwd=REPO, input_text=None):
         cmd = cmd.split()
     t0 = time.time()
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout,
+        r = subprocess.run(cmd, capture_output=True, encoding='utf-8', timeout=timeout,
                           cwd=cwd, input=input_text)
         dur = int((time.time() - t0) * 1000)
         return r.returncode, r.stdout, r.stderr, dur
@@ -87,7 +87,7 @@ else:
 
 # interactive
 proc = subprocess.Popen([BIN], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                       stdin=subprocess.PIPE, text=True)
+                       stdin=subprocess.PIPE, encoding='utf-8')
 try:
     out, err = proc.communicate(input="0\n", timeout=10)
     if "via54Design" in out and "退出" in out:

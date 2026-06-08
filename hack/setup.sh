@@ -114,8 +114,34 @@ if [ ! -f "$REPO_DIR/go.mod" ]; then
 fi
 
 cd "$REPO_DIR"
+# Makefile 自动检测 exFAT/FAT32, 在此类卷上自动加 -buildvcs=false
 go build -o via54 ./cmd/huashu/ 2>&1
 ok "编译完成: $(ls -lh via54 | awk '{print $5}')"
+
+# 文件系统健康检查 (仅在 Linux/macOS 上)
+if command -v stat &>/dev/null || command -v df &>/dev/null; then
+    echo ""
+    info "文件系统检测 (make fs-check 看详情):"
+    case "$(uname -s)" in
+      Darwin)
+        FS=$(stat -f %T "$REPO_DIR" 2>/dev/null)
+        case "$FS" in
+          exfat|msdos) warn "检测到 $FS — Go 1.18+ 在此卷上 VCS 嵌入可能失败, Makefile 已自动处理" ;;
+          apfs|hfs)    ok   "APFS/HFS+ — VCS 嵌入正常" ;;
+          *)           info "$FS" ;;
+        esac
+        ;;
+      Linux)
+        FS=$(df --output=fstype "$REPO_DIR" 2>/dev/null | tail -1 | tr -d ' ')
+        case "$FS" in
+          exfat|vfat|msdos) warn "检测到 $FS — Go 1.18+ 在此卷上 VCS 嵌入可能失败, Makefile 已自动处理" ;;
+          ext4|ext3|btrfs|xfs|zfs) ok   "$FS — 文件锁正常" ;;
+          ntfs|fuseblk) ok   "NTFS — 文件锁正常" ;;
+          *)           info "$FS" ;;
+        esac
+        ;;
+    esac
+fi
 
 # ── 5. 安装 Playwright 浏览器 ──
 echo ""

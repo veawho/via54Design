@@ -280,10 +280,29 @@ via54 (Go CLI) ← 结构化执行: 模板组合/叙事/提示词/导出/质量�
 
 ### 常用命令
 ```bash
-go build -o via54.exe ./cmd/via54/     # 编译
+make build build-mcp                  # 编译 (推荐用 Makefile, 自动检测 exFAT)
+make fs-check                        # 查看当前文件系统类型 + GOFLAGS 状态
+make cross                           # 跨平台编译 (5 平台)
 ./via54.exe prompt --scene "..." --platform midjourney  # 生成提示词
-./via54.exe prompt list                # 列表所有平台
-python test_20_rounds.py               # 20轮端到端测试
+./via54.exe prompt list               # 列表所有平台
+python test_20_rounds.py             # 20 轮端到端测试
+```
+
+### GOFLAGS 自动检测
+Makefile 会自动检测**当前目录的文件系统**:
+- **NTFS / APFS / ext4 / btrfs / xfs**: GOFLAGS 为空 (VCS 嵌入正常, 无问题)
+- **exFAT / FAT32 / vfat**: 自动加 `-buildvcs=false` (避免 file lock 缺失导致 git 索引损坏)
+
+**覆盖示例**:
+```bash
+# 强制使用 -v 显示详细构建
+GOFLAGS="-v" make build
+
+# 禁用自动检测, 用 VCS 嵌入 (仅在 NTFS/APFS 上安全)
+GOFLAGS="" make build
+
+# 查看当前 GOFLAGS 计算结果
+make fs-check
 ```
 
 ### 添加新平台
