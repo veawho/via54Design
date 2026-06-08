@@ -1,0 +1,125 @@
+# golangci-lint configuration
+# https://golangci-lint.run/usage/configuration/
+run:
+  timeout: 5m
+  tests: true
+  build-tags:
+    - integration
+  skip-dirs:
+    - vendor
+    - .git
+    - dist
+  skip-files:
+    - ".*\\.pb\\.go$"
+    - ".*_gen\\.go$"
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters:
+  disable-all: true
+  enable:
+    # Default enabled
+    - errcheck       # errcheck is a program for checking for unchecked errors in go programs
+    - gosimple       # Linter for code that should be rewritten
+    - govet          # Vet examines Go source code and reports suspicious constructs
+    - ineffassign    # Detects when assignments to existing variables are not used
+    - staticcheck    # Staticcheck is a state of the art linter for the Go programming language
+    - typecheck      # Like the front-end of a Go compiler
+    - unused         # Checks Go code for unused constants, variables, functions and types
+
+    # Additional
+    - bodyclose      # Checks whether HTTP response body is closed
+    - errorlint      # errorlint is a linter for that can be used to find code that will cause problems with the error wrapping scheme introduced in Go 1.13
+    - gocritic       # Provides diagnostics that check for bugs, performance and style issues
+    - gocyclo        # Computes and checks the cyclomatic complexity of functions
+    - gofmt          # Gofmt checks whether code was gofmt-ed
+    - goimports      # Check import statements are properly ordered
+    - misspell       # Finds commonly misspelled English words in comments
+    - nakedret       # Finds naked returns in functions greater than a specified function length
+    - prealloc       # Finds slice declarations that could potentially be pre-allocated
+    - revive         # golint replacement, fast, configurable, extensible, stylish
+    - stylecheck     # Stylecheck is a replacement for golint
+    - tparallel      # detects inappropriate usage of t.Parallel()
+    - unconvert      # Remove unnecessary type conversions
+    - unparam        # Reports unused function parameters
+    - whitespace     # Tool for detection of leading and trailing whitespace
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - hugeParam
+      - rangeValCopy
+      - ifElseChain
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/veawho/via54Design
+  revive:
+    rules:
+      - name: var-naming
+      - name: package-comments
+      - name: exported
+        disabled: false
+      - name: error-strings
+      - name: error-returning
+      - name: error-naming
+      - name: var-declaration
+      - name: range
+      - name: indent-error-flow
+      - name: superfluous-else
+      - name: early-return
+      - name: unused-parameter
+  misspell:
+    locale: US
+  nakedret:
+    max-func-lines: 30
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: true
+
+issues:
+  # Exclude some linters from running on tests files
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - goconst
+        - gomnd
+        - revive
+        - prealloc
+        - ineffassign
+        - typecheck
+
+    # Exclude known linter issues
+    - text: "var-naming|don't use underscores in Go names"
+      linters:
+        - revive
+
+    # Exclude generated files
+    - path: internal/export/pptx.go
+      text: "line is too long"
+      linters:
+        - lll
+        - stylecheck
+
+  # Maximum issues count per linter
+  max-issues-per-linter: 50
+
+  # Maximum count of issues with the same text
+  max-same-issues: 3
+
+  # Show all issues from a linter
+  exclude-use-default: false
