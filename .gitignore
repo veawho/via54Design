@@ -28,4 +28,14 @@ node_modules/
 
 # Test outputs
 *.html
-*.exe
+
+# Python
+__pycache__/
+*.pyc
+
+# Uploads
+web/uploads/
+
+# Build artifacts
+*.exe~
+via54_new.exe

@@ -1,0 +1,129 @@
+    <!-- Phase 4: 生成 — 三路并行 + Prompt/叙事工程 -->
+    <div class="phase-pane" data-phase="4">
+      <h2>Phase 4 · 生成 — 三路并行</h2>
+      <p class="phase-sub">三套设计逻辑 + Prompt/叙事生成，一次性产出多种方向。</p>
+      <div class="tool-grid">
+        <div class="tool-card"><h3>🎲 逻辑一 · 秒数轮盘</h3>
+          <div class="output-area" id="p4Roll" style="min-height:80px">🎲 读取时间秒数，随机从 20 种风格库抽号...</div>
+          <div class="btn-row"><button class="btn btn-secondary btn-sm" onclick="rollStyle()">🎲 重新抽号</button></div>
+        </div>
+        <div class="tool-card"><h3>🏆 逻辑二 · 现实参照</h3>
+          <div class="output-area" id="p4Ref" style="min-height:80px">🏆 寻找最佳现实参照案例...</div>
+        </div>
+        <div class="tool-card"><h3>🧠 逻辑三 · 最佳设计师</h3>
+          <div class="output-area" id="p4Best" style="min-height:80px">🧠 假如预算不限，最适合这个项目的工作室...</div>
+        </div>
+        <div class="tool-card" data-offline="core"><h3>📝 Prompt 工程</h3>
+          <div class="form-group"><label>场景描述</label><textarea id="p4Prompt" rows="2" placeholder="Describe the scene..."></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>平台</label><select id="p4Platform"><option value="flux">Flux</option><option value="midjourney">Midjourney</option><option value="forge">Forge</option><option value="comfyui">ComfyUI</option><option value="sdxl">SDXL</option></select></div>
+            <div class="form-group"><label>尺寸</label><select id="p4Ratio"><option>16:9</option><option>1:1</option><option>9:16</option></select></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="p4PromptBtn">✨ 生成 Prompt</button>
+            <button class="btn btn-secondary" id="p4BuildBtn">📦 构建工作流</button>
+          </div>
+          <div class="output-area" id="p4Output" style="margin-top:6px;min-height:50px;font-size:11px"></div>
+        </div>
+        <div class="tool-card" data-offline="core"><h3>📖 叙事引擎</h3>
+          <div class="form-group"><label>一句话故事种子</label><textarea id="p4Narrate" rows="2" placeholder="A hero discovers a hidden power..."></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>叙事模型</label><select id="p4NarrateModel"><option value="three-act">三幕结构</option><option value="heros-journey">英雄之旅</option><option value="cognitive-arc">认知弧</option><option value="problem-solution">问题→方案</option></select></div>
+            <div class="form-group"><label>时长(s)</label><input type="number" id="p4NarrateDur" value="30" min="5" max="300" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px 10px"></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" id="p4NarrateBtn">📖 生成故事</button></div>
+          <div class="output-area" id="p4NarrateOut" style="margin-top:6px;min-height:50px;font-size:11px"></div>
+        </div>
+        <div class="tool-card" data-offline="core"><h3>🖼️ 图片→提示词</h3>
+          <div class="upload-zone" id="uploadZone" style="border:2px dashed var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;margin-bottom:6px">
+            <div style="font-size:24px;opacity:0.5">📁</div>
+            <div style="font-size:12px;color:var(--text-secondary)">点击上传图片</div>
+            <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+          </div>
+          <div id="uploadPreview" style="display:none;margin-bottom:6px;text-align:center">
+            <img id="previewImg" style="max-width:100%;max-height:100px;border-radius:var(--radius-sm)">
+            <div style="font-size:10px;color:var(--text-dim)" id="uploadMeta"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:6px"><textarea id="p4ImgDesc" rows="1" placeholder="补充描述（可选）"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-secondary btn-sm" id="p4ImgAnalyzeBtn" disabled>🔍 分析</button>
+            <button class="btn btn-primary btn-sm" id="p4ImgPromptBtn" disabled>🎯 生成提示词</button>
+          </div>
+          <div id="imgAnalysis" style="display:none;margin-top:6px">
+            <div class="color-strip" id="imgColors"></div>
+            <div class="output-area" id="imgAnalysisText" style="min-height:30px;font-size:10px"></div>
+          </div>
+          <div class="output-area" id="imgPromptOutput" style="display:none;min-height:50px;font-size:11px;margin-top:6px"></div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:12px"><button class="btn btn-primary" onclick="nextPhase(5)">进入深化 →</button></div>
+    </div>
+
+    <!-- Phase 5: 深化 — 多媒体创作 + 提交后端 -->
+    <div class="phase-pane" data-phase="5">
+      <h2>Phase 5 · 深化 — 设计 / 视频 / 文档 / 提交</h2>
+      <p class="phase-sub">从 Phase 4 的产出中选择方向，深化为具体作品，或提交到后端生成。</p>
+      <div class="tool-grid">
+        <div class="tool-card" data-offline="core"><h3>🎨 设计生成</h3>
+          <div class="form-group"><label>标题</label><input type="text" id="p5Title" value="via54Design"></div>
+          <div class="form-row">
+            <div class="form-group"><label>布局</label><select id="p5Layout"><option>hero-split-16-9</option><option>bento-grid-2x2</option><option>gallery-waterfall</option></select></div>
+            <div class="form-group"><label>模式</label><select id="p5Mode"><option value="false">网页</option><option value="true">演示文稿</option></select></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" id="p5GenBtn">🎨 生成 HTML</button></div>
+          <div class="output-area" id="p5Output" style="margin-top:6px;min-height:50px;font-size:11px"></div>
+        </div>
+        <div class="tool-card" data-offline="enhanced"><h3>🎬 故事板→视频</h3>
+          <div class="upload-zone" id="vbUploadZone" style="border:2px dashed var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;margin-bottom:6px">
+            <div style="font-size:24px;opacity:0.5">🎬</div>
+            <div style="font-size:12px;color:var(--text-secondary)" id="vbUploadText">上传故事板图片（多张 Ctrl+选）</div>
+            <input type="file" id="vbFileInput" accept="image/*" multiple style="display:none">
+          </div>
+          <div id="vbPreviews" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px"></div>
+          <div class="form-row">
+            <div class="form-group"><label>模型</label><select id="vbModel"><option value="three-act">三幕</option><option value="heros-journey">英雄之旅</option><option value="problem-solution">问题→方案</option></select></div>
+            <div class="form-group"><label>时长(s)</label><input type="number" id="vbDuration" value="30" min="5" max="300" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px 10px"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="vbGenBtn" disabled>🎬 生成视频脚本</button>
+          </div>
+          <div id="vbOutput" style="display:none;margin-top:6px">
+            <div class="output-area" id="vbOutputText" style="min-height:50px;font-size:11px"></div>
+          </div>
+        </div>
+        <div class="tool-card" data-offline="core"><h3>📄 文件→PPT</h3>
+          <div class="upload-zone" id="s2pZone" style="border:2px dashed var(--border);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;margin-bottom:6px">
+            <div style="font-size:24px;opacity:0.5">📄</div>
+            <div style="font-size:12px;color:var(--text-secondary)">上传 Word/PPT/TXT/MD/图片</div>
+            <input type="file" id="s2pInput" accept=".docx,.pptx,.md,.txt,.png,.jpg,.jpeg,.webp" style="display:none">
+          </div>
+          <div id="s2pFileInfo" style="display:none;font-size:11px;color:var(--text-secondary);margin-bottom:6px"></div>
+          <div class="form-group" style="margin-bottom:6px"><textarea id="s2pPrompt" rows="1" placeholder="补充说明（可选）"></textarea></div>
+          <div class="btn-row"><button class="btn btn-primary" id="s2pBtn" disabled>📊 分析并生成 PPT 框架</button></div>
+          <div id="s2pOutput" style="display:none;margin-top:6px">
+            <div class="output-area" id="s2pGuidance" style="font-size:11px;margin-bottom:6px;min-height:30px;background:var(--accent-subtle);border-color:var(--accent);color:var(--text-primary)"></div>
+            <div class="output-area" id="s2pFrames" style="min-height:50px;font-size:11px"></div>
+            <div class="btn-row" style="margin-top:6px"><button class="btn btn-secondary btn-sm" id="s2pGenBtn" style="display:none">🎨 生成完整演示</button></div>
+          </div>
+        </div>
+        <div class="tool-card" data-offline="enhanced"><h3>⚡ 提交 Forge 再生成</h3>
+          <div class="form-group"><label>提示词（从 Phase 4 产出复制）</label>
+            <textarea id="p5ForgePrompt" rows="2" placeholder="Paste your prompt here..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>负面提示词</label><input type="text" id="p5ForgeNeg" placeholder="blurry, low quality" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px 10px"></div>
+            <div class="form-group"><label>工作流</label><select id="p5ForgeWorkflow"><option value="sdxl_txt2img">SDXL</option><option value="flux_dev_txt2img">Flux</option><option value="sd15_txt2img">SD1.5</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Steps</label><input type="number" id="p5ForgeSteps" value="30" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px 10px"></div>
+            <div class="form-group"><label>CFG</label><input type="number" id="p5ForgeCfg" value="7.5" step="0.5" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px 10px"></div>
+          </div>
+          <div class="status-chip" style="margin-bottom:6px"><span class="dot" id="forgeStatusDot"></span><span class="val" id="forgeStatusText">检测中...</span></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="p5ForgeBtn">⚡ 提交生成</button>
+          </div>
+          <div class="output-area" id="p5ForgeOut" style="margin-top:6px;min-height:50px;font-size:11px"></div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:12px"><button class="btn btn-secondary" onclick="nextPhase(4)">← 返回生成</button><button class="btn btn-primary" onclick="nextPhase(6)">进入验证 →</button></div>
+    </div>
