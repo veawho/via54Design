@@ -28,6 +28,9 @@ import (
 
 // ExportPDF 通过 Playwright 将 HTML 导出为 PDF
 func ExportPDF(htmlPath string, output string) (string, error) {
+	if err := checkPlaywright(); err != nil {
+		return "", err
+	}
 	if _, err := os.Stat(htmlPath); os.IsNotExist(err) {
 		return "", fmt.Errorf("HTML 文件不存在: %s", htmlPath)
 	}
@@ -59,4 +62,48 @@ const { chromium } = require('playwright');
 		return "", fmt.Errorf("PDF 导出失败: %w", err)
 	}
 	return output, nil
+}
+
+// checkPlaywright 检测 Node.js + Playwright 是否可用
+// 跨平台通用，macOS/Linux/Windows 都返回一致的错误信息
+func checkPlaywright() error {
+	if _, err := exec.LookPath("node"); err != nil {
+		return fmt.Errorf("需要 Node.js (https://nodejs.org)\n  macOS: brew install node\n  Linux: apt install nodejs\n  Windows: choco install nodejs")
+	}
+	if _, err := exec.LookPath("npx"); err != nil {
+		return fmt.Errorf("需要 npx (随 Node.js 安装)")
+	}
+	// 检查 playwright 是否安装
+	cmd := exec.Command("npx", "playwright", "--version")
+	cmd.Stderr = nil
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("需要 Playwright (npm install -g playwright)")
+	}
+	return nil
+}
+
+// CheckDependencies 检查所有外部运行时依赖，返回缺失列表
+// 用于 via54 quality / via54 web 启动时的前置检查
+func CheckDependencies() []string {
+	var missing []string
+	for _, dep := range []struct {
+		name    string
+		command string
+		args    []string
+		url     string
+	}{
+		{"Node.js", "node", []string{"--version"}, "https://nodejs.org"},
+		{"ffmpeg", "ffmpeg", []string{"-version"}, "https://ffmpeg.org"},
+		{"Playwright", "npx", []string{"playwright", "--version"}, "npm install -g playwright"},
+	} {
+		if _, err := exec.LookPath(dep.command); err != nil {
+			missing = append(missing, fmt.Sprintf("%s (%s)", dep.name, dep.url))
+		} else if dep.args != nil {
+			cmd := exec.Command(dep.command, dep.args...)
+			if err := cmd.Run(); err != nil {
+				missing = append(missing, fmt.Sprintf("%s (%s)", dep.name, dep.url))
+			}
+		}
+	}
+	return missing
 }

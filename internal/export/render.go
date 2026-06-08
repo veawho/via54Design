@@ -62,6 +62,14 @@ func RenderVideoExt(htmlPath string, duration int, width, height int, format str
 	outDir := filepath.Dir(absHTML)
 	baseName := strings.TrimSuffix(filepath.Base(absHTML), ".html")
 
+	// 前置检查：Playwright + ffmpeg
+	if err := checkPlaywright(); err != nil {
+		return nil, fmt.Errorf("视频渲染需要 Node.js + Playwright: %w", err)
+	}
+	if _, err := exec.LookPath("ffmpeg"); err != nil {
+		return nil, fmt.Errorf("视频渲染需要 ffmpeg\n  macOS: brew install ffmpeg\n  Linux: apt install ffmpeg\n  Windows: choco install ffmpeg")
+	}
+
 	// Playwright 录制 raw video
 	rawWebm := filepath.Join(outDir, baseName+"_raw.webm")
 	script := fmt.Sprintf(`const { chromium } = require('playwright');
