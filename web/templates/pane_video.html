@@ -1,0 +1,26 @@
+<div class="flow-steps">
+  <div class="flow-step-card">
+    <span class="step-badge">1</span>
+    <h3>🖼️ 上传故事板图片</h3>
+    <form hx-post="/api/htmx/storyboard" hx-target="#vbOutput" hx-indicator="#vbSpin" hx-encoding="multipart/form-data">
+      <label for="vbFiles" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
+        📎 点击上传故事板图片（支持多选）
+      </label>
+      <input type="file" id="vbFiles" name="images" accept="image/*" multiple style="display:none">
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <select name="model" style="flex:1">
+          <option value="three-act">三幕剧</option>
+          <option value="heros-journey">英雄之旅</option>
+          <option value="cognitive-arc">认知弧</option>
+          <option value="problem-solution">问题解决</option>
+        </select>
+        <input type="number" name="duration" value="30" min="10" max="300" style="width:80px" placeholder="秒">
+      </div>
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">🎬 生成脚本</button>
+        <span id="vbSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 分析中...</span>
+      </div>
+    </form>
+    <div id="vbOutput" style="margin-top:8px"></div>
+  </div>
+</div>

@@ -29,6 +29,9 @@ node_modules/
 # Test outputs
 *.html
 
+# But NOT the web UI templates
+!web/templates/*.html
+
 # Python
 __pycache__/
 *.pyc
