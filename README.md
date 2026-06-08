@@ -139,7 +139,7 @@ via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/std
 |------|------|------|------|------|
 | 🎬 故事→视频 | 一句话 → 叙事JSON | 视频脚本 / ComfyUI 工作流 | narrate + storyboard2video | 可选 Forge/ComfyUI |
 | 📊 故事→演示 | 一句话 → 叙事JSON | PPTX / Markdown / PDF / SVG | **纯 Go** | **零** |
-| 🎨 故事→创意图片 | 一句话 → 叙事JSON | 结构化 Prompt (17平台) / SVG | **纯 Go** + Python (img2prompt) | **零**（Python可选） |
+| 🎨 故事→创意图片 | 一句话 → 叙事JSON | 结构化 Prompt (17平台) / SVG | **纯 Go** | **零** |
 
 ---
 
@@ -251,12 +251,9 @@ via54 prompt --scene "场景描述" --platform flux          # 文本→提示�
 via54 prompt --list                                       # 查看 17 个平台
 ```
 
-以图生提示词（需 Python + Pillow）：
-
-```bash
-python scripts/img2prompt.py photo.jpg                     # 分析→提示词
-python scripts/img2prompt.py photo.jpg --desc "补充描述"   # 带用户输入
-```
+以图生提示词（暂未实现 - 计划中）：
+- 待添加：本地 VLM 参考图片分析
+- 现状：可通过 `--ref` 字段附加参考图路径到 prompt 输出中
 
 | 平台 | 格式 | 特点 |
 |------|------|------|
