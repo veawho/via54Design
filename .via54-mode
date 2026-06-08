@@ -1,0 +1,16 @@
+# via54Design 运行模式锁定
+mode: B
+
+# mode: A = 全量运行 (需 ≥16GB RAM + ≥12GB VRAM, 含 ComfyUI/Forge)
+# mode: B = 最小化运行 (16GB RAM, 仅 via54.exe + 在线 API)
+
+hardware:
+  ram_gb: 16
+  vram_gb: 0
+  gpu: "Intel UHD Graphics (集成显卡)"
+
+# 铁律: 两种模式都不包含本地 LLM
+disabled_services:
+  - Ollama 本地 LLM (7B 质量低, 走在线 API)
+  - ComfyUI/Forge (16GB 内存不足)
+  - 本地视频生成 (需 16GB+ VRAM)
