@@ -1,25 +1,156 @@
-# via54Design — 结构化设计引擎
+#### 致敬Aaron Swartz & Tim Berners-Lee
+## 人类的灵感与创造力，因互联网与AI而永生
+开发思路：让弥散而跳动的人类灵感与AI碰撞出惊艳的故事；将历久弥新的人类经验，用于规范LLM生产力的可控性。
+>
+> 如切如磋，如琢如磨。——《诗经·卫风·淇奥》
 
-> 人类的灵感是弥散而跳动的，AI 是结构化的、可控的。via54Design 在这两者之间搭建桥梁。
+---
 
-**via54Design** 是一个 Go 语言的结构化设计引擎，将人类的"一句话灵感"转化为 AI 可执行的提示词、叙事脚手架、HTML 设计、演示文稿和视频脚本。不依赖任何图像生成后端即可独立运行。
+## 🧠 让时时陪伴你的AI，成为你最会讲故事的朋友（核心创意工作流）
+**via54Design 不是替代你创作，而是赋予你一双抓住灵感的妙手。**
 
-## 核心能力
+> 文章本天成，妙手偶得之。
+> 粹然无疵瑕，岂复须人为？
+> —— 宋·陆游《文章》
+
+人类的灵感是弥散而跳动的，AI 是结构化的、可控的。via54Design 在这两者之间搭建桥梁——把人类的"一句话灵感"转化为 AI 可执行的叙事脚手架，再通过模板引擎输出视频、演示文稿、创意图片。
+
+---
+
+### 第一部分：故事 → 视频能力
+
+#### 从一句话到 90 秒品牌故事
+
+**Step 1 — 人类写一句开头（人类独有的灵感）**
+
+> "1920年代，一个中国裁缝在巴黎开了一家小店，
+> 他做的旗袍融入了 Art Deco 的几何线条。
+> 没有人想到，这件衣服会改变两个文明的时尚。"
+
+这一句里有人物（裁缝）、时代（1920s）、地点（巴黎）、冲突（东方 vs 西方）、悬念（改变时尚）。AI 无法凭空创造这个种子——它来自你。
+
+**Step 2 — AI 扩展叙事脚手架**
+
+```bash
+via54 narrate --seed "1920年代，一个中国裁缝在巴黎开了一家小店..." \
+  --model heros-journey --duration 90 --format json --output scaffold.json
+```
+
+AI 分析你的种子，匹配最合适的叙事模型，输出结构化脚手架：
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Prompt 工程   叙事引擎   设计模板   媒体管线         │
-│  17 平台统一    4 叙事模型   31 配色     输出全格式    │
-│  26 维度控制    YAML 定义    12 字体     Go 原生实现   │
-│  图片→提示词    Fountain 剧本 3 布局     零外部依赖    │
-├─────────────────────────────────────────────────────┤
-│  Web UI (意图驱动)        CLI (14 子命令)             │
-│  API (16 端点)            ComfyUI 桥 (30 模板)       │
-│  Forge 集成               MCP Server                │
-└─────────────────────────────────────────────────────┘
+📋 英雄之旅 (Hero's Journey)  90秒
+├── 第一幕·日常  (0-22s)  mood: calm      旁白: 每天，我们都...
+├── 第二幕·相遇  (22-44s) mood: curious   旁白: 直到有一天...
+├── 第三幕·蜕变  (44-66s) mood: excited   旁白: 不一样了...
+└── 第四幕·回归  (66-90s) mood: inspiring  旁白: 每一天...
+
+📋 分镜表: 12 个 shot（WIDE / MEDIUM / CLOSE-UP / DETAIL 循环）
+📋 Fountain 剧本骨架（4 幕 8 场景）
+🎞️ LLM 完整提示词（可直接喂给 Claude / GPT 生成完整剧本）
+```
+
+**Step 3 — 人类选择叙事模型，确认方向**
+
+| 模型 | 节拍 | 适合讲什么故事 |
+|------|------|---------------|
+| `three-act` | 设问 → 解答 → 号召 | 产品发布、品牌广告 |
+| `heros-journey` | 日常 → 相遇 → 蜕变 → 回归 | 品牌故事、纪录片 |
+| `cognitive-arc` | 钩子 → 基础 → 核心 → 案例 → 延展 → 总结 | 科普、教程 |
+| `problem-solution` | 痛点 → 方案 → 证明 → 行动 | 销售视频、Demo |
+
+**Step 4 — 生成输出**
+
+```bash
+# 同一叙事脚手架，可输出多种格式
+via54 export pptx scaffold.json --output story.pptx      # PPTX 演示文稿
+via54 export markdown scaffold.json --output slides.md   # Marp 幻灯片
+via54 export svg scaffold.json --output ./scenes          # SVG 矢量场景
+via54 export json scaffold.json --output scenes.json      # 结构化数据
 ```
 
 ---
+
+### 第二部分：故事 → 演示能力
+
+同一个叙事脚手架，可以导出多种演示格式，无需重新创作。
+
+**叙事种子 → PPTX 演示文稿**
+
+```bash
+via54 narrate --seed "1920年代，一个中国裁缝在巴黎..." \
+  --model heros-journey --duration 90 --format json --output scaffold.json
+
+via54 export pptx scaffold.json --output story.pptx --style editorial --theme templates/color-schemes/ink-wash.yaml
+```
+
+- 纯 Go 实现，零外部依赖（不依赖 Node.js / unioffice）
+- 4 种风格模板（minimal / editorial / bold / accent-bar）
+- 31 种配色主题，情绪映射强调色
+- 16:9 宽屏，文字直接在 PPT 中可编辑
+
+**叙事种子 → 设计生成**
+
+```bash
+via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial \
+  --title "裁缝的故事" --output story.html --presentation
+```
+
+---
+
+### 第三部分：故事 → 创意图片能力
+
+**叙事脚手架 → AI 生图提示词**
+
+```bash
+via54 prompt --scene "1920年代，巴黎左岸的小裁缝店里，一位中国裁缝在制作旗袍" \
+  --platform midjourney --output prompt.md
+```
+
+输出结构化提示词，支持 17 个平台，26 维控制参数（主体/环境/光照/风格/情绪/构图/镜头/色彩/质感等）。
+
+**叙事脚手架 → SVG 矢量场景**
+
+```bash
+via54 export svg scaffold.json --output ./scenes
+```
+
+每幕生成独立 SVG 文件，16:9 viewBox，无限缩放不失真。
+
+**叙事脚手架 → Prompt 工作流**
+
+```bash
+via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/stdin
+```
+
+---
+
+### 三种能力对比
+
+| 能力 | 输入 | 输出 | 引擎 | 依赖 |
+|------|------|------|------|------|
+| 🎬 故事→视频 | 一句话 → 叙事JSON | 视频脚本 / ComfyUI 工作流 | narrate + storyboard2video | 可选 Forge/ComfyUI |
+| 📊 故事→演示 | 一句话 → 叙事JSON | PPTX / Markdown / PDF / SVG | **纯 Go** | **零** |
+| 🎨 故事→创意图片 | 一句话 → 叙事JSON | 结构化 Prompt (17平台) / SVG | **纯 Go** + Python (img2prompt) | **零**（Python可选） |
+
+---
+
+## 📊 对比参考项目
+
+| 类别 | 参考项目 | ⭐ | via54 差异化 |
+|------|---------|---|-------------|
+| Prompt 工程 | easy-sd, sd-webui-forge | 10k-12k | 17 平台统一引擎，YAML 驱动，26 维控制 |
+| PPT 生成 | banana-slides | 14.8k | 叙事驱动的 PPT 生成，4 种叙事模型→幻灯片 |
+| 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
+| ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
+| 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
+
+---
+
+## 📜 许可
+
+- Go 源码: `AGPL-3.0-only`
+- 模板/脚本/文档: `MIT`
 
 ## 🚀 快速开始
 
@@ -275,3 +406,19 @@ via54Design/
 - Go 源码: `AGPL-3.0-only`
 - 模板/脚本/文档: `MIT`
 - 参见: `LICENSE` 和 `ACKNOWLEDGMENTS`
+## 📊 对比参考项目
+
+| 类别 | 参考项目 | ⭐ | via54 差异化 |
+|------|---------|---|-------------|
+| Prompt 工程 | easy-sd, sd-webui-forge | 10k-12k | 17 平台统一引擎，YAML 驱动，26 维控制 |
+| PPT 生成 | banana-slides | 14.8k | 叙事驱动的 PPT 生成，4 种叙事模型→幻灯片 |
+| 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
+| ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
+| 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
+
+---
+
+## 📜 许可
+
+- Go 源码: `AGPL-3.0-only`
+- 模板/脚本/文档: `MIT`
