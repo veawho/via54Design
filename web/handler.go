@@ -21,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/veawho/via54Design/internal/vision"
 	"github.com/veawho/via54Design/internal/workflow"
 )
 
@@ -519,17 +520,13 @@ func handleAnalyze(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cmd := exec.Command("python", filepath.Join(baseDir, "scripts", "img2prompt.py"), imgPath)
-	cmd.Dir = baseDir
-	out, err := cmd.Output()
-	if err != nil {
-		log.Printf("handleAnalyze: exec error: %v", err)
-		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("analysis error: %v", err)})
+	result := vision.AnalyzeImageToMap(imgPath)
+	if e, ok := result["error"]; ok && e != nil {
+		errStr, _ := e.(string)
+		log.Printf("handleAnalyze: analysis error: %s", errStr)
+		json.NewEncoder(w).Encode(result)
 		return
 	}
-
-	var result map[string]interface{}
-	json.Unmarshal(out, &result)
 	json.NewEncoder(w).Encode(result)
 }
 
@@ -569,23 +566,15 @@ func handleImg2Prompt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cmd := exec.Command("python", filepath.Join(baseDir, "scripts", "img2prompt.py"), imgPath, userDesc)
-	cmd.Dir = baseDir
-	out, err := cmd.Output()
-	if err != nil {
-		log.Printf("handleImg2Prompt: exec error: %v", err)
-		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("analysis error: %v", err)})
+	analysis := vision.AnalyzeImageToMap(imgPath)
+	if e, ok := analysis["error"]; ok && e != nil {
+		log.Printf("handleImg2Prompt: analysis error: %v", e)
+		json.NewEncoder(w).Encode(analysis)
 		return
 	}
-	var analysis map[string]interface{}
-	json.Unmarshal(out, &analysis)
 
-	scene := ""
-	if p, ok := analysis["generated_prompt"].(string); ok {
-		scene = p
-	} else {
-		scene = userDesc
-	}
+	// Generate the base prompt from image analysis
+	scene := vision.BuildPromptFromAnalysisMap(analysis, userDesc)
 
 	cli := filepath.Join(baseDir, "via54.exe")
 	args := []string{"prompt", "--scene", scene, "--platform", platform, "--format", "markdown"}
@@ -749,26 +738,7 @@ func handleStoryboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	py := filepath.Join(baseDir, "scripts", "storyboard2video.py")
-	args := []string{py}
-	args = append(args, paths...)
-	args = append(args, "--model", model, "--duration", strconv.Itoa(duration))
-	if desc != "" { args = append(args, "--desc", desc) }
-	if singleMode { args = append(args, "--single") }
-
-	cmd := exec.Command("python", args...)
-	cmd.Dir = baseDir
-	out, err := cmd.Output()
-	if err != nil {
-		log.Printf("handleStoryboard: exec error: %v", err)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Sprintf("storyboard error: %v", err),
-			"stderr": string(out),
-		})
-		return
-	}
-	var result map[string]interface{}
-	json.Unmarshal(out, &result)
+	result := vision.ProcessStoryboard(paths, model, duration, desc, singleMode)
 	json.NewEncoder(w).Encode(result)
 }
 
@@ -808,21 +778,7 @@ func handleVideoPrompt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Single image → video prompt
-	py := filepath.Join(baseDir, "scripts", "storyboard2video.py")
-	args := []string{py, imgPath, "--model", "three-act", "--duration", "10", "--single"}
-	if desc != "" { args = append(args, "--desc", desc) }
-
-	cmd := exec.Command("python", args...)
-	cmd.Dir = baseDir
-	out, err := cmd.Output()
-	if err != nil {
-		log.Printf("handleVideoPrompt: exec error: %v", err)
-		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("video error: %v", err)})
-		return
-	}
-
-	var result map[string]interface{}
-	json.Unmarshal(out, &result)
+	result := vision.ProcessStoryboard([]string{imgPath}, "three-act", 10, desc, true)
 
 	// Add recommended workflow
 	if vp, ok := result["video_prompt"].(map[string]interface{}); ok {
@@ -895,23 +851,6 @@ func handleStory2PPT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	py := filepath.Join(baseDir, "scripts", "doc2ppt.py")
-	args := []string{py, docPath}
-	if userPrompt != "" {
-		args = append(args, "--prompt", userPrompt)
-	}
-
-	cmd := exec.Command("python", args...)
-	cmd.Dir = baseDir
-	out, err := cmd.Output()
-	if err != nil {
-		log.Printf("handleStory2PPT: exec error: %v", err)
-		json.NewEncoder(w).Encode(map[string]string{
-			"error": fmt.Sprintf("doc2ppt error: %v", err), "stderr": string(out),
-		})
-		return
-	}
-	var result map[string]interface{}
-	json.Unmarshal(out, &result)
+	result := vision.Story2PPT(docPath, userPrompt)
 	json.NewEncoder(w).Encode(result)
 }
