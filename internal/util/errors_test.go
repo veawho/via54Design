@@ -62,11 +62,23 @@ func TestWrapFunctions(t *testing.T) {
 }
 
 func TestWrapNil(t *testing.T) {
-	if Wrap(nil, "should be nil") != nil {
-		t.Error("Wrap(nil, ...) should return nil")
+	// WrapXxx(nil, ...) 现在返回带 sentinel 的 error (用于"未找到"语义)
+	// 旧行为是返回 nil, 这导致 'not found' 错误被吞掉
+	if Wrap(nil, "should not be nil") == nil {
+		t.Error("Wrap(nil, ...) should return non-nil")
 	}
-	if WrapInvalid(nil, "should be nil") != nil {
-		t.Error("WrapInvalid(nil, ...) should return nil")
+	if WrapInvalid(nil, "should not be nil") == nil {
+		t.Error("WrapInvalid(nil, ...) should return non-nil")
+	}
+	if WrapNotFound(nil, "should not be nil") == nil {
+		t.Error("WrapNotFound(nil, ...) should return non-nil")
+	}
+	// NewNotFound / NewInvalid 应返回带 sentinel 的 error
+	if NewNotFound("test") == nil {
+		t.Error("NewNotFound should return non-nil")
+	}
+	if !IsNotFound(NewNotFound("test")) {
+		t.Error("NewNotFound result should match errors.Is(ErrNotFound)")
 	}
 }
 
