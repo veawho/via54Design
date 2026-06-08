@@ -13,22 +13,45 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
+//
 // SPDX-License-Identifier: AGPL-3.0-only
 
 package main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/veawho/via54Design/internal/mcp"
 	"os"
+
+	"github.com/veawho/via54Design/internal/mcp"
+	"github.com/veawho/via54Design/internal/util"
 )
 
 func cmdServe() {
-	srv, err := mcp.New(baseDir())
-	if err != nil { fmt.Fprintf(os.Stderr, "MCP 失败: %v\n", err); os.Exit(1) }
-	fmt.Fprintf(os.Stderr, "via54Design MCP Server (stdio)...\n")
-	if err := srv.ServeStdio(); err != nil { fmt.Fprintf(os.Stderr, "错误: %v\n", err); os.Exit(1) }
+	fs := flag.NewFlagSet("serve", flag.ExitOnError)
+	httpAddr := fs.String("http", "", "HTTP 监听地址 (如 :8080)")
+	if err := fs.Parse(os.Args[2:]); err != nil {
+		fmt.Fprintf(os.Stderr, "flag error: %v\n", err)
+		os.Exit(1)
+	}
+
+	srv, err := mcp.New(util.FindBaseDir())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "MCP 失败: %v\n", err)
+		os.Exit(1)
+	}
+
+	if *httpAddr != "" {
+		fmt.Fprintf(os.Stderr, "via54-mcp HTTP server on %s\n", *httpAddr)
+		if err := srv.ServeHTTP(*httpAddr); err != nil {
+			fmt.Fprintf(os.Stderr, "HTTP 错误: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		fmt.Fprintf(os.Stderr, "via54Design MCP Server (stdio)...\n")
+		if err := srv.ServeStdio(); err != nil {
+			fmt.Fprintf(os.Stderr, "错误: %v\n", err)
+			os.Exit(1)
+		}
+	}
 }
-
-

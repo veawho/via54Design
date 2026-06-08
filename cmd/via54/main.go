@@ -21,7 +21,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
+
+	"github.com/veawho/via54Design/internal/util"
 )
 
 func main() {
@@ -73,10 +74,5 @@ func help() {
 }
 
 func baseDir() string {
-	exe, _ := os.Executable()
-	dir := filepath.Dir(exe)
-	if _, err := os.Stat(filepath.Join(dir, "templates")); err == nil { return dir }
-	if _, err := os.Stat(filepath.Join(dir, "templates", "registry.yaml")); err == nil { return dir }
-	wd, _ := os.Getwd()
-	return wd
+	return util.FindBaseDir()
 }
