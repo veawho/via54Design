@@ -8,9 +8,16 @@ import (
 	"path/filepath"
 )
 
-// FindBaseDir 从可执行文件位置向上查找，找到包含 templates/ 的目录
-// 最多向上查找 5 层，兜底返回当前工作目录
+// FindBaseDir 解析 via54 的基础目录
+//
+// 优先级:
+//  1. VIA54_BASE_DIR 环境变量 (Mac/Linux 安装到 /usr/local/bin 时必须)
+//  2. 可执行文件位置向上查找, 找到含 templates/ 的目录 (最多 5 层)
+//  3. 当前工作目录 (兜底)
 func FindBaseDir() string {
+	if env := os.Getenv("VIA54_BASE_DIR"); env != "" {
+		return env
+	}
 	exe, err := os.Executable()
 	if err != nil {
 		wd, _ := os.Getwd()
