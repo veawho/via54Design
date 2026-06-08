@@ -22,10 +22,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/veawho/via54Design/internal/narrate"
-	"os"
-	"strings"
 	"github.com/veawho/via54Design/internal/template"
 	"gopkg.in/yaml.v3"
+	"os"
+	"strings"
 )
 
 func cmdGenerate() {
@@ -42,7 +42,10 @@ func cmdGenerate() {
 
 	bd := baseDir()
 	eng, err := template.NewEngine(bd)
-	if err != nil { fmt.Fprintf(os.Stderr, "失败: %v\n", err); os.Exit(1) }
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "失败: %v\n", err)
+		os.Exit(1)
+	}
 
 	// ── 叙事驱动生成 ──
 	if *fromNarrative != "" {
@@ -58,14 +61,23 @@ func cmdGenerate() {
 	var result *template.GenerationResult
 	if *letteringSVG != "" {
 		data, _ := os.ReadFile(*letteringSVG)
-		if *layout == "" { *layout = "hero-split-left-image" }
-		if *color == "" { *color = "ink-wash" }
-		if *font == "" { *font = "serif-sans-editorial" }
+		if *layout == "" {
+			*layout = "hero-split-left-image"
+		}
+		if *color == "" {
+			*color = "ink-wash"
+		}
+		if *font == "" {
+			*font = "serif-sans-editorial"
+		}
 		result, err = eng.ComposeWithSVG(*layout, *color, *font, *title, string(data), *presentation)
 	} else {
 		result, err = eng.ComposeWithSVG(*layout, *color, *font, *title, "", *presentation)
 	}
-	if err != nil { fmt.Fprintf(os.Stderr, "生成失败: %v\n", err); os.Exit(1) }
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "生成失败: %v\n", err)
+		os.Exit(1)
+	}
 	result.SaveToFile(*output)
 	fmt.Printf("✅ %s (%d bytes)\n   layout=%s color=%s font=%s\n", *output, len(result.HTML), result.LayoutID, result.ColorID, result.FontID)
 }
@@ -107,11 +119,17 @@ func generateFromNarrative(eng *template.Engine, narrativePath, layoutOverride, 
 
 	// 默认视觉模板
 	lID := layoutOverride
-	if lID == "" { lID = "hero-split-left-image" }
+	if lID == "" {
+		lID = "hero-split-left-image"
+	}
 	cID := colorOverride
-	if cID == "" { cID = "ink-wash" }
+	if cID == "" {
+		cID = "ink-wash"
+	}
 	fID := fontOverride
-	if fID == "" { fID = "ming-hei-editorial" }
+	if fID == "" {
+		fID = "ming-hei-editorial"
+	}
 
 	// 为每个 beat 生成场景 HTML，拼合成多场景页面
 	var scenesHTML strings.Builder
@@ -215,5 +233,3 @@ document.querySelectorAll('.scene-nav button').forEach(btn => {
 	fmt.Printf("✅ 叙事驱动动画: %s (%d 场景, %d 字节)\n   via54 narrate → via54 generate --from-narrative\n",
 		output, len(scaffold.Beats), len(finalHTML))
 }
-
-

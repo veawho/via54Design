@@ -30,24 +30,46 @@ func main() {
 		cmdInteractive()
 		return
 	}
+	// --help / -h 应成功退出 (CLI 惯例)
+	if os.Args[1] == "--help" || os.Args[1] == "-h" {
+		help()
+		os.Exit(0)
+	}
 	switch os.Args[1] {
-	case "serve":     cmdServe()
-	case "interactive","menu","i": cmdInteractive()
-	case "generate":  cmdGenerate()
-	case "narrate":   cmdNarrate()
-	case "quality":   cmdQuality()
-	case "pattern":   cmdPattern()
-	case "list":      cmdList()
-	case "media":     cmdMedia()
-	case "export":    cmdExport()
-	case "prompt":    cmdPrompt()
-	case "pipeline":   cmdPipeline()
-	case "present":   cmdPresent()
-	case "comfyui":   cmdComfyUI()
-	case "forge":     cmdForge()
-	case "web":       cmdWeb()
-	case "version":   cmdVersion()
-	default:          help()
+	case "serve":
+		cmdServe()
+	case "interactive", "menu", "i":
+		cmdInteractive()
+	case "generate":
+		cmdGenerate()
+	case "narrate":
+		cmdNarrate()
+	case "quality":
+		cmdQuality()
+	case "pattern":
+		cmdPattern()
+	case "list":
+		cmdList()
+	case "media":
+		cmdMedia()
+	case "export":
+		cmdExport()
+	case "prompt":
+		cmdPrompt()
+	case "pipeline":
+		cmdPipeline()
+	case "present":
+		cmdPresent()
+	case "comfyui":
+		cmdComfyUI()
+	case "forge":
+		cmdForge()
+	case "web":
+		cmdWeb()
+	case "version":
+		cmdVersion()
+	default:
+		help()
 	}
 }
 

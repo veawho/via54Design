@@ -45,16 +45,16 @@ type PPTXSlide struct {
 
 // PPTXStyleElement 布局元素坐标
 type PPTXStyleElement struct {
-	Enabled    bool   `yaml:"enabled"`
-	X          int    `yaml:"x"`
-	Y          int    `yaml:"y"`
-	W          int    `yaml:"w"`
-	H          int    `yaml:"h"`
-	FontSize   int    `yaml:"font_size"`
-	Bold       bool   `yaml:"bold"`
-	Color      string `yaml:"color"`
-	Align      string `yaml:"align"`
-	LineSpacing int   `yaml:"line_spacing"`
+	Enabled     bool   `yaml:"enabled"`
+	X           int    `yaml:"x"`
+	Y           int    `yaml:"y"`
+	W           int    `yaml:"w"`
+	H           int    `yaml:"h"`
+	FontSize    int    `yaml:"font_size"`
+	Bold        bool   `yaml:"bold"`
+	Color       string `yaml:"color"`
+	Align       string `yaml:"align"`
+	LineSpacing int    `yaml:"line_spacing"`
 }
 
 // PPTXAccentBar 装饰条配置
@@ -74,11 +74,11 @@ type PPTXStyle struct {
 			Fill  string `yaml:"fill"`
 			Color string `yaml:"color"`
 		} `yaml:"background"`
-		AccentBar    PPTXAccentBar     `yaml:"accent_bar"`
-		Title        PPTXStyleElement  `yaml:"title"`
-		Subtitle     PPTXStyleElement  `yaml:"subtitle"`
-		Body         PPTXStyleElement  `yaml:"body"`
-		PageNumber   PPTXStyleElement  `yaml:"page_number"`
+		AccentBar  PPTXAccentBar    `yaml:"accent_bar"`
+		Title      PPTXStyleElement `yaml:"title"`
+		Subtitle   PPTXStyleElement `yaml:"subtitle"`
+		Body       PPTXStyleElement `yaml:"body"`
+		PageNumber PPTXStyleElement `yaml:"page_number"`
 	} `yaml:"layout"`
 }
 
@@ -256,9 +256,13 @@ func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool, styleID,
 
 func writeZip(w *zip.Writer, name, content string) error {
 	f, err := w.Create(name)
-	if err != nil { return fmt.Errorf("zip create %s: %w", name, err) }
+	if err != nil {
+		return fmt.Errorf("zip create %s: %w", name, err)
+	}
 	_, err = f.Write([]byte(content))
-	if err != nil { return fmt.Errorf("zip write %s: %w", name, err) }
+	if err != nil {
+		return fmt.Errorf("zip write %s: %w", name, err)
+	}
 	return nil
 }
 
@@ -456,5 +460,3 @@ func defaultPPTXStyle() *PPTXStyle {
 	s.Layout.PageNumber = PPTXStyleElement{X: 914400, Y: 6400800, W: 1371600, H: 274320, FontSize: 900, Color: "999999", Enabled: true}
 	return s
 }
-
-

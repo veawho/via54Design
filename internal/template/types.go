@@ -28,12 +28,12 @@ type LayoutTemplate struct {
 	Tags     []string    `yaml:"tags"`
 	When     LayoutWhen  `yaml:"when"`
 
-	Viewport  ViewportConfig    `yaml:"viewport"`
-	Structure LayoutStructure   `yaml:"structure"`
-	Spacing   SpacingScale      `yaml:"spacing,omitempty"`
-	Responsive []BreakpointDef  `yaml:"responsive"`
-	Elements  []Element         `yaml:"elements"`
-	CSS       string            `yaml:"css"`
+	Viewport   ViewportConfig  `yaml:"viewport"`
+	Structure  LayoutStructure `yaml:"structure"`
+	Spacing    SpacingScale    `yaml:"spacing,omitempty"`
+	Responsive []BreakpointDef `yaml:"responsive"`
+	Elements   []Element       `yaml:"elements"`
+	CSS        string          `yaml:"css"`
 }
 
 // ─── 视口配置 ───
@@ -58,39 +58,39 @@ type ViewportConfig struct {
 // ─── 布局结构 ───
 
 type LayoutStructure struct {
-	Type      string `yaml:"type"`                // grid-2col / grid-3col / flex / bento
-	Ratio     string `yaml:"ratio,omitempty"`     // "5,7" / "1fr 1fr"
-	Cols      int    `yaml:"cols,omitempty"`       // 列数 (bento)
-	Rows      int    `yaml:"rows,omitempty"`       // 行数 (bento)
-	Gap       string `yaml:"gap,omitempty"`        // "24px"
+	Type  string `yaml:"type"`            // grid-2col / grid-3col / flex / bento
+	Ratio string `yaml:"ratio,omitempty"` // "5,7" / "1fr 1fr"
+	Cols  int    `yaml:"cols,omitempty"`  // 列数 (bento)
+	Rows  int    `yaml:"rows,omitempty"`  // 行数 (bento)
+	Gap   string `yaml:"gap,omitempty"`   // "24px"
 }
 
 // ─── 间距黄金比例 ───
 
 type SpacingScale struct {
-	Base     int                  `yaml:"base"`     // 4
-	Ratio    float64              `yaml:"ratio"`    // 1.618
-	Steps    []int                `yaml:"steps,omitempty"` // 自动生成
-	Semantic map[string]string    `yaml:"semantic,omitempty"` // {section: "step-7", card: "step-4"}
+	Base     int               `yaml:"base"`               // 4
+	Ratio    float64           `yaml:"ratio"`              // 1.618
+	Steps    []int             `yaml:"steps,omitempty"`    // 自动生成
+	Semantic map[string]string `yaml:"semantic,omitempty"` // {section: "step-7", card: "step-4"}
 }
 
 // ─── 响应式断点 ───
 // 参考: extra-strength-responsive-grids (⭐254) 流体栅格 + CSS Container Queries
 
 type BreakpointDef struct {
-	Name      string `yaml:"name"`                // tv / desktop / tablet / phone
-	MinWidth  int    `yaml:"min_width"`            // 1920 / 1280 / 768 / 0
-	MaxWidth  int    `yaml:"max_width,omitempty"`  // 可选上限
+	Name     string `yaml:"name"`                // tv / desktop / tablet / phone
+	MinWidth int    `yaml:"min_width"`           // 1920 / 1280 / 768 / 0
+	MaxWidth int    `yaml:"max_width,omitempty"` // 可选上限
 
 	// 栅格覆盖
-	Columns   string `yaml:"columns,omitempty"`    // "5,7" / "1fr"
-	Stack     bool   `yaml:"stack,omitempty"`      // 是否堆叠
+	Columns string `yaml:"columns,omitempty"` // "5,7" / "1fr"
+	Stack   bool   `yaml:"stack,omitempty"`   // 是否堆叠
 
 	// 字体缩放
-	FontScale float64 `yaml:"font_scale"`          // 1.2 / 1.0 / 0.9 / 0.75
+	FontScale float64 `yaml:"font_scale"` // 1.2 / 1.0 / 0.9 / 0.75
 
 	// 安全区域 (TV overscan / 手机刘海)
-	SafeArea []int `yaml:"safe_area,omitempty"`    // [top, right, bottom, left] px
+	SafeArea []int `yaml:"safe_area,omitempty"` // [top, right, bottom, left] px
 
 	// 间距缩放 (相对 base)
 	SpacingScale float64 `yaml:"spacing_scale,omitempty"` // 1.0 / 0.8 / 0.6
@@ -100,8 +100,8 @@ type BreakpointDef struct {
 	StackOrder []string `yaml:"stack_order,omitempty"` // [text, image] 堆叠顺序
 
 	// 布局特定设置
-	FullBleed  *bool  `yaml:"full_bleed,omitempty"`
-	RatioLock  string `yaml:"ratio_lock,omitempty"`  // "16:9" / "4:3" / "auto"
+	FullBleed *bool  `yaml:"full_bleed,omitempty"`
+	RatioLock string `yaml:"ratio_lock,omitempty"` // "16:9" / "4:3" / "auto"
 }
 
 // ─── 元素 ───
@@ -114,20 +114,20 @@ type Element struct {
 	Style    string    `yaml:"style,omitempty"`
 	FontSize string    `yaml:"font_size,omitempty"`
 	ZIndex   int       `yaml:"z_index,omitempty"`
-	Padding  []int     `yaml:"padding,omitempty"`    // [top, right, bottom, left]
+	Padding  []int     `yaml:"padding,omitempty"` // [top, right, bottom, left]
 	MaxWidth string    `yaml:"max_width,omitempty"`
 	Children []Element `yaml:"children,omitempty"`
-	
+
 	// 元素级响应式 (key = breakpoint name: tv/desktop/tablet/phone)
 	Responsive map[string]ElementResponsive `yaml:"responsive,omitempty"`
 }
 
 type ElementResponsive struct {
-	Hide     bool   `yaml:"hide,omitempty"`       // 隐藏此元素
-	Order    int    `yaml:"order,omitempty"`       // flex/grid order
-	FontSize string `yaml:"font_size,omitempty"`   // 覆盖字号
-	Padding  []int  `yaml:"padding,omitempty"`     // 覆盖内边距
-	Columns  int    `yaml:"columns,omitempty"`      // 跨越列数
+	Hide     bool   `yaml:"hide,omitempty"`      // 隐藏此元素
+	Order    int    `yaml:"order,omitempty"`     // flex/grid order
+	FontSize string `yaml:"font_size,omitempty"` // 覆盖字号
+	Padding  []int  `yaml:"padding,omitempty"`   // 覆盖内边距
+	Columns  int    `yaml:"columns,omitempty"`   // 跨越列数
 }
 
 // ─── 以下保留不动 ───
@@ -200,23 +200,23 @@ type RegistryEntry struct {
 }
 
 type Combination struct {
-	Name    interface{} `yaml:"name"`
-	Layout  string      `yaml:"layout"`
-	Color   string      `yaml:"color"`
-	Font    string      `yaml:"font"`
-	Suitable []string   `yaml:"suitable"`
+	Name     interface{} `yaml:"name"`
+	Layout   string      `yaml:"layout"`
+	Color    string      `yaml:"color"`
+	Font     string      `yaml:"font"`
+	Suitable []string    `yaml:"suitable"`
 }
 
 type GenerationResult struct {
-	HTML         string
-	LayoutID     string
-	ColorID      string
-	FontID       string
-	Title        string
-	FontImports  string
-	CSSVars      string
-	BaseCSS      string
-	LayoutCSS    string
-	LetteringSVG string
+	HTML             string
+	LayoutID         string
+	ColorID          string
+	FontID           string
+	Title            string
+	FontImports      string
+	CSSVars          string
+	BaseCSS          string
+	LayoutCSS        string
+	LetteringSVG     string
 	PresentationMode bool // 是否启用 16:9 演示锁定
 }

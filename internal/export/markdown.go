@@ -38,7 +38,9 @@ func ExportMarkdown(scenes []SceneData, title, author string, outputPath string)
 	b.WriteString("marp: true\n")
 	b.WriteString(fmt.Sprintf("title: %s\n", title))
 	b.WriteString(fmt.Sprintf("author: %s\n", author))
-	if author == "" { b.WriteString("author: via54Design\n") }
+	if author == "" {
+		b.WriteString("author: via54Design\n")
+	}
 	b.WriteString("theme: uncover\n")
 	b.WriteString("size: 16:9\n")
 	b.WriteString("---\n\n")
@@ -50,11 +52,15 @@ func ExportMarkdown(scenes []SceneData, title, author string, outputPath string)
 
 		// 环境色标记 (Marp 自定义 CSS class)
 		moodClass := s.Mood
-		if moodClass == "" { moodClass = "default" }
+		if moodClass == "" {
+			moodClass = "default"
+		}
 
 		// Beat 标签
 		beatLabel := s.BeatName
-		if beatLabel == "" { beatLabel = fmt.Sprintf("Scene %d", s.SceneNo) }
+		if beatLabel == "" {
+			beatLabel = fmt.Sprintf("Scene %d", s.SceneNo)
+		}
 
 		b.WriteString(fmt.Sprintf("<!-- _class: %s -->\n", moodClass))
 		b.WriteString(fmt.Sprintf("## %s\n\n", s.Title))

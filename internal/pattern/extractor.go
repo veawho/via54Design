@@ -35,10 +35,10 @@ type Patterns struct {
 }
 
 type ColorInfo struct {
-	Palette      []ColorEntry       `json:"palette"`
-	Roles        map[string]string  `json:"roles"`
-	TotalUnique  int                `json:"total_unique"`
-	ContrastInfo map[string]string  `json:"contrast_info"`
+	Palette      []ColorEntry      `json:"palette"`
+	Roles        map[string]string `json:"roles"`
+	TotalUnique  int               `json:"total_unique"`
+	ContrastInfo map[string]string `json:"contrast_info"`
 }
 
 type ColorEntry struct {
@@ -54,10 +54,10 @@ type FontInfo struct {
 }
 
 type LayoutInfo struct {
-	Types       []string `json:"types"`
-	Sections    int      `json:"sections"`
-	CardCount   int      `json:"card_count"`
-	Responsive  bool     `json:"responsive"`
+	Types      []string `json:"types"`
+	Sections   int      `json:"sections"`
+	CardCount  int      `json:"card_count"`
+	Responsive bool     `json:"responsive"`
 }
 
 type AnimInfo struct {
@@ -105,7 +105,10 @@ func (e *Extractor) extractColors() ColorInfo {
 	}
 
 	// 按频率排序
-	type pair struct{ hex string; freq int }
+	type pair struct {
+		hex  string
+		freq int
+	}
 	var sorted []pair
 	for h, f := range freq {
 		sorted = append(sorted, pair{h, f})
@@ -182,15 +185,23 @@ func (e *Extractor) extractFonts() FontInfo {
 	var display, body string
 	for _, f := range families {
 		if strings.Contains(strings.ToLower(f), "serif") {
-			if display == "" { display = f }
+			if display == "" {
+				display = f
+			}
 		} else if strings.Contains(strings.ToLower(f), "sans") || strings.Contains(strings.ToLower(f), "inter") {
-			if body == "" { body = f }
+			if body == "" {
+				body = f
+			}
 		}
 	}
 	// 回退
-	if display == "" && len(families) > 0 { display = families[0] }
+	if display == "" && len(families) > 0 {
+		display = families[0]
+	}
 	if body == "" {
-		if len(families) > 1 { body = families[1] }
+		if len(families) > 1 {
+			body = families[1]
+		}
 	}
 
 	return FontInfo{
@@ -253,7 +264,11 @@ func (e *Extractor) extractAnimations() AnimInfo {
 	}
 
 	complexity := "low"
-	if len(types) > 5 { complexity = "high" } else if len(types) > 2 { complexity = "medium" }
+	if len(types) > 5 {
+		complexity = "high"
+	} else if len(types) > 2 {
+		complexity = "medium"
+	}
 
 	return AnimInfo{
 		HasMotion:  len(types) > 0,
@@ -353,7 +368,9 @@ func hexToRGB(hex string) (int, int, int) {
 	if len(h) == 3 {
 		h = string(h[0]) + string(h[0]) + string(h[1]) + string(h[1]) + string(h[2]) + string(h[2])
 	}
-	if len(h) != 6 { return 0, 0, 0 }
+	if len(h) != 6 {
+		return 0, 0, 0
+	}
 	r := int(hexByte(h[0:2]))
 	g := int(hexByte(h[2:4]))
 	b := int(hexByte(h[4:6]))
@@ -370,7 +387,9 @@ func relativeLuminance(r, g, b int) float64 {
 	// sRGB linearization
 	linear := func(c float64) float64 {
 		c = c / 255.0
-		if c <= 0.03928 { return c / 12.92 }
+		if c <= 0.03928 {
+			return c / 12.92
+		}
 		return ((c + 0.055) / 1.055) * ((c + 0.055) / 1.055) * ((c + 0.055) / 1.055)
 	}
 	return 0.2126*linear(float64(r)) + 0.7152*linear(float64(g)) + 0.0722*linear(float64(b))
@@ -381,6 +400,8 @@ func contrastRatio(c1, c2 string) float64 {
 	r2, g2, b2 := hexToRGB(c2)
 	l1 := relativeLuminance(r1, g1, b1)
 	l2 := relativeLuminance(r2, g2, b2)
-	if l1 < l2 { l1, l2 = l2, l1 }
+	if l1 < l2 {
+		l1, l2 = l2, l1
+	}
 	return (l1 + 0.05) / (l2 + 0.05)
 }

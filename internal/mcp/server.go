@@ -89,7 +89,9 @@ func (s *Server) registerTools() {
 func (s *Server) handleCompose(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	args := req.Params.Arguments
 	result, err := s.engine.Compose(getArg[string](args, "layout"), getArg[string](args, "color"), getArg[string](args, "font"), getArgDefault(args, "title", "via54Design"))
-	if err != nil { return mcp.NewToolResultError(fmt.Sprintf("Compose failed: %v", err)), nil }
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("Compose failed: %v", err)), nil
+	}
 	return mcp.NewToolResultText(result.HTML), nil
 }
 
@@ -106,8 +108,10 @@ func (s *Server) handleQuality(ctx context.Context, req mcp.CallToolRequest) (*m
 	result += fmt.Sprintf("- Size: %d bytes / %d CSS blocks / %d lines\n", report.HTMLSize, report.CSSBlocks, report.TotalLines)
 	result += fmt.Sprintf("- Issues: %d errors / %d warnings / %d info\n\n", report.Summary["error"], report.Summary["warning"], report.Summary["info"])
 	for _, iss := range report.Issues {
-		if iss.Severity == "info" { continue }
-		icon := map[string]string{"error":"❌","warning":"⚠️"}[iss.Severity]
+		if iss.Severity == "info" {
+			continue
+		}
+		icon := map[string]string{"error": "❌", "warning": "⚠️"}[iss.Severity]
 		result += fmt.Sprintf("%s [%s] %s\n", icon, iss.Category, iss.Message)
 	}
 	return mcp.NewToolResultText(result), nil
@@ -160,9 +164,14 @@ func (s *Server) ServeHTTP(addr string) error {
 
 func getArg[T any](args any, key string) T {
 	if m, ok := args.(map[string]interface{}); ok {
-		if v, ok := m[key]; ok { if vt, ok := v.(T); ok { return vt } }
+		if v, ok := m[key]; ok {
+			if vt, ok := v.(T); ok {
+				return vt
+			}
+		}
 	}
-	var zero T; return zero
+	var zero T
+	return zero
 }
 func (s *Server) handleTrace(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	input := getArg[string](req.Params.Arguments, "input")
@@ -182,7 +191,11 @@ func (s *Server) handleTrace(ctx context.Context, req mcp.CallToolRequest) (*mcp
 
 func getArgDefault(args any, key string, def string) string {
 	if m, ok := args.(map[string]interface{}); ok {
-		if v, ok := m[key]; ok { if vt, ok := v.(string); ok && vt != "" { return vt } }
+		if v, ok := m[key]; ok {
+			if vt, ok := v.(string); ok && vt != "" {
+				return vt
+			}
+		}
 	}
 	return def
 }
@@ -192,7 +205,9 @@ func (s *Server) handleNarrate(ctx context.Context, req mcp.CallToolRequest) (*m
 	model := getArgDefault(req.Params.Arguments, "model", "three-act")
 	durRaw := getArg[float64](req.Params.Arguments, "duration")
 	dur := int(durRaw)
-	if dur <= 0 { dur = 30 }
+	if dur <= 0 {
+		dur = 30
+	}
 
 	scaffold, err := narrate.GenerateScaffold(seed, model, dur, s.baseDir)
 	if err != nil {

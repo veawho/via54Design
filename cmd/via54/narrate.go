@@ -40,7 +40,8 @@ func cmdNarrate() {
 	if *listModels {
 		out, err := narrate.ListModels(bd)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "失败: %v\n", err); os.Exit(1)
+			fmt.Fprintf(os.Stderr, "失败: %v\n", err)
+			os.Exit(1)
 		}
 		fmt.Print(out)
 		return
@@ -87,4 +88,3 @@ func cmdNarrate() {
 }
 
 // ─── Media (Shell+Python 迁移) ───
-

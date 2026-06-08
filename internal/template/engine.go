@@ -20,10 +20,11 @@ package template
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v3"
+	"html"
 	"os"
 	"sort"
 	"strings"
-	"gopkg.in/yaml.v3"
 )
 
 type Engine struct {
@@ -71,11 +72,11 @@ func (e *Engine) ComposeWithSVG(layoutID, colorID, fontID, title, letteringSVG s
 	}
 
 	result := &GenerationResult{
-		LayoutID: layoutID,
-		ColorID:  colorID,
-		FontID:   fontID,
-		Title:    title,
-		LetteringSVG: letteringSVG,
+		LayoutID:         layoutID,
+		ColorID:          colorID,
+		FontID:           fontID,
+		Title:            title,
+		LetteringSVG:     letteringSVG,
 		PresentationMode: presentationMode,
 	}
 	result.CSSVars = buildCSSVariables(color, font)
@@ -308,9 +309,12 @@ func elementCSSRole(role string) string {
 	// card-icon → card-icon
 	// gallery-item → item
 	switch role {
-	case "image-container": return "image"
-	case "text-container":  return "text"
-	case "gallery-item":    return "item"
+	case "image-container":
+		return "image"
+	case "text-container":
+		return "text"
+	case "gallery-item":
+		return "item"
 	}
 	return role
 }
@@ -339,10 +343,10 @@ func buildFontImports(font *TypographyTemplate) string {
 	}
 
 	gf := map[string]bool{
-		"Inter":true,"Geist":true,"JetBrains Mono":true,"Fraunces":true,
-		"Playfair Display":true,"Noto Serif SC":true,"Noto Sans SC":true,
-		"EB Garamond":true,"Nunito":true,"Baloo 2":true,
-		"Archivo Black":true,"Archivo":true,"LXGW WenKai":true,"ZCOOL XiaoWei":true,
+		"Inter": true, "Geist": true, "JetBrains Mono": true, "Fraunces": true,
+		"Playfair Display": true, "Noto Serif SC": true, "Noto Sans SC": true,
+		"EB Garamond": true, "Nunito": true, "Baloo 2": true,
+		"Archivo Black": true, "Archivo": true, "LXGW WenKai": true, "ZCOOL XiaoWei": true,
 	}
 	for _, family := range font.Fonts {
 		primary := strings.Trim(strings.Split(family, ",")[0], " '\"")
@@ -433,6 +437,12 @@ func assembleHTML(r *GenerationResult, layout *LayoutTemplate) string {
 	// Viewport meta with device adaptation
 	vpMeta := `<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">`
 
+	// XSS 防御: HTML 转义用户输入的 title
+	safeTitle := html.EscapeString(r.Title)
+	safeTitleHTML := html.EscapeString(titleHTML)
+	// bodyContent 内部 (e.g. heroBodyHTML) 也需要安全转义
+	_ = safeTitleHTML // 未直接用, 由 heroBodyHTML 内部处理
+
 	// 布局特有 HTML body 内容 (根据 layout ID 选择)
 	bodyContent := heroBodyHTML(titleHTML)
 	if layout.ID == "bento-grid-2x2" {
@@ -444,7 +454,7 @@ func assembleHTML(r *GenerationResult, layout *LayoutTemplate) string {
 	// 演示模式：外层包裹 .presentation-mode 容器
 	bodyWrapper := ""
 	if r.PresentationMode {
-		bodyWrapper = `<div class="presentation-mode">\n  ` + bodyContent + `\n</div>`
+		bodyWrapper = `<div class="presentation-mode">` + bodyContent + `</div>`
 		bodyContent = bodyWrapper
 	}
 
@@ -464,7 +474,7 @@ func assembleHTML(r *GenerationResult, layout *LayoutTemplate) string {
 <body>
 <main>%s</main>
 </body>
-</html>`, vpMeta, r.Title, r.FontImports, r.CSSVars, r.BaseCSS, r.LayoutCSS, bodyContent)
+</html>`, vpMeta, safeTitle, r.FontImports, r.CSSVars, r.BaseCSS, r.LayoutCSS, bodyContent)
 }
 
 func heroBodyHTML(titleHTML string) string {
@@ -477,7 +487,7 @@ func heroBodyHTML(titleHTML string) string {
     <p class="layout-hero-split__body">副标题内容</p>
     <a class="layout-hero-split__cta" href="#">CTA 按钮</a>
   </div>
-</section>`, titleHTML)
+</section>`, html.EscapeString(titleHTML))
 }
 
 func bentoBodyHTML() string {
@@ -533,7 +543,9 @@ func (r *GenerationResult) SaveToFile(path string) error {
 // sortedKeys 返回 map 的排序后 keys，保证遍历确定性
 func sortedKeys[K string, V any](m map[K]V) []K {
 	keys := make([]K, 0, len(m))
-	for k := range m { keys = append(keys, k) }
+	for k := range m {
+		keys = append(keys, k)
+	}
 	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
 	return keys
 }

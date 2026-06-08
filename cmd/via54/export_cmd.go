@@ -19,11 +19,11 @@
 package main
 
 import (
-	"github.com/veawho/via54Design/internal/export"
 	"flag"
 	"fmt"
-	"os"
+	"github.com/veawho/via54Design/internal/export"
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 func cmdExport() {
@@ -39,18 +39,30 @@ func cmdExport() {
 		height := fs.Int("height", 1080, "高")
 		format := fs.String("format", "mp4", "视频格式: mp4/webm/hevc/frames/apng")
 		fs.Parse(os.Args[3:])
-		if fs.NArg() < 1 { fmt.Fprintln(os.Stderr, "请指定 input.html"); os.Exit(1) }
+		if fs.NArg() < 1 {
+			fmt.Fprintln(os.Stderr, "请指定 input.html")
+			os.Exit(1)
+		}
 		r, err := export.RenderVideoExt(fs.Arg(0), *duration, *width, *height, *format)
-		if err != nil { fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1) }
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			os.Exit(1)
+		}
 		fmt.Printf("✅ %s: %s\n", *format, r.VideoPath)
 
 	case "pdf":
 		fs := flag.NewFlagSet("pdf", flag.ExitOnError)
 		output := fs.String("output", "", "输出路径")
 		fs.Parse(os.Args[3:])
-		if fs.NArg() < 1 { fmt.Fprintln(os.Stderr, "请指定 input.html"); os.Exit(1) }
+		if fs.NArg() < 1 {
+			fmt.Fprintln(os.Stderr, "请指定 input.html")
+			os.Exit(1)
+		}
 		p, err := export.ExportPDF(fs.Arg(0), *output)
-		if err != nil { fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1) }
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			os.Exit(1)
+		}
 		fmt.Printf("✅ PDF: %s\n", p)
 
 	case "tts":
@@ -59,9 +71,15 @@ func cmdExport() {
 		output := fs.String("output", "output.mp3", "输出路径")
 		voice := fs.String("voice", "", "音色")
 		fs.Parse(os.Args[3:])
-		if *text == "" { fmt.Fprintln(os.Stderr, "请指定 --text"); os.Exit(1) }
+		if *text == "" {
+			fmt.Fprintln(os.Stderr, "请指定 --text")
+			os.Exit(1)
+		}
 		r, err := export.Synthesize(*text, *output, "", *voice)
-		if err != nil { fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1) }
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			os.Exit(1)
+		}
 		fmt.Printf("✅ TTS: %s (%d chars)\n", r.AudioPath, r.CharCount)
 
 	case "pptx":
@@ -128,12 +146,17 @@ func cmdExport() {
 		}
 
 		paths, err := export.ExportSVG(scenes, *output, *width, *height)
-		if err != nil { fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1) }
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			os.Exit(1)
+		}
 		fmt.Printf("✅ SVG: %d 个文件 → %s\n", len(paths), *output)
 		for _, p := range paths[:min(3, len(paths))] {
 			fmt.Printf("     %s\n", p)
 		}
-		if len(paths) > 3 { fmt.Printf("     ... 共 %d 个\n", len(paths)) }
+		if len(paths) > 3 {
+			fmt.Printf("     ... 共 %d 个\n", len(paths))
+		}
 
 	case "json":
 		fs := flag.NewFlagSet("json", flag.ExitOnError)
@@ -146,7 +169,8 @@ func cmdExport() {
 			os.Exit(1)
 		}
 		if err := export.ExportJSON(scenes, *output); err != nil {
-			fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1)
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			os.Exit(1)
 		}
 		fmt.Printf("✅ JSON: %s (%d scenes)\n", *output, len(scenes))
 
@@ -165,7 +189,8 @@ func cmdExport() {
 			}}
 		}
 		if err := export.ExportMarkdown(scenes, *title, *author, *output); err != nil {
-			fmt.Fprintf(os.Stderr, "❌ %v\n", err); os.Exit(1)
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			os.Exit(1)
 		}
 		fmt.Printf("✅ Markdown: %s (%d slides, Marp 兼容)\n", *output, len(scenes))
 		fmt.Println("   下一步: npx @marp-team/marp-cli story.md --pptx")
@@ -180,13 +205,21 @@ func cmdExport() {
 // 辅助函数: 从叙事 JSON 构建 SVG 场景
 
 func buildScenesFromNarrative(narrativePath string) []export.SVGScene {
-	if narrativePath == "" { return nil }
+	if narrativePath == "" {
+		return nil
+	}
 	data, err := os.ReadFile(narrativePath)
-	if err != nil { return nil }
+	if err != nil {
+		return nil
+	}
 	var sc map[string]interface{}
-	if err := yaml.Unmarshal(data, &sc); err != nil { return nil }
+	if err := yaml.Unmarshal(data, &sc); err != nil {
+		return nil
+	}
 	beats, ok := sc["beats"].([]interface{})
-	if !ok { return nil }
+	if !ok {
+		return nil
+	}
 
 	var scenes []export.SVGScene
 	total := len(beats)
@@ -207,13 +240,21 @@ func buildScenesFromNarrative(narrativePath string) []export.SVGScene {
 // 辅助函数: 从叙事 JSON 构建 SceneData
 
 func buildSceneDataFromNarrative(narrativePath string) []export.SceneData {
-	if narrativePath == "" { return nil }
+	if narrativePath == "" {
+		return nil
+	}
 	data, err := os.ReadFile(narrativePath)
-	if err != nil { return nil }
+	if err != nil {
+		return nil
+	}
 	var sc map[string]interface{}
-	if err := yaml.Unmarshal(data, &sc); err != nil { return nil }
+	if err := yaml.Unmarshal(data, &sc); err != nil {
+		return nil
+	}
 	beats, ok := sc["beats"].([]interface{})
-	if !ok { return nil }
+	if !ok {
+		return nil
+	}
 
 	var scenes []export.SceneData
 	total := len(beats)
@@ -232,5 +273,3 @@ func buildSceneDataFromNarrative(narrativePath string) []export.SceneData {
 	}
 	return scenes
 }
-
-

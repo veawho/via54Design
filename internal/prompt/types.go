@@ -33,16 +33,16 @@ type Option struct {
 }
 
 type PromptScaffold struct {
-	Seed        string            `yaml:"seed" json:"seed"`
-	Platform    string            `yaml:"platform" json:"platform"`
-	Model       string            `yaml:"model" json:"model"`
-	Fields      map[string]string `yaml:"fields" json:"fields"`
+	Seed        string             `yaml:"seed" json:"seed"`
+	Platform    string             `yaml:"platform" json:"platform"`
+	Model       string             `yaml:"model" json:"model"`
+	Fields      map[string]string  `yaml:"fields" json:"fields"`
 	Weights     map[string]float64 `yaml:"weights,omitempty" json:"weights,omitempty"`
-	Negative    []string          `yaml:"negative" json:"negative"`
-	FinalPrompt string            `yaml:"final_prompt" json:"final_prompt"`
-	Params      map[string]string `yaml:"params,omitempty" json:"params,omitempty"`
-	Expanded    string            `yaml:"expanded,omitempty" json:"expanded,omitempty"`
-	RefImage    string            `yaml:"ref_image,omitempty" json:"ref_image,omitempty"`
+	Negative    []string           `yaml:"negative" json:"negative"`
+	FinalPrompt string             `yaml:"final_prompt" json:"final_prompt"`
+	Params      map[string]string  `yaml:"params,omitempty" json:"params,omitempty"`
+	Expanded    string             `yaml:"expanded,omitempty" json:"expanded,omitempty"`
+	RefImage    string             `yaml:"ref_image,omitempty" json:"ref_image,omitempty"`
 }
 
 type QualityReport struct {

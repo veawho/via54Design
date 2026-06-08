@@ -55,7 +55,9 @@ func cmdForge() {
 		} else {
 			for _, id := range ids {
 				tmpl, err := workflow.LoadWorkflowTemplate(id, bd)
-				if err != nil { continue }
+				if err != nil {
+					continue
+				}
 				fmt.Printf("  📄 %-20s %s\n", tmpl.ID, tmpl.Name)
 				fmt.Printf("     %s\n", tmpl.Description)
 				fmt.Printf("     模型: %s\n", tmpl.Model)
@@ -80,40 +82,56 @@ func cmdForge() {
 
 	// Build A1111/Forge API payload
 	payload := map[string]interface{}{
-		"prompt":              *prompt,
-		"negative_prompt":     *negative,
-		"seed":                *seed,
-		"steps":               *steps,
-		"cfg_scale":           *cfg,
-		"width":               *width,
-		"height":              *height,
-		"sampler_name":        *sampler,
-		"save_images":         true,
-		"send_images":         true,
-		"batch_size":          1,
-		"n_iter":              1,
+		"prompt":          *prompt,
+		"negative_prompt": *negative,
+		"seed":            *seed,
+		"steps":           *steps,
+		"cfg_scale":       *cfg,
+		"width":           *width,
+		"height":          *height,
+		"sampler_name":    *sampler,
+		"save_images":     true,
+		"send_images":     true,
+		"batch_size":      1,
+		"n_iter":          1,
 	}
 
 	// Apply template defaults if not overridden
 	if *steps <= 0 {
 		if s, ok := tmpl.Params["steps"]; ok {
-			if si, ok := s.(int); ok { payload["steps"] = si }
-		} else { payload["steps"] = 30 }
+			if si, ok := s.(int); ok {
+				payload["steps"] = si
+			}
+		} else {
+			payload["steps"] = 30
+		}
 	}
 	if *cfg <= 0 {
 		if c, ok := tmpl.Params["cfg"]; ok {
-			if cf, ok := c.(float64); ok { payload["cfg_scale"] = cf }
-		} else { payload["cfg_scale"] = 7.5 }
+			if cf, ok := c.(float64); ok {
+				payload["cfg_scale"] = cf
+			}
+		} else {
+			payload["cfg_scale"] = 7.5
+		}
 	}
 	if *width <= 0 {
 		if w, ok := tmpl.Params["width"]; ok {
-			if wi, ok := w.(int); ok { payload["width"] = wi }
-		} else { payload["width"] = 1024 }
+			if wi, ok := w.(int); ok {
+				payload["width"] = wi
+			}
+		} else {
+			payload["width"] = 1024
+		}
 	}
 	if *height <= 0 {
 		if h, ok := tmpl.Params["height"]; ok {
-			if hi, ok := h.(int); ok { payload["height"] = hi }
-		} else { payload["height"] = 1024 }
+			if hi, ok := h.(int); ok {
+				payload["height"] = hi
+			}
+		} else {
+			payload["height"] = 1024
+		}
 	}
 	if *sampler == "" {
 		payload["sampler_name"] = "Euler"
@@ -126,19 +144,23 @@ func cmdForge() {
 	for k, v := range payload {
 		switch val := v.(type) {
 		case int:
-			if val == 0 { delete(payload, k) }
+			if val == 0 {
+				delete(payload, k)
+			}
 		case float64:
-			if val == 0 { delete(payload, k) }
+			if val == 0 {
+				delete(payload, k)
+			}
 		}
 	}
 
 	// Build result info
 	result := map[string]interface{}{
-		"template":    tmpl.ID,
-		"name":        tmpl.Name,
-		"format":      "forge_a1111",
-		"model":       tmpl.Model,
-		"api_payload": payload,
+		"template":     tmpl.ID,
+		"name":         tmpl.Name,
+		"format":       "forge_a1111",
+		"model":        tmpl.Model,
+		"api_payload":  payload,
 		"api_endpoint": "http://localhost:7860/sdapi/v1/txt2img",
 		"usage": []string{
 			"Option A: Copy JSON and POST manually",

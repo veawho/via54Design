@@ -21,7 +21,8 @@
 // 参考: huobao-drama (⭐12.6k) + Fountain screenplay format
 //
 // 架构: 叙事模型定义在 YAML 文件中 (templates/narratology/models/*.yaml)
-//       引擎从 Registry 统一加载，与 layout/color/font 一致
+//
+//	引擎从 Registry 统一加载，与 layout/color/font 一致
 package narrate
 
 import (
@@ -38,14 +39,14 @@ import (
 // ─── 叙事模型定义 (从 YAML 加载) ───
 
 type NarrativeModelDef struct {
-	ID            string                `yaml:"id"`
-	Name          map[string]string     `yaml:"name"`
-	Description   map[string]string     `yaml:"description"`
-	Source        string                `yaml:"source"`
-	SuitableFor   []string              `yaml:"suitable_for"`
-	Beats         []BeatDef             `yaml:"beats"`
-	ShotTypes     []string              `yaml:"shot_types"`
-	CameraMoves   []string              `yaml:"camera_moves"`
+	ID          string            `yaml:"id"`
+	Name        map[string]string `yaml:"name"`
+	Description map[string]string `yaml:"description"`
+	Source      string            `yaml:"source"`
+	SuitableFor []string          `yaml:"suitable_for"`
+	Beats       []BeatDef         `yaml:"beats"`
+	ShotTypes   []string          `yaml:"shot_types"`
+	CameraMoves []string          `yaml:"camera_moves"`
 }
 
 type BeatDef struct {
@@ -65,28 +66,28 @@ type BeatDef struct {
 // ─── 叙事脚手架输出 ───
 
 type NarrativeScaffold struct {
-	Seed            string                `yaml:"seed" json:"seed"`
-	ModelID         string                `yaml:"model_id" json:"model_id"`
-	ModelName       string                `yaml:"model_name" json:"model_name"`
-	Description     string                `yaml:"description" json:"description"`
-	TargetDuration  int                   `yaml:"target_duration" json:"target_duration"`
-	ExpandedOutline string                `yaml:"expanded_outline,omitempty" json:"expanded_outline,omitempty"`
-	Beats           []Beat                `yaml:"beats,omitempty" json:"beats,omitempty"`
-	FountainScript  string                `yaml:"fountain_script,omitempty" json:"fountain_script,omitempty"`
-	Storyboard      []Shot                `yaml:"storyboard,omitempty" json:"storyboard,omitempty"`
-	PromptForLLM    string                `yaml:"prompt_for_llm,omitempty" json:"prompt_for_llm,omitempty"`
-	RecommendedGen  string                `yaml:"recommended_generate,omitempty" json:"recommended_generate,omitempty"`
+	Seed            string `yaml:"seed" json:"seed"`
+	ModelID         string `yaml:"model_id" json:"model_id"`
+	ModelName       string `yaml:"model_name" json:"model_name"`
+	Description     string `yaml:"description" json:"description"`
+	TargetDuration  int    `yaml:"target_duration" json:"target_duration"`
+	ExpandedOutline string `yaml:"expanded_outline,omitempty" json:"expanded_outline,omitempty"`
+	Beats           []Beat `yaml:"beats,omitempty" json:"beats,omitempty"`
+	FountainScript  string `yaml:"fountain_script,omitempty" json:"fountain_script,omitempty"`
+	Storyboard      []Shot `yaml:"storyboard,omitempty" json:"storyboard,omitempty"`
+	PromptForLLM    string `yaml:"prompt_for_llm,omitempty" json:"prompt_for_llm,omitempty"`
+	RecommendedGen  string `yaml:"recommended_generate,omitempty" json:"recommended_generate,omitempty"`
 }
 
 type Beat struct {
-	Act       string `yaml:"act" json:"act"`
-	StartTime int    `yaml:"start_time" json:"start_time"`
-	Duration  int    `yaml:"duration" json:"duration"`
-	Event     string `yaml:"event" json:"event"`
-	Voiceover string `yaml:"voiceover" json:"voiceover"`
-	Mood      string `yaml:"mood" json:"mood"`
+	Act        string `yaml:"act" json:"act"`
+	StartTime  int    `yaml:"start_time" json:"start_time"`
+	Duration   int    `yaml:"duration" json:"duration"`
+	Event      string `yaml:"event" json:"event"`
+	Voiceover  string `yaml:"voiceover" json:"voiceover"`
+	Mood       string `yaml:"mood" json:"mood"`
 	Transition string `yaml:"transition,omitempty" json:"transition,omitempty"`
-	SFX       string `yaml:"sfx,omitempty" json:"sfx,omitempty"`
+	SFX        string `yaml:"sfx,omitempty" json:"sfx,omitempty"`
 }
 
 type Shot struct {
@@ -182,13 +183,13 @@ func GenerateScaffold(seed string, modelID string, duration int, baseDir string)
 	}
 
 	scaffold := &NarrativeScaffold{
-		Seed:           seed,
-		ModelID:        modelID,
-		ModelName:      zhName,
-		Description:    zhDesc,
-		TargetDuration: duration,
+		Seed:            seed,
+		ModelID:         modelID,
+		ModelName:       zhName,
+		Description:     zhDesc,
+		TargetDuration:  duration,
 		ExpandedOutline: buildOutlinePrompt(seed, def, duration),
-		PromptForLLM:   buildLLMPrompt(seed, def, duration),
+		PromptForLLM:    buildLLMPrompt(seed, def, duration),
 	}
 
 	// 生成 beat 骨架
@@ -209,9 +210,13 @@ func GenerateScaffold(seed string, modelID string, duration int, baseDir string)
 func buildOutlinePrompt(seed string, def *NarrativeModelDef, duration int) string {
 	var b strings.Builder
 	zhName := def.Name["zh"]
-	if zhName == "" { zhName = def.ID }
+	if zhName == "" {
+		zhName = def.ID
+	}
 	zhDesc := def.Description["zh"]
-	if zhDesc == "" { zhDesc = def.Description["en"] }
+	if zhDesc == "" {
+		zhDesc = def.Description["en"]
+	}
 
 	b.WriteString(fmt.Sprintf("# 叙事大纲扩展指令\n\n"))
 	b.WriteString(fmt.Sprintf("## 种子句子\n> %s\n\n", seed))
@@ -220,12 +225,16 @@ func buildOutlinePrompt(seed string, def *NarrativeModelDef, duration int) strin
 	b.WriteString(fmt.Sprintf("## 节拍结构\n"))
 	for _, beat := range def.Beats {
 		bn := beat.Name["zh"]
-		if bn == "" { bn = beat.ID }
+		if bn == "" {
+			bn = beat.ID
+		}
 		b.WriteString(fmt.Sprintf("- %s (%s, mood: %s, weight: %.0f%%)\n", bn, beat.ID, beat.Mood, beat.DurationWeight*100))
 		if len(beat.SubBeats) > 0 {
 			for _, sb := range beat.SubBeats {
 				sbn := sb.Name["zh"]
-				if sbn == "" { sbn = sb.ID }
+				if sbn == "" {
+					sbn = sb.ID
+				}
 				b.WriteString(fmt.Sprintf("  └ %s (%s, mood: %s, weight: %.0f%%)\n", sbn, sb.ID, sb.Mood, sb.Weight*100))
 			}
 		}
@@ -241,7 +250,9 @@ func buildOutlinePrompt(seed string, def *NarrativeModelDef, duration int) strin
 func buildLLMPrompt(seed string, def *NarrativeModelDef, duration int) string {
 	var b strings.Builder
 	zhName := def.Name["zh"]
-	if zhName == "" { zhName = def.ID }
+	if zhName == "" {
+		zhName = def.ID
+	}
 
 	b.WriteString("你是一个专业的叙事设计师和编剧。请根据以下信息完成一个完整的视频剧本。\n\n")
 	b.WriteString("### 用户的一句话种子\n")
@@ -253,7 +264,9 @@ func buildLLMPrompt(seed string, def *NarrativeModelDef, duration int) string {
 	var beatIDs []string
 	for _, bd := range def.Beats {
 		bn := bd.Name["zh"]
-		if bn == "" { bn = bd.ID }
+		if bn == "" {
+			bn = bd.ID
+		}
 		beatIDs = append(beatIDs, bn)
 	}
 	b.WriteString(fmt.Sprintf("节拍: %s\n\n", strings.Join(beatIDs, " → ")))
@@ -297,23 +310,29 @@ func buildBeatsFromDef(def *NarrativeModelDef, duration int) []Beat {
 		if i == len(def.Beats)-1 {
 			segDur = remaining
 		}
-		if segDur <= 0 { segDur = 1 }
+		if segDur <= 0 {
+			segDur = 1
+		}
 
 		zhName := bd.Name["zh"]
-		if zhName == "" { zhName = bd.ID }
+		if zhName == "" {
+			zhName = bd.ID
+		}
 
 		vt := bd.VoiceoverTmpl
-		if vt == "" { vt = bd.ID + "..." }
+		if vt == "" {
+			vt = bd.ID + "..."
+		}
 
 		beats = append(beats, Beat{
-			Act:       fmt.Sprintf("%s (%s)", zhName, bd.ID),
-			StartTime: curTime,
-			Duration:  segDur,
-			Event:     fmt.Sprintf("（LLM填充：%s场景）", bd.ID),
-			Voiceover: vt,
-			Mood:      bd.Mood,
+			Act:        fmt.Sprintf("%s (%s)", zhName, bd.ID),
+			StartTime:  curTime,
+			Duration:   segDur,
+			Event:      fmt.Sprintf("（LLM填充：%s场景）", bd.ID),
+			Voiceover:  vt,
+			Mood:       bd.Mood,
 			Transition: bd.Transition,
-			SFX:       bd.SFX,
+			SFX:        bd.SFX,
 		})
 
 		curTime += segDur
@@ -340,7 +359,9 @@ func buildFountainTemplate(s *NarrativeScaffold) string {
 		}
 		if i < len(s.Beats)-1 {
 			trans := beat.Transition
-			if trans == "" { trans = "切至" }
+			if trans == "" {
+				trans = "切至"
+			}
 			b.WriteString(fmt.Sprintf("> %s SCENE %d\n\n", trans, i+2))
 		}
 	}
@@ -409,9 +430,13 @@ func buildRecommendedGen(modelID string, duration int, seed string) string {
 	}
 
 	l := layoutMap[modelID]
-	if l == "" { l = "hero-split-left-image" }
+	if l == "" {
+		l = "hero-split-left-image"
+	}
 	c := colorMap[modelID]
-	if c == "" { c = "ink-wash" }
+	if c == "" {
+		c = "ink-wash"
+	}
 
 	return fmt.Sprintf("via54 generate --layout %s --color %s --font ming-hei-editorial --title \"%s\"",
 		l, c, truncate(seed, 40))
@@ -419,7 +444,9 @@ func buildRecommendedGen(modelID string, duration int, seed string) string {
 
 func truncate(s string, n int) string {
 	runes := []rune(s)
-	if len(runes) <= n { return s }
+	if len(runes) <= n {
+		return s
+	}
 	return string(runes[:n]) + "..."
 }
 
@@ -502,4 +529,3 @@ func (s *NarrativeScaffold) ToJSON() (string, error) {
 }
 
 var _ = os.Getenv // keep os import alive
-

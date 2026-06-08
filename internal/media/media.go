@@ -27,12 +27,12 @@ import (
 
 // BGM 配乐选项
 var bgmMoods = map[string]string{
-	"tech":           "bgm-tech.mp3",
-	"ad":             "bgm-ad.mp3",
-	"educational":    "bgm-educational.mp3",
-	"educational-alt":"bgm-educational-alt.mp3",
-	"tutorial":       "bgm-tutorial.mp3",
-	"tutorial-alt":   "bgm-tutorial-alt.mp3",
+	"tech":            "bgm-tech.mp3",
+	"ad":              "bgm-ad.mp3",
+	"educational":     "bgm-educational.mp3",
+	"educational-alt": "bgm-educational-alt.mp3",
+	"tutorial":        "bgm-tutorial.mp3",
+	"tutorial-alt":    "bgm-tutorial-alt.mp3",
 }
 
 // AddMusic 给无声视频添加 BGM
@@ -40,7 +40,9 @@ func AddMusic(input, mood, output string) error {
 	bgm, ok := bgmMoods[mood]
 	if !ok {
 		moods := make([]string, 0, len(bgmMoods))
-		for k := range bgmMoods { moods = append(moods, k) }
+		for k := range bgmMoods {
+			moods = append(moods, k)
+		}
 		return fmt.Errorf("未知 mood: %s (可选: %v)", mood, moods)
 	}
 	// 查找 bgm 文件: 先找 assets/，再找 ../assets/
@@ -122,7 +124,9 @@ func findAsset(name string) string {
 	dirs := []string{"assets", "../assets", "../../assets"}
 	for _, d := range dirs {
 		p := filepath.Join(d, name)
-		if _, err := os.Stat(p); err == nil { return p }
+		if _, err := os.Stat(p); err == nil {
+			return p
+		}
 	}
 	return ""
 }

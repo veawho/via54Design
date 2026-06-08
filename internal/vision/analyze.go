@@ -38,7 +38,7 @@ import (
 
 // ColorEntry represents a quantized dominant color.
 type ColorEntry struct {
-	RGB   []int `json:"rgb"`
+	RGB   []int  `json:"rgb"`
 	Hex   string `json:"hex"`
 	Count int    `json:"count"`
 }

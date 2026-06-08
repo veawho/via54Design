@@ -20,9 +20,9 @@ package template
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
-	"gopkg.in/yaml.v3"
 )
 
 type Registry struct {
@@ -92,10 +92,10 @@ func (r *Registry) resolve(entries []RegistryEntry, id string) (string, error) {
 
 func (r *Registry) ListAll() map[string][]RegistryEntry {
 	return map[string][]RegistryEntry{
-		"layouts":        r.Data.Layouts,
-		"color_schemes":  r.Data.ColorSchemes,
-		"typography":     r.Data.Typography,
-		"narratology":    r.Data.Narratology,
+		"layouts":       r.Data.Layouts,
+		"color_schemes": r.Data.ColorSchemes,
+		"typography":    r.Data.Typography,
+		"narratology":   r.Data.Narratology,
 	}
 }
 

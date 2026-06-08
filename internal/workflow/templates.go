@@ -103,22 +103,22 @@ func generateSkeleton(t *WorkflowTemplate) map[string]interface{} {
 		// checkpoint
 		skeleton["1"] = map[string]interface{}{
 			"class_type": "CheckpointLoaderSimple",
-			"inputs": map[string]interface{}{"ckpt_name": t.Model},
+			"inputs":     map[string]interface{}{"ckpt_name": t.Model},
 		}
 		// positive prompt
 		skeleton["2"] = map[string]interface{}{
 			"class_type": "CLIPTextEncode",
-			"inputs": map[string]interface{}{"text": "__PROMPT__", "clip": []interface{}{"1", 1}},
+			"inputs":     map[string]interface{}{"text": "__PROMPT__", "clip": []interface{}{"1", 1}},
 		}
 		// negative prompt
 		skeleton["3"] = map[string]interface{}{
 			"class_type": "CLIPTextEncode",
-			"inputs": map[string]interface{}{"text": "__NEGATIVE__", "clip": []interface{}{"1", 1}},
+			"inputs":     map[string]interface{}{"text": "__NEGATIVE__", "clip": []interface{}{"1", 1}},
 		}
 		// latent
 		skeleton["4"] = map[string]interface{}{
 			"class_type": "EmptyLatentImage",
-			"inputs": map[string]interface{}{"width": 1024, "height": 1024, "batch_size": 1},
+			"inputs":     map[string]interface{}{"width": 1024, "height": 1024, "batch_size": 1},
 		}
 		// sampler
 		skeleton["5"] = map[string]interface{}{
@@ -133,12 +133,12 @@ func generateSkeleton(t *WorkflowTemplate) map[string]interface{} {
 		// vae decode
 		skeleton["6"] = map[string]interface{}{
 			"class_type": "VAEDecode",
-			"inputs": map[string]interface{}{"samples": []interface{}{"5", 0}, "vae": []interface{}{"1", 2}},
+			"inputs":     map[string]interface{}{"samples": []interface{}{"5", 0}, "vae": []interface{}{"1", 2}},
 		}
 		// save
 		skeleton["7"] = map[string]interface{}{
 			"class_type": "SaveImage",
-			"inputs": map[string]interface{}{"images": []interface{}{"6", 0}, "filename_prefix": "via54"},
+			"inputs":     map[string]interface{}{"images": []interface{}{"6", 0}, "filename_prefix": "via54"},
 		}
 	}
 	if t.Type == "img2img" {

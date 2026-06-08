@@ -20,14 +20,17 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"github.com/veawho/via54Design/internal/template"
+	"os"
 	"strings"
 )
 
 func cmdList() {
 	eng, err := template.NewEngine(baseDir())
-	if err != nil { fmt.Fprintf(os.Stderr, "失败: %v\n", err); os.Exit(1) }
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "失败: %v\n", err)
+		os.Exit(1)
+	}
 	for cat, entries := range eng.Registry.ListAll() {
 		fmt.Printf("\n=== %s ===\n", cat)
 		// 叙事学分组显示
@@ -57,4 +60,3 @@ func cmdList() {
 }
 
 // ─── Narrate (叙事引擎) ───
-

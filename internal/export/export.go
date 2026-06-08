@@ -30,7 +30,7 @@ type RenderResult struct {
 
 // TTSResult 语音合成结果
 type TTSResult struct {
-	AudioPath string
+	AudioPath  string
 	DurationMs int
 	CharCount  int
 }

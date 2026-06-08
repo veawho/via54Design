@@ -47,9 +47,9 @@ type SceneTiming struct {
 // ExportJSON 导出场景数据为 JSON 文件
 func ExportJSON(scenes []SceneData, outputPath string) error {
 	data, err := json.MarshalIndent(map[string]interface{}{
-		"version": "1.0",
+		"version":      "1.0",
 		"total_scenes": len(scenes),
-		"scenes": scenes,
+		"scenes":       scenes,
 	}, "", "  ")
 	if err != nil {
 		return err
