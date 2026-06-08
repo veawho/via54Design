@@ -27,11 +27,12 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		help()
+		cmdInteractive()
 		return
 	}
 	switch os.Args[1] {
 	case "serve":     cmdServe()
+	case "interactive","menu","i": cmdInteractive()
 	case "generate":  cmdGenerate()
 	case "narrate":   cmdNarrate()
 	case "quality":   cmdQuality()
@@ -67,6 +68,7 @@ func help() {
 	fmt.Println("  comfyui ...         ComfyUI 工作流执行 (21模板)")
 	fmt.Println("  pipeline ...        LLM提示词管道 (扩展/翻译/存档)")
 	fmt.Println("  web ...            Web UI (全功能控制面板)")
+	fmt.Println("  interactive       交互式菜单（推荐新手）")
 	fmt.Println("  version           版本信息")
 	fmt.Println()
 	fmt.Println("详见: https://github.com/veawho/via54Design")
