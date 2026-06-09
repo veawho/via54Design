@@ -81,9 +81,12 @@ jobs:
 
       - name: Package (${{ matrix.target }})
         shell: bash
+        # macOS BSD mkdir can return non-zero on existing dir even with -p;
+        # ignore that one race and continue. Real failures (e.g. read-only FS)
+        # surface from the subsequent cp / zip commands.
         run: |
           cd dist
-          mkdir -p via54-${{ matrix.target }}
+          mkdir -p via54-${{ matrix.target }} 2>/dev/null || true
           cp via54-${{ matrix.target }}${{ matrix.ext }} via54-${{ matrix.target }}/
           cp via54-mcp-${{ matrix.target }}${{ matrix.ext }} via54-${{ matrix.target }}/
           cp ../README.md via54-${{ matrix.target }}/ 2>/dev/null || true
