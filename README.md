@@ -152,7 +152,6 @@ via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/std
 | 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
 | ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
 | 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
-| **姊妹项目** | [**via54Hermes**](https://github.com/veawho/via54Hermes) | — | 运行 via54Design 所需的 Hermes Agent 运维知识库：15+ 事故案例、5 架构 SVG、3 恢复脚本、Gateway/Desktop/WSL 双部署全解 |
 
 ---
 
@@ -597,7 +596,6 @@ via54Design/
 | 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
 | ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
 | 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
-| **姊妹项目** | [**via54Hermes**](https://github.com/veawho/via54Hermes) | — | 运行 via54Design 所需的 Hermes Agent 运维知识库：15+ 事故案例、5 架构 SVG、3 恢复脚本、Gateway/Desktop/WSL 双部署全解 |
 
 ---
 
