@@ -100,7 +100,7 @@ via54 export pptx scaffold.json --output story.pptx --style editorial --theme te
 **叙事种子 → 设计生成**
 
 ```bash
-via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial \
+via54 generate --layout hero-split-16-9 --color ink-wash --font ming-hei-editorial \
   --title "裁缝的故事" --output story.html --presentation
 ```
 
@@ -152,6 +152,7 @@ via54 narrate --seed "..." --format json | via54 prompt --from-scaffold /dev/std
 | 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
 | ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
 | 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
+| **姊妹项目** | [**via54Hermes**](https://github.com/veawho/via54Hermes) | — | 运行 via54Design 所需的 Hermes Agent 运维知识库：15+ 事故案例、5 架构 SVG、3 恢复脚本、Gateway/Desktop/WSL 双部署全解 |
 
 ---
 
@@ -343,7 +344,7 @@ via54
 via54 prompt --scene "一只猫在月光下的屋顶上" --platform midjourney
 
 # 生成 HTML 设计
-via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial --title "标题"
+via54 generate --layout hero-split-16-9 --color ink-wash --font ming-hei-editorial --title "标题"
 
 # 生成叙事脚手架
 via54 narrate --seed "一个裁缝在巴黎改变了时尚" --model three-act --duration 60
@@ -394,7 +395,7 @@ via54 narrate --list                                                  # 查看�
 ### 🎨 设计生成 — 布局×配色×字体→HTML
 
 ```bash
-via54 generate --layout hero-split --color ink-wash --font ming-hei-editorial \
+via54 generate --layout hero-split-16-9 --color ink-wash --font ming-hei-editorial \
   --title "标题" --output demo.html         # 生成 HTML
 via54 generate --presentation ...            # 演示文稿模式 (16:9 锁定)
 ```
@@ -596,6 +597,7 @@ via54Design/
 | 叙事引擎 | 同类项目 | <100 | 4 种正式叙事模型，Fountain 剧本+分镜表 |
 | ComfyUI 管理 | ComfyUI | 116k | Go 执行桥，30 模板，确定性种子，可测试 |
 | 设计模板 | huashu-design | 16.7k | Go 重写核心层，结构化 YAML 模板，质量门禁 |
+| **姊妹项目** | [**via54Hermes**](https://github.com/veawho/via54Hermes) | — | 运行 via54Design 所需的 Hermes Agent 运维知识库：15+ 事故案例、5 架构 SVG、3 恢复脚本、Gateway/Desktop/WSL 双部署全解 |
 
 ---
 
