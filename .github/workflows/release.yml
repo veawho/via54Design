@@ -21,21 +21,33 @@ jobs:
       matrix:
         include:
           # 5 平台 × 2 二进制 (CLI + MCP)
+          # goos/goarch 直接写在 matrix, 避免 GitHub Actions 表达式里
+          # && / || 优先级解析陷阱 (会把 GOOS 解析成布尔值 true/false)
           - target: darwin-amd64
             os: macos-13
             ext: ""
+            goos: darwin
+            goarch: amd64
           - target: darwin-arm64
             os: macos-14
             ext: ""
+            goos: darwin
+            goarch: arm64
           - target: linux-amd64
             os: ubuntu-22.04
             ext: ""
+            goos: linux
+            goarch: amd64
           - target: linux-arm64
             os: ubuntu-22.04-arm
             ext: ""
+            goos: linux
+            goarch: arm64
           - target: windows-amd64
             os: windows-2022
             ext: ".exe"
+            goos: windows
+            goarch: amd64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,8 +63,8 @@ jobs:
       - name: Build CLI (${{ matrix.target }})
         working-directory: .
         env:
-          GOOS: ${{ matrix.target == 'windows-amd64' && 'windows' || (matrix.target == 'darwin-amd64' || matrix.target == 'darwin-arm64' && 'darwin' || 'linux') }}
-          GOARCH: ${{ matrix.target == 'darwin-amd64' || matrix.target == 'linux-amd64' || matrix.target == 'windows-amd64' && 'amd64' || 'arm64' }}
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "0"
         run: |
           mkdir -p dist
@@ -61,8 +73,8 @@ jobs:
       - name: Build MCP (${{ matrix.target }})
         working-directory: .
         env:
-          GOOS: ${{ matrix.target == 'windows-amd64' && 'windows' || (matrix.target == 'darwin-amd64' || matrix.target == 'darwin-arm64' && 'darwin' || 'linux') }}
-          GOARCH: ${{ matrix.target == 'darwin-amd64' || matrix.target == 'linux-amd64' || matrix.target == 'windows-amd64' && 'amd64' || 'arm64' }}
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: "0"
         run: |
           go build -buildvcs=false -ldflags="-s -w" -o dist/via54-mcp-${{ matrix.target }}${{ matrix.ext }} ./cmd/mcp-server/
@@ -148,6 +160,9 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     if: failure()
+    permissions:
+      contents: read
+      issues: write    # 创建 failure issue
     steps:
       - name: Create failure issue
         uses: actions/github-script@v7
