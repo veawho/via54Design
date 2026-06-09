@@ -69,6 +69,7 @@ jobs:
         run: |
           mkdir -p dist
           go build -buildvcs=false -ldflags="-s -w" -o dist/via54-${{ matrix.target }}${{ matrix.ext }} ./cmd/via54/
+          echo "=== CLI build done: $(ls -lh dist/via54-${{ matrix.target }}${{ matrix.ext }}) ==="
 
       - name: Build MCP (${{ matrix.target }})
         working-directory: .
@@ -78,6 +79,7 @@ jobs:
           CGO_ENABLED: "0"
         run: |
           go build -buildvcs=false -ldflags="-s -w" -o dist/via54-mcp-${{ matrix.target }}${{ matrix.ext }} ./cmd/mcp-server/
+          echo "=== MCP build done: $(ls -lh dist/via54-mcp-${{ matrix.target }}${{ matrix.ext }}) ==="
 
       - name: Package (${{ matrix.target }})
         shell: bash
@@ -85,6 +87,7 @@ jobs:
         # colliding with the built binary's basename — via54-linux-amd64
         # is BOTH the binary file and the package dir), then rename
         # to the user-facing dir name before zipping.
+        working-directory: .
         run: |
           set -e
           cd dist
@@ -101,6 +104,7 @@ jobs:
           zip -r ../via54-${{ matrix.target }}.zip .
           cd ..
           rm -rf via54-${{ matrix.target }}  # 删中间目录,只留 zip
+          echo "=== Package done: $(ls -lh via54-${{ matrix.target }}.zip) ==="
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
