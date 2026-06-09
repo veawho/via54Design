@@ -50,7 +50,7 @@ jobs:
             goarch: amd64
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0  # 需要 git tag 信息
 
