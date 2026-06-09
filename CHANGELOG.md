@@ -4,16 +4,32 @@ All notable changes to via54Design are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — 2026-06-08
+## [Unreleased]
 
 ### Added
-- **Phase 1** (in progress): CHANGELOG.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md (this release)
 - **Phase 2** (planned): Dependabot, golangci-lint, release workflow, examples/
 - **Phase 3** (planned): Go test coverage 6%→70%, benchmarks, README screenshots, pprof
 - **Phase 4** (planned): WebSocket/SSE real-time, Prometheus /metrics, OpenTelemetry
 
 ### Changed
 - Error handling: `errors.Is/As` from 0 to 30+ usages (better error chain)
+
+---
+
+## [0.5.1] — 2026-06-09
+
+### Fixed
+- **release.yml (P0)**: `via64-*` typo in 5 file globs → `via54-*` (would have silently dropped all assets from v0.5.0+ releases)
+- **FindBaseDir (v0.5.1 core)**: `internal/util/paths.go` now reads `VIA54_BASE_DIR` env var as highest-priority override, so `brew install /usr/local/bin` scenarios can locate `templates/` (commit `4ca79dd`)
+- **PR #4 closed** as duplicate: fix was cherry-picked to main before PR review; closing with explanation comment
+
+### Verified (local Windows · Go 1.26.2 · NTFS)
+- `go vet ./...` — 0 issues
+- `go test ./...` — 4/4 packages PASS (export, template, util, workflow)
+- `python test_20_rounds.py` — 20/20 PASS, 0 WARN, 0 FAIL
+- `go build ./cmd/via54/` — 18 MB binary
+- `go build ./cmd/mcp-server/` — 16 MB binary
+- `./via54.exe version` + `list` + `prompt` + `narrate` smoke test — all green
 
 ---
 
