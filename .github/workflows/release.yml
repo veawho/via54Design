@@ -61,7 +61,6 @@ jobs:
           cache: true
 
       - name: Build CLI (${{ matrix.target }})
-        working-directory: .
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -72,7 +71,6 @@ jobs:
           echo "=== CLI build done: $(ls -lh dist/via54-${{ matrix.target }}${{ matrix.ext }}) ==="
 
       - name: Build MCP (${{ matrix.target }})
-        working-directory: .
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -87,23 +85,23 @@ jobs:
         # colliding with the built binary's basename — via54-linux-amd64
         # is BOTH the binary file and the package dir), then rename
         # to the user-facing dir name before zipping.
-        working-directory: .
+        # Use $GITHUB_WORKSPACE explicitly because step-level
+        # working-directory is not reliable across shell variants.
         run: |
           set -e
-          pwd
-          ls -la
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "=== pwd 1: $(pwd)"
+          echo "=== GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
           cd "$GITHUB_WORKSPACE/dist"
-          pwd
-          ls -la
+          echo "=== pwd 2: $(pwd)"
+          echo "=== contents: $(ls -la)"
           rm -rf staging-${{ matrix.target }} via54-${{ matrix.target }}
           mkdir -p staging-${{ matrix.target }}
           cp via54-${{ matrix.target }}${{ matrix.ext }} staging-${{ matrix.target }}/
           cp via54-mcp-${{ matrix.target }}${{ matrix.ext }} staging-${{ matrix.target }}/
-          cp ../README.md staging-${{ matrix.target }}/ 2>/dev/null || true
-          cp ../LICENSE staging-${{ matrix.target }}/ 2>/dev/null || true
-          cp -r ../templates staging-${{ matrix.target }}/ 2>/dev/null || true
-          cp -r ../docs staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/README.md" staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/LICENSE" staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp -r "$GITHUB_WORKSPACE/templates" staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp -r "$GITHUB_WORKSPACE/docs" staging-${{ matrix.target }}/ 2>/dev/null || true
           mv staging-${{ matrix.target }} via54-${{ matrix.target }}
           cd via54-${{ matrix.target }}
           zip -r ../via54-${{ matrix.target }}.zip .
