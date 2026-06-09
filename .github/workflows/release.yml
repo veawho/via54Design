@@ -81,20 +81,26 @@ jobs:
 
       - name: Package (${{ matrix.target }})
         shell: bash
-        # macOS BSD mkdir can return non-zero on existing dir even with -p;
-        # ignore that one race and continue. Real failures (e.g. read-only FS)
-        # surface from the subsequent cp / zip commands.
+        # Stage binaries into a uniquely-named subdir first (avoids
+        # colliding with the built binary's basename — via54-linux-amd64
+        # is BOTH the binary file and the package dir), then rename
+        # to the user-facing dir name before zipping.
         run: |
+          set -e
           cd dist
-          mkdir -p via54-${{ matrix.target }} 2>/dev/null || true
-          cp via54-${{ matrix.target }}${{ matrix.ext }} via54-${{ matrix.target }}/
-          cp via54-mcp-${{ matrix.target }}${{ matrix.ext }} via54-${{ matrix.target }}/
-          cp ../README.md via54-${{ matrix.target }}/ 2>/dev/null || true
-          cp ../LICENSE via54-${{ matrix.target }}/ 2>/dev/null || true
-          cp -r ../templates via54-${{ matrix.target }}/ 2>/dev/null || true
-          cp -r ../docs via54-${{ matrix.target }}/ 2>/dev/null || true
-          zip -r via54-${{ matrix.target }}.zip via54-${{ matrix.target }}/
-          rm -rf via54-${{ matrix.target }}/  # 删中间目录,只留 zip
+          rm -rf staging-${{ matrix.target }} via54-${{ matrix.target }}
+          mkdir -p staging-${{ matrix.target }}
+          cp via54-${{ matrix.target }}${{ matrix.ext }} staging-${{ matrix.target }}/
+          cp via54-mcp-${{ matrix.target }}${{ matrix.ext }} staging-${{ matrix.target }}/
+          cp ../README.md staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp ../LICENSE staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp -r ../templates staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp -r ../docs staging-${{ matrix.target }}/ 2>/dev/null || true
+          mv staging-${{ matrix.target }} via54-${{ matrix.target }}
+          cd via54-${{ matrix.target }}
+          zip -r ../via54-${{ matrix.target }}.zip .
+          cd ..
+          rm -rf via54-${{ matrix.target }}  # 删中间目录,只留 zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
