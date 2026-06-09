@@ -137,11 +137,11 @@ jobs:
 
             See [README](https://github.com/veawho/via54Design#readme) for full usage.
           files: |
-            artifacts/*/via64-darwin-amd64.zip
-            artifacts/*/via64-darwin-arm64.zip
-            artifacts/*/via64-linux-amd64.zip
-            artifacts/*/via64-linux-arm64.zip
-            artifacts/*/via64-windows-amd64.zip
+            artifacts/*/via54-darwin-amd64.zip
+            artifacts/*/via54-darwin-arm64.zip
+            artifacts/*/via54-linux-amd64.zip
+            artifacts/*/via54-linux-arm64.zip
+            artifacts/*/via54-windows-amd64.zip
 
   notify:
     name: Notify on failure
