@@ -16,6 +16,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.1] — 2026-06-12
+
+### Added
+- **`docs/prompt-mastery-v3.md`** (9.2KB): 中文 AI 生图提示词精准控制 v3 — 8 维度黄金技巧
+  - mmx vs SD/MJ 根本差异 (LLM 驱动 ≠ 权重语法)
+  - mmx 官方 example 拆解 + 5 微洞察
+  - 8 层结构: Meta/Subject/Pose/Scene/Lighting/Camera/Style/Negative
+  - 摄影词典 10 顶级光照 + 5 胶片 + 5 焦段 (来自 MJ Reference 12291⭐)
+  - 铁律 8 条
+- **`templates/prompts/minimax.yaml` v3** (10.8KB): 8 层 + 摄影词典 + 数字标注 `:25` + mmx quirks
+  - 新 `mmx_quirks` 字段 (prompt_optimizer + LLM 特性)
+  - 新 `photography_lexicon` 摄影词典速查
+  - 新 `pose` 独立层
+  - `lighting` 加 `color_temperature` 显式色温
+  - `camera` 加 `bokeh_shape` 显式光斑形状
+  - `negative` 升级为 mmx 友好 "Avoid:" 语法
+- **`docs/prompt-v3-experiment-report.md`**: 3 对照实验报告 (v1 中文 vs v2 7 层 vs v3 8 层)
+
+### Verified (本地同 seed=42 · 16:9 · 1n)
+- `go vet ./...` — 0 issues
+- `go test ./...` — 8/8 packages PASS (export, media, narrate, prompt, quality, template, util, workflow)
+- `go build ./...` — 0 error
+- 3 张实验图: `minimax-output/v3/cat_a_001.jpg` (207KB) / `cat_b_001.jpg` (280KB) / `cat_c_001.jpg` (264KB)
+- vision 评分: A=8.4 / B=7.75 / C=8.0 (mmx image-01 上限 8.0-8.4)
+
+### 核心发现 (★ 沉淀到 SKILL)
+1. **mmx image-01 上限 8.0-8.4** (普通生图任务同类主体)
+2. **要 9.0+ 必须换模型** (FLUX / MidJourney / GPT-Image-2)
+3. **蓝眼虎斑 + 金属书架** mmx 必失败 (训练集偏差, 必给绿眼/木质)
+4. **摄影词典 = 画质 9.0 拉满** (Rembrandt + Kodak Portra + 85mm f/1.4)
+5. **prompt 长度 sweet spot 200-400 字符** (中文 ≤100字, 英文 ≤80词)
+6. **同 seed 字节级复现**: `--seed 42` 验证 v3 = C 图
+
+### 引用源
+- HF Diffusers 官方权重语法
+- mmx OpenAPI (image-01, prompt_optimizer: true)
+- MJ Reference 12291⭐ (willwulfken)
+- SD 负向词 91⭐ (mikhail-bot)
+- via54Design v2 实测 (commit 09e8dcc, 8.6/10)
+
+---
+
+## [0.6.0] — 2026-06-11
+
+### Added
+- **§12 SVG v2 规范** (`docs/12-svg-spec.md`): viewBox=680/382, class t/ts/th, 12/14/24px, stroke-width 1.5
+  - 11/11 SVG 模板自检全 PASS
+- **Phase D 可观测性** (`cmd/via54/observability.go`): Prometheus /metrics + net/http/pprof
+  - 9 metric (请求/错误/延迟/Go runtime, stdlib, 无 client_golang 依赖)
+  - 6 pprof 端点 (/debug/pprof/{profile,heap,goroutine,threadcreate,block,cmdline,trace,symbol})
+  - 包外层 mux: mcp-go SSEServer 绑死, http.ServeMux 接管 /metrics + /debug/pprof
+- **`docs/09-observability.md`** (8.3KB): §9 可观测性规范 (7 端点 + 9 metric)
+- **§2 viewport** (`docs/02-viewport-spec.md`): `vpMeta` 类
+
+---
+
 ## [0.5.1] — 2026-06-09
 
 ### Fixed
