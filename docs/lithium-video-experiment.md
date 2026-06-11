@@ -28,7 +28,7 @@
 
 | # | 资源 | 命令 | 状态 | 时长/大小 |
 |---|---|---|---|---|
-| 1 | 视频段 1 科技发展 | `mmx video generate` | ✅ Success | 5.875s / 1.6MB |
+| 1 | 视频段 1 赛博朋克 (mmx quota 超限 → 改用 image-01 + ffmpeg zoompan) | `mmx image generate + ffmpeg` | ✅ Success | 10s / 2.8MB |
 | 2 | 视频段 2 技术突破 | `mmx video generate` | ✅ Success | 5.875s / 1.0MB |
 | 3 | 视频段 3 投资趋势 | `mmx video generate` | ✅ Success | 5.875s / 2.1MB |
 | 4 | 旁白 TTS | `mmx speech synthesize --voice male-qn-qingse` | ✅ Success | 24.7s / 388KB |
