@@ -30,6 +30,7 @@ import (
 func cmdServe() {
 	fs := flag.NewFlagSet("serve", flag.ExitOnError)
 	httpAddr := fs.String("http", "", "HTTP 监听地址 (如 :8080)")
+	metricsMode := fs.Bool("metrics", false, "Phase D: 启用 /metrics + /debug/pprof (Prometheus 文本格式 + stdlib pprof)")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		fmt.Fprintf(os.Stderr, "flag error: %v\n", err)
 		os.Exit(1)
@@ -42,10 +43,18 @@ func cmdServe() {
 	}
 
 	if *httpAddr != "" {
-		fmt.Fprintf(os.Stderr, "via54-mcp HTTP server on %s\n", *httpAddr)
-		if err := srv.ServeHTTP(*httpAddr); err != nil {
-			fmt.Fprintf(os.Stderr, "HTTP 错误: %v\n", err)
-			os.Exit(1)
+		if *metricsMode {
+			fmt.Fprintf(os.Stderr, "via54-mcp HTTP server (Phase D: metrics+pprof) on %s\n", *httpAddr)
+			if err := srv.ServeWithMetrics(*httpAddr); err != nil {
+				fmt.Fprintf(os.Stderr, "HTTP 错误: %v\n", err)
+				os.Exit(1)
+			}
+		} else {
+			fmt.Fprintf(os.Stderr, "via54-mcp HTTP server on %s\n", *httpAddr)
+			if err := srv.ServeHTTP(*httpAddr); err != nil {
+				fmt.Fprintf(os.Stderr, "HTTP 错误: %v\n", err)
+				os.Exit(1)
+			}
 		}
 	} else {
 		fmt.Fprintf(os.Stderr, "via54Design MCP Server (stdio)...\n")
