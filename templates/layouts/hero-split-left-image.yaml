@@ -56,7 +56,7 @@ responsive:
   - name: tablet
     min_width: 768
     max_width: 1279
-    columns: "1fr"
+    columns: "minmax(0, 1fr)"
     font_scale: 0.9
     stack: true
     stack_order: [text, image]
@@ -67,7 +67,7 @@ responsive:
   - name: phone
     min_width: 0
     max_width: 767
-    columns: "1fr"
+    columns: "minmax(0, 1fr)"
     font_scale: 0.72
     stack: true
     stack_order: [text, image]

@@ -61,3 +61,4 @@ web/uploads/
 # Build artifacts
 *.exe~
 via54_new.exe
+minimax-output/

@@ -1,0 +1,193 @@
+# minimax 平台提示词模板 v2 — 7 层结构 (Meta/Subject/Scene/Lighting/Camera/Details/Negative)
+# 来源: 整合 kkunkunya/image-prompt-layers (7 层原理) + waw666waw666/p2i-workflow (A/B 窗口 + 中文优先)
+#       + via54Design internal/prompt
+# 改进: 字段化,细节最丰富,中文+英文双语,直接喂 mmx image CLI
+#
+# 与 v1 差异:
+#   - v1: 11 个通用 sections (subject/secondary/...) — 字段笼统
+#   - v2: 7 个语义层 — 每层只回答 1 个问题,细节更精准
+#   - v2: 每层 `default: "{{scene}}"` — via54 翻译器自动替换
+#   - v2: `notes` 字段 — 解释为什么要这个字段
+#
+# 用法: via54 prompt --scene "你的详细描述" --platform minimax
+
+version: "2.0"
+platform: minimax
+api: mmx image generate
+model: image-01
+
+# ── L0 Meta (元层) ──
+# 决定模型进入哪条**风格通道**。错这一层,后面 6 层都救不回来
+# 用户应该填: 介质 + 风格大类 + 画幅 + 底色基调
+meta:
+  medium:
+    default: "{{scene}}"
+    hint: "水彩/油画/3D渲染/摄影写实/手机截图/印刷品"
+    note: "决定模型进入哪条风格通道"
+  style_class:
+    default: ""
+    hint: "写实/ACG/漫画/UI/信息图/设定稿/中国风/赛博朋克"
+  aspect_ratio:
+    default: "16:9"
+    hint: "1:1/16:9/9:16/4:3/3:4/2:3"
+    maps_to_mmx: "--aspect-ratio"
+  base_color:
+    default: ""
+    hint: "纯白底/深色底/米色纸/冷色霓虹"
+
+# ── L1 Subject (主体层) ──
+# 写清**具体是谁**,不是"一个帅气的男人"
+# 必含: 物种/品种 + 姿态/动作 + 标志配色 + 核心道具
+subject:
+  identity:
+    default: "{{scene}}"
+    hint: "物种/品种/IP 角色/精确名(橘色短毛猫/孙悟空/Rachel Green)"
+    note: "模型对精确角色的执行力远强于模糊角色"
+  pose:
+    default: ""
+    hint: "趴卧/坐直/蜷成一团/伸懒腰/单手托腮/腾云驾雾/右手食指指向前方"
+  features:
+    default: ""
+    hint: "标志配色+核心道具(金发黄制服/红甲红袍/金箍棒/iPhone自拍视角手臂)"
+  expression:
+    default: ""
+    hint: "凝视镜头/微笑/警觉/若有所思/眨眼"
+
+# ── L2 Scene (场景层) ──
+# 主体周围是什么, 构图怎么分层
+# 必含: 环境 + 构图元素(左/右/前/中/背) + 留白
+scene:
+  environment:
+    default: ""
+    hint: "咖啡桌前/火焰山下/窗边书桌/中央公园沙发/雪山远景"
+  layout:
+    default: ""
+    hint: "主体在画面 X 位置(中央偏左/右下/留白 1/3)/前景中景背景各是什么"
+  whitespace:
+    default: ""
+    hint: "大量负空间/满幅构图/右下角留白做呼吸"
+  elements:
+    default: ""
+    hint: "左/右/前/背 各有什么具体物件(盆栽、书架、灯笼、栏杆)"
+
+# ── L3 Lighting (光线层) ──
+# 光从哪来、色温几何、硬度多少
+# 必含: 光源 + 方向 + 色温 + 硬度 + 轮廓光
+lighting:
+  source:
+    default: ""
+    hint: "窗户/台灯/太阳/霓虹灯/LED 灯带/灯笼/壁炉"
+  direction:
+    default: ""
+    hint: "左上方/正前方/逆光/侧逆光/顶光/底光"
+  color_temp:
+    default: ""
+    hint: "暖金黄昏(3000K)/冷蓝清晨(7000K)/中性日光(5500K)/霓虹品红"
+  hardness:
+    default: ""
+    hint: "柔和散射光/直射硬光/薄雾透光/聚光"
+  rim_light:
+    default: ""
+    hint: "金色轮廓光/蓝色轮廓光/无轮廓光"
+
+# ── L4 Camera (镜头层) ──
+# 站在哪里看、多长焦段、虚化多少
+camera:
+  angle:
+    default: ""
+    hint: "平视/俯视/仰视/鸟瞰/微距/特写"
+  focal_length:
+    default: ""
+    hint: "广角 24mm/标准 50mm/长焦 85mm/微距 100mm"
+  aperture:
+    default: ""
+    hint: "浅景深 f/1.4 / f/2.0 / 深景深 f/8 / f/16"
+  bokeh:
+    default: ""
+    hint: "圆形光斑/六边形光斑/奶油虚化/无 bokeh"
+
+# ── L5 Details (细节层) ──
+# 质感怎么做、文字怎么写、小元素有哪些
+details:
+  texture:
+    default: ""
+    hint: "毛发/皮面/木纹/金属反光/绒面/丝绸/磨砂"
+  materials:
+    default: ""
+    hint: "具体材质(深绿色绒面窗帘/金属质感书架/亚麻桌布/磨砂玻璃)"
+  small_items:
+    default: ""
+    hint: "小钩子元素(茶杯/书脊烫印/叶片水珠/灰尘漂浮)"
+  text_handling:
+    default: ""
+    hint: "中文字严禁用/纯英文 logo/完全无文字/装饰花纹代替"
+
+# ── L6 Negative (反向层) ──
+# 坚决不要什么 — 避免模型补齐成"AI 味"
+negative:
+  exclude:
+    default: "blurry, distorted, watermark, oversaturated, grainy, deformed limbs, extra fingers, ugly, low quality, cropped"
+    hint: "你坚决不要的元素(失焦/变形/水印/AI 痕迹/多余手指)"
+    maps_to_mmx: "--negative-prompt"
+
+# ── Prompt 组装 (v2 策略) ──
+# 1. 中文 7 层叙述(默认输出,精调用)
+# 2. 英文 7 层叙述(备选,mmx 内部转英文模型效果更稳)
+# 3. 用户 `via54 prompt` 加 `--lang en` 走英文
+prompt_template:
+  chinese:
+    template: |
+      [L0 Meta] {medium}, {style_class}, 画幅 {aspect_ratio}, {base_color}
+      [L1 Subject] {identity}, {pose}, {features}, {expression}
+      [L2 Scene] {environment}, {layout}, {whitespace}, {elements}
+      [L3 Lighting] {source} {direction} {color_temp}, {hardness}, {rim_light}
+      [L4 Camera] {angle}, 焦段 {focal_length}, 光圈 {aperture}, {bokeh}
+      [L5 Details] {texture}, {materials}, {small_items}, {text_handling}
+    example: |
+      [L0 Meta] 摄影写实, 写实风格, 画幅 16:9, 暖色基调
+      [L1 Subject] 橘色短毛虎斑猫, 趴卧, 前爪伸出书边+尾巴从书后卷曲, 凝视镜头眼神警觉
+      [L2 Scene] 窗边书桌, 主体占画面 1/3 偏左, 右下角留白, 背景虚化的绿色绒面窗帘+金属书架+绿色盆栽
+      [L3 Lighting] 窗户 左上方 暖金黄昏光(3000K), 柔和散射光, 强金色轮廓光
+      [L4 Camera] 平视微俯, 焦段 50mm 标准镜头, 光圈 f/2.0 浅景深, 圆形奶油虚化
+      [L5 Details] 短毛猫毛发+皮面精装书+木纹桌, 棕色皮面+金色烫印+泛黄书页, 书脊花纹清晰, 无中文字
+    note: "中文版适合 mmx image-01 中文训练; 但 mmx 内部走英文底层时, 英文版效果可能更稳"
+  english:
+    template: |
+      [L0 Meta] {medium}, {style_class}, aspect {aspect_ratio}, {base_color}
+      [L1 Subject] {identity}, {pose}, {features}, {expression}
+      [L2 Scene] {environment}, {layout}, {whitespace}, {elements}
+      [L3 Lighting] {source} from {direction} {color_temp}, {hardness}, {rim_light}
+      [L4 Camera] {angle}, {focal_length}, {aperture}, {bokeh}
+      [L5 Details] {texture}, {materials}, {small_items}, {text_handling}
+    example: |
+      [L0 Meta] photorealistic, realism, 16:9, warm tones
+      [L1 Subject] orange short-hair tabby cat, lying down, front paws extending over book edge + tail curled behind book, alert gaze at camera
+      [L2 Scene] window-side wooden desk, subject occupies left 1/3, bottom-right whitespace, blurred green velvet curtain + metallic bookshelf + green plant
+      [L3 Lighting] window from upper-left 3000K warm golden hour, soft diffused, strong golden rim light
+      [L4 Camera] slightly elevated eye-level, 50mm standard lens, f/2.0 shallow DOF, creamy circular bokeh
+      [L5 Details] short-hair fur + leather-bound book + wood grain, brown leather + gold embossing + yellowed pages, clear spine decoration, no Chinese text
+    note: "英文版在 mmx API 转换时可能更精准, 因为训练数据多"
+
+# ── v2 验证案例 ──
+# 旧版中文: "一只橘色短毛猫(虎斑纹)趴卧在厚重的棕色皮面精装书的右半侧..." (300+ 字)
+# 旧版失败: 蓝宝石眼 → 黄绿色 / 1/3 构图 → 2/3 满幅
+# v2 修复:
+#   - L1 加 "蓝眼睛(虹膜宝石蓝色)" (具体到虹膜)
+#   - L1 加 "暹罗品种(默认蓝眼)" (品种提示)
+#   - L2 加 "wide shot establishing shot" (远景)
+#   - L2 加 "周围留白展示环境" (留白意图)
+sections:
+  - id: prompt_full
+    label: "完整 7 层 prompt (中文)"
+    category: meta
+    hint: "直接喂 mmx image --prompt 的字符串"
+    default: "{{scene}}"
+    weighted: false
+    weight: 0
+  - id: negative_full
+    label: "Negative prompt"
+    category: negative
+    hint: "不要的元素"
+    default: "blurry, distorted, watermark, oversaturated, deformed limbs, extra fingers, ugly, low quality"
+    weighted: false
+    weight: 0

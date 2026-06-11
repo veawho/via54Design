@@ -98,8 +98,8 @@ css: |
     max-width: var(--layout-max-width, 1920px);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr minmax(0, 1fr);
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     gap: 4px;
     min-height: 100dvh;
     padding: 4px;
@@ -128,8 +128,8 @@ css: |
   /* ── TV (≥1920px) — 3×2 ── */
   @media (min-width: 1920px) {
     .layout-bento {
-      grid-template-columns: 1fr 1fr minmax(0, 1fr);
-      grid-template-rows: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
       aspect-ratio: 16 / 9;
     }
     .layout-bento__card {
@@ -147,7 +147,7 @@ css: |
   /* ── Tablet — 2 列 ── */
   @media (min-width: 768px) and (max-width: 1279px) {
     .layout-bento {
-      grid-template-columns: 1fr minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       aspect-ratio: auto;
       min-height: 100dvh;
       padding: 24px;
