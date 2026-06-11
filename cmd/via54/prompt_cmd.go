@@ -215,7 +215,7 @@ func listPlatforms() []string {
 	return []string{
 		"midjourney", "flux", "dalle3", "sd3", "stable_diffusion",
 		"ideogram", "recraft", "seedance", "gemini", "jimeng",
-		"veo", "sora", "kling", "pika",
+		"veo", "sora", "kling", "pika", "minimax",
 		"video_generic", "video_camera", "video_keyframe",
 	}
 }

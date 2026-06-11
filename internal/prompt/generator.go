@@ -30,6 +30,9 @@ func GeneratePrompt(scene string, platform string, refImage string, baseDir stri
 			continue
 		}
 		val := sec.Default
+		if val == "{{seed}}" {
+			val = s.Seed
+		}
 		if val == "" {
 			val = fmt.Sprintf("（LLM填充：%s）", sec.Hint)
 		}
