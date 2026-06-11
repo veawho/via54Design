@@ -20,13 +20,31 @@ package main
 
 import (
 	"fmt"
-	"github.com/veawho/via54Design/internal/wasm"
+	"os"
 	"runtime"
 	"strings"
+
+	"github.com/veawho/via54Design/internal/wasm"
 )
 
+// Version 通过 ldflags 注入 (Makefile: -ldflags "-X main.Version=...")
+// 默认 "dev" (未注入时) 避免暴露 v0.3.0 之类的旧硬编码
+var Version = "dev"
+
 func cmdVersion() {
-	fmt.Println("via54Design v0.3.0")
+	// --help / -h 在父命令层 (CLI 惯例)
+	if len(os.Args) >= 3 && (os.Args[2] == "--help" || os.Args[2] == "-h") {
+		fmt.Println("用法: via54 version")
+		fmt.Println()
+		fmt.Println("显示当前 via54Design 版本号、Go runtime 和 WASM 引擎状态。")
+		fmt.Println()
+		fmt.Println("Flags:")
+		fmt.Println("  --help, -h    显示本帮助")
+		fmt.Println()
+		fmt.Println("Version 通过 ldflags 注入 (main.Version), 未注入时为 \"dev\"。")
+		os.Exit(0)
+	}
+	fmt.Printf("via54Design %s\n", Version)
 	fmt.Printf("Go: %s %s/%s\n", strings.TrimPrefix(runtime.Version(), "go"), runtime.GOOS, runtime.GOARCH)
 	we := wasm.NewEngine(baseDir())
 	if we.Available() {

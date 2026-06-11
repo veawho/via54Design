@@ -23,7 +23,20 @@ func cmdPrompt() {
 		return
 	}
 
-	switch os.Args[2] {
+	// [FIX 2026-06-09 ERR-04] 全局 flag 必须先识别, 否则会被 switch 当成子命令
+	// 路由到 generate 分支触发 "请指定 --scene" 错误信息
+	// 受影响 flag: --list, --help, -h
+	arg2 := os.Args[2]
+	if arg2 == "--list" || arg2 == "-l" {
+		listPromptPlatforms()
+		return
+	}
+	if arg2 == "--help" || arg2 == "-h" {
+		promptHelp()
+		return
+	}
+
+	switch arg2 {
 	case "edit":
 		cmdPromptEdit()
 	case "ref":

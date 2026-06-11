@@ -16,6 +16,11 @@ import (
 )
 
 func cmdPipeline() {
+	// --help / -h 在父命令层 (CLI 惯例)
+	if len(os.Args) >= 3 && (os.Args[2] == "--help" || os.Args[2] == "-h") {
+		pipelineHelp()
+		return
+	}
 	if len(os.Args) < 3 {
 		pipelineHelp()
 		return
@@ -40,7 +45,7 @@ func cmdPipeline() {
 }
 
 func pipelineHelp() {
-	fmt.Println("用法: via54 prompt <子命令> [选项]")
+	fmt.Println("用法: via54 pipeline <子命令> [选项]")
 	fmt.Println()
 	fmt.Println("子命令:")
 	fmt.Println("  expand          扩展现有场景 (LLM + i18n)")

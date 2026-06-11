@@ -1,0 +1,548 @@
+[
+  {
+    "round": 1,
+    "name": "go build ./...",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 2,
+    "name": "go vet ./...",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 3,
+    "name": "go test ./...",
+    "status": "PASS",
+    "details": "rc=0 (out tail: ion\t[no test files]\n?   \tgithub.com/veawho/via54Design/internal/wasm\t[no test files]\nok  \tgithub.com/veawho/via54Design/internal/workflow\t0.604s\n?   \tgithub.com/veawho/via54Design/web\t[no test files]\n)"
+  },
+  {
+    "round": 4,
+    "name": "via54 --help",
+    "status": "WARN",
+    "details": "rc=1"
+  },
+  {
+    "round": 5,
+    "name": "via54 version",
+    "status": "PASS",
+    "details": "rc=0 out=via54Design v0.5.1+dev\nGo: 1.26.2 windows/amd64\nWASM: ❌ (cd hack/wasm && bash build.sh)\nLang: Go + R"
+  },
+  {
+    "round": 6,
+    "name": "via54-mcp --help",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 7,
+    "name": "via54 list",
+    "status": "PASS",
+    "details": "rc=0 lines=71"
+  },
+  {
+    "round": 8,
+    "name": "via54 list --help",
+    "status": "PASS",
+    "details": "rc=0 out_snip=\n=== layouts ===\n  hero-split-16-9                  左右分割式Hero (16:9) — 多端适配\n  be"
+  },
+  {
+    "round": 9,
+    "name": "via54 media --help",
+    "status": "PASS",
+    "details": "rc=0 out_snip=用法: via54 media <子命令> [选项]\n\n子命令:\n  add-music    给视频添加 BGM\n    --mood     配乐 mood"
+  },
+  {
+    "round": 10,
+    "name": "14 subcommand --help audit (no interactive)",
+    "status": "PASS",
+    "details": "failed=0/14 sub=[]"
+  },
+  {
+    "round": 11,
+    "name": "version.go 硬编码检查",
+    "status": "WARN",
+    "details": "out_snip=cmd/via54/version.go:31:// 默认 \"dev\" (未注入时) 避免暴露 v0.3.0 之类的旧硬编码\n"
+  },
+  {
+    "round": 12,
+    "name": "~/.hermes/profiles 目录",
+    "status": "WARN",
+    "details": "path missing — confirm no other profile in use"
+  },
+  {
+    "round": 13,
+    "name": "hermes cron list",
+    "status": "WARN",
+    "details": "rc=0 errors=yes"
+  },
+  {
+    "round": 14,
+    "name": "gateway :8642 /health",
+    "status": "PASS",
+    "details": "out={\"status\": \"ok\", \"platform\": \"hermes-agent\"}"
+  },
+  {
+    "round": 15,
+    "name": "templates/registry.yaml 加载",
+    "status": "PASS",
+    "details": "top_keys=8 sample=['layouts', 'color_schemes', 'typography']"
+  },
+  {
+    "round": 1,
+    "name": "go build ./...",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 2,
+    "name": "go vet ./...",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 3,
+    "name": "go test ./...",
+    "status": "PASS",
+    "details": "rc=0 (out tail: ion\t[no test files]\n?   \tgithub.com/veawho/via54Design/internal/wasm\t[no test files]\nok  \tgithub.com/veawho/via54Design/internal/workflow\t0.604s\n?   \tgithub.com/veawho/via54Design/web\t[no test files]\n)"
+  },
+  {
+    "round": 4,
+    "name": "via54 --help",
+    "status": "WARN",
+    "details": "rc=1"
+  },
+  {
+    "round": 5,
+    "name": "via54 version",
+    "status": "PASS",
+    "details": "rc=0 out=via54Design v0.5.1+dev\nGo: 1.26.2 windows/amd64\nWASM: ❌ (cd hack/wasm && bash build.sh)\nLang: Go + R"
+  },
+  {
+    "round": 6,
+    "name": "via54-mcp --help",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 7,
+    "name": "via54 list",
+    "status": "PASS",
+    "details": "rc=0 lines=71"
+  },
+  {
+    "round": 8,
+    "name": "via54 list --help",
+    "status": "PASS",
+    "details": "rc=0 out_snip=\n=== layouts ===\n  hero-split-16-9                  左右分割式Hero (16:9) — 多端适配\n  be"
+  },
+  {
+    "round": 9,
+    "name": "via54 media --help",
+    "status": "PASS",
+    "details": "rc=0 out_snip=用法: via54 media <子命令> [选项]\n\n子命令:\n  add-music    给视频添加 BGM\n    --mood     配乐 mood"
+  },
+  {
+    "round": 10,
+    "name": "14 subcommand --help audit (no interactive)",
+    "status": "PASS",
+    "details": "failed=0/14 sub=[]"
+  },
+  {
+    "round": 11,
+    "name": "version.go 硬编码检查",
+    "status": "WARN",
+    "details": "out_snip=cmd/via54/version.go:31:// 默认 \"dev\" (未注入时) 避免暴露 v0.3.0 之类的旧硬编码\n"
+  },
+  {
+    "round": 12,
+    "name": "~/.hermes/profiles 目录",
+    "status": "WARN",
+    "details": "path missing — confirm no other profile in use"
+  },
+  {
+    "round": 13,
+    "name": "hermes cron list",
+    "status": "WARN",
+    "details": "rc=0 errors=yes"
+  },
+  {
+    "round": 14,
+    "name": "gateway :8642 /health",
+    "status": "PASS",
+    "details": "out={\"status\": \"ok\", \"platform\": \"hermes-agent\"}"
+  },
+  {
+    "round": 15,
+    "name": "templates/registry.yaml 加载",
+    "status": "PASS",
+    "details": "top_keys=8 sample=['layouts', 'color_schemes', 'typography']"
+  },
+  {
+    "round": 16,
+    "name": "internal/util tests",
+    "status": "PASS",
+    "details": "rc=0 passes=20"
+  },
+  {
+    "round": 17,
+    "name": "internal/template tests",
+    "status": "PASS",
+    "details": "rc=0 passes=15"
+  },
+  {
+    "round": 18,
+    "name": "internal/export tests",
+    "status": "PASS",
+    "details": "rc=0 passes=7"
+  },
+  {
+    "round": 19,
+    "name": "internal/workflow tests",
+    "status": "PASS",
+    "details": "rc=0 passes=11"
+  },
+  {
+    "round": 20,
+    "name": "build internal/media",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 21,
+    "name": "build internal/narrate",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 22,
+    "name": "build internal/pattern",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 23,
+    "name": "build internal/pipeline",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 24,
+    "name": "build internal/prompt",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 25,
+    "name": "build internal/quality",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 26,
+    "name": "build internal/vision",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 27,
+    "name": "build internal/wasm",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 28,
+    "name": "build internal/mcp",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 30,
+    "name": "总测试统计",
+    "status": "PASS",
+    "details": "packages=4 pass=53 fail=0"
+  },
+  {
+    "round": 31,
+    "name": "YAML 模板解析",
+    "status": "PASS",
+    "details": "loaded=102 errors=0"
+  },
+  {
+    "round": 40,
+    "name": "9 种 layout+color+font 组合生成",
+    "status": "WARN",
+    "details": "pass=1/9 sample=('hero-split-16-9', 0, True, 7554)"
+  },
+  {
+    "round": 41,
+    "name": "narrate markdown 输出",
+    "status": "PASS",
+    "details": "rc=0 bytes=4154"
+  },
+  {
+    "round": 42,
+    "name": "narrate json 输出",
+    "status": "PASS",
+    "details": "rc=0 bytes=5230"
+  },
+  {
+    "round": 43,
+    "name": "quality gate on gen HTML",
+    "status": "PASS",
+    "details": "rc=0 out_tail=\n=== 质量门禁: PASS ===\n文件: 7554 bytes | CSS块: 1 | 行: 279\n问题: 0 错误 / 1 警告 / 1 信息\n\n  ℹ️ [content] No <img> tags\n  ⚠️ [a11y] No :focus or :focus-visible styles\n"
+  },
+  {
+    "round": 44,
+    "name": "pattern extractor",
+    "status": "PASS",
+    "details": "rc=0 out_snip=\n=== 模式提取: test-pattern ===\n  🎨 7 colors | 📐 [grid flexbox masonry/columns] | 🎞️ low\n  🔤 Display: Inter  Body: Inter\n\n──"
+  },
+  {
+    "round": 45,
+    "name": "export json",
+    "status": "PASS",
+    "details": "rc=0 bytes=1025 out_snip=✅ JSON: G:\\agent\\via54Design\\self_test_out\\export.json (3 scenes)\n"
+  },
+  {
+    "round": 46,
+    "name": "export markdown",
+    "status": "PASS",
+    "details": "rc=0 bytes=570"
+  },
+  {
+    "round": 47,
+    "name": "export pptx",
+    "status": "PASS",
+    "details": "rc=0 bytes=6930"
+  },
+  {
+    "round": 48,
+    "name": "export svg",
+    "status": "PASS",
+    "details": "rc=0 svgs=3 out_snip=✅ SVG: 3 个文件 → G:\\agent\\via54Design\\self_test_out\\svg-out\n     G:\\agent\\via54Des"
+  },
+  {
+    "round": 49,
+    "name": "export tts (online)",
+    "status": "WARN",
+    "details": "rc=0 (online api; expected fail) out_snip=✅ TTS: G:\\agent\\via54Design\\self_test_out\\export_tts.mp3 (28 chars)\n"
+  },
+  {
+    "round": 50,
+    "name": "narrate→generate end-to-end",
+    "status": "PASS",
+    "details": "rc=0 bytes=4646"
+  },
+  {
+    "round": 60,
+    "name": "11 个子命令的 --help 入口",
+    "status": "WARN",
+    "details": "pass=0/17"
+  },
+  {
+    "round": 61,
+    "name": "错误 layout 名称处理",
+    "status": "WARN",
+    "details": "rc=1 out_snip= err_snip=生成失败: 布局 \"NONEXISTENT\": template not found: NONEXISTENT: not found\n"
+  },
+  {
+    "round": 62,
+    "name": "generate 缺参数",
+    "status": "PASS",
+    "details": "rc=1 err_snip=请指定: --layout, --color, --font\n或者: --from-narrative scaffold.json (叙事驱动模式)\n"
+  },
+  {
+    "round": 63,
+    "name": "未知主命令",
+    "status": "PASS",
+    "details": "rc=1"
+  },
+  {
+    "round": 64,
+    "name": "无参数启动",
+    "status": "WARN",
+    "details": "TIMEOUT (interactive) — expected"
+  },
+  {
+    "round": 65,
+    "name": "重复 --flag",
+    "status": "WARN",
+    "details": "rc=1 out_snip="
+  },
+  {
+    "round": 66,
+    "name": "50x 连续 list 稳定性",
+    "status": "PASS",
+    "details": "pass=50/50 dur=0.9s"
+  },
+  {
+    "round": 67,
+    "name": "50x 连续 generate 性能",
+    "status": "PASS",
+    "details": "pass=50/50 total=1.3s avg_gen=25ms"
+  },
+  {
+    "round": 68,
+    "name": "determinism (同输入应同输出)",
+    "status": "PASS",
+    "details": "b1=7520b b2=7520b same=True"
+  },
+  {
+    "round": 69,
+    "name": "10x 并发 list (线程安全)",
+    "status": "PASS",
+    "details": "rcs=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+  },
+  {
+    "round": 70,
+    "name": "5x 并发 generate (线程安全)",
+    "status": "PASS",
+    "details": "pass=5/5 sizes=[7518, 7518, 7518, 7518, 7518]"
+  },
+  {
+    "round": 71,
+    "name": "bench: ComposeHero",
+    "status": "PASS",
+    "details": "line=BenchmarkComposeHero-16    \t       3\t    555000 ns/op"
+  },
+  {
+    "round": 72,
+    "name": "bench: ComposeBento",
+    "status": "PASS",
+    "details": "line=BenchmarkComposeBento-16    \t       3\t    481267 ns/op"
+  },
+  {
+    "round": 73,
+    "name": "bench: ResolveLayout",
+    "status": "PASS",
+    "details": "line=BenchmarkResolveLayout-16    \t       3\t     15100 ns/op"
+  },
+  {
+    "round": 76,
+    "name": "大 title (500 char) 生成",
+    "status": "PASS",
+    "details": "bytes=8492"
+  },
+  {
+    "round": 77,
+    "name": "XSS 注入 title",
+    "status": "PASS",
+    "details": "escaped=True rc=0"
+  },
+  {
+    "round": 78,
+    "name": "极长 layout 名称",
+    "status": "PASS",
+    "details": "rc=1 out_snip="
+  },
+  {
+    "round": 79,
+    "name": "大尺寸生成性能",
+    "status": "PASS",
+    "details": "dur=0.03s bytes=7507"
+  },
+  {
+    "round": 80,
+    "name": "Phase 5 总结",
+    "status": "PASS",
+    "details": "all bench/perf tests done"
+  },
+  {
+    "round": 85,
+    "name": "5x 回归 generate",
+    "status": "PASS",
+    "details": "pass=5/5"
+  },
+  {
+    "round": 86,
+    "name": "错误 cwd 恢复",
+    "status": "WARN",
+    "details": "rc=0 (out=\n=== layouts ===\n  hero-split-16-9                  左右分割式Her)"
+  },
+  {
+    "round": 87,
+    "name": "错误 color 处理",
+    "status": "PASS",
+    "details": "rc=1 err_snip=生成失败: 配色 \"no-such-color\": template not found: no-such-color: not found\n"
+  },
+  {
+    "round": 88,
+    "name": "错误 font 处理",
+    "status": "PASS",
+    "details": "rc=1"
+  },
+  {
+    "round": 89,
+    "name": "错误 layout 优雅失败",
+    "status": "PASS",
+    "details": "rc=1 err_snip=生成失败: 布局 \"no-such-layout\": template not found: no-such-layout: not found\n"
+  },
+  {
+    "round": 90,
+    "name": "happy-path 退出码",
+    "status": "PASS",
+    "details": "rcs=[('version', 0), ('list', 0), ('generate', 0)]"
+  },
+  {
+    "round": 91,
+    "name": "无效输出路径",
+    "status": "FAIL",
+    "details": "rc=0"
+  },
+  {
+    "round": 92,
+    "name": "hermes cron list (status)",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 93,
+    "name": "7 lab ping 健康",
+    "status": "PASS",
+    "details": "pass=7/7"
+  },
+  {
+    "round": 94,
+    "name": "Telegram bot 连接",
+    "status": "WARN",
+    "details": "静态检查 (proxy 不稳定)"
+  },
+  {
+    "round": 95,
+    "name": "Feishu app 凭据",
+    "status": "PASS",
+    "details": "env 变量已配置"
+  },
+  {
+    "round": 96,
+    "name": "错误消息无 fmt 残骸",
+    "status": "PASS",
+    "details": "snip='生成失败: 布局 \"bad\": template not found: bad: not found\\n'"
+  },
+  {
+    "round": 97,
+    "name": "internal/util 关键测试",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 98,
+    "name": "go vet 全包",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 99,
+    "name": "go build 全包",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 100,
+    "name": "100 轮总评",
+    "status": "FAIL",
+    "details": "total=90 pass=73 warn=16 fail=1"
+  }
+]

@@ -36,25 +36,34 @@ func Wrap(err error, format string, args ...any) error {
 	return fmt.Errorf("%s: %w", fmt.Sprintf(format, args...), err)
 }
 
+// wrapWithSentinel 用 sentinel + 可选 inner 包装错误
+// 内部 helper: 避免 nil inner 走 %w 路径产生 "%!w(<nil>)" 残骸
+func wrapWithSentinel(sentinel error, inner error, format string, args ...any) error {
+	if inner == nil {
+		return fmt.Errorf("%s: %w", fmt.Sprintf(format, args...), sentinel)
+	}
+	return fmt.Errorf("%s: %w: %w", fmt.Sprintf(format, args...), sentinel, inner)
+}
+
 // WrapInvalid 包装为 ErrInvalidArgument
 func WrapInvalid(err error, format string, args ...any) error {
-	return fmt.Errorf("%s: %w: %w", fmt.Sprintf(format, args...), ErrInvalidArgument, err)
+	return wrapWithSentinel(ErrInvalidArgument, err, format, args...)
 }
 
 // WrapNotFound 包装为 ErrNotFound
 // 即使 err == nil, 也会返回带 ErrNotFound 的 error (用于"未找到"语义)
 func WrapNotFound(err error, format string, args ...any) error {
-	return fmt.Errorf("%s: %w: %w", fmt.Sprintf(format, args...), ErrNotFound, err)
+	return wrapWithSentinel(ErrNotFound, err, format, args...)
 }
 
 // WrapIO 包装为 ErrIO
 func WrapIO(err error, format string, args ...any) error {
-	return fmt.Errorf("%s: %w: %w", fmt.Sprintf(format, args...), ErrIO, err)
+	return wrapWithSentinel(ErrIO, err, format, args...)
 }
 
 // WrapTemplate 包装为 ErrTemplateParse
 func WrapTemplate(err error, format string, args ...any) error {
-	return fmt.Errorf("%s: %w: %w", fmt.Sprintf(format, args...), ErrTemplateParse, err)
+	return wrapWithSentinel(ErrTemplateParse, err, format, args...)
 }
 
 // NewNotFound 创建带 ErrNotFound sentinel 的新错误

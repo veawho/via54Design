@@ -1,0 +1,92 @@
+[
+  {
+    "round": 1,
+    "name": "go build ./...",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 2,
+    "name": "go vet ./...",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 3,
+    "name": "go test ./...",
+    "status": "PASS",
+    "details": "rc=0 (out tail: rnal/wasm\t[no test files]\nok  \tgithub.com/veawho/via54Design/internal/workflow\t0.370s\n?   \tgithub.com/veawho/via54Design/quality\t[no test files]\n?   \tgithub.com/veawho/via54Design/web\t[no test files]\n)"
+  },
+  {
+    "round": 4,
+    "name": "via54 --help",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 5,
+    "name": "via54 version",
+    "status": "PASS",
+    "details": "rc=0 out=via54Design dev\nGo: 1.26.2 windows/amd64\nWASM: ❌ (cd hack/wasm && bash build.sh)\nLang: Go + Rust (WA"
+  },
+  {
+    "round": 6,
+    "name": "via54-mcp --help",
+    "status": "PASS",
+    "details": "rc=0"
+  },
+  {
+    "round": 7,
+    "name": "via54 list",
+    "status": "PASS",
+    "details": "rc=0 lines=71"
+  },
+  {
+    "round": 8,
+    "name": "via54 list --help",
+    "status": "PASS",
+    "details": "rc=0 out_snip=\n=== layouts ===\n  hero-split-16-9                  左右分割式Hero (16:9) — 多端适配\n  be"
+  },
+  {
+    "round": 9,
+    "name": "via54 media --help",
+    "status": "PASS",
+    "details": "rc=0 out_snip=用法: via54 media <子命令> [选项]\n\n子命令:\n  add-music    给视频添加 BGM\n    --mood     配乐 mood"
+  },
+  {
+    "round": 10,
+    "name": "14 subcommand --help audit (no interactive)",
+    "status": "PASS",
+    "details": "failed=0/14 sub=[]"
+  },
+  {
+    "round": 11,
+    "name": "version.go 硬编码检查",
+    "status": "WARN",
+    "details": "out_snip=cmd/via54/version.go:31:// 默认 \"dev\" (未注入时) 避免暴露 v0.3.0 之类的旧硬编码\n"
+  },
+  {
+    "round": 12,
+    "name": "~/.hermes/profiles 目录",
+    "status": "WARN",
+    "details": "path missing — confirm no other profile in use"
+  },
+  {
+    "round": 13,
+    "name": "hermes cron list",
+    "status": "PASS",
+    "details": "rc=0 errors=no"
+  },
+  {
+    "round": 14,
+    "name": "gateway :8642 /health",
+    "status": "FAIL",
+    "details": "out="
+  },
+  {
+    "round": 15,
+    "name": "templates/registry.yaml 加载",
+    "status": "PASS",
+    "details": "top_keys=8 sample=['layouts', 'color_schemes', 'typography']"
+  }
+]
