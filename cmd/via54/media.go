@@ -27,8 +27,26 @@ import (
 )
 
 func cmdMedia() {
+	// --help / -h 应在父命令层处理 (CLI 惯例)
+	if len(os.Args) >= 3 && (os.Args[2] == "--help" || os.Args[2] == "-h") {
+		fmt.Println("用法: via54 media <子命令> [选项]")
+		fmt.Println()
+		fmt.Println("子命令:")
+		fmt.Println("  add-music    给视频添加 BGM")
+		fmt.Println("    --mood     配乐 mood (tech/calm/epic) (default \"tech\")")
+		fmt.Println("    --output   输出路径")
+		fmt.Println("  convert      转 60fps/GIF")
+		fmt.Println("  fetch        批量下载图片")
+		fmt.Println("    --query    关键词 (逗号分隔)")
+		fmt.Println("    --out      输出目录 (default \"./img\")")
+		fmt.Println("    --count    每关键词张数 (default 2)")
+		fmt.Println("  trace        图片矢量化 (vtracer)")
+		fmt.Println("    --input    输入图片 (JPG/PNG)")
+		fmt.Println("    --output   输出 SVG 路径")
+		os.Exit(0)
+	}
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "用法: via54 media [add-music|convert|fetch|trace]")
+		fmt.Fprintln(os.Stderr, "用法: via54 media [add-music|convert|fetch|trace] (用 --help 查看详情)")
 		os.Exit(1)
 	}
 	switch os.Args[2] {

@@ -35,8 +35,8 @@ func TestExportJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 	var wrapped struct {
-		Version    string      `json:"version"`
-		TotalScenes int        `json:"total_scenes"`
+		Version     string      `json:"version"`
+		TotalScenes int         `json:"total_scenes"`
 		Scenes      []SceneData `json:"scenes"`
 	}
 	if err := json.Unmarshal(data, &wrapped); err != nil {

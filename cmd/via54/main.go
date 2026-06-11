@@ -70,6 +70,7 @@ func main() {
 		cmdVersion()
 	default:
 		help()
+		os.Exit(1)
 	}
 }
 
@@ -94,7 +95,6 @@ func help() {
 	fmt.Println("  version           版本信息")
 	fmt.Println()
 	fmt.Println("详见: https://github.com/veawho/via54Design")
-	os.Exit(1)
 }
 
 func baseDir() string {

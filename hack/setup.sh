@@ -182,7 +182,7 @@ echo ""
 echo -e "  ${YELLOW}快速开始:${NC}"
 echo '    via54                                          # 帮助'
 echo '    via54 list                                     # 查看模板'
-echo '    via54 generate --layout hero-split --color warm-editorial --font serif-sans --title "我的设计" --output demo.html'
+echo '    via54 generate --layout hero-split-16-9 --color warm-editorial --font serif-sans --title "我的设计" --output demo.html'
 echo '    via54 quality --html demo.html                 # 检查质量'
 echo '    via54 serve                                    # MCP Server'
 echo ""

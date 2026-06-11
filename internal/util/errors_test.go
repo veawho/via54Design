@@ -6,6 +6,7 @@ package util
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -104,5 +105,34 @@ func TestErrorMessages(t *testing.T) {
 	expected := "模板不存在: hero-split-16-9: not found: inner"
 	if wrapped.Error() != expected {
 		t.Errorf("got %q, want %q", wrapped.Error(), expected)
+	}
+}
+
+// TestNilInnerNoGarbage 回归测试: nil inner 不应产生 fmt %!w(<nil>) 残骸
+// 触发场景: template.go 等用 util.WrapNotFound(nil, "template not found: %s", id)
+// 旧实现: fmt.Errorf("%s: %w: %w", msg, ErrNotFound, nil) → "msg: not found: %!w(<nil>)"
+// 新实现: wrapWithSentinel 检测 nil 并用单 %w
+func TestNilInnerNoGarbage(t *testing.T) {
+	cases := []struct {
+		name string
+		err  error
+	}{
+		{"WrapNotFound(nil)", WrapNotFound(nil, "template not found: %s", "hero")},
+		{"WrapInvalid(nil)", WrapInvalid(nil, "bad arg: %s", "x")},
+		{"WrapIO(nil)", WrapIO(nil, "disk fail: %s", "/tmp")},
+		{"WrapTemplate(nil)", WrapTemplate(nil, "yaml fail: %s", "config.yaml")},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			msg := c.err.Error()
+			if strings.Contains(msg, "%!w") || strings.Contains(msg, "%!v") {
+				t.Errorf("error message contains fmt artifact: %q", msg)
+			}
+			// nil inner 不应穿透 Is 检查 (因为内层无 error)
+			// 但 sentinel 应仍可识别
+			if !IsNotFound(c.err) && !IsInvalid(c.err) && !IsIO(c.err) && !IsTemplate(c.err) {
+				t.Errorf("sentinel should still be detectable: %v", c.err)
+			}
+		})
 	}
 }
