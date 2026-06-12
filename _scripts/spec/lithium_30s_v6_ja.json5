@@ -1,0 +1,96 @@
+
+{
+  outPath: "G:/agent/hermes/via54Design-v6/output/lithium_30s_v6_ja.mp4",
+  width: 1366,
+  height: 768,
+  fps: 24,
+  defaults: {
+    duration: 6,
+    transition: { duration: 0.5, name: "fade" },
+  },
+  clips: [
+    {
+      duration: 3,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/01_hook_2.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.7 优化: 改用 image 层 (PNG 黑底圆角白字) 取代 title
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_01_ja.png",  // ja → zh/en/ja
+          position: "center",  // PNG 已内嵌 bottom-right 位置, layer 居中即可
+        },
+      ],
+    },
+    {
+      duration: 5,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/02_trend_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_02_ja.png",  // 2026 产能突破 800GWh
+          position: "center",  // PNG 已内嵌 bottom-left 位置
+        },
+      ],
+    },
+    {
+      duration: 10,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/03_tech_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_03_ja.png",  // 固态电池技术领跑全球
+          position: "center",  // PNG 已内嵌 bottom-left 位置
+        },
+      ],
+    },
+    {
+      duration: 7,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/04_market_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // 段 4 终极 95%+
+          path: "G:/agent/hermes/via54Design-v6/subtitles/countup/sub_04_ja_c5_95%p.png",
+          position: "center",
+          zoomAmount: 0.15,  // v0.7.0: 0.3 → 0.15 字幕不挡机械臂
+        },
+      ],
+    },
+    {
+      duration: 5,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/05_outlook_1.mp4",
+          cutFrom: 0,  // v0.6.7: 段 5 改用 solar_panels_factory_1 (屋顶光伏)
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.7 优化: 改用 image 层 (PNG 黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_05_ja.png",  // ja → zh/en/ja
+          position: "center",  // PNG 已内嵌 bottom 位置
+          zoomDirection: "in",  // v0.6.7 优化: 字幕淡入放大
+          zoomAmount: 0.3,
+        },
+      ],
+    },
+  ],
+}
