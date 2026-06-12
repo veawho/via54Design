@@ -1,5 +1,5 @@
-// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.7 ★)
-// v0.6.7 升级: 段 1/5 改 PNG 图片字幕层 (黑底圆角白字) + 段 5 zoomAmount 淡入 + 配乐 mix 0.25+0.22
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.8 ★)
+// v0.6.8 升级: 全程 5 段统一 PNG 字幕 (黑底圆角白字, 80pt) + 段 4 改文案 "智能产线稼动率 95%+"
 // 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
 // {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
 
@@ -39,11 +39,9 @@
           resizeMode: "cover",
         },
         {
-          type: "subtitle",
-          text: "{sub_02}",  // 2026 产能突破 800GWh
-          fontSize: 32,
-          color: "#FFFFFF",
-          position: "bottom",
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_02_{lang}.png",  // 2026 产能突破 800GWh
+          position: "center",  // PNG 已内嵌 bottom-left 位置
         },
       ],
     },
@@ -57,11 +55,9 @@
           resizeMode: "cover",
         },
         {
-          type: "subtitle",
-          text: "{sub_03}",  // 固态电池技术领跑全球
-          fontSize: 28,
-          color: "#00FFAA",
-          position: "bottom",
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_03_{lang}.png",  // 固态电池技术领跑全球
+          position: "center",  // PNG 已内嵌 bottom-left 位置
         },
       ],
     },
@@ -75,11 +71,9 @@
           resizeMode: "cover",
         },
         {
-          type: "subtitle",
-          text: "{sub_04}",  // 板块资金流入 同比增长 200%
-          fontSize: 28,
-          color: "#FFD700",
-          position: "bottom",
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_04_{lang}.png",  // ★ v0.6.8 改文案: 智能产线稼动率 95%+
+          position: "center",  // PNG 已内嵌 bottom-left 位置
         },
       ],
     },
