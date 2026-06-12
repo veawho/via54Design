@@ -1,5 +1,5 @@
-// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.9 ★)
-// v0.6.9 升级: 段 5 96pt 收尾压轴 + 段 4 c5 95%+ 终极 PNG (count-up 动画被 editly 阻断)
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.7.0 ★)
+// v0.7.0 升级: 段 1 改文案 "锂电新纪元"→"原子能量" + 段 4 zoomAmount 0.3→0.15 + ffmpeg count-up 后处理
 // 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
 // {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
 
@@ -77,7 +77,7 @@
           type: "image",  // 段 4 终极 95%+
           path: "G:/agent/hermes/via54Design-v6/subtitles/countup/sub_04_{lang}_c5_95%p.png",
           position: "center",
-          zoomAmount: 0.3,
+          zoomAmount: 0.15,  // v0.7.0: 0.3 → 0.15 字幕不挡机械臂
         },
       ],
     },

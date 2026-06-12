@@ -99,13 +99,11 @@ def run_mux(lang: str) -> Path:
     ], capture_output=True, text=True).stdout.strip())
     print(f"  旁白总时长: {voice_dur:.2f}s")
 
-    # 混音
-    vid = ROOT / "output" / "lithium_30s_v6.mp4"  # 视频源 (zh 版拼接后, 视频无音轨)
+    # v0.7.0: 按语言用对应 count-up 视频源 (不用统一的 lithium_30s_v6.mp4)
+    vid = ROOT / "output" / f"lithium_30s_v6_{lang}.mp4"  # 当前语言的 count-up 版
     if not vid.exists():
-        # 退路: 用任意 mp4 (editly 输出)
-        vids = list((ROOT / "output").glob("lithium_30s_v6_*.mp4"))
-        vids = [v for v in vids if "_voice" not in v.name]
-        vid = vids[0]
+        # 退路: 用 lithium_30s_v6.mp4 (zh 版)
+        vid = ROOT / "output" / "lithium_30s_v6.mp4"
     bgm = ROOT / "music" / "bgm_epic_30s.mp3"
     out = ROOT / "output" / f"lithium_30s_v6_{lang}.mp4"
 
@@ -122,11 +120,14 @@ def run_mux(lang: str) -> Path:
         "-filter_complex", filter_complex,
         "-map", "0:v", "-map", "[mix]",
         "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
-        str(out)
+        str(out) + ".tmp.mp4"  # v0.7.0: 临时文件, 避免原地覆盖
     ], capture_output=True, text=True)
     if r.returncode != 0:
         print(f"  ✗ mux failed: {r.stderr[-500:]}")
         return None
+    # 移动临时文件到目标
+    import shutil
+    shutil.move(str(out) + ".tmp.mp4", str(out))
     return out
 
 
