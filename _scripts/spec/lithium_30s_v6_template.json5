@@ -1,4 +1,5 @@
-// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.4 ★)
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.5 ★)
+// v0.6.5 升级: 段 1 字幕改 bottom-right 避火, 段 5 改 bottom
 // 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
 // {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
 
@@ -24,9 +25,10 @@
         {
           type: "title",
           text: "{title_01}",  // 锂电新纪元 / New Era of Lithium / リチウム新時代
-          fontSize: 60,
+          fontSize: 56,
           color: "#00BFFF",
-          position: "center",
+          position: "bottom-right",  // v0.6.5 优化: 避火
+          // 注: editly position 取值: top/bottom/center/bottom-left/bottom-right/top-left/top-right
         },
       ],
     },
@@ -98,7 +100,7 @@
           text: "{title_05}",  // 投资窗口正在打开
           fontSize: 48,
           color: "#FFFFFF",
-          position: "center",
+          position: "bottom",  // v0.6.5 统一: 底部对齐
         },
       ],
     },
