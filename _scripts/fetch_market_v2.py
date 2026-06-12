@@ -4,7 +4,17 @@ import json
 import subprocess
 import os
 
-KEY = "PEXELS_API_KEY_REDACTED"
+# Pexels API key: 从环境变量 PEXELS_API_KEY 读
+# 旧 key 已在 2026-06-12 泄露, 已在 GitHub 公开 commit 出现
+# 用户应 revoke 旧 key 并到 https://www.pexels.com/api/ 申请新 key
+KEY = os.environ.get("PEXELS_API_KEY", "")
+if not KEY:
+    raise SystemExit(
+        "错误: 未设置 PEXELS_API_KEY 环境变量\n"
+        "获取方式: https://www.pexels.com/api/ 注册后即可获得\n"
+        "设置方式 (Windows): set PEXELS_API_KEY=你的新key\n"
+        "设置方式 (bash): export PEXELS_API_KEY=你的新key"
+    )
 DIR = r"G:\agent\hermes\via54Design-v6\stock"
 os.makedirs(DIR, exist_ok=True)
 
