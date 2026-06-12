@@ -1,5 +1,5 @@
-// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.8 ★)
-// v0.6.8 升级: 全程 5 段统一 PNG 字幕 (黑底圆角白字, 80pt) + 段 4 改文案 "智能产线稼动率 95%+"
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.9 ★)
+// v0.6.9 升级: 段 5 96pt 收尾压轴 + 段 4 c5 95%+ 终极 PNG (count-up 动画被 editly 阻断)
 // 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
 // {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
 
@@ -61,6 +61,9 @@
         },
       ],
     },
+    // v0.6.9: 段 4 1 个 7s clip + 1 个 c5 终极 PNG (静态)
+    // ★ count-up 动画被 editly 智能合并机制阻断 (5 拆子段合并, 5 层堆叠同时显示)
+    // ★ 备选: 用 ffmpeg 后处理叠 5 个 PNG 用 enable between 切换, 但 v0.6.8 静态 9.0 已很好
     {
       duration: 7,
       layers: [
@@ -71,9 +74,10 @@
           resizeMode: "cover",
         },
         {
-          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
-          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_04_{lang}.png",  // ★ v0.6.8 改文案: 智能产线稼动率 95%+
-          position: "center",  // PNG 已内嵌 bottom-left 位置
+          type: "image",  // 段 4 终极 95%+
+          path: "G:/agent/hermes/via54Design-v6/subtitles/countup/sub_04_{lang}_c5_95%p.png",
+          position: "center",
+          zoomAmount: 0.3,
         },
       ],
     },
