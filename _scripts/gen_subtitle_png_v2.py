@@ -30,11 +30,11 @@ FONT = find_font()
 # 段 5 outlook - 展望
 SUBTITLES = {
     "01": {  # 段 1 hook
-        "zh": "锂电新纪元",
-        "en": "New Era of Lithium",
-        "ja": "リチウム新時代",
-        "size": 96,  # hook 标题最大
-        "pos": "bottom-right",  # 段 1 bottom-right 避火
+        "zh": "原子能量",  # v0.7.0: 锂电新纪元 → 原子能量 (消解隐喻脱节, 强调素材提炼)
+        "en": "Atomic Power",  # Atomic Power
+        "ja": "原子の力",  # 原子の力
+        "size": 96,  # 96pt 收尾压轴
+        "pos": "bottom-right",  # bottom-right 段 1 hook
     },
     "02": {  # 段 2 trend
         "zh": "2026 产能突破 800GWh",
