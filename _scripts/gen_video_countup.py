@@ -4,9 +4,9 @@
 # editly 生成 base mp4 (段 4 c5 终极 PNG) → ffmpeg 后处理
 import os, sys, subprocess
 
-# 段 4 时间: clip 3 结束 16s (3+5+10-2=16) → 23s (16+7)
-SEG4_START = 16.0
-SEG4_END = 23.0
+# 段 4 时间: 段 1+2+3 = 3+5+10 = 18s, 段 4 = 18-25s, 段 5 = 25-30s
+SEG4_START = 18.0
+SEG4_END = 25.0
 SEG4_DURATION = SEG4_END - SEG4_START  # 7s
 COUNT_DURATION = SEG4_DURATION / 5  # 1.4s
 

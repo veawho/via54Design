@@ -1,0 +1,127 @@
+// lithium_30s_v6_translated.json5 - 多语版 (zh/en/ja) + 字幕 + 配乐规则
+// 用法:
+//   editly --json spec/lithium_30s_v6_translated.json5 --lang zh
+//   editly --json spec/lithium_30s_v6_translated.json5 --lang en
+//   editly --json spec/lithium_30s_v6_translated.json5 --lang ja
+
+{
+  outPath: "G:/agent/hermes/via54Design-v6/output/lithium_30s_v6_zh.mp4",  // 改 zh/en/ja
+  width: 1366,
+  height: 768,
+  fps: 24,
+  defaults: {
+    duration: 6,
+    transition: { duration: 0.5, name: "fade" },
+  },
+  clips: [
+    // 段 1: hook (3s) - 熔融金属倾泻 - 震撼开场
+    {
+      duration: 3,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/01_hook_2.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "title",
+          text: "锂电新纪元",  // 多语: "New Era of Lithium" / "リチウム新時代"
+          fontSize: 64,
+          color: "#00BFFF",
+          position: "center",
+        },
+      ],
+    },
+
+    // 段 2: trend (5s) - HUD 全息数据
+    {
+      duration: 5,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/02_trend_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "subtitle",
+          text: "2026 产能突破 800GWh",
+          fontSize: 36,
+          color: "#FFFFFF",
+          position: "bottom",
+        },
+      ],
+    },
+
+    // 段 3: tech (10s) - 化学实验
+    {
+      duration: 10,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/03_tech_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "subtitle",
+          text: "固态电池技术领跑全球",
+          fontSize: 32,
+          color: "#00FFAA",
+          position: "bottom",
+        },
+      ],
+    },
+
+    // 段 4: market (7s) - 投资市场
+    {
+      duration: 7,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/04_market_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "subtitle",
+          text: "板块资金流入 同比增长 200%",
+          fontSize: 32,
+          color: "#FFD700",
+          position: "bottom",
+        },
+      ],
+    },
+
+    // 段 5: outlook (5s) - 沙漠公路电塔
+    {
+      duration: 5,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/05_outlook_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "title",
+          text: "投资窗口正在打开",
+          fontSize: 56,
+          color: "#FFFFFF",
+          position: "center",
+        },
+      ],
+    },
+  ],
+  // 音频规则: 旁白为主, 配乐 -18dB 衬底
+  outputVolume: 1.0,
+  clipsAudioVolume: 0.0,  // 视频源静音
+  audioTracks: [
+    {
+      path: "G:/agent/hermes/via54Design-v6/music/bgm_epic_30s.mp3",
+      volume: 0.13,  // -18dB, 衬底
+      cutFrom: 0,
+    },
+  ],
+}
