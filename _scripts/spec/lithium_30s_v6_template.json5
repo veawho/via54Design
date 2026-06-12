@@ -1,5 +1,5 @@
-// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.6 ★)
-// v0.6.6 升级: 段 1 字幕加 backgroundColor + opacity 完全避火
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.7 ★)
+// v0.6.7 升级: 段 1/5 改 PNG 图片字幕层 (黑底圆角白字) + 段 5 zoomAmount 淡入 + 配乐 mix 0.25+0.22
 // 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
 // {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
 
@@ -23,11 +23,9 @@
           resizeMode: "cover",
         },
         {
-          type: "title",
-          text: "{title_01}",  // 锂电新纪元 / New Era of Lithium / リチウム新時代
-          fontSize: 56,
-          color: "#00BFFF",
-          position: "bottom-right",  // v0.6.5 优化: 避火 (center 完全被火遮, 退回)
+          type: "image",  // v0.6.7 优化: 改用 image 层 (PNG 黑底圆角白字) 取代 title
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_01_{lang}.png",  // {lang} → zh/en/ja
+          position: "center",  // PNG 已内嵌 bottom-right 位置, layer 居中即可
         },
       ],
     },
@@ -91,15 +89,15 @@
         {
           type: "video",
           path: "G:/agent/hermes/via54Design-v6/stock/05_outlook_1.mp4",
-          cutFrom: 10,  // v0.6.6: MPK 电车在 10-15s 区间
+          cutFrom: 0,  // v0.6.7: 段 5 改用 solar_panels_factory_1 (屋顶光伏)
           resizeMode: "cover",
         },
         {
-          type: "title",
-          text: "{title_05}",  // 投资窗口正在打开
-          fontSize: 48,
-          color: "#FFFFFF",
-          position: "bottom",  // v0.6.5 统一: 底部对齐
+          type: "image",  // v0.6.7 优化: 改用 image 层 (PNG 黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_05_{lang}.png",  // {lang} → zh/en/ja
+          position: "center",  // PNG 已内嵌 bottom 位置
+          zoomDirection: "in",  // v0.6.7 优化: 字幕淡入放大
+          zoomAmount: 0.3,
         },
       ],
     },
