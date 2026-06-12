@@ -61,7 +61,7 @@ SUBTITLES = {
         "zh": "投资窗口正在打开",
         "en": "Investment Window Opening",
         "ja": "投資の窓が開く",
-        "size": 80,
+        "size": 96,  # v0.6.9 收尾压轴: 80pt → 96pt 配 hook 段 1
         "pos": "bottom-center",  # 段 5 outlook 收尾居中
     },
 }
