@@ -99,6 +99,11 @@ def run_mux(lang: str) -> Path:
     ], capture_output=True, text=True).stdout.strip())
     print(f"  旁白总时长: {voice_dur:.2f}s")
 
+    # v0.7.1: 时长归一化 (en 28.925s → 30s, 加 1.075s 静音补齐)
+    # 用 apad 给旁白补静音到 30s, 让 mux 输出 3 语都 = 30.000s
+    pad_dur = max(0, 30.0 - voice_dur)
+    print(f"  末尾补静音: {pad_dur:.3f}s")
+
     # v0.7.0: 按语言用对应 count-up 视频源 (不用统一的 lithium_30s_v6.mp4)
     vid = ROOT / "output" / f"lithium_30s_v6_{lang}.mp4"  # 当前语言的 count-up 版
     if not vid.exists():
@@ -107,10 +112,11 @@ def run_mux(lang: str) -> Path:
     bgm = ROOT / "music" / "bgm_epic_30s.mp3"
     out = ROOT / "output" / f"lithium_30s_v6_{lang}.mp4"
 
+    # v0.7.1: 旁白补静音 (apad) + 配乐 atrim 0:30 + 视频 -t 30 强制截到 30s
     filter_complex = (
-        "[1:a]volume=1.4[voice];"
-        "[2:a]volume=0.13,atrim=0:28.0[bgm];"
-        "[voice][bgm]amix=inputs=2:duration=longest:dropout_transition=2[mix]"
+        f"[1:a]volume=1.4,apad,atrim=0:30.0[voice];"
+        f"[2:a]volume=0.13,atrim=0:30.0[bgm];"
+        "[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2[mix]"
     )
     r = subprocess.run([
         "ffmpeg", "-y",
@@ -119,6 +125,7 @@ def run_mux(lang: str) -> Path:
         "-i", str(bgm),
         "-filter_complex", filter_complex,
         "-map", "0:v", "-map", "[mix]",
+        "-t", "30",  # v0.7.1: 强制截到 30s (避免 en 28.925s 偏差)
         "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
         str(out) + ".tmp.mp4"  # v0.7.0: 临时文件, 避免原地覆盖
     ], capture_output=True, text=True)
