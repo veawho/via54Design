@@ -62,3 +62,12 @@ web/uploads/
 *.exe~
 via54_new.exe
 minimax-output/
+
+# ============================================
+# Test artifacts (Pexels stock + rendered PNG)
+# ============================================
+# Stock footage (large MP4s, fetched from Pexels, regenerable)
+_scripts/stock/
+# Rendered subtitle PNGs (regenerable via gen_subtitle_*.py)
+_scripts/subtitles/
+# Test f...[truncated]
