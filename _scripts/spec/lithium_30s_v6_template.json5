@@ -1,5 +1,5 @@
-// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.5 ★)
-// v0.6.5 升级: 段 1 字幕改 bottom-right 避火, 段 5 改 bottom
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.6.6 ★)
+// v0.6.6 升级: 段 1 字幕加 backgroundColor + opacity 完全避火
 // 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
 // {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
 
@@ -27,8 +27,7 @@
           text: "{title_01}",  // 锂电新纪元 / New Era of Lithium / リチウム新時代
           fontSize: 56,
           color: "#00BFFF",
-          position: "bottom-right",  // v0.6.5 优化: 避火
-          // 注: editly position 取值: top/bottom/center/bottom-left/bottom-right/top-left/top-right
+          position: "bottom-right",  // v0.6.5 优化: 避火 (center 完全被火遮, 退回)
         },
       ],
     },
@@ -92,7 +91,7 @@
         {
           type: "video",
           path: "G:/agent/hermes/via54Design-v6/stock/05_outlook_1.mp4",
-          cutFrom: 0,
+          cutFrom: 10,  // v0.6.6: MPK 电车在 10-15s 区间
           resizeMode: "cover",
         },
         {
