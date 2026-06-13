@@ -1,0 +1,37 @@
+<div class="flow-steps">
+  <div class="flow-step-card">
+    <span class="step-badge">1</span>
+    <h3>🎨 生成 HTML 设计</h3>
+    <form hx-post="/api/htmx/generate" hx-target="#dOutput" hx-indicator="#dSpin">
+      <input type="text" name="title" placeholder="标题（可选）" style="margin-bottom:6px">
+      <select name="mode" style="margin-bottom:6px">
+        <option value="">网页模式（自适应）</option>
+        <option value="presentation">演示文稿（16:9 锁定）</option>
+      </select>
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">🎨 生成 HTML</button>
+        <span id="dSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 生成中...</span>
+      </div>
+    </form>
+    <div id="dOutput" style="margin-top:8px"></div>
+  </div>
+
+  <div class="flow-step-card">
+    <span class="step-badge">2</span>
+    <h3>📄 文档 → PPT 框架</h3>
+    <form hx-post="/api/htmx/story2ppt" hx-target="#dDocOutput" hx-indicator="#dDocSpin" hx-encoding="multipart/form-data">
+      <label for="dDocFile" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
+        📎 点击上传文档
+      </label>
+      <input type="file" id="dDocFile" name="file" accept=".docx,.pptx,.txt,.md,.pdf" style="display:none"
+             hx-post="/api/htmx/upload" hx-target="#dDocUploadResult" hx-encoding="multipart/form-data">
+      <div id="dDocUploadResult"></div>
+      <input type="text" name="seed" placeholder="故事种子（可选）" style="margin-bottom:6px">
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">📊 生成框架</button>
+        <span id="dDocSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 分析中...</span>
+      </div>
+    </form>
+    <div id="dDocOutput" style="margin-top:8px"></div>
+  </div>
+</div>

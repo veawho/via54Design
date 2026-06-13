@@ -1,0 +1,24 @@
+# via54Design — PixArt Sigma Workflow Template
+# SPDX-License-Identifier: MIT
+id: pixart
+name: "PixArt Sigma"
+description: "PixArt Sigma 1024px transformer"
+type: txt2img
+model: "pixart_sigma.safetensors"
+params:
+  steps: 20
+  cfg: 4.5
+  sampler: "dpmpp_2m"
+  scheduler: "karras"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage
+models:
+  - url: ""
+    path: "checkpoints/pixart_sigma.safetensors"

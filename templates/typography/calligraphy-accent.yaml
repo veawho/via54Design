@@ -1,0 +1,41 @@
+# via54Design 字体模板
+# 书法点缀 — 书法体的艺术感+黑体的克制
+id: calligraphy-accent
+name:
+  zh: "书法点缀"
+  en: "Calligraphy Accent"
+  ja: "書道"
+metadata:
+  designer: via54 / ZCOOL / JustFont 灵感
+  classification: "书法体(手写) + 无衬线(黑体)"
+  inspiration: "书法体是中文设计中最具表现力的字体类别。站酷小薇(ZCOOL XiaoWei)是最受欢迎的开源书法体。书法体只用于标题或装饰，正文用黑体保持可读性——这是中文排版中'以古托今'的经典手法。"
+  principle: "书法为魂，黑体为骨。一浓一淡，一古一今"
+mood: [artistic, bold, cultural, dramatic, warm]
+chinese:
+  display_body: false
+  note: "书法体仅用于标题/装饰，正文保持简洁"
+
+fonts:
+  display: "'ZCOOL XiaoWei', 'STKaiti', 'KaiTi', 'Georgia', serif"
+  body: "'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  mono: "'JetBrains Mono', monospace"
+
+weights:
+  display: "400"  # 书法体通常只有常规字重
+  body: "400;600"
+
+google_fonts:
+  - "ZCOOL+XiaoWei"
+  - "Inter:wght@400;600"
+
+sizes:
+  display: "clamp(28px, 5vw, 56px)"
+  h2: "clamp(22px, 3vw, 40px)"
+  h3: "clamp(18px, 1.5vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "12px"
+
+compatibility:
+  moods: [artistic, bold, cultural, dramatic, warm, nostalgic]
+  layouts: [hero-split-left-image, gallery-waterfall]

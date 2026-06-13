@@ -1,0 +1,52 @@
+# via54Design Adobe/Behance配色
+# Millennial Sage — Behance上最出圈的粉绿搭配
+id: millennial-sage
+name:
+  zh: "千禧鼠尾草"
+  en: "Millennial Sage"
+  ja: "ミレニアルセージ"
+metadata:
+  designer: via54 / Behance 全球趋势
+  platform: Behance / Instagram / Pinterest 最热门配色
+  cultural_context: "千禧粉(Millennial Pink) + 鼠尾草绿(Sage Green)的组合是2018-2023年Behance上被复制最多的配色之一。从Glossier的品牌视觉到Airbnb的营销素材，这套配色定义了'Instagram美学'的时代。它的流行不是偶然——粉绿在色相环上相距120度，属于对比色搭配，既和谐又有张力。"
+  philosophy: "温柔而有力量。不喧哗，自有声。"
+mood: [gentle, trendy, warm, femine, sophisticated]
+season: spring
+palette:
+  - role: background
+    hex: "#FAF5F0"
+    name_zh: "暖白"
+    cultural_note: "Glossier式的极简暖白"
+  - role: text_primary
+    hex: "#2D3436"
+    name_zh: "深灰"
+    cultural_note: "柔和的黑，不刺眼"
+  - role: text_secondary
+    hex: "#8B8B8B"
+    name_zh: "中灰"
+    cultural_note: "辅助色"
+  - role: accent
+    hex: "#E8A0BF"
+    name_zh: "千禧粉"
+    cultural_note: "Millennial Pink，这十年最出圈的颜色"
+  - role: accent_alt
+    hex: "#9CB6A3"
+    name_zh: "鼠尾草绿"
+    cultural_note: "Sage Green，千禧粉的最佳搭档"
+  - role: border
+    hex: "#EDE5E0"
+    name_zh: "淡粉灰"
+    cultural_note: "极淡边界"
+
+
+css_variables: |
+  --bg: #FAF5F0;
+  --text-primary: #2D3436;
+  --text-secondary: #8B8B8B;
+  --accent: #E8A0BF;
+  --accent-alt: #9CB6A3;
+  --border: #EDE5E0;
+
+compatibility:
+  layouts: [hero-split-left-image, gallery-waterfall]
+  fonts: [cormorant-elegant, serif-sans-editorial]

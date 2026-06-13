@@ -1,0 +1,47 @@
+# via54Design — PPTX 经典装饰条风格模板 (默认)
+id: accent-bar
+name: "装饰条 (Accent Bar)"
+description: "左侧色条 + 清晰层级，默认风格。适合正文与标题并重的演示"
+layout:
+  background:
+    fill: "solid"
+    color: "--bg"
+  accent_bar:
+    enabled: true
+    width: 152400
+    color: "--accent"
+  title:
+    x: 914400
+    y: 1371600
+    w: 8229600
+    h: 1371600
+    font_size: 4400
+    bold: true
+    color: "#1A1A1A"
+    align: left
+  subtitle:
+    x: 914400
+    y: 685800
+    w: 8229600
+    h: 457200
+    font_size: 1200
+    bold: false
+    color: "--accent"
+    align: left
+  body:
+    x: 914400
+    y: 2971800
+    w: 8229600
+    h: 3200400
+    font_size: 1800
+    color: "#4A4A4A"
+    align: left
+    line_spacing: 400
+  page_number:
+    enabled: true
+    x: 914400
+    y: 6400800
+    w: 1371600
+    h: 274320
+    font_size: 900
+    color: "#999999"

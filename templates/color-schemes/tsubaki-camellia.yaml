@@ -1,0 +1,52 @@
+# via54Design 日系配色
+# 椿 — 资深堂红，口红传奇
+id: tsubaki-camellia
+name:
+  zh: "椿"
+  en: "Tsubaki Camellia"
+  ja: "椿"
+metadata:
+  designer: via54 / 资深堂 (Shiseido)
+  dynasty: "明治-现代"
+  cultural_context: "资深堂(Shiseido)创立于1872年，其标志性的'资深堂红'(Shiseido Red)源自山茶花(椿)之色。山茶在日本文化中象征谦逊与优雅，落花时不散瓣，完整凋零。"
+  philosophy: "优雅知性，口红一色写春秋"
+mood: [elegant, femine, luxury, sophisticated, warm]
+season: spring
+palette:
+  - role: background
+    hex: "#FAF5F0"
+    name_zh: "白瓷"
+    cultural_note: "有田烧白瓷般的温润底色"
+  - role: text_primary
+    hex: "#2D2323"
+    name_zh: "墨"
+    cultural_note: "日本和墨之色"
+  - role: text_secondary
+    hex: "#8A7D7A"
+    name_zh: "鼠色"
+    cultural_note: "日本传统鼠色，雅致中性"
+  - role: accent
+    hex: "#BF3A2B"
+    name_zh: "资深堂红"
+    cultural_note: "Shiseido标志性红色，山茶花之色"
+  - role: accent_alt
+    hex: "#D4A08A"
+    name_zh: "薄红梅"
+    cultural_note: "淡粉红梅色，柔美过渡"
+  - role: border
+    hex: "#E8E0D8"
+    name_zh: "生成色"
+    cultural_note: "未漂白的天然丝绸色"
+
+
+css_variables: |
+  --bg: #FAF5F0;
+  --text-primary: #2D2323;
+  --text-secondary: #8A7D7A;
+  --accent: #BF3A2B;
+  --accent-alt: #D4A08A;
+  --border: #E8E0D8;
+
+compatibility:
+  layouts: [hero-split-left-image, gallery-waterfall]
+  fonts: [cormorant-elegant, serif-sans-editorial]

@@ -1,0 +1,103 @@
+// lithium_30s_v6_template.json5 — 字幕模板 (★ v0.7.0 ★)
+// v0.7.0 升级: 段 1 改文案 "锂电新纪元"→"原子能量" + 段 4 zoomAmount 0.3→0.15 + ffmpeg count-up 后处理
+// 占位符 {lang}: 渲染时由 gen_video.py 替换为 zh/en/ja
+// {title_xx} {sub_xx}: 字幕占位符, 渲染时替换
+
+{
+  outPath: "G:/agent/hermes/via54Design-v6/output/lithium_30s_v6_{lang}.mp4",
+  width: 1366,
+  height: 768,
+  fps: 24,
+  defaults: {
+    duration: 6,
+    transition: { duration: 0.5, name: "fade" },
+  },
+  clips: [
+    {
+      duration: 3,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/01_hook_2.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.7 优化: 改用 image 层 (PNG 黑底圆角白字) 取代 title
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_01_{lang}.png",  // {lang} → zh/en/ja
+          position: "center",  // PNG 已内嵌 bottom-right 位置, layer 居中即可
+        },
+      ],
+    },
+    {
+      duration: 5,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/02_trend_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_02_{lang}.png",  // 2026 产能突破 800GWh
+          position: "center",  // PNG 已内嵌 bottom-left 位置
+        },
+      ],
+    },
+    {
+      duration: 10,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/03_tech_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.8 优化: 全程 5 段统一 PNG 字幕 (黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_03_{lang}.png",  // 固态电池技术领跑全球
+          position: "center",  // PNG 已内嵌 bottom-left 位置
+        },
+      ],
+    },
+    // v0.6.9: 段 4 1 个 7s clip + 1 个 c5 终极 PNG (静态)
+    // ★ count-up 动画被 editly 智能合并机制阻断 (5 拆子段合并, 5 层堆叠同时显示)
+    // ★ 备选: 用 ffmpeg 后处理叠 5 个 PNG 用 enable between 切换, 但 v0.6.8 静态 9.0 已很好
+    {
+      duration: 7,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/04_market_1.mp4",
+          cutFrom: 0,
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // 段 4 终极 95%+
+          path: "G:/agent/hermes/via54Design-v6/subtitles/countup/sub_04_{lang}_c5_95%p.png",
+          position: "center",
+          zoomAmount: 0.15,  // v0.7.0: 0.3 → 0.15 字幕不挡机械臂
+        },
+      ],
+    },
+    {
+      duration: 5,
+      layers: [
+        {
+          type: "video",
+          path: "G:/agent/hermes/via54Design-v6/stock/05_outlook_1.mp4",
+          cutFrom: 0,  // v0.6.7: 段 5 改用 solar_panels_factory_1 (屋顶光伏)
+          resizeMode: "cover",
+        },
+        {
+          type: "image",  // v0.6.7 优化: 改用 image 层 (PNG 黑底圆角白字)
+          path: "G:/agent/hermes/via54Design-v6/subtitles/sub_05_{lang}.png",  // {lang} → zh/en/ja
+          position: "center",  // PNG 已内嵌 bottom 位置
+          zoomDirection: "in",  // v0.6.7 优化: 字幕淡入放大
+          zoomAmount: 0.3,
+        },
+      ],
+    },
+  ],
+}

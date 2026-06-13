@@ -1,0 +1,29 @@
+# ─── 元数据 ───
+id: mono-brand-bold
+name: 单色品牌撞色海报 — 满版主色+反白字（Spotify/Mailchimp风）
+version: "1.0.0"
+category: color-scheme/mono
+tags: [mono, bold, brand, poster, high-contrast, type-as-hero]
+source: "references/design-styles.md — 高饱和单色品牌撞色海报 Mono-Brand Type-as-Hero"
+contrast_ratio: "可变（取决于品牌色）"
+
+colors:
+  background: "#1ED760"        # 品牌主色满版
+  background_dark: "#191919"   # 深色变体
+  background_light: "#FFE01B"  # 亮色变体
+  text_on_brand: "#FFFFFF"     # 反白字
+  text_on_light: "#191919"     # 深底用
+  accent_secondary: "#E50914"  # 备选品牌色（Netflix红）
+  border: "transparent"
+
+when:
+  brand_tone: [bold, energetic, confident, playful]
+  audience: [mass, consumer, youth]
+  suitable_for: [campaign, townhall, brand_story, marketing_deck]
+
+
+css_variables: |
+  --bg: #1ED760;
+  --bg-dark: #191919;
+  --text-on-brand: #FFFFFF;
+  --text-on-light: #191919;

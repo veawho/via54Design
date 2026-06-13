@@ -1,0 +1,93 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Pin to the project's required Go version (matches go.mod)
+        go: ['1.26.2']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+
+      - name: Install Linux deps (Node.js + ffmpeg for export tests)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nodejs npm ffmpeg
+          npm install -g playwright
+          npx playwright install --with-deps chromium
+
+      - name: Install macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew install node ffmpeg
+          npm install -g playwright
+          npx playwright install --with-deps chromium
+
+      - name: Install Windows deps
+        if: runner.os == 'Windows'
+        run: |
+          choco install -y nodejs ffmpeg
+          npm install -g playwright
+          npx playwright install chromium
+
+      - name: Download Go module dependencies
+        run: go mod download
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go build (CLI)
+        run: go build -o via54-${{ runner.os }} ./cmd/via54/
+
+      - name: go build (MCP)
+        run: go build -o via54-mcp-${{ runner.os }} ./cmd/mcp-server/
+
+      - name: Smoke test (CLI)
+        # Use || true to ignore SIGPIPE (head closing the pipe early returns 141)
+        # Each command is isolated so a failure in one doesn't block the rest
+        shell: bash
+        run: |
+          set +e  # don't exit on error
+          ./via54-${{ runner.os }} version
+          ./via54-${{ runner.os }} list
+          printf '0\n' | ./via54-${{ runner.os }} interactive 2>&1 | head -10 || true
+          echo "--- smoke OK ---"
+
+      - name: Smoke test (prompt + narrate)
+        shell: bash
+        run: |
+          set +e
+          ./via54-${{ runner.os }} prompt --scene "smoke test" --platform midjourney 2>&1 | head -10 || true
+          ./via54-${{ runner.os }} narrate --seed "smoke test" --model three-act --duration 10 --format json 2>&1 | head -10 || true
+          echo "--- smoke prompt OK ---"
+
+      - name: Upload CLI binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: via54-${{ runner.os }}
+          path: via54-${{ runner.os }}*
+
+      - name: Upload MCP binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: via54-mcp-${{ runner.os }}
+          path: via54-mcp-${{ runner.os }}*

@@ -1,0 +1,18 @@
+# via54Design — ComfyUI workflow template
+id: ltxv_txt2vid
+name: "LTXV Text-to-Video"
+description: "LTXV (Lightricks) text-to-video"
+type: txt2vid
+model: "ltxv.safetensors"
+params:
+  steps: 30
+  cfg: 7.0
+  frames: 25
+models:
+  - url: ""
+    path: "checkpoints/ltxv.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

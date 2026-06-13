@@ -1,0 +1,56 @@
+# via54Design 中国传统配色
+# 松花 — 宋人雅色，松下问童子
+id: pine-spring
+name:
+  zh: "松花"
+  en: "Pine Spring"
+  ja: "松の綠"
+
+metadata:
+  designer: via54
+  dynasty: "宋 (Song Dynasty)"
+  cultural_context: "松花绿是宋代文人画中常见的配色。苏轼'松花酿酒，春水煎茶'。松柏象征君子品格。"
+  philosophy: "自然雅致，文人清趣"
+
+mood: [calm, natural, elegant, scholarly, fresh]
+season: spring
+
+palette:
+  - role: background
+    hex: "#F5F2EB"
+    name_zh: "凝脂"
+    cultural_note: "凝固的羊脂玉，温润细腻"
+  - role: text_primary
+    hex: "#2C3E2D"
+    name_zh: "苍绿"
+    cultural_note: "深沉的松柏绿，文人气质"
+  - role: text_secondary
+    hex: "#6B7F6B"
+    name_zh: "艾绿"
+    cultural_note: "艾草般的灰绿，沉静"
+  - role: accent
+    hex: "#5B8C5A"
+    name_zh: "松花绿"
+    cultural_note: "松花粉嫩绿，春意盎然"
+  - role: accent_alt
+    hex: "#C4A96A"
+    name_zh: "秋葵"
+    cultural_note: "秋葵花色，淡雅温润"
+  - role: border
+    hex: "#E0DBD0"
+    name_zh: "象牙"
+    cultural_note: "暖灰白分割线"
+
+
+
+css_variables: |
+  --bg: #F5F2EB;
+  --text-primary: #2C3E2D;
+  --text-secondary: #6B7F6B;
+  --accent: #5B8C5A;
+  --accent-alt: #C4A96A;
+  --border: #E0DBD0;
+
+compatibility:
+  layouts: [hero-split-left-image, editorial-longform]
+  fonts: [serif-sans-editorial, cormorant-elegant]

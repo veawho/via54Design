@@ -1,0 +1,33 @@
+# via54Design 字体模板
+# Display Bold — 发布会级超大标题
+id: display-sans-bold
+name:
+  zh: "粗体展示"
+  en: "Display Bold"
+  ja: "ディスプレイ太字"
+metadata:
+  designer: via54 / Apple Keynote / Steve Jobs
+  classification: " grotesque无衬线 + 几何无衬线"
+  inspiration: "Archivo Black和Anton是Google Fonts上最粗的展示字体。配合Inter正文形成极端的粗细对比——这是发布会演讲PPT的经典排版手法。"
+  principle: "标题就要大、粗、有力。正文回归克制。"
+mood: [bold, impactful, dramatic, confident, keynote]
+fonts:
+  display: "'Archivo Black', 'Anton', 'Manrope', sans-serif"
+  body: "'Inter', -apple-system, 'Helvetica Neue', sans-serif"
+  mono: "'Geist Mono', 'JetBrains Mono', monospace"
+weights:
+  display: "900"
+  body: "400;500"
+google_fonts:
+  - "Archivo+Black"
+  - "Inter:wght@400;500"
+sizes:
+  display: "clamp(60px, 10vw, 160px)"
+  h2: "clamp(32px, 5vw, 72px)"
+  h3: "clamp(24px, 3vw, 48px)"
+  body: "clamp(16px, 1.2vw, 20px)"
+  small: "14px"
+  caption: "12px"
+compatibility:
+  moods: [bold, impactful, dramatic, confident, keynote, energetic]
+  layouts: [hero-split-left-image, bento-grid-2x2]

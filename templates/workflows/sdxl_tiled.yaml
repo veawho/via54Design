@@ -1,0 +1,29 @@
+# via54Design — SDXL Tiled VAE (Anti-OOM) Workflow
+# SPDX-License-Identifier: MIT
+id: sdxl_tiled
+name: "SDXL Tiled VAE (Anti-OOM)"
+description: "SDXL text-to-image with tiled VAE decode to avoid OOM on large outputs"
+type: txt2img
+model: "sd_xl_base_1.0.safetensors"
+vae: "sdxl_vae.safetensors"
+params:
+  steps: 30
+  cfg: 7.5
+  sampler: "dpmpp_2m"
+  scheduler: "karras"
+  seed: -1
+  width: 1536
+  height: 1024
+  denoise: 1.0
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  positive_prompt: CLIPTextEncode
+  negative_prompt: CLIPTextEncode
+  sampler: KSampler
+  tiled_decode: VAETiledDecode
+  output: SaveImage
+models:
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_vae.safetensors"
+    path: "vae/sdxl_vae.safetensors"

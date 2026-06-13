@@ -1,0 +1,17 @@
+# via54Design — ComfyUI workflow template
+id: controlnet_canny
+name: "SD Canny ControlNet"
+description: "SD1.5 + Canny edge ControlNet"
+type: txt2img
+model: "v1-5-pruned-emaonly.safetensors"
+params:
+  steps: 20
+  cfg: 7.0
+models:
+  - url: ""
+    path: "checkpoints/v1-5-pruned-emaonly.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

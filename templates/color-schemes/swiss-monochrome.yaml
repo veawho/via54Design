@@ -1,0 +1,51 @@
+# via54Design 经典配色
+# Swiss Monochrome — Vercel风，纯黑+纯白+灰阶
+id: swiss-monochrome
+name:
+  zh: "瑞士极简"
+  en: "Swiss Monochrome"
+  ja: "スイスモノクローム"
+metadata:
+  designer: via54 / Vercel (Massimo Vignelli)
+  cultural_context: "源自瑞士国际主义设计(International Typographic Style)。Vignelli's '少即是多'原则。Vercel的Geist字体和纯黑白界面将其数字化。"
+  philosophy: "少即是多。黑白之间见真章。"
+mood: [minimal, clean, bold, authoritative, precise]
+season: all
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "白"
+    cultural_note: "纯白底，零杂质"
+  - role: text_primary
+    hex: "#000000"
+    name_zh: "黑"
+    cultural_note: "纯黑字，最大对比"
+  - role: text_secondary
+    hex: "#888888"
+    name_zh: "中灰"
+    cultural_note: "辅助信息灰"
+  - role: accent
+    hex: "#000000"
+    name_zh: "黑"
+    cultural_note: "强调也是黑，克制"
+  - role: accent_alt
+    hex: "#E5E5E5"
+    name_zh: "淡灰"
+    cultural_note: "极淡灰分割"
+  - role: border
+    hex: "#E5E5E5"
+    name_zh: "灰线"
+    cultural_note: "发丝线"
+
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #000000;
+  --text-secondary: #888888;
+  --accent: #000000;
+  --accent-alt: #E5E5E5;
+  --border: #E5E5E5;
+
+compatibility:
+  layouts: [bento-grid-2x2, hero-split-left-image, gallery-waterfall]
+  fonts: [system-utility, sans-geometric-tech]

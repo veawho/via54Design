@@ -1,0 +1,197 @@
+name: release
+
+# 自动发布: 推送 v*.*.* tag → 跨平台编译 → 上传 GitHub Release
+# 触发: git push origin v1.0.0
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: write    # 创建 release
+  pull-requests: read
+
+jobs:
+  release:
+    name: Build & Release on ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 5 平台 × 2 二进制 (CLI + MCP)
+          # goos/goarch 直接写在 matrix, 避免 GitHub Actions 表达式里
+          # && / || 优先级解析陷阱 (会把 GOOS 解析成布尔值 true/false)
+          - target: darwin-amd64
+            os: macos-13
+            ext: ""
+            goos: darwin
+            goarch: amd64
+          - target: darwin-arm64
+            os: macos-14
+            ext: ""
+            goos: darwin
+            goarch: arm64
+          - target: linux-amd64
+            os: ubuntu-22.04
+            ext: ""
+            goos: linux
+            goarch: amd64
+          - target: linux-arm64
+            os: ubuntu-22.04-arm
+            ext: ""
+            goos: linux
+            goarch: arm64
+          - target: windows-amd64
+            os: windows-2022
+            ext: ".exe"
+            goos: windows
+            goarch: amd64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要 git tag 信息
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.2'
+          cache: true
+
+      - name: Build CLI (${{ matrix.target }})
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "0"
+        run: |
+          mkdir -p dist
+          go build -buildvcs=false -ldflags="-s -w" -o dist/via54-${{ matrix.target }}${{ matrix.ext }} ./cmd/via54/
+          echo "=== CLI build done: $(ls -lh dist/via54-${{ matrix.target }}${{ matrix.ext }}) ==="
+
+      - name: Build MCP (${{ matrix.target }})
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "0"
+        run: |
+          go build -buildvcs=false -ldflags="-s -w" -o dist/via54-mcp-${{ matrix.target }}${{ matrix.ext }} ./cmd/mcp-server/
+          echo "=== MCP build done: $(ls -lh dist/via54-mcp-${{ matrix.target }}${{ matrix.ext }}) ==="
+
+      - name: Verify dist
+        shell: bash
+        run: |
+          echo "=== dist contents: $(ls -la dist/ 2>&1) ==="
+          echo "=== GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "=== pwd: $(pwd)"
+
+      - name: Package (${{ matrix.target }})
+        shell: bash
+        # Stage binaries into a uniquely-named subdir first (avoids
+        # colliding with the built binary's basename — via54-linux-amd64
+        # is BOTH the binary file and the package dir), then rename
+        # to the user-facing dir name before zipping.
+        # Use $GITHUB_WORKSPACE explicitly because step-level
+        # working-directory is not reliable across shell variants.
+        run: |
+          set -e
+          cd "$GITHUB_WORKSPACE/dist"
+          echo "=== After cd: $(pwd), contents: $(ls -la)"
+          rm -rf staging-${{ matrix.target }} via54-${{ matrix.target }}
+          mkdir -p staging-${{ matrix.target }}
+          cp via54-${{ matrix.target }}${{ matrix.ext }} staging-${{ matrix.target }}/
+          cp via54-mcp-${{ matrix.target }}${{ matrix.ext }} staging-${{ matrix.target }}/
+          cp "$GITHUB_WORKSPACE/README.md" staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp "$GITHUB_WORKSPACE/LICENSE" staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp -r "$GITHUB_WORKSPACE/templates" staging-${{ matrix.target }}/ 2>/dev/null || true
+          cp -r "$GITHUB_WORKSPACE/docs" staging-${{ matrix.target }}/ 2>/dev/null || true
+          mv staging-${{ matrix.target }} via54-${{ matrix.target }}
+          cd via54-${{ matrix.target }}
+          zip -r ../via54-${{ matrix.target }}.zip .
+          cd ..
+          rm -rf via54-${{ matrix.target }}  # 删中间目录,只留 zip
+          echo "=== Package done: $(ls -lh via54-${{ matrix.target }}.zip) ==="
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: via54-${{ matrix.target }}
+          path: dist/via54-${{ matrix.target }}.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish GitHub Release
+    needs: release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: ls -lh artifacts/*/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') }}
+          generate_release_notes: true
+          body: |
+            ## via54Design ${{ github.ref_name }}
+
+            Cross-platform release with 2 binaries (CLI + MCP Server) per platform.
+
+            ### Download
+            - **darwin-amd64**: Intel Macs
+            - **darwin-arm64**: Apple Silicon (M1/M2/M3)
+            - **linux-amd64**: x86_64 Linux
+            - **linux-arm64**: ARM64 Linux (e.g., Raspberry Pi 4, AWS Graviton)
+            - **windows-amd64**: Windows 10/11/Server
+
+            ### Quick Start
+            ```bash
+            # Extract
+            unzip via54-linux-amd64.zip
+            cd via54-linux-amd64
+
+            # Make executable
+            chmod +x via54 via54-mcp
+
+            # Run
+            ./via54
+            ```
+
+            See [README](https://github.com/veawho/via54Design#readme) for full usage.
+          files: |
+            artifacts/*/via54-darwin-amd64.zip
+            artifacts/*/via54-darwin-arm64.zip
+            artifacts/*/via54-linux-amd64.zip
+            artifacts/*/via54-linux-arm64.zip
+            artifacts/*/via54-windows-amd64.zip
+
+  notify:
+    name: Notify on failure
+    needs: release
+    runs-on: ubuntu-latest
+    if: failure()
+    permissions:
+      contents: read
+      issues: write    # 创建 failure issue
+    steps:
+      - name: Create failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ Release build failed for ${{ github.ref_name }}',
+              body: 'The release build failed. Please check the workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+              labels: ['release', 'bug']
+            });

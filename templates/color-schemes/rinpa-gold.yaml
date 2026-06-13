@@ -1,0 +1,52 @@
+# via54Design 日系配色
+# 琳派 — 金碧辉煌，装饰之美
+id: rinpa-gold
+name:
+  zh: "琳派"
+  en: "Rinpa Gold"
+  ja: "琳派"
+metadata:
+  designer: via54 / 俵屋宗达 (Tawaraya Sotatsu) / 尾形光琳 (Ogata Korin)
+  dynasty: "江户时代"
+  cultural_context: "琳派是日本最重要的装饰艺术流派。俵屋宗达创始，尾形光琳集大成。特征：金箔背景、大胆构图、色彩华丽。代表作《风神雷神图屏风》《燕子花图》。"
+  philosophy: "金碧辉煌，装饰即信仰"
+mood: [bold, luxurious, decorative, vibrant, dramatic]
+season: summer
+palette:
+  - role: background
+    hex: "#1A1A1A"
+    name_zh: "黑"
+    cultural_note: "琳派常见金底或黑底，此选黑底衬托金色"
+  - role: text_primary
+    hex: "#F5F0E0"
+    name_zh: "白"
+    cultural_note: "白大幅留白"
+  - role: text_secondary
+    hex: "#B8A88A"
+    name_zh: "浅金"
+    cultural_note: "淡金色辅助"
+  - role: accent
+    hex: "#C89B3C"
+    name_zh: "金"
+    cultural_note: "琳派标志性金箔色，极尽华美"
+  - role: accent_alt
+    hex: "#2E5CB8"
+    name_zh: "群青"
+    cultural_note: "琳派常用的青金石蓝"
+  - role: border
+    hex: "#3A3528"
+    name_zh: "铁色"
+    cultural_note: "暗金铁色边界"
+
+
+css_variables: |
+  --bg: #1A1A1A;
+  --text-primary: #F5F0E0;
+  --text-secondary: #B8A88A;
+  --accent: #C89B3C;
+  --accent-alt: #2E5CB8;
+  --border: #3A3528;
+
+compatibility:
+  layouts: [gallery-waterfall, bento-grid-2x2]
+  fonts: [display-sans-bold, system-utility]

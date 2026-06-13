@@ -1,0 +1,360 @@
+# 模板注册表 v1.1
+# via54Design 结构化模板索引
+# 使用方式：LLM根据用户需求，按 tags/category/when 条件匹配模板
+
+layouts:
+  - id: hero-split-16-9
+    name: 左右分割式Hero (16:9) — 多端适配
+    version: "2.0.0"
+    category: layout/hero
+    tags: [hero, split, editorial, image-left, full-bleed, 16-9, video-ready]
+    file: templates/layouts/hero-split-left-image.yaml
+
+  - id: bento-grid-2x2
+    name: Bento便当格2×2 (16:9) — 多端适配
+    version: "1.0.0"
+    category: layout/bento
+    tags: [bento, grid, cards, metrics, features]
+    file: templates/layouts/bento-grid-2x2.yaml
+
+  - id: gallery-waterfall
+    name: 画廊瀑布流 (16:9) — 多端适配
+    version: "2.0.0"
+    category: layout/gallery
+    tags: [gallery, waterfall, masonry, images, portfolio, 16-9, video-ready]
+    file: templates/layouts/gallery-waterfall.yaml
+
+color_schemes:
+  # ── 中国传统配色 (8) ──
+  - id: crimson-elegance
+    name: 绛红 — 朱砂正色，唐代宫廷
+    tags: [chinese, traditional, warm, bold, festive]
+    file: templates/color-schemes/crimson-elegance.yaml
+  - id: pine-spring
+    name: 松花 — 宋人雅绿，文人清趣
+    tags: [chinese, traditional, calm, natural, scholarly]
+    file: templates/color-schemes/pine-spring.yaml
+  - id: daylily-warmth
+    name: 萱草 — 忘忧暖黄，明人晴日
+    tags: [chinese, traditional, warm, cheerful, nostalgic]
+    file: templates/color-schemes/daylily-warmth.yaml
+  - id: ultramarine-deep
+    name: 群青 — 青金石色，敦煌千载
+    tags: [chinese, traditional, calm, deep, noble]
+    file: templates/color-schemes/ultramarine-deep.yaml
+  - id: rosewood-noble
+    name: 紫檀 — 一寸紫檀一寸金
+    tags: [chinese, traditional, elegant, luxury, femine]
+    file: templates/color-schemes/rosewood-noble.yaml
+  - id: moon-white
+    name: 月白 — 雨过天青云破处
+    tags: [chinese, traditional, minimal, poetic, cool]
+    file: templates/color-schemes/moon-white.yaml
+  - id: autumn-fragrance
+    name: 秋香 — 桂花与银杏之间
+    tags: [chinese, traditional, warm, earthy, rustic]
+    file: templates/color-schemes/autumn-fragrance.yaml
+  - id: ink-wash
+    name: 水墨 — 墨分五色，大道至简
+    tags: [chinese, traditional, zen, minimal, powerful]
+    file: templates/color-schemes/ink-wash.yaml
+  # ── 日系配色 (6) ──
+  - id: tsubaki-camellia
+    name: 椿 — 资深堂口红传奇
+    tags: [japanese, elegant, femine, warm, luxury]
+    file: templates/color-schemes/tsubaki-camellia.yaml
+  - id: wabi-sabi
+    name: 侘寂 — 残缺之美，万物皆有时
+    tags: [japanese, zen, rustic, earthy, calm]
+    file: templates/color-schemes/wabi-sabi.yaml
+  - id: muji-minimal
+    name: 無印 — 这样就好
+    tags: [japanese, minimal, clean, functional, calm]
+    file: templates/color-schemes/muji-minimal.yaml
+  - id: sakura-blossom
+    name: 桜 — 一期一会
+    tags: [japanese, gentle, romantic, poetic, spring]
+    file: templates/color-schemes/sakura-blossom.yaml
+  - id: indigo-craft
+    name: 藍染 — 匠人本色
+    tags: [japanese, deep, artisan, traditional, calm]
+    file: templates/color-schemes/indigo-craft.yaml
+  - id: rinpa-gold
+    name: 琳派 — 金碧辉煌
+    tags: [japanese, bold, luxurious, decorative, dramatic]
+    file: templates/color-schemes/rinpa-gold.yaml
+  # ── 经典设计 (6) ──
+  - id: warm-editorial-cream
+    name: 暖色出版 — 奶油底+赤陶橙(Anthropic风)
+    tags: [classic, warm, editorial, premium, ai-product]
+    file: templates/color-schemes/warm-editorial-cream.yaml
+  - id: dark-terminal-blue
+    name: 暗色终端 — 近黑+紫蓝(Linear风)
+    tags: [classic, dark, tech, developer, premium]
+    file: templates/color-schemes/dark-terminal-blue.yaml
+  - id: swiss-monochrome
+    name: 瑞士极简 — 纯黑+纯白(Vercel风)
+    tags: [classic, minimal, clean, swiss, bold]
+    file: templates/color-schemes/swiss-monochrome.yaml
+  - id: bauhaus-primary
+    name: 包豪斯 — 三原色+黑白
+    tags: [classic, playful, bold, geometric, educational]
+    file: templates/color-schemes/bauhaus-primary.yaml
+  - id: candy-duolingo
+    name: 糖果色 — 绿+黄+天蓝(Duolingo风)
+    tags: [classic, playful, friendly, educational, candy]
+    file: templates/color-schemes/candy-duolingo.yaml
+  - id: cosmic-retro
+    name: 复古未来 — 黑+奶油+钴蓝(Perplexity风)
+    tags: [classic, cosmic, retro, futuristic, mysterious]
+    file: templates/color-schemes/cosmic-retro.yaml
+  # ── Adobe/Behance (6) ──
+  - id: spectrum-indigo
+    name: Adobe Spectrum — 创意行业色彩标准
+    tags: [adobe, professional, creative, accessible]
+    file: templates/color-schemes/spectrum-indigo.yaml
+  - id: flat-ui-vibrant
+    name: Flat UI — Behance最常用扁平配色
+    tags: [adobe, vibrant, bold, modern, youthful]
+    file: templates/color-schemes/flat-ui-vibrant.yaml
+  - id: millennial-sage
+    name: 千禧鼠尾草 — Behance最出圈粉绿搭配
+    tags: [adobe, trendy, gentle, warm, femine]
+    file: templates/color-schemes/millennial-sage.yaml
+  - id: glassmorphism-pastel
+    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
+    tags: [adobe, futuristic, ethereal, tech, glass]
+    file: templates/color-schemes/glassmorphism-pastel.yaml
+  - id: neon-dark
+    name: 暗黑霓虹 — 赛博朋克荧光对决
+    tags: [adobe, dark, vibrant, futuristic, cyberpunk]
+    file: templates/color-schemes/neon-dark.yaml
+  - id: earth-terracotta
+    name: 大地陶土 — 2026年度色趋势
+    tags: [adobe, warm, earthy, natural, premium]
+    file: templates/color-schemes/earth-terracotta.yaml
+
+  - id: dark-terminal-blue
+    name: 暗色终端美学（近黑+紫蓝强调/Linear风）
+    version: "1.0.0"
+    category: color-scheme/dark
+    tags: [dark, terminal, tech, developer, bento, glassmorphism]
+    file: templates/color-schemes/dark-terminal-blue.yaml
+
+  - id: mono-brand-bold
+    name: 单色品牌撞色（满版主色+反白字/Spotify风）
+    version: "1.0.0"
+    category: color-scheme/mono
+    tags: [mono, bold, brand, poster, high-contrast]
+    file: templates/color-schemes/mono-brand-bold.yaml
+
+  - id: editorial-brutalist
+    name: 媒体粗野主义（纯黑白+超链接蓝/Bloomberg风）
+    version: "1.0.0"
+    category: color-scheme/editorial
+    tags: [editorial, brutalist, high-contrast, black-white, media]
+    file: templates/color-schemes/editorial-brutalist.yaml
+
+  - id: cosmic-retro
+    name: 复古未来太空图录（黑+奶油+钴蓝/Perplexity风）
+    version: "1.0.0"
+    category: color-scheme/cosmic
+    tags: [cosmic, retro, futuristic, dark, warm-dark]
+    file: templates/color-schemes/cosmic-retro.yaml
+  # ── Adobe/Behance (6) ──
+  - id: spectrum-indigo
+    name: Adobe Spectrum — 创意行业色彩标准
+    tags: [adobe, professional, creative, accessible]
+    file: templates/color-schemes/spectrum-indigo.yaml
+  - id: flat-ui-vibrant
+    name: Flat UI — Behance最常用扁平配色
+    tags: [adobe, vibrant, bold, modern, youthful]
+    file: templates/color-schemes/flat-ui-vibrant.yaml
+  - id: millennial-sage
+    name: 千禧鼠尾草 — Behance最出圈粉绿搭配
+    tags: [adobe, trendy, gentle, warm, femine]
+    file: templates/color-schemes/millennial-sage.yaml
+  - id: glassmorphism-pastel
+    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
+    tags: [adobe, futuristic, ethereal, tech, glass]
+    file: templates/color-schemes/glassmorphism-pastel.yaml
+  - id: neon-dark
+    name: 暗黑霓虹 — 赛博朋克荧光对决
+    tags: [adobe, dark, vibrant, futuristic, cyberpunk]
+    file: templates/color-schemes/neon-dark.yaml
+  - id: earth-terracotta
+    name: 大地陶土 — 2026年度色趋势
+    tags: [adobe, warm, earthy, natural, premium]
+    file: templates/color-schemes/earth-terracotta.yaml
+
+  - id: neo-brutalist-vibrant
+    name: 新粗野主义撞色（电光紫+品红+亮黄/The Verge风）
+    version: "1.0.0"
+    category: color-scheme/vibrant
+    tags: [vibrant, brutalist, colorful, high-energy, youth]
+    file: templates/color-schemes/neo-brutalist-vibrant.yaml
+
+  - id: bauhaus-primary
+    name: 包豪斯三原色（红黄蓝+黑白/Khan Academy风）
+    version: "1.0.0"
+    category: color-scheme/bauhaus
+    tags: [bauhaus, primary, geometric, education, playful]
+    file: templates/color-schemes/bauhaus-primary.yaml
+
+  - id: swiss-monochrome
+    name: Swiss极致黑白（纯黑+纯白+灰阶/Vercel风）
+    version: "1.0.0"
+    category: color-scheme/monochrome
+    tags: [swiss, monochrome, minimal, clean, vercel]
+    file: templates/color-schemes/swiss-monochrome.yaml
+
+  - id: bento-dark-glass
+    name: Linear暗色发光+Bento玻璃拟态
+    version: "1.0.0"
+    category: color-scheme/dark-glass
+    tags: [dark, glass, bento, glow, gradient, saas]
+    file: templates/color-schemes/bento-dark-glass.yaml
+
+  - id: candy-duolingo
+    name: 糖果色凸起立体（绿+黄+天蓝/Duolingo风）
+    version: "1.0.0"
+    category: color-scheme/candy
+    tags: [candy, playful, friendly, game, rounded]
+    file: templates/color-schemes/candy-duolingo.yaml
+
+typography:
+  # ── 中文排版 (6) ──
+  - id: ming-hei-editorial
+    name: 明黑配 — 明体标题+黑体正文(JustFont经典)
+    tags: [chinese, editorial, classic, authoritative]
+    file: templates/typography/ming-hei-editorial.yaml
+  - id: kai-rounded-friendly
+    name: 楷圆配 — 霞鹜文楷+圆体(亲和教育)
+    tags: [chinese, friendly, warm, educational, organic]
+    file: templates/typography/kai-rounded-friendly.yaml
+  - id: song-literary
+    name: 宋体书卷 — 仿宋+明体(文学出版)
+    tags: [chinese, literary, elegant, cultural, refined]
+    file: templates/typography/song-literary.yaml
+  - id: hei-modern
+    name: 黑体现 — 思源黑体+Inter(现代科技)
+    tags: [chinese, modern, clean, tech, professional]
+    file: templates/typography/hei-modern.yaml
+  - id: calligraphy-accent
+    name: 书法点缀 — 站酷小薇+黑体(艺术文化)
+    tags: [chinese, artistic, bold, cultural, dramatic]
+    file: templates/typography/calligraphy-accent.yaml
+  - id: sc-sans-clean
+    name: 中文无衬线 — Noto Sans SC+Inter(安全通用)
+    tags: [chinese, clean, modern, professional, minimal]
+    file: templates/typography/sc-sans-clean.yaml
+  # ── 国际排版 (6) ──
+  - id: serif-sans-editorial
+    name: 编辑衬线 — Fraunces+Inter(Anthropic风)
+    tags: [editorial, serif, sans, warm, premium, classic]
+    file: templates/typography/serif-sans-editorial.yaml
+  - id: sans-geometric-tech
+    name: 几何科技 — Inter+JetBrains Mono(Linear风)
+    tags: [tech, geometric, clean, precise, modern]
+    file: templates/typography/sans-geometric-tech.yaml
+  - id: display-sans-bold
+    name: 粗体展示 — Archivo Black+Inter(发布会级)
+    tags: [bold, display, keynote, impactful, dramatic]
+    file: templates/typography/display-sans-bold.yaml
+  - id: elegant-didone
+    name: 优雅迪多 — Playfair Display+Inter(时尚杂志)
+    tags: [elegant, luxury, editorial, didone, dramatic]
+    file: templates/typography/elegant-didone.yaml
+  - id: mono-code
+    name: 等宽代码 — JetBrains Mono+Inter(开发者优先)
+    tags: [mono, code, developer, tech, precise]
+    file: templates/typography/mono-code.yaml
+  - id: playful-rounded
+    name: 圆润亲和 — Baloo 2+Nunito(教育游戏)
+    tags: [playful, rounded, friendly, educational, warm]
+    file: templates/typography/playful-rounded.yaml
+
+animations:
+  - id: hero-reveal-stagger
+    name: Hero渐进展开—逐元素错位入场
+    version: "1.0.0"
+    category: animation/hero
+    file: templates/animations/hero-reveal-stagger.yaml
+
+  - id: card-hover-lift
+    name: 卡片悬停抬升+阴影加深
+    version: "1.0.0"
+    category: animation/interaction
+    file: templates/animations/card-hover-lift.yaml
+
+narratology:
+  - id: storytelling-guide
+    name: 叙事框架总纲 — 从一句话到完整视频
+    category: narratology/guide
+    file: templates/narratology/storytelling-guide.yaml
+
+  - id: storyboard-template
+    name: 分镜模板 — shot-by-shot 标准格式
+    category: narratology/template
+    file: templates/narratology/storyboard-template.md
+
+  # 叙事模型 (由 via54 narrate 引擎直接加载)
+  - id: three-act
+    name: 三幕剧 — 设问→解答→号召
+    category: narratology/model
+    tags: [产品发布, 品牌广告, 促销视频]
+    file: templates/narratology/models/three-act.yaml
+  - id: heros-journey
+    name: 英雄之旅 — 日常→相遇→蜕变→回归
+    category: narratology/model
+    tags: [品牌故事, 纪录片, 关于我们]
+    file: templates/narratology/models/heros-journey.yaml
+  - id: cognitive-arc
+    name: 认知弧 — 开场→核心→收尾
+    category: narratology/model
+    tags: [科普讲解, 教程, 知识分享]
+    file: templates/narratology/models/cognitive-arc.yaml
+  - id: problem-solution
+    name: 问题-解法 — 痛点→方案→证明→行动
+    category: narratology/model
+    tags: [销售视频, 产品Demo, 着陆页]
+    file: templates/narratology/models/problem-solution.yaml
+video_edits:
+  - id: product-launch-30s
+    name: 产品发布 — 三幕式30秒品牌广告
+    file: templates/video-edits/product-launch-30s.yaml
+  - id: brand-story-60s
+    name: 品牌故事 — 英雄之旅60秒品牌叙事
+    file: templates/video-edits/brand-story-60s.yaml
+  - id: educational-explain-5min
+    name: 科普讲解 — 认知弧5分钟教育视频
+    file: templates/video-edits/educational-explain-5min.yaml
+combinations:
+  - name: 暖色编辑Hero
+    layout: hero-split-16-9
+    color: warm-editorial-cream
+    font: serif-sans-editorial
+    animation: hero-reveal-stagger
+    suitable: [ai_product, brand_hero, landing_page]
+
+  - name: 暗色数据Bento
+    layout: bento-grid-2x2
+    color: dark-terminal-blue
+    font: sans-geometric-tech
+    animation: card-hover-lift
+    suitable: [dashboard, qbr, feature_showcase, saas]
+
+  - name: 瑞士极简画廊
+    layout: gallery-waterfall
+    color: swiss-monochrome
+    font: system-utility
+    suitable: [portfolio, gallery, moodboard, showcase]
+
+compatibility:
+  rules:
+    - "layout.full-bleed 与 color-scheme.dark 搭配效果最佳"
+    - "layout.editorial 与 color-scheme.warm 天然适配"
+    - "animation.interaction 与 layout.bento 搭配（卡片悬停）"
+    - "candy-duolingo 搭配 playful-rounded 字体效果最佳"
+    - "cosmic-retro 搭配 cormorant-elegant 字体效果最佳"
+    - "editorial-brutalist 搭配 display-sans-bold 字体效果最佳"

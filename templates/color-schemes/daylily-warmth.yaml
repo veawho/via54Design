@@ -1,0 +1,56 @@
+# via54Design 中国传统配色
+# 萱草 — 忘忧暖阳，明人晴日
+id: daylily-warmth
+name:
+  zh: "萱草"
+  en: "Daylily Warmth"
+  ja: "萱草"
+
+metadata:
+  designer: via54
+  dynasty: "明 (Ming Dynasty)"
+  cultural_context: "萱草又称忘忧草，古人以为佩之可忘忧。诗经有'焉得谖草，言树之背'。"
+  philosophy: "温暖忘忧，晴日暖阳"
+
+mood: [warm, cheerful, gentle, nostalgic, homely]
+season: summer
+
+palette:
+  - role: background
+    hex: "#FEF7E9"
+    name_zh: "米白"
+    cultural_note: "新米般的暖白"
+  - role: text_primary
+    hex: "#3D3522"
+    name_zh: "墨褐"
+    cultural_note: "浓墨掺褐，沉稳"
+  - role: text_secondary
+    hex: "#8C7C66"
+    name_zh: "茶色"
+    cultural_note: "陈年普洱的汤色"
+  - role: accent
+    hex: "#E8A838"
+    name_zh: "萱草黄"
+    cultural_note: "萱草花开的暖黄，忘忧之色"
+  - role: accent_alt
+    hex: "#D4875E"
+    name_zh: "檀色"
+    cultural_note: "檀木的暖橙色"
+  - role: border
+    hex: "#EDE4D5"
+    name_zh: "麦芽"
+    cultural_note: "淡麦色边界"
+
+
+
+css_variables: |
+  --bg: #FEF7E9;
+  --text-primary: #3D3522;
+  --text-secondary: #8C7C66;
+  --accent: #E8A838;
+  --accent-alt: #D4875E;
+  --border: #EDE4D5;
+
+compatibility:
+  layouts: [hero-split-left-image, bento-grid-2x2]
+  fonts: [serif-sans-editorial, playful-rounded]

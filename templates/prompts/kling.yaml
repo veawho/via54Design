@@ -1,0 +1,412 @@
+# 可灵 AI 提示词模板 v3 — 26 维度
+id: kling
+name:
+  zh: "可灵 AI"
+  en: "Kling AI"
+platform: kling
+description: "可灵 AI 视频/图片生成 — 26 维度精确控制"
+version: "3.0.0"
+format: kling
+params:
+  ar: "16:9"
+  duration: "5"
+  motion: "medium"
+  fps: "24"
+negative:
+  - "jittery, shaky, unstable motion, flickering"
+  - "distorted face, bad expression, unnatural movement"
+  - "watermark, text overlay, logo"
+  - "motion blur artifacts, inconsistent lighting"
+  - "morphing, disappearing objects, physics errors"
+sections:
+
+  # ── SUBJECT ──
+  - id: subject
+    label: "主体 (Subject)"
+    category: subject
+    hint: "主对象描述（动作、姿态、表情）"
+    weighted: true
+    weight: 1.0
+  - id: secondary
+    label: "辅助 (Secondary)"
+    category: subject
+    hint: "次要元素、背景人物/物体"
+    weighted: true
+
+  # ── STYLE ──
+  - id: art_movement
+    label: "风格流派"
+    category: style
+    hint: "艺术运动/风格"
+    default: "摄影写实 (Photorealistic)"
+    weighted: true
+    options:
+      - {value: "摄影写实 (Photorealistic)", label: "摄影写实", weight: 1.0}
+      - {value: "赛博朋克 (Cyberpunk)", label: "赛博朋克", weight: 1.2}
+      - {value: "水墨画 (Ink Wash Painting)", label: "水墨画", weight: 1.1}
+      - {value: "浮世绘 (Ukiyo-e)", label: "浮世绘", weight: 1.3}
+      - {value: "电影感 (Cinematic)", label: "电影感", weight: 1.2}
+      - {value: "3D 渲染 (3D Render)", label: "3D 渲染", weight: 1.0}
+  - id: artist_ref
+    label: "艺术家参考"
+    category: style
+    hint: "参考艺术家/导演"
+    weighted: true
+  - id: medium
+    label: "媒介 (Medium)"
+    category: style
+    hint: "数字绘画/油画/摄影/水彩"
+    default: "digital art"
+    options:
+      - {value: "digital art", label: "数字艺术"}
+      - {value: "oil on canvas", label: "布面油画"}
+      - {value: "film photography", label: "胶片摄影"}
+      - {value: "watercolor", label: "水彩"}
+  - id: pose
+    label: "姿态 (Pose)"
+    category: style
+    hint: "人物姿态/动态姿势"
+    weighted: true
+    options:
+      - {value: "standing", label: "站立"}
+      - {value: "sitting", label: "坐姿"}
+      - {value: "dynamic pose", label: "动感姿态", weight: 1.1}
+      - {value: "action pose", label: "动作姿态", weight: 1.2}
+      - {value: "relaxed", label: "放松"}
+      - {value: "leaning", label: "倚靠"}
+  - id: hair
+    label: "发型 (Hair)"
+    category: style
+    hint: "发型/发色"
+    weighted: true
+    options:
+      - {value: "long flowing hair", label: "长发飘逸"}
+      - {value: "short hair", label: "短发"}
+      - {value: "braided hair", label: "编发"}
+      - {value: "curly hair", label: "卷发"}
+      - {value: "ponytail", label: "马尾"}
+  - id: genre
+    label: "题材 (Genre)"
+    category: style
+    hint: "类型/题材"
+    options:
+      - {value: "fantasy", label: "奇幻"}
+      - {value: "sci-fi", label: "科幻"}
+      - {value: "horror", label: "恐怖"}
+      - {value: "romance", label: "浪漫"}
+      - {value: "western", label: "西部"}
+      - {value: "noir", label: "黑色电影"}
+
+  # ── COMPOSITION ──
+  - id: camera_shot
+    label: "镜头 (Camera Shot)"
+    category: comp
+    hint: "景别/镜头类型"
+    default: "medium shot"
+    weighted: true
+    options:
+      - {value: "close-up", label: "特写", weight: 1.1}
+      - {value: "medium shot", label: "中景", weight: 1.0}
+      - {value: "wide shot", label: "远景", weight: 1.0}
+      - {value: "bird's eye view", label: "鸟瞰", weight: 1.2}
+      - {value: "dutch angle", label: "斜角", weight: 1.3}
+  - id: composition_type
+    label: "构图 (Composition)"
+    category: comp
+    hint: "构图方式"
+    default: "rule of thirds"
+    options:
+      - {value: "rule of thirds", label: "三分法"}
+      - {value: "centered", label: "居中"}
+      - {value: "symmetry", label: "对称"}
+      - {value: "golden ratio", label: "黄金螺旋"}
+      - {value: "leading lines", label: "引导线"}
+  - id: depth_of_field
+    label: "景深 (DOF)"
+    category: comp
+    hint: "景深控制"
+    default: "shallow depth of field"
+    options:
+      - {value: "shallow depth of field", label: "浅景深"}
+      - {value: "deep focus", label: "全景深"}
+      - {value: "bokeh", label: "散景"}
+  - id: view
+    label: "视角 (View)"
+    category: comp
+    hint: "视角/视点"
+    weighted: true
+    options:
+      - {value: "first person", label: "第一人称"}
+      - {value: "third person", label: "第三人称"}
+      - {value: "overhead", label: "俯视"}
+      - {value: "low angle", label: "低角度", weight: 1.1}
+      - {value: "eye level", label: "平视"}
+      - {value: "rear view", label: "背面视角"}
+  - id: format
+    label: "画幅 (Format)"
+    category: comp
+    hint: "画幅比例"
+    default: "16:9"
+    options:
+      - {value: "16:9", label: "宽屏 16:9"}
+      - {value: "4:3", label: "标准 4:3"}
+      - {value: "1:1", label: "方形 1:1"}
+      - {value: "9:16", label: "竖屏 9:16"}
+      - {value: "2.35:1", label: "电影宽屏"}
+
+  # ── LIGHTING ──
+  - id: lighting
+    label: "光线 (Lighting)"
+    category: lighting
+    hint: "布光类型"
+    default: "cinematic lighting"
+    weighted: true
+    weight: 1.2
+    options:
+      - {value: "golden hour", label: "黄金时刻", weight: 1.2}
+      - {value: "cinematic lighting", label: "电影布光", weight: 1.3}
+      - {value: "volumetric lighting", label: "体积光", weight: 1.2}
+      - {value: "rim lighting", label: "轮廓光", weight: 1.1}
+      - {value: "neon lighting", label: "霓虹灯光", weight: 1.3}
+      - {value: "studio softbox", label: "影室柔光箱", weight: 1.0}
+
+  # ── COLOR ──
+  - id: color_palette
+    label: "色调 (Color Palette)"
+    category: color
+    hint: "整体色调/配色方案"
+    default: "warm amber tones"
+    weighted: true
+    weight: 1.1
+    options:
+      - {value: "cyberpunk purple+cyan", label: "赛博朋克紫青"}
+      - {value: "warm amber tones", label: "暖琥珀色"}
+      - {value: "monochrome blue", label: "单色蓝"}
+      - {value: "pastel", label: "粉彩"}
+      - {value: "high contrast", label: "高对比度"}
+      - {value: "teal and orange", label: "青橙调"}
+
+  # ── ENVIRONMENT ──
+  - id: environment
+    label: "场景 (Environment)"
+    category: env
+    hint: "环境/场景描述"
+    weighted: true
+  - id: era
+    label: "年代 (Era)"
+    category: env
+    hint: "历史时期/未来年代"
+    options:
+      - {value: "1920s", label: "1920年代"}
+      - {value: "futuristic 2088", label: "未来2088"}
+      - {value: "medieval", label: "中世纪"}
+      - {value: "prehistoric", label: "史前"}
+  - id: weather
+    label: "天气 (Weather)"
+    category: env
+    hint: "天气/气候"
+    options:
+      - {value: "sunny", label: "晴朗"}
+      - {value: "rainy", label: "雨天"}
+      - {value: "foggy", label: "雾天"}
+      - {value: "snowy", label: "雪天"}
+      - {value: "stormy", label: "暴风雨"}
+      - {value: "cloudy", label: "多云"}
+  - id: time
+    label: "时间 (Time)"
+    category: env
+    hint: "时间/年代"
+    options:
+      - {value: "daytime", label: "白天"}
+      - {value: "night", label: "夜晚"}
+      - {value: "sunset", label: "日落"}
+      - {value: "dawn", label: "黎明"}
+      - {value: "twilight", label: "黄昏"}
+      - {value: "midnight", label: "午夜"}
+
+  # ── DETAIL ──
+  - id: texture
+    label: "材质 (Texture)"
+    category: detail
+    hint: "表面质感"
+    default: "detailed textures"
+    options:
+      - {value: "metallic", label: "金属质感"}
+      - {value: "translucent", label: "半透明"}
+      - {value: "rough", label: "粗糙"}
+      - {value: "glossy", label: "光泽"}
+      - {value: "velvet", label: "天鹅绒"}
+  - id: effects
+    label: "特效 (Effects)"
+    category: detail
+    hint: "视觉效果"
+    weighted: true
+    options:
+      - {value: "glowing", label: "发光"}
+      - {value: "particle effects", label: "粒子效果"}
+      - {value: "lens flare", label: "镜头光晕"}
+      - {value: "god rays", label: "上帝光"}
+  - id: material
+    label: "质感 (Material)"
+    category: detail
+    hint: "材质/表面质感"
+    weighted: true
+    options:
+      - {value: "wood", label: "木质"}
+      - {value: "stone", label: "石材"}
+      - {value: "glass", label: "玻璃"}
+      - {value: "fabric", label: "织物"}
+      - {value: "leather", label: "皮革"}
+      - {value: "metal", label: "金属"}
+  - id: face
+    label: "面部 (Face)"
+    category: detail
+    hint: "面部特征/表情"
+    options:
+      - {value: "detailed face", label: "精细面部"}
+      - {value: "expressive eyes", label: "富有表情的眼睛"}
+      - {value: "smiling", label: "微笑"}
+      - {value: "serious expression", label: "严肃表情"}
+      - {value: "neutral expression", label: "中性表情"}
+  - id: detail
+    label: "细节 (Detail)"
+    category: detail
+    hint: "细节/纹理精度"
+    weighted: true
+    options:
+      - {value: "highly detailed", label: "高细节", weight: 1.2}
+      - {value: "ultra detailed", label: "超精细", weight: 1.3}
+      - {value: "intricate details", label: "复杂细节", weight: 1.1}
+      - {value: "fine details", label: "精细纹理", weight: 1.1}
+
+  # ── QUALITY ──
+  - id: quality_tags
+    label: "画质标签"
+    category: quality
+    hint: "质量关键词"
+    default: "masterpiece, highly detailed"
+    options:
+      - {value: "masterpiece, highly detailed", label: "杰作级"}
+      - {value: "trending on ArtStation", label: "ArtStation 热门"}
+      - {value: "award winning photography", label: "获奖摄影"}
+      - {value: "8K, ultra detailed", label: "8K 超精细"}
+  - id: emotion
+    label: "情绪 (Emotion)"
+    category: quality
+    hint: "情绪/氛围"
+    weighted: true
+    options:
+      - {value: "peaceful", label: "宁静", weight: 1.0}
+      - {value: "dramatic", label: "戏剧性", weight: 1.2}
+      - {value: "melancholic", label: "忧郁", weight: 1.1}
+      - {value: "joyful", label: "欢乐", weight: 1.0}
+      - {value: "mysterious", label: "神秘", weight: 1.1}
+      - {value: "epic", label: "史诗", weight: 1.3}
+
+
+  # ── VIDEO CONTROL (video_only fields) ──
+  - id: camera_movement
+    label: "运镜 (Camera Movement)"
+    category: motion
+    hint: "相机运动类型 (pan/tilt/dolly/truck/pedestal/zoom/crane/tracking/orbit/handheld/aerial/whip_pan/pov)"
+    video_only: true
+    default: "pan"
+    options:
+      - {value: "pan", label: "横摇 Pan"}
+      - {value: "tilt", label: "俯仰 Tilt"}
+      - {value: "dolly", label: "推拉 Dolly"}
+      - {value: "truck", label: "横移 Truck"}
+      - {value: "pedestal", label: "升降 Pedestal"}
+      - {value: "zoom", label: "变焦 Zoom"}
+      - {value: "crane", label: "摇臂 Crane"}
+      - {value: "tracking", label: "跟拍 Tracking"}
+      - {value: "orbit", label: "环绕 Orbit"}
+      - {value: "handheld", label: "手持 Handheld"}
+      - {value: "aerial", label: "航拍 Aerial"}
+      - {value: "whip_pan", label: "甩镜 Whip Pan"}
+      - {value: "pov", label: "主观视角 POV"}
+  - id: motion_intensity
+    label: "运动强度 (Motion Intensity)"
+    category: motion
+    hint: "运动强度"
+    video_only: true
+    default: "moderate"
+    options:
+      - {value: "subtle", label: "微弱 Subtle"}
+      - {value: "moderate", label: "中等 Moderate"}
+      - {value: "dramatic", label: "剧烈 Dramatic"}
+  - id: frame_count
+    label: "帧数 (Frame Count)"
+    category: motion
+    hint: "生成帧数"
+    video_only: true
+    default: "24"
+  - id: fps
+    label: "帧率 (FPS)"
+    category: motion
+    hint: "帧每秒"
+    video_only: true
+    default: "24"
+  - id: shot_size
+    label: "景别 (Shot Size)"
+    category: comp
+    hint: "景别尺寸 (ECU/CU/MCU/MS/MLS/FS/LS/VLS/EWS)"
+    video_only: true
+    default: "MS"
+    options:
+      - {value: "ECU", label: "极端特写 ECU"}
+      - {value: "CU", label: "特写 CU"}
+      - {value: "MCU", label: "中特写 MCU"}
+      - {value: "MS", label: "中景 MS"}
+      - {value: "MLS", label: "中远景 MLS"}
+      - {value: "FS", label: "全景 FS"}
+      - {value: "LS", label: "远景 LS"}
+      - {value: "VLS", label: "大远景 VLS"}
+      - {value: "EWS", label: "极远景 EWS"}
+  - id: angle
+    label: "角度 (Angle)"
+    category: comp
+    hint: "拍摄角度"
+    video_only: true
+    default: "eye_level"
+    options:
+      - {value: "eye_level", label: "平视 Eye Level"}
+      - {value: "low_angle", label: "低角度 Low Angle"}
+      - {value: "high_angle", label: "高角度 High Angle"}
+      - {value: "dutch", label: "荷兰角 Dutch"}
+      - {value: "bird_eye", label: "鸟瞰 Bird's Eye"}
+      - {value: "worm_eye", label: "虫视 Worm's Eye"}
+  - id: duration_seconds
+    label: "时长 (Duration)"
+    category: motion
+    hint: "视频总时长（秒）"
+    video_only: true
+    default: "5"
+  - id: keyframe
+    label: "关键帧 (Keyframe)"
+    category: motion
+    hint: "关键帧/关键画面描述"
+    video_only: true
+    default: ""
+  - id: transition
+    label: "转场 (Transition)"
+    category: motion
+    hint: "镜头转场类型"
+    video_only: true
+    default: "cut"
+    options:
+      - {value: "cut", label: "切 Cut"}
+      - {value: "fade", label: "淡入淡出 Fade"}
+      - {value: "dissolve", label: "溶解 Dissolve"}
+      - {value: "wipe", label: "划像 Wipe"}
+  - id: motion_blur
+    label: "运动模糊 (Motion Blur)"
+    category: detail
+    hint: "运动模糊程度"
+    video_only: true
+    default: "moderate"
+    options:
+      - {value: "none", label: "无 None"}
+      - {value: "subtle", label: "轻微 Subtle"}
+      - {value: "moderate", label: "中等 Moderate"}
+      - {value: "heavy", label: "强烈 Heavy"}

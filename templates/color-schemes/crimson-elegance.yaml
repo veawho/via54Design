@@ -1,0 +1,56 @@
+# via54Design 中国传统配色
+# 绛红 — 朱砂正色，唐代宫廷之尊
+id: crimson-elegance
+name:
+  zh: "绛红"
+  en: "Crimson Elegance"
+  ja: "紅"
+
+metadata:
+  designer: via54
+  dynasty: "唐 (Tang Dynasty)"
+  cultural_context: "绛红是中国传统中最尊贵的色彩之一，唐代宫廷服饰常用。朱砂为颜料来源，象征喜庆、富贵、庄重。"
+  philosophy: "热烈而不张扬，庄重而不沉闷"
+
+mood: [warm, bold, elegant, festive, premium]
+season: autumn
+
+palette:
+  - role: background
+    hex: "#FDF6EE"
+    name_zh: "牙白"
+    cultural_note: "象牙般的暖白，中和朱红的浓烈"
+  - role: text_primary
+    hex: "#3D1F1A"
+    name_zh: "棕黑"
+    cultural_note: "深褐近黑，沉稳厚重"
+  - role: text_secondary
+    hex: "#8B6B5E"
+    name_zh: "酱色"
+    cultural_note: "深褐带紫，含蓄内敛"
+  - role: accent
+    hex: "#C23A2B"
+    name_zh: "朱砂"
+    cultural_note: "中国传统正红色，朱砂颜料，吉祥富贵"
+  - role: accent_alt
+    hex: "#D4A373"
+    name_zh: "琥珀"
+    cultural_note: "松脂化石之色，温润通透"
+  - role: border
+    hex: "#E8DDD4"
+    name_zh: "米汤"
+    cultural_note: "极淡米色，边界柔和"
+
+
+
+css_variables: |
+  --bg: #FDF6EE;
+  --text-primary: #3D1F1A;
+  --text-secondary: #8B6B5E;
+  --accent: #C23A2B;
+  --accent-alt: #D4A373;
+  --border: #E8DDD4;
+
+compatibility:
+  layouts: [hero-split-left-image, editorial-longform]
+  fonts: [serif-sans-editorial, cormorant-elegant]

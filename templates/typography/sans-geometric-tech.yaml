@@ -1,0 +1,32 @@
+# via54Design 字体模板
+# Geometric Tech — Linear风，几何无衬线+等宽
+id: sans-geometric-tech
+name:
+  zh: "几何科技"
+  en: "Geometric Tech"
+  ja: "幾何学テック"
+metadata:
+  designer: via54 / Linear / Vercel
+  classification: "几何无衬线(Geometric) + 等宽(Mono)"
+  inspiration: "Inter是几何无衬线的现代标准，被Linear、GitHub、Microsoft等广泛采用。JetBrains Mono是开发者社区最受欢迎的等宽字体。"
+  principle: "清晰的几何感 + 代码般的精确"
+mood: [tech, clean, precise, modern, developer]
+fonts:
+  display: "'Inter', 'Geist', -apple-system, sans-serif"
+  body: "'Inter', -apple-system, 'Helvetica Neue', sans-serif"
+  mono: "'JetBrains Mono', 'Geist Mono', 'Fira Code', monospace"
+weights:
+  display: "700;900"
+  body: "400;500"
+google_fonts:
+  - "Inter:wght@400;500;700;900"
+sizes:
+  display: "clamp(36px, 5vw, 80px)"
+  h2: "clamp(24px, 2.5vw, 40px)"
+  h3: "clamp(18px, 1.3vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "12px"
+compatibility:
+  moods: [tech, clean, precise, modern, developer, cool]
+  layouts: [bento-grid-2x2, hero-split-left-image]

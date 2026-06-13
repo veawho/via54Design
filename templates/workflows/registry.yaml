@@ -1,0 +1,184 @@
+# via54Design — ComfyUI 工作流模板注册表 v2
+# 数据驱动: 加新模板只需 +.yaml + .skeleton.json, 无需改Go代码
+version: 2
+workflows:
+  - id: sdxl_txt2img
+    name: "SDXL Text-to-Image"
+    description: "Basic SDXL text-to-image generation at 1024×1024"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, euler"
+  - id: sdxl_img2img
+    name: "SDXL Image-to-Image"
+    description: "SDXL image-to-image with denoising (default 0.6)"
+    type: img2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, denoise 0.6"
+  - id: sdxl_inpaint
+    name: "SDXL Inpainting"
+    description: "SDXL inpainting with mask input"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, mask input"
+  - id: sdxl_upscale
+    name: "SDXL 2x Upscale"
+    description: "SDXL 2x upscale with ESRGAN model"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "ESRGAN 4x upscale"
+  - id: flux_dev_txt2img
+    name: "Flux Dev Text-to-Image"
+    description: "Flux Dev text-to-image with guidance scale 3.5"
+    type: txt2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, guidance 3.5"
+  - id: flux_img2img
+    name: "Flux Dev Image-to-Image"
+    description: "Flux Dev image-to-image"
+    type: img2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, guidance 3.5, denoise 0.5"
+  - id: sd15_txt2img
+    name: "SD 1.5 Text-to-Image"
+    description: "Stable Diffusion 1.5 at 512×512, fast generation"
+    type: txt2img
+    model: "v1-5-pruned-emaonly.safetensors"
+    params: "20 steps, cfg 7.5, 512×512"
+  - id: sd3_txt2img
+    name: "SD3.5 Text-to-Image"
+    description: "Stable Diffusion 3.5 Medium text-to-image"
+    type: txt2img
+    model: "sd3.5_medium.safetensors"
+    params: "30 steps, cfg 4.5"
+  - id: animatediff_txt2vid
+    name: "AnimateDiff Text-to-Video"
+    description: "AnimateDiff text-to-video with motion module (16 frames)"
+    type: txt2vid
+    model: "majicmixRealistic_v7.safetensors"
+    params: "25 steps, 16 frames, 512×512"
+  - id: hunyuan_txt2vid
+    name: "HunyuanVideo Text-to-Video"
+    description: "HunyuanVideo text-to-video (129 frames)"
+    type: txt2vid
+    model: "hunyuan_video.safetensors"
+    params: "50 steps, 129 frames"
+  - id: wan_txt2vid
+    name: "Wan2.1 Text-to-Video"
+    description: "Wan2.1 text-to-video (81 frames, camera controls)"
+    type: txt2vid
+    model: "wan2.1_ttt.safetensors"
+    params: "50 steps, 81 frames, 832×480"
+  - id: ltxv_txt2vid
+    name: "LTXV Text-to-Video"
+    description: "LTXV (Lightricks) text-to-video"
+    type: txt2vid
+    model: "ltxv.safetensors"
+    params: "30 steps, 25 frames"
+  - id: mochi_txt2vid
+    name: "Mochi 1 Text-to-Video"
+    description: "Mochi 1 (Genmo) text-to-video"
+    type: txt2vid
+    model: "mochi.safetensors"
+    params: "50 steps, 31 frames"
+  - id: cosmos_txt2vid
+    name: "Cosmos Text-to-Video"
+    description: "Cosmos (NVIDIA) text-to-video"
+    type: txt2vid
+    model: "cosmos.safetensors"
+    params: "30 steps, 17 frames"
+  - id: svd_img2vid
+    name: "SVD Image-to-Video"
+    description: "Stable Video Diffusion image-to-video"
+    type: img2img
+    model: "svd.safetensors"
+    params: "25 steps, cfg 3.0, 14 frames"
+  - id: controlnet_canny
+    name: "SD Canny ControlNet"
+    description: "SD1.5 + Canny edge ControlNet"
+    type: txt2img
+    model: "v1-5-pruned-emaonly.safetensors"
+    params: "20 steps, cfg 7.0, canny"
+  - id: sdxl_advanced
+    name: "SDXL Advanced (LoRA + IPAdapter + Face Restore)"
+    description: "SDXL with LoRA loading, IPAdapter style transfer, and CodeFormer face restoration"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, euler, LoRA+IPAdapter+CodeFormer"
+  - id: flux_pro
+    name: "Flux Pro High-Res (Tiled VAE + Upscale)"
+    description: "Flux Dev at 2048px with tiled VAE decode and model-based upscaling"
+    type: txt2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, cfg 1.0, 2048px, tiled VAE, upscale"
+  - id: sdxl_tiled
+    name: "SDXL Tiled VAE (Anti-OOM)"
+    description: "SDXL with tiled VAE decode to avoid OOM on large (1536×1024) outputs"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, dpmpp_2m karras, tiled VAE"
+  - id: controlnet_openpose
+    name: "SD1.5 OpenPose ControlNet"
+    description: "SD1.5 with OpenPose skeleton ControlNet for pose-controlled generation"
+    type: txt2img
+    model: "v1-5-pruned-emaonly.safetensors"
+    params: "25 steps, cfg 7.0, 512px, OpenPose"
+  - id: sdxl_img2img_face
+    name: "SDXL Img2Img + Face Restore + Upscale"
+    description: "SDXL image-to-image with CodeFormer face restoration and upscaling"
+    type: img2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "30 steps, cfg 7.5, dpmpp_2m karras, denoise 0.65, CodeFormer"
+  - id: flux_fill
+    name: "Flux Fill (Inpainting)"
+    description: "Flux Dev inpainting with mask input"
+    type: txt2img
+    model: "flux_dev.safetensors"
+    params: "28 steps, guidance 3.5, mask input"
+  - id: sd3_img2img
+    name: "SD3.5 Image-to-Image"
+    description: "Stable Diffusion 3.5 Medium image-to-image"
+    type: img2img
+    model: "sd3.5_medium.safetensors"
+    params: "30 steps, cfg 4.5, denoise 0.6"
+  - id: sdxl_refiner
+    name: "SDXL Refiner"
+    description: "SDXL base→refiner two-stage generation"
+    type: txt2img
+    model: "sd_xl_refiner_1.0.safetensors"
+    params: "30+10 steps, cfg 7.5, refiner"
+  - id: sdxl_turbo
+    name: "SDXL Turbo"
+    description: "SDXL Turbo (1-4 steps, real-time)"
+    type: txt2img
+    model: "sdxl_turbo.safetensors"
+    params: "4 steps, cfg 2.0, 512×512"
+  - id: playground_v2
+    name: "Playground v2.5"
+    description: "Playground v2.5 aesthetic (1024×1024)"
+    type: txt2img
+    model: "playground_v2.5.safetensors"
+    params: "50 steps, cfg 7.0, dpmpp_2m karras"
+  - id: lcm_lora
+    name: "SDXL LCM LoRA"
+    description: "SDXL + LCM LoRA super-fast (1-4 steps)"
+    type: txt2img
+    model: "sd_xl_base_1.0.safetensors"
+    params: "4 steps, cfg 1.5, lcm_lora.safetensors"
+  - id: pixart
+    name: "PixArt Sigma"
+    description: "PixArt Sigma 1024px transformer"
+    type: txt2img
+    model: "pixart_sigma.safetensors"
+    params: "20 steps, cfg 4.5, 1024×1024"
+  - id: stable_cascade
+    name: "Stable Cascade"
+    description: "Stable Cascade efficient 1024px"
+    type: txt2img
+    model: "stable_cascade.safetensors"
+    params: "20 steps, cfg 4.0, efficient"
+  - id: svd_img2vid_ext
+    name: "SVD 25-Frame Video"
+    description: "Stable Video Diffusion extended 25-frame generation"
+    type: img2img
+    model: "svd.safetensors"
+    params: "25 steps, cfg 3.0, 25 frames"

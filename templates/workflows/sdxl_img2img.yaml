@@ -1,0 +1,27 @@
+# via54Design — SDXL Image-to-Image Workflow Template
+# SPDX-License-Identifier: MIT
+id: sdxl_img2img
+name: "SDXL Image-to-Image"
+description: "SDXL image-to-image with denoising control"
+model: "sd_xl_base_1.0.safetensors"
+vae: "sdxl_vae.safetensors"
+type: img2img
+params:
+  steps: 30
+  cfg: 7.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 1024
+  height: 1024
+  denoise: 0.6
+nodes:
+  positive_prompt: "CLIPTextEncode"
+  negative_prompt: "CLIPTextEncode"
+  checkpoint: "CheckpointLoaderSimple"
+  load_image: "LoadImage"
+models:
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors"
+    path: "checkpoints/sd_xl_base_1.0.safetensors"
+  - url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_vae.safetensors"
+    path: "vae/sdxl_vae.safetensors"

@@ -1,0 +1,304 @@
+# minimax 平台提示词模板 v3 — 8 层结构 + 摄影词典 (终极黄金范式)
+# 状态: v3 (target 9.5+/10, 当前 v2 实测 8.6/10)
+# 来源整合:
+#   1. HuggingFace Diffusers 官方文档 (权重语法 + Subject/Style/Context 三元素)
+#   2. mmx 官方 example (自然英文 + 逗号 + prompt_optimizer: true)
+#   3. mmx T2I OpenAPI Schema (model/aspect_ratio/seed/n/prompt_optimizer)
+#   4. willwulfken/MidJourney-Styles-and-Keywords-Reference (12291⭐ 摄影词典)
+#   5. mikhail-bot/stable-diffusion-negative-prompts (91⭐ SD 负向词库)
+#   6. via54Design v2 实测 (commit 09e8dcc, 8.6/10)
+#
+# 与 v2 关键差异:
+#   - v2: 7 层 (Meta/Subject/Scene/Lighting/Camera/Details/Negative)
+#   - v3: 8 层 (+ **Pose** 独立 + 数字标注 :25 + mmx 负向 + 摄影词典)
+#   - v3: 每层 `default: "{{scene}}"` via54 翻译器自动替换
+#   - v3: `photography_lexicon` 嵌入 (Rembrandt/Chiaroscuro/Volumetric/Kodak Portra)
+#   - v3: `mmx_quirks` 字段提示 mmx LLM 驱动特性 (不用权重语法, 用自然英文)
+#   - v3: `negative_prompts_mmxfriendly` 专属负向词块
+#
+# 用法: via54 prompt --scene "你的详细描述" --platform minimax --use-v3
+
+version: "3.0"
+platform: minimax
+api: mmx image generate
+model: image-01
+status: target_9.5
+
+# ── mmx 专属配置 (来自 OpenAPI Schema) ──
+mmx_quirks:
+  prompt_optimizer:
+    default: true
+    note: |
+      mmx 官方推荐开启 (OpenAPI Schema example 默认 true)。
+      平台帮扩写细节, 实测提升 1.0+ 分。
+  weight_syntax: false
+  note: |
+    mmx image-01 是 LLM 驱动 (非 CLIP/UNet)。
+    ❌ ((keyword:1.5)) 权重语法不生效
+    ✅ 自然英文 + 逗号串接效果最佳
+    ✅ 数字标注 ":25" 构图比例有效 (mmx 官方 example)
+  api_fields:
+    - model: image-01
+    - aspect_ratio: "1:1 | 16:9 | 4:3 | 3:2 | 2:3 | 3:4 | 9:16 | 21:9"
+    - seed: int (相同 seed 字节级复现)
+    - n: 1..9
+    - response_format: url | base64
+    - prompt_optimizer: bool (default false → 建议 true)
+    - aigc_watermark: bool (default false)
+
+# ── L1 Meta (元层: 视图/构图比例) ──
+meta:
+  view:
+    default: "{{scene}}"
+    hint: "front view | three-quarter view | side view | top-down"
+    note: "决定视图角度"
+  composition_ratio:
+    default: ""
+    hint: "image :25 (1/4) | image :50 (1/2) | image :75 (3/4)"
+    note: "mmx 官方 example 数字标注, 主体占画面比例"
+  aspect_ratio:
+    default: "16:9"
+    hint: "1:1 | 16:9 | 4:3 | 3:2 | 2:3 | 3:4 | 9:16 | 21:9"
+    note: "mmx 8 种枚举, 默认 1:1"
+
+# ── L2 Subject (主体: 先物体再属性再材质) ──
+subject:
+  primary:
+    default: "{{scene}}"
+    hint: "the main subject of the image"
+    note: "主语先行, A [主体]"
+  primary_attributes:
+    default: ""
+    hint: "颜色 + 材质 + 图案 (逗号分隔)"
+    example: "warm amber fur with subtle striped pattern"
+  key_features:
+    default: ""
+    hint: "眼睛/表情/特殊标识"
+    example: "piercing blue eyes"
+  secondary_objects:
+    default: ""
+    hint: "主体相关物件"
+    example: "lying on ancient leather-bound book"
+
+# ── L3 Pose (姿态: v3 新独立层) ──
+pose:
+  action:
+    default: ""
+    hint: "动作/状态"
+    example: "lying | standing | sitting | running"
+  orientation:
+    default: ""
+    hint: "朝向"
+    example: "facing viewer | looking away | in profile"
+  gaze:
+    default: ""
+    hint: "视线方向"
+    example: "gazing into camera | looking out window"
+
+# ── L4 Scene (场景) ──
+scene:
+  foreground:
+    default: ""
+    hint: "前景物件"
+    example: "curled in library armchair"
+  midground:
+    default: ""
+    hint: "中景物件"
+    example: "beside tall wooden bookshelf"
+  background:
+    default: ""
+    hint: "远景物件"
+    example: "with green velvet curtains framing window"
+
+# ── L5 Lighting (光照: 摄影词典核心) ──
+lighting:
+  type:
+    default: ""
+    hint: |
+      摄影光照词典 (来自 MJ Reference 12291⭐):
+      - Rembrandt Lighting (伦勃朗光) — 古典肖像三角形光影
+      - Chiaroscuro (明暗对比法) — 巴洛克戏剧感
+      - Volumetric Lighting (体积光) — 教堂/丁达尔
+      - Cinematic Lighting (电影光) — 故事感
+      - Contre-Jour (逆光) — 剪影轮廓
+      - Soft Lighting (柔光) — 静物肤感
+      - Hard Lighting (硬光) — 工业金属
+      - Golden Hour / Blue Hour (黄金/蓝调时刻)
+    example: "Rembrandt lighting from the left"
+  direction:
+    default: ""
+    hint: "from left | from right | from above | backlight"
+  intensity:
+    default: ""
+    hint: "soft | medium | hard"
+  color_temperature:
+    default: ""
+    hint: "warm 3200K | cool 5600K | golden"
+    note: "v3 升级: 显式色温"
+
+# ── L6 Camera (镜头: 摄影词典) ──
+camera:
+  body:
+    default: ""
+    hint: "Canon EOS R5 | Sony A7R IV | Hasselblad | iPhone 15 Pro"
+    example: "Canon EOS R5"
+  lens:
+    default: ""
+    hint: |
+      焦段词典:
+      - 24mm wide angle (广角)
+      - 35mm (街拍)
+      - 50mm prime (标准)
+      - 85mm portrait (人像王)
+      - 135mm telephoto (长焦虚化)
+      - macro (微距)
+    example: "85mm f/1.4 portrait lens"
+  aperture:
+    default: ""
+    hint: "f/1.4 (奶油虚化) | f/2.8 | f/8 (大景深)"
+    example: "f/1.4"
+  depth_of_field:
+    default: ""
+    hint: "shallow depth of field | deep focus"
+    example: "shallow depth of field with creamy bokeh"
+  bokeh_shape:
+    default: ""
+    hint: "circular bokeh | hexagonal bokeh | smooth bokeh"
+    note: "v3 升级: 显式 bokeh 形状"
+
+# ── L7 Style (风格: 流派 + 年代 + 后期 + 真实度) ──
+style:
+  photography_genre:
+    default: ""
+    hint: |
+      摄影流派:
+      - fashion photography (时尚摄影)
+      - documentary (纪实)
+      - editorial (编辑)
+      - portrait photography (肖像)
+      - product photography (产品)
+      - architectural photography (建筑)
+    example: "fashion photography"
+  era:
+    default: ""
+    hint: "in 1990s style | in 1980s vintage style | in 2020s modern"
+    example: "in 1990s editorial style"
+  film_stock:
+    default: ""
+    hint: |
+      胶片词典 (摄影圈共识):
+      - Kodak Portra 400 (暖调肤色)
+      - Kodak Ektar 100 (高饱和)
+      - Fujifilm Superia 400 (冷调绿)
+      - Cinestill 800T (电影感)
+      - Ilford HP5 (黑白)
+    example: "Kodak Portra 400 film stock"
+  post_processing:
+    default: ""
+    hint: "film grain | halation | cinematic color grading"
+    example: "fine film grain"
+  realism:
+    default: "photorealistic"
+    hint: "photorealistic | ultra realistic | hyperrealistic"
+    note: "默认 photorealistic"
+
+# ── L8 Negative (mmx 友好负向) ──
+negative:
+  quality_issues:
+    default: "blurry, distorted, deformed, low quality, jpeg artifacts"
+    hint: "mmx 友好用 'Avoid: ...' 语法"
+  structural_issues:
+    default: "extra limbs, fused fingers, missing fingers, extra digit"
+    hint: "针对人物/动物的结构畸形"
+  brand_issues:
+    default: "watermark, text, logo, signature, username"
+    hint: "排除品牌/水印/署名"
+  format_syntax: "Avoid: {{items}}"
+  note: |
+    mmx 是 LLM 驱动, 负向词用自然英文 "Avoid: ..." 语法
+    ❌ SD 风格的 "(ugly:1.3), (deformed:1.5)" 权重语法不生效
+
+# ── 完整模板 (英中对照, v3 升级) ──
+templates:
+  v3_cat:
+    name: "虎斑猫古书图书馆"
+    note: "v3 终极版, 摄影词典 + 8 层"
+    expected: "9.5+/10"
+    parts:
+      meta: "Full-body image :25, three-quarter view"
+      subject: |
+        A ginger tabby cat,
+        in warm amber fur with subtle striped pattern,
+        with piercing blue eyes,
+        lying on ancient leather-bound book
+      pose: |
+        curled on top of the book,
+        facing the viewer,
+        gaze softly into camera
+      scene: |
+        Curled in antique library armchair,
+        beside tall dark wooden bookshelf with leather-bound tomes,
+        with green velvet curtains framing tall window in background
+      lighting: |
+        Lit by Rembrandt lighting from the left,
+        soft volumetric god rays filtering through window,
+        warm color temperature 3200K
+      camera: |
+        Shot on Canon EOS R5 with 85mm f/1.4 portrait lens,
+        shallow depth of field,
+        creamy circular bokeh in background
+      style: |
+        Documentary photography in 1990s editorial style,
+        Kodak Portra 400 film stock,
+        fine film grain,
+        photorealistic
+      negative: "blurry, distorted, deformed, watermark, text, low quality, jpeg artifacts"
+    final_prompt: |
+      Full-body image :25, three-quarter view. A ginger tabby cat, in warm amber fur with subtle striped pattern, with piercing blue eyes, lying on ancient leather-bound book. Curled on top of the book, facing the viewer, gaze softly into camera. Curled in antique library armchair, beside tall dark wooden bookshelf with leather-bound tomes, with green velvet curtains framing tall window in background. Lit by Rembrandt lighting from the left, soft volumetric god rays filtering through window, warm color temperature 3200K. Shot on Canon EOS R5 with 85mm f/1.4 portrait lens, shallow depth of field, creamy circular bokeh in background. Documentary photography in 1990s editorial style, Kodak Portra 400 film stock, fine film grain, photorealistic. Avoid: blurry, distorted, deformed, watermark, text, low quality, jpeg artifacts.
+
+# ── 摄影词典速查 (来自 MJ Reference + mmx 实践) ──
+photography_lexicon:
+  lighting_top10:
+    - Rembrandt Lighting
+    - Chiaroscuro
+    - Volumetric Lighting
+    - Cinematic Lighting
+    - Contre-Jour
+    - Golden Hour
+    - Blue Hour
+    - Soft Lighting
+    - Hard Lighting
+    - Backlight
+  film_stocks_top5:
+    - Kodak Portra 400
+    - Kodak Ektar 100
+    - Fujifilm Superia 400
+    - Cinestill 800T
+    - Ilford HP5
+  lens_top5:
+    - 24mm wide angle
+    - 35mm street
+    - 50mm prime
+    - 85mm portrait
+    - 135mm telephoto
+
+# ── 引用来源 (可追溯) ──
+sources:
+  - name: "HuggingFace Diffusers 官方权重语法"
+    url: "https://huggingface.co/docs/diffusers/using-diffusers/weighted_prompts"
+    type: "official"
+  - name: "mmx 官方图片生成"
+    url: "https://platform.minimaxi.com/docs/guides/image-generation"
+    type: "official"
+  - name: "mmx T2I OpenAPI"
+    url: "https://platform.minimaxi.com/docs/api-reference/image-generation-t2i"
+    type: "official"
+  - name: "MJ Styles Reference (12291⭐)"
+    repo: "willwulfken/MidJourney-Styles-and-Keywords-Reference"
+    type: "community"
+  - name: "SD 负向词库 (91⭐)"
+    repo: "mikhail-bot/stable-diffusion-negative-prompts"
+    type: "community"
+  - name: "via54Design v2 实测 8.6/10"
+    commit: "09e8dcc"
+    type: "internal"

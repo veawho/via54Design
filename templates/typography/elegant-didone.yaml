@@ -1,0 +1,34 @@
+# via54Design 字体模板
+# Elegant Didone — 时尚杂志级高反差衬线
+id: elegant-didone
+name:
+  zh: "优雅迪多"
+  en: "Elegant Didone"
+  ja: "ディドーヌ"
+metadata:
+  designer: via54 / Vogue / Harper's Bazaar
+  classification: "迪多体(Didone) — 高反差现代衬线"
+  inspiration: "Didone风格(也称现代衬线)是时尚杂志标题的标配。Playfair Display是对Bodoni/Didot的最佳开源致敬。配合极细字重的Inter正文，形成'奢华标题+克制正文'的经典时尚排版。"
+  principle: "标题要戏剧性的粗细对比。正文要隐退到背景。"
+mood: [elegant, luxury, editorial, femine, dramatic]
+fonts:
+  display: "'Playfair Display', 'EB Garamond', 'Georgia', serif"
+  body: "'Inter', -apple-system, 'Helvetica Neue', sans-serif"
+  body_weight: 300
+  mono: "'JetBrains Mono', monospace"
+weights:
+  display: "400;700;900"
+  body: "300;400"
+google_fonts:
+  - "Playfair+Display:wght@400;700;900"
+  - "Inter:wght@300;400"
+sizes:
+  display: "clamp(42px, 7vw, 110px)"
+  h2: "clamp(28px, 3.5vw, 56px)"
+  h3: "clamp(20px, 1.5vw, 28px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "12px"
+  caption: "11px"
+compatibility:
+  moods: [elegant, luxury, editorial, femine, dramatic, artistic]
+  layouts: [hero-split-left-image, gallery-waterfall]

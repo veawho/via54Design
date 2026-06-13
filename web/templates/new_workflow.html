@@ -1,0 +1,186 @@
+<!-- ══════════════════════════════════════════════════
+     第三部分 · 设计方向顾问 (Intent-Driven Flow)
+     ══════════════════════════════════════════════════ -->
+<section class="workflow-section">
+  <!-- Intent Selector -->
+  <div class="intent-bar" id="intentBar">
+    <button class="intent-btn" data-intent="design">
+      <span class="intent-icon">🎨</span>
+      <span class="intent-label">做设计</span>
+      <span class="intent-desc">HTML / 幻灯片</span>
+    </button>
+    <button class="intent-btn" data-intent="prompt">
+      <span class="intent-icon">📝</span>
+      <span class="intent-label">写提示词</span>
+      <span class="intent-desc">文本 / 图片 → Prompt</span>
+    </button>
+    <button class="intent-btn" data-intent="present">
+      <span class="intent-icon">📄</span>
+      <span class="intent-label">做演示</span>
+      <span class="intent-desc">文档 / 叙事 → PPT</span>
+    </button>
+    <button class="intent-btn" data-intent="video">
+      <span class="intent-icon">🎬</span>
+      <span class="intent-label">做视频</span>
+      <span class="intent-desc">故事板 → 脚本</span>
+    </button>
+    <button class="intent-btn" data-intent="forge">
+      <span class="intent-icon">⚡</span>
+      <span class="intent-label">提交 Forge</span>
+      <span class="intent-desc">Prompt → 出图</span>
+    </button>
+  </div>
+
+  <div class="workflow-content" id="workflowContent">
+
+    <!-- Intent: 做设计 -->
+    <div class="intent-pane" data-intent="design">
+      <div class="flow-steps">
+        <div class="flow-step-card">
+          <div class="step-badge">1</div>
+          <h3>描述场景</h3>
+          <textarea id="dScene" rows="2" placeholder="Describe your design..."></textarea>
+          <div class="form-row" style="margin-top:8px">
+            <select id="dLayout"><option>Hero / Landing</option><option>Grid / Gallery</option><option>Article / Blog</option></select>
+            <select id="dMode"><option value="false">网页</option><option value="true">演示文稿</option></select>
+          </div>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">2</div>
+          <h3>选择风格</h3>
+          <div class="color-strip" id="dColors">
+            <div class="color-swatch active" style="background:#6c63ff"></div>
+            <div class="color-swatch" style="background:#ff6b9d"></div>
+            <div class="color-swatch" style="background:#43e4b0"></div>
+            <div class="color-swatch" style="background:#ffb347"></div>
+            <div class="color-swatch" style="background:#e74c3c"></div>
+          </div>
+          <select id="dFont" style="margin-top:8px"><option>Serif + Sans</option><option>Sans (科技)</option><option>Display Bold</option></select>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">3</div>
+          <h3>生成</h3>
+          <input type="text" id="dTitle" value="via54Design" placeholder="标题">
+          <div class="btn-row" style="margin-top:8px">
+            <button class="btn btn-primary" id="dGenBtn">🎨 生成 HTML</button>
+          </div>
+          <div class="output-area" id="dOutput" style="margin-top:8px;min-height:50px;font-size:11px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intent: 写提示词 -->
+    <div class="intent-pane" data-intent="prompt">
+      <div class="flow-steps">
+        <div class="flow-step-card">
+          <div class="step-badge">1</div>
+          <h3>输入场景 / 上传图片</h3>
+          <textarea id="pScene" rows="2" placeholder="Describe the scene..."></textarea>
+          <div class="form-row" style="margin-top:8px">
+            <select id="pPlatform"><option value="flux">Flux</option><option value="midjourney">Midjourney</option><option value="forge">Forge</option><option value="sdxl">SDXL</option></select>
+            <select id="pRatio"><option>16:9</option><option>1:1</option><option>9:16</option></select>
+          </div>
+          <div class="upload-mini" id="pUploadZone" style="margin-top:8px;border:1px dashed var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center;cursor:pointer;font-size:12px;color:var(--text-dim)">
+            📁 或上传图片分析
+            <input type="file" id="pFileInput" accept="image/*" style="display:none">
+          </div>
+          <div id="pPreview" style="display:none;margin-top:6px;text-align:center">
+            <img id="pPreviewImg" style="max-height:80px;border-radius:4px">
+          </div>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">2</div>
+          <h3>生成 & 调试</h3>
+          <div class="btn-row"><button class="btn btn-primary" id="pGenBtn">✨ 生成提示词</button></div>
+          <div class="output-area" id="pOutput" style="margin-top:8px;min-height:60px;font-size:11px"></div>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">3</div>
+          <h3>提交 Forge</h3>
+          <div class="status-chip" style="margin-bottom:6px"><span class="dot warn" id="pForgeDot"></span><span class="val" id="pForgeText">检测中...</span></div>
+          <div class="btn-row"><button class="btn btn-secondary" id="pForgeBtn">⚡ 提交生成</button></div>
+          <div class="output-area" id="pForgeOut" style="margin-top:6px;min-height:40px;font-size:11px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intent: 做演示 -->
+    <div class="intent-pane" data-intent="present">
+      <div class="flow-steps">
+        <div class="flow-step-card">
+          <div class="step-badge">1</div>
+          <h3>输入内容</h3>
+          <div class="upload-mini" id="s2pUploadZone" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;margin-bottom:8px">
+            📄 上传 Word/PPT/TXT/MD/图片
+            <input type="file" id="s2pFileInput" accept=".docx,.pptx,.md,.txt,.png,.jpg" style="display:none">
+          </div>
+          <div id="s2pFileInfo" style="display:none;font-size:11px;color:var(--text-secondary);margin-bottom:6px"></div>
+          <textarea id="s2pDesc" rows="1" placeholder="或直接输入一句话故事种子..."></textarea>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">2</div>
+          <h3>生成 PPT 框架</h3>
+          <div class="btn-row"><button class="btn btn-primary" id="s2pGenBtn">📊 生成框架</button></div>
+          <div class="output-area" id="s2pGuidance" style="margin-top:6px;min-height:40px;font-size:11px;background:var(--accent-subtle);border-color:var(--accent);display:none"></div>
+          <div class="output-area" id="s2pFrames" style="margin-top:6px;min-height:60px;font-size:11px;display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intent: 做视频 -->
+    <div class="intent-pane" data-intent="video">
+      <div class="flow-steps">
+        <div class="flow-step-card">
+          <div class="step-badge">1</div>
+          <h3>上传故事板</h3>
+          <div class="upload-mini" id="vbUploadZone" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;margin-bottom:8px">
+            🎬 上传故事板图片（可多选）
+            <input type="file" id="vbFileInput" accept="image/*" multiple style="display:none">
+          </div>
+          <div id="vbPreviews" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px"></div>
+          <div class="form-row">
+            <select id="vbModel"><option value="three-act">三幕结构</option><option value="heros-journey">英雄之旅</option></select>
+            <input type="number" id="vbDuration" value="30" min="5" max="300" placeholder="时长(s)" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px">
+          </div>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">2</div>
+          <h3>生成视频脚本</h3>
+          <div class="btn-row"><button class="btn btn-primary" id="vbGenBtn">🎬 生成脚本</button></div>
+          <div class="output-area" id="vbOutput" style="margin-top:8px;min-height:80px;font-size:11px;display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intent: 提交 Forge -->
+    <div class="intent-pane" data-intent="forge">
+      <div class="flow-steps">
+        <div class="flow-step-card">
+          <div class="step-badge">1</div>
+          <h3>提示词</h3>
+          <textarea id="fPrompt" rows="3" placeholder="Paste your prompt here..."></textarea>
+          <div class="form-row" style="margin-top:8px">
+            <input type="text" id="fNeg" placeholder="负面提示词" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px;width:100%">
+            <select id="fWorkflow"><option value="sdxl_txt2img">SDXL</option><option value="flux_dev_txt2img">Flux</option></select>
+          </div>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">2</div>
+          <h3>参数</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Steps</label><input type="number" id="fSteps" value="30" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px;width:100%"></div>
+            <div class="form-group"><label>CFG</label><input type="number" id="fCfg" value="7.5" step="0.5" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:6px;width:100%"></div>
+          </div>
+          <div class="status-chip" style="margin-bottom:6px"><span class="dot" id="fStatusDot"></span><span class="val" id="fStatusText">检测中...</span></div>
+          <div class="btn-row"><button class="btn btn-primary" id="fSubmitBtn">⚡ 提交生成</button></div>
+        </div>
+        <div class="flow-step-card">
+          <div class="step-badge">3</div>
+          <h3>结果</h3>
+          <div class="output-area" id="fOutput" style="min-height:60px;font-size:11px">等待提交...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

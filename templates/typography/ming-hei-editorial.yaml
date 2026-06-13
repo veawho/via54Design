@@ -1,0 +1,41 @@
+# via54Design 字体模板
+# 明黑配 — 中文排版经典，明体为标题+黑体为正
+id: ming-hei-editorial
+name:
+  zh: "明黑配"
+  en: "Ming Hei Editorial"
+  ja: "明朝·ゴシック"
+metadata:
+  designer: JustFont (justfont.com) 经典推荐
+  classification: "旧风格衬线(明体) + 无衬线(黑体)"
+  inspiration: "JustFont 字体搭配专栏最经典推荐。明体(Song/Ming)是中文印刷的正文标准，黑体(Hei/Sans)是现代标题首选。这对组合覆盖了中文排版90%的场景。"
+  principle: "标题用明体传达传统与权威，正文用黑体确保清晰可读"
+mood: [editorial, classic, authoritative, readable, serious]
+chinese:
+  display_body: true
+  note: "中西混排优化：中文用明体/Source Han Serif，英文用Playfair Display"
+
+fonts:
+  display: "'Source Han Serif SC', 'Noto Serif SC', 'STSong', 'SimSun', 'Georgia', serif"
+  body: "'Source Han Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Inter', sans-serif"
+  mono: "'JetBrains Mono', 'Source Han Mono SC', 'Fira Code', monospace"
+
+weights:
+  display: "600;700;900"
+  body: "400;500"
+
+google_fonts:
+  - "Noto+Serif+SC:wght@400;600;700;900"
+  - "Noto+Sans+SC:wght@400;500;700"
+
+sizes:
+  display: "clamp(36px, 5vw, 72px)"
+  h2: "clamp(24px, 2.5vw, 40px)"
+  h3: "clamp(18px, 1.5vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "12px"
+
+compatibility:
+  moods: [editorial, classic, serious, authoritative, warm]
+  layouts: [hero-split-left-image, editorial-longform]

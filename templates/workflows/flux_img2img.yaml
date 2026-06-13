@@ -1,0 +1,18 @@
+# via54Design — ComfyUI workflow template
+id: flux_img2img
+name: "Flux Dev Image-to-Image"
+description: "Flux Dev image-to-image with denoising"
+type: img2img
+model: "flux_dev.safetensors"
+params:
+  steps: 28
+  cfg: 3.5
+  denoise: 0.5
+models:
+  - url: ""
+    path: "checkpoints/flux_dev.safetensors"
+nodes:
+  checkpoint: CheckpointLoaderSimple
+  prompt: CLIPTextEncode
+  sampler: KSampler
+  output: SaveImage

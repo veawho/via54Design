@@ -1,0 +1,33 @@
+# ─── 元数据 ───
+id: neo-brutalist-vibrant
+name: 新粗野主义撞色信息流 — 电光紫+品红+亮黄（The Verge风）
+version: "1.0.0"
+category: color-scheme/vibrant
+tags: [vibrant, brutalist, colorful, high-energy, youth]
+source: "references/design-styles.md — 新粗野主义撞色信息流 Neo-Brutalism"
+contrast_ratio: "7.8:1 ✅"
+
+colors:
+  background: "#FFFFFF"
+  background_dark: "#08080D"
+  text_primary: "#08080D"
+  text_on_dark: "#FFFFFF"
+  accent_primary: "#5200FF"     # 电光紫
+  accent_secondary: "#E1306C"   # 品红
+  accent_highlight: "#F8E000"   # 亮黄
+  border: "#08080D"
+
+when:
+  brand_tone: [vibrant, energetic, bold, rebellious, youth]
+  audience: [youth, creators, tech_enthusiasts]
+  suitable_for: [media_hub, community, campaign, ai_aggregator]
+
+
+css_variables: |
+  --bg: #FFFFFF;
+  --bg-dark: #08080D;
+  --text-primary: #08080D;
+  --accent-primary: #5200FF;
+  --accent-secondary: #E1306C;
+  --accent-highlight: #F8E000;
+  --border: #08080D;

@@ -1,0 +1,39 @@
+<div class="flow-steps">
+  <div class="flow-step-card">
+    <span class="step-badge">1</span>
+    <h3>📖 上传文档 → PPT 框架</h3>
+    <form hx-post="/api/htmx/story2ppt" hx-target="#s2pOutput" hx-indicator="#s2pSpin" hx-encoding="multipart/form-data">
+      <label for="s2pFile" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
+        📎 点击上传文档/PPTX/TXT
+      </label>
+      <input type="file" id="s2pFile" name="file" accept=".docx,.pptx,.txt,.md" style="display:none"
+             hx-post="/api/htmx/upload" hx-target="#s2pUploadResult" hx-encoding="multipart/form-data">
+      <div id="s2pUploadResult"></div>
+      <input type="text" name="seed" placeholder="补充描述（可选）" style="margin-bottom:6px">
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">📊 生成 PPT 框架</button>
+        <span id="s2pSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 分析中...</span>
+      </div>
+    </form>
+    <div id="s2pOutput" style="margin-top:8px"></div>
+  </div>
+
+  <div class="flow-step-card">
+    <span class="step-badge">2</span>
+    <h3>📖 故事种子 → 叙事框架</h3>
+    <form hx-post="/api/htmx/narrate" hx-target="#s2pNarrateOut" hx-indicator="#s2pNarrSpin">
+      <textarea name="seed" rows="2" placeholder="输入故事种子..." style="margin-bottom:6px"></textarea>
+      <select name="model" style="margin-bottom:6px">
+        <option value="three-act">三幕剧 — 产品发布</option>
+        <option value="heros-journey">英雄之旅 — 品牌故事</option>
+        <option value="cognitive-arc">认知弧 — 科普教程</option>
+        <option value="problem-solution">问题解决 — 销售视频</option>
+      </select>
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">📖 生成叙事框架</button>
+        <span id="s2pNarrSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 生成中...</span>
+      </div>
+    </form>
+    <div id="s2pNarrateOut" style="margin-top:8px"></div>
+  </div>
+</div>

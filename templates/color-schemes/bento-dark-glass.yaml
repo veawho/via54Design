@@ -1,0 +1,37 @@
+# ─── 元数据 ───
+id: bento-dark-glass
+name: Linear暗色发光+Bento — 近黑+紫蓝渐变+玻璃拟态
+version: "1.0.0"
+category: color-scheme/dark-glass
+tags: [dark, glass, bento, linear, glow, gradient, saas]
+source: "references/design-styles.md — Linear暗色发光+Bento网格 Glassmorphism Bento"
+contrast_ratio: "12.1:1 ✅"
+
+colors:
+  background: "#08090A"
+  background_card: "#0F0F13"
+  text_primary: "#E8E8ED"
+  text_secondary: "#8B8B9E"
+  accent: "#5E6AD2"
+  accent_gradient_start: "#4EA7FC"
+  accent_gradient_end: "#B59AFF"
+  border: "#1C1C23"
+  border_glow: "rgba(94, 106, 210, 0.15)"
+  success: "#34D399"
+  error: "#EF4444"
+
+when:
+  brand_tone: [tech, premium, dark, glowing, futuristic]
+  audience: [developers, tech_professionals, saas_users]
+  suitable_for: [saas, dashboard, devtool, product_showcase]
+
+
+css_variables: |
+  --bg: #08090A;
+  --bg-card: #0F0F13;
+  --text-primary: #E8E8ED;
+  --text-secondary: #8B8B9E;
+  --accent: #5E6AD2;
+  --accent-gradient-start: #4EA7FC;
+  --accent-gradient-end: #B59AFF;
+  --border: #1C1C23;

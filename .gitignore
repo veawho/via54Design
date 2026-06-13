@@ -1,0 +1,21 @@
+# --- Build artifacts (do NOT commit) ---
+bin/
+/via54
+/via54-mcp
+*.test
+*.out
+*.exe
+
+# --- Output / reports (regenerable) ---
+reports/
+web/uploads/
+output.html
+DEPLOY_REPORT_*.md
+
+# --- Cached resources (re-fetchable) ---
+_scripts/stock/
+_scripts/subtitles/
+*.mp4
+*.mp3
+*.wav
+*.png.stock

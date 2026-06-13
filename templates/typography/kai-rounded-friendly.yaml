@@ -1,0 +1,41 @@
+# via54Design 字体模板
+# 楷圆配 — 楷体的手作感+圆体的温和感
+id: kai-rounded-friendly
+name:
+  zh: "楷圆配"
+  en: "Kai Rounded"
+  ja: "楷書·丸ゴシック"
+metadata:
+  designer: JustFont / 霞鹜文楷开源项目
+  classification: "楷体(手写风格) + 圆体(无衬线)"
+  inspiration: "楷体是中文书写教育的起点，圆体是最具亲和力的无衬线。这对组合适合儿童教育、生活方式品牌、柔软质感的设计。"
+  principle: "楷体的手写温度 + 圆体的柔和现代"
+mood: [friendly, warm, gentle, educational, organic]
+chinese:
+  display_body: true
+  note: "适合亲子教育、生活美学、手作品牌"
+
+fonts:
+  display: "'LXGW WenKai', 'KaiTi', 'STKaiti', '楷体', 'Georgia', serif"
+  body: "'Nunito', 'PingFang SC', 'Microsoft YaHei', 'Inter', sans-serif"
+  mono: "'JetBrains Mono', monospace"
+
+weights:
+  display: "400;700"
+  body: "400;600"
+
+google_fonts:
+  - "LXGW+WenKai:wght@400;700"
+  - "Nunito:wght@400;600;700"
+
+sizes:
+  display: "clamp(32px, 4vw, 60px)"
+  h2: "clamp(22px, 2.5vw, 36px)"
+  h3: "clamp(18px, 1.5vw, 24px)"
+  body: "clamp(15px, 1.1vw, 18px)"
+  small: "13px"
+  caption: "12px"
+
+compatibility:
+  moods: [friendly, warm, gentle, educational, organic, playful]
+  layouts: [hero-split-left-image, bento-grid-2x2]

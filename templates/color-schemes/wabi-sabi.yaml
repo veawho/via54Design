@@ -1,0 +1,52 @@
+# via54Design 日系配色
+# 侘寂 — 残缺之美，万物皆有时
+id: wabi-sabi
+name:
+  zh: "侘寂"
+  en: "Wabi-sabi"
+  ja: "侘寂"
+metadata:
+  designer: via54 / 千利休 (Sen no Rikyu)
+  dynasty: "安土桃山时代"
+  cultural_context: "侘寂源自茶圣千利休的茶道美学。接受不完美、短暂、残缺。枯山水、乐烧茶碗、苔藓覆盖的石灯笼——都是侘寂的体现。"
+  philosophy: "不完美之美，物哀与空寂"
+mood: [calm, rustic, zen, earthy, melancholic]
+season: autumn
+palette:
+  - role: background
+    hex: "#EDE8DE"
+    name_zh: "薄茶"
+    cultural_note: "抹茶的淡绿色，茶室榻榻米之色"
+  - role: text_primary
+    hex: "#3B302A"
+    name_zh: "錆色"
+    cultural_note: "铁锈般的深褐，岁月痕迹"
+  - role: text_secondary
+    hex: "#7D756C"
+    name_zh: "利休鼠"
+    cultural_note: "千利休喜爱的灰绿色，侘寂代表色"
+  - role: accent
+    hex: "#6B5B4A"
+    name_zh: "焦茶"
+    cultural_note: "枯茶之色，火烤过的陶器"
+  - role: accent_alt
+    hex: "#A89880"
+    name_zh: "枯色"
+    cultural_note: "枯草之色，生命循环的终点"
+  - role: border
+    hex: "#D6CFC3"
+    name_zh: "絹色"
+    cultural_note: "生绢的天然米灰色"
+
+
+css_variables: |
+  --bg: #EDE8DE;
+  --text-primary: #3B302A;
+  --text-secondary: #7D756C;
+  --accent: #6B5B4A;
+  --accent-alt: #A89880;
+  --border: #D6CFC3;
+
+compatibility:
+  layouts: [gallery-waterfall, editorial-longform]
+  fonts: [serif-longform, cormorant-elegant]

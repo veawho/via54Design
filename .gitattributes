@@ -1,0 +1,41 @@
+# .gitattributes
+# GitHub Linguist configuration
+# 文档: https://github.com/github/linguist/blob/master/docs/overrides.md
+
+# ────────────────────────────────────────
+# 1. 排除路径（不计入任何语言统计）
+# ────────────────────────────────────────
+LICENSE              linguist-documentation
+ACKNOWLEDGMENTS.md   linguist-documentation
+SECURITY.md          linguist-documentation
+MAINTAINING.md       linguist-documentation
+REPOSITORY_SETUP.md  linguist-documentation
+README.md            linguist-documentation
+README_EN.md         linguist-documentation
+docs/**              linguist-documentation
+*.md                 linguist-documentation
+*.txt                linguist-documentation
+
+# ────────────────────────────────────────
+# 2. 显式指定语言
+# ────────────────────────────────────────
+# 测试套件 — 标记为 documentation, 不在主语言栏显示 Python
+test_20_rounds.py    linguist-documentation
+# Python 测试套件 (冗余声明, 安全)
+*.py                 linguist-documentation
+hack/*.py            linguist-documentation
+scripts/*.py         linguist-documentation
+
+# YAML 模板数据 — 不计入语言统计
+templates/**         linguist-detectable=false
+
+# Web 模板数据 — 不计入
+web/templates/**     linguist-detectable=false
+
+# ────────────────────────────────────────
+# 3. 强制检测
+# ────────────────────────────────────────
+*.go                 linguist-detectable=true
+*.rs                 linguist-detectable=true
+internal/**          linguist-detectable=true
+cmd/**               linguist-detectable=true

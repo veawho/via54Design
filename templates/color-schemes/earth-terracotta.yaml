@@ -1,0 +1,52 @@
+# via54Design Adobe/Behance配色
+# Earth Terracotta — 2026年度色，大地陶土
+id: earth-terracotta
+name:
+  zh: "大地陶土"
+  en: "Earth Terracotta"
+  ja: "アーステラコッタ"
+metadata:
+  designer: via54 / Behance 2025-2026 年度趋势
+  platform: Behance / Pinterest 品牌设计首选
+  cultural_context: "大地色系+陶土橙是2025-2026年Behance品牌设计类目中最受欢迎的配色方向。从Patagonia到MUJI，从咖啡品牌到护肤品牌，'返璞归真'正在取代'极简冷淡'成为新一代品牌视觉的基调。陶土色(terracotta)被Pantone等机构预测为年度色趋势。"
+  philosophy: "大地的温度。不完美的完美。"
+mood: [warm, earthy, natural, rustic, premium]
+season: autumn
+palette:
+  - role: background
+    hex: "#F8F3ED"
+    name_zh: "石灰"
+    cultural_note: "天然石灰岩的白"
+  - role: text_primary
+    hex: "#2C2420"
+    name_zh: "深褐"
+    cultural_note: "肥沃土壤的颜色"
+  - role: text_secondary
+    hex: "#7D7168"
+    name_zh: "石褐"
+    cultural_note: "风化岩石的灰褐"
+  - role: accent
+    hex: "#C06C4C"
+    name_zh: "陶土橙"
+    cultural_note: "Terracotta，未经上釉的红陶"
+  - role: accent_alt
+    hex: "#8DA38C"
+    name_zh: "鼠尾绿"
+    cultural_note: "地中海植物的灰绿，与陶土绝配"
+  - role: border
+    hex: "#E6DED4"
+    name_zh: "米石"
+    cultural_note: "淡米灰边界"
+
+
+css_variables: |
+  --bg: #F8F3ED;
+  --text-primary: #2C2420;
+  --text-secondary: #7D7168;
+  --accent: #C06C4C;
+  --accent-alt: #8DA38C;
+  --border: #E6DED4;
+
+compatibility:
+  layouts: [hero-split-left-image, editorial-longform]
+  fonts: [serif-sans-editorial, cormorant-elegant]

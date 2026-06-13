@@ -1,0 +1,26 @@
+# via54Design — SD 1.5 Text-to-Image Workflow Template
+# SPDX-License-Identifier: MIT
+id: sd15_txt2img
+name: "Stable Diffusion 1.5 Text-to-Image"
+description: "Stable Diffusion 1.5 text-to-image at 512×512"
+model: "v1-5-pruned-emaonly.safetensors"
+vae: "vae-ft-mse-840000-ema-pruned.safetensors"
+type: txt2img
+params:
+  steps: 20
+  cfg: 7.5
+  sampler: "euler"
+  scheduler: "normal"
+  seed: -1
+  width: 512
+  height: 512
+  denoise: 1.0
+nodes:
+  positive_prompt: "CLIPTextEncode"
+  negative_prompt: "CLIPTextEncode"
+  checkpoint: "CheckpointLoaderSimple"
+models:
+  - url: "https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors"
+    path: "checkpoints/v1-5-pruned-emaonly.safetensors"
+  - url: "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors"
+    path: "vae/vae-ft-mse-840000-ema-pruned.safetensors"
