@@ -309,3 +309,28 @@ make fs-check
 1. 新建 `templates/prompts/<name>.yaml` (复制现有模板改参数)
 2. 更新 `cmd/via54/prompt_cmd.go` 的 `listPlatforms()` 数组
 3. `go build` + 验证
+
+---
+
+## Bot 集成 (2026-06-16 新增)
+
+via54Design 通过飞书 Bot 集成,完整流程见 `docs/prompts/bot-composition-flow.md`:
+
+### A. 纯文字生成提示词
+1. 飞书私聊/群聊发需求 → bot
+2. bot 调 via54Design 生成 3 种构图方案
+3. 用户选 1/2/3 → 生成完整英文 prompt
+4. 用户可"修改" / "换平台" / "重新生成"
+
+### B. 参考图+文字生成提示词
+1. 飞书发图 + 文字需求 → bot
+2. vision_analyze_tool 识别图 (minimax-cn MiniMax-M3)
+3. bot 渲染中文拆解版 + **首次回复含 2 点确认逻辑**:
+   - 左侧湿疹皮肤: 保留"明显红斑/皮屑"真实细节 vs 克制?
+   - 右侧健康皮肤: "发光透亮"高光感 vs "自然健康"哑光感?
+4. 用户回复 → 生成完整英文 prompt
+
+### 集成点
+- m12 bot: `~/.hermes/scripts/m12_full_channel_bot.py`
+- 飞书 Channel SDK: 5 大能力 (policy/safety/inbound/outbound/transport)
+- 14 平台 + 26 维度 + 4 叙事模型 全部 via54Design CLI 暴露
