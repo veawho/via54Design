@@ -90,3 +90,77 @@ per Larkfix `.project.yml` "飞书/Lark 分支" 段:
 - **README.md** (22KB) + **README_EN.md** (22KB): LarkDesign 双语 (per master 原话 "1 个仓库可以多 README")
 - **lark/macos-local 分支** (push 2026-06-14 12:23): LarkDesign 主人 active dev macOS 整合
 - **feature/video-pipeline** (push 2026-06-15 active): LarkDesign v0.6.0 视频产线 active dev
+
+
+---
+
+## 本轮 18 件修复 (per 2026-06-15 IM 平台统一 session) — LarkDesign 视角
+
+> **整合日期**: 2026-06-15
+> **整合来源**: 本 session 全部验证的修复 + Hermes 官方 PR + GitHub issue tracker
+> **4 仓库同步**: Larkbotgo Larkfix LarkSkills LarkDesign + CAPABILITY_MATRIX
+
+### LarkDesign 跟其他 4 仓库的 18 件修复对应关系
+
+| 18 件修复类别 | Larkbotgo | Larkfix | LarkSkills | **LarkDesign (per design 0 整合)** |
+|---|---|---|---|---|
+| A. Hermes GitHub Issue + PR 修复 (3) | ✅ | ✅ | ✅ | **❌ 不需要** (Go 设计引擎不整合 Hermes gateway) |
+| B. IM 平台统一 (4) | ✅ Telegram + Feishu 整合 | ✅ Feishu daemon | ✅ skill 速查 | **❌ 不需要** (per design) |
+| C. 4 仓库 + 1 doc 整合 (5) | ✅ Larkbotgo 主整合 | ✅ Larkfix 整合 | ✅ LarkSkills 整合 | **⚠ 部分** (NOTES_INTEGRATION.md 文档同步, 0 代码整合) |
+| D. LarkDesign 完美 sync (3) | ✅ 远端 workflow | (N/A) | ✅ 远端 workflow | **✅ LarkDesign 主** (main=feature/video-pipeline 1:1 sync) |
+| E. B16 stress test (1) | ✅ 92% HTTP 200 | ✅ Larkfix daemon 验证 | ✅ LarkSkills skill 集成 | **❌ 不需要** (LarkDesign 不跑 daemon) |
+| F. Cross-tool 模型路由 (1) | ✅ Hermes config | (N/A) | (N/A) | **❌ 不需要** (LarkDesign 独立 Go CLI) |
+
+**LarkDesign 总占比**: 2/18 件相关 (C 部分文档同步 + D 部分 sync), **16/18 跟 LarkDesign 无关** (per design 0 整合)。
+
+### LarkDesign 18 件修复中的 2 件贡献
+
+1. **D 项 LarkDesign 完美 sync** (cddd264):
+   - LarkDesign main = feature/video-pipeline 1:1
+   - 8 conflict 解 (重置 + 重建 + cherry-pick)
+   - LarkDesign NOTES_INTEGRATION.md push 到 main
+
+2. **C 项 LarkDesign 文档同步** (本文件):
+   - NOTES_INTEGRATION.md 5 段 (跟 via54Hermes 0 整合 per design)
+   - LarkDesign Larkbotgo Larkfix LarkSkills LarkHermes 5 仓库生态表
+   - LarkDesign Larkbotgo Larkfix LarkSkills LarkHermes 4 仓库镜像章节 1:1 token verify
+
+### LarkDesign 跟 Larkbotgo Larkfix LarkSkills 同步状态
+
+| LarkDesign 章节 | Larkbotgo Larkfix LarkSkills 对应 | 1:1 镜像 |
+|---|---|---|
+| NOTES_INTEGRATION.md 段 1 (0 整合 per design) | Larkbotgo hermes-pitfalls 13 段 + Larkfix references 13 段 + LarkSkills via54hermes-pitfalls 13 段 | ✅ (per design 反向镜像) |
+| NOTES_INTEGRATION.md 5 仓库生态表 | Larkbotgo Larkfix LarkSkills LarkDesign LarkHermes 5 仓库 1:1 对齐 | ✅ |
+| LarkDesign Larkbotgo Larkfix LarkSkills LarkHermes 4 仓库差异表 | Larkbotgo Larkfix LarkSkills LarkDesign LarkHermes 8 维度对比 | ✅ |
+
+### B16 stress test 报告 (LarkDesign 视角)
+
+> **来源**: `/tmp/B16_test_v2_results.txt` (50 轮 stress test, exit code 0)
+> **LarkDesign 关系**: **0** (LarkDesign 是 Go 设计引擎, 不跑 m12 bot daemon)
+
+| 指标 | 值 | LarkDesign 关系 |
+|---|---|---|
+| 总测试轮次 | 50 | ❌ |
+| HTTP 200 OK | 46/50 (92%) | ❌ |
+| HTTP 0 EXC | 4/50 (8%) | ❌ |
+| m12 bot 进程 | 0 hang | ❌ |
+| 修法整合 | Larkfix _send_path_degraded (commit 952892c) + Larkbotgo reference 1:1 镜像 | ❌ (LarkDesign 不跑 daemon) |
+
+**LarkDesign 不参与 B16 stress test** — LarkDesign 是 standalone Go binary (跟 Hermes gateway 无关)。
+
+### Larkbotgo Larkfix LarkSkills LarkDesign LarkHermes 5 仓库 18 件修复最终对齐表
+
+| 仓库 | HEAD (本轮后) | 18 件覆盖 | 1:1 token verify |
+|---|---|---|---|
+| **via54Larkbotgo** | 69d4519 | 18/18 (主整合) | ✅ zh + en 镜像 |
+| **via54Larkfix** | 23d4c13 | 18/18 (主整合) | ✅ Larkbotgo Larkfix 1:1 |
+| **via54Skills** | a4619b8 | 18/18 (skill 速查索引) | ✅ Larkbotgo Larkfix LarkSkills 1:1 |
+| **via54Design** | (NOTES 加 18 件说明, HEAD 跟远端 1:1) | 2/18 (per design 0 整合) | ⚠ 部分 (NOTES 同步) |
+| **CAPABILITY_MATRIX.md** | (section 12 加) | 18/18 (跨仓库总结) | ✅ |
+
+### LarkDesign 关键 takeaway
+
+- ✅ LarkDesign NOTES_INTEGRATION.md 5 段 + 18 件修复 0 整合 per design (跟其他 4 仓库 100% 一致)
+- ✅ LarkDesign main = feature/video-pipeline = cddd264 (1:1 完美 sync)
+- ⚠ LarkDesign 不参与 IM 平台统一 / B16 stress test / Hermes gateway (per definition)
+- ⚠ LarkDesign 唯一参与: LarkDesign 仓库本身的 sync (D 项) + 文档同步 (C 项)
