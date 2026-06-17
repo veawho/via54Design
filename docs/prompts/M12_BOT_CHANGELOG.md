@@ -53,7 +53,13 @@
 - **download_image 改 curl + Popen** (4bdcd0f) — 飞书图下载真治本
 - **CHANGELOG 1fd06b0** (我自己) — 老实归纳 (错, 只归纳今天)
 
-## ✅ 改对了 (没回滚, 真治本)| **d5c0f0b (本次)** | B42 mock 测 3 段构图新模板真工作: 跑 150 秒真出 3 段 (方案 1+2 LLM 真返 5 句话 + 平台建议, 方案 3 fallback 模板拼), reply_len=556, **没撞 "渲染超时"** ✅。call_via54 idle 30s→60s (77110db) + render idle 30s→60s (6ec15b6) + 3 段构图新模板 (212c805) + idle 5s→30s (8205b7c) 真治本 || **3a18b59 (本次)** | B38 + B39 真事件返"渲染超时"真因真找到: m12 bot 58336 跑老代码 (idle 5s) 时处理, B38 + B39 outbound 返占位符。**我之前没真重启 m12 bot** 让新代码生效, 3 段构图新模板 + idle 30s (212c805 + 8205b7c) 在 m12 bot 72119 (3:18 前启动) 才生效。**m12 bot 72119 真跑新代码, B40 mock 测 3 段构图 60+ 秒真返 3 段 (含 fallback)** ✅ |
+## ✅ 改对了 (没回滚, 真治本)| **fb1c2d3 (本次)** | 5 subagent 全力修 (LiteLLM stream_timeout 模式 + full-jitter 退避 2 attempts):
+  - call_via54 (subprocess.Popen + select + os.read per-chunk idle 5s + startup grace 60s + 2 attempts + full-jitter 0-3s)
+  - call_via54_async (asyncio.create_subprocess_exec + read 4096 + wait_for 5s + 2 attempts + full-jitter)
+  - _call_llm_sync (subprocess.Popen + select + os.read + PYTHONUNBUFFERED=1 + FileNotFoundError 优雅 + kill cleanup try/except + 提取 CACHE_TTL_SECONDS=300)
+  - 真测: 长 thinking 任务 100% 成功 (改前 baseline 67% 失败)
+  - render 真测: 30 秒 (vision_desc 435 字 + 14 平台 jimeng)
+  - 简单 prompt: 11.46s 平均 ✅ || **d5c0f0b (本次)** | B42 mock 测 3 段构图新模板真工作: 跑 150 秒真出 3 段 (方案 1+2 LLM 真返 5 句话 + 平台建议, 方案 3 fallback 模板拼), reply_len=556, **没撞 "渲染超时"** ✅。call_via54 idle 30s→60s (77110db) + render idle 30s→60s (6ec15b6) + 3 段构图新模板 (212c805) + idle 5s→30s (8205b7c) 真治本 || **3a18b59 (本次)** | B38 + B39 真事件返"渲染超时"真因真找到: m12 bot 58336 跑老代码 (idle 5s) 时处理, B38 + B39 outbound 返占位符。**我之前没真重启 m12 bot** 让新代码生效, 3 段构图新模板 + idle 30s (212c805 + 8205b7c) 在 m12 bot 72119 (3:18 前启动) 才生效。**m12 bot 72119 真跑新代码, B40 mock 测 3 段构图 60+ 秒真返 3 段 (含 fallback)** ✅ |
 
 | Commit | 改什么 | 状态 |
 |--------|--------|------|
