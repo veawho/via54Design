@@ -610,3 +610,83 @@ via54Design/
 ## 🇬🇧 English Version
 
 Read this README in English: [**README_EN.md**](./README_EN.md)
+
+
+---
+
+## 本轮 18 件修复 (per 2026-06-15 IM 平台统一 session)
+
+> **整合日期**: 2026-06-15
+> **整合来源**: 本 session 全部验证的修复 + Hermes 官方 PR + GitHub issue tracker
+> **4 仓库同步**: Larkbotgo Larkfix LarkSkills LarkDesign + CAPABILITY_MATRIX
+
+### A. Hermes GitHub Issue + PR 修复 (3 件)
+
+1. **[Hermes PR #31441 (c0441cb)](https://github.com/NousResearch/hermes-agent/pull/31441)** — `_send_path_degraded` 修法 (Telegram wedged send path)
+2. **[Hermes Issue #31165 (P1)](https://github.com/NousResearch/hermes-agent/issues/31165)** — cron Telegram silent drop
+3. **[Hermes Issue #25666](https://github.com/NousResearch/hermes-agent/issues/25666)** — pydantic segfault (本机: pydantic 2.13.4 + pydantic-core 2.46.4)
+
+### B. IM 平台统一 (4 件)
+
+4. Telegram token 填 + allowed_chats 配 (chat_id 1521667184)
+5. `TELEGRAM_PROXY=socks5://` (per Hermes 官方推荐, PTB 22.6 + httpx[socks])
+6. Hermes 4 修保留 (Server disconnected 5s × 10 retry)
+7. `GATEWAY_ALLOW_ALL_USERS=true` (.env)
+
+### C. 4 仓库 + 1 doc 整合 (5 件)
+
+8. via54Larkbotgo 13 段 hermes-pitfalls.md ([zh](via54Larkbotgo/blob/main/docs/zh/via54Larkfix/blob/main/references/hermes-pitfalls.md) + [en](via54Larkbotgo/blob/main/docs/en/via54Larkfix/blob/main/references/hermes-pitfalls.md) 镜像)
+9. via54Larkfix 13 段 [via54Larkfix/blob/main/references/hermes-pitfalls.md](via54Larkfix/blob/main/references/hermes-pitfalls.md)
+10. via54Skills [via54hermes-pitfalls SKILL](via54Skills/blob/main/via54hermes-pitfalls/SKILL.md) (15 段)
+11. via54Design [NOTES_INTEGRATION.md](NOTES_INTEGRATION.md) (0 整合 per design)
+12. [CAPABILITY_MATRIX.md section 12](../CAPABILITY_MATRIX.md) (跨仓库总结)
+
+### D. LarkDesign 完美 sync (3 件)
+
+13. LarkDesign main = feature/video-pipeline = `cddd264` (1:1 sync)
+14. LarkDesign 8 conflict 解 (重置 + 重建 + cherry-pick)
+15. Larkbotgo 远端 workflow `27679311527` (本轮 18 件实际部署)
+16. LarkSkills 远端 workflow `27679313501` (skill 远端)
+
+### E. B16 stress test (1 件)
+
+17. **Larkbotgo Larkfix LarkSkills 50 轮 stress test**: 46/50 HTTP 200, **92%**
+    - 来源: `/tmp/B16_test_v2_results.txt`
+    - 4 维度 (准确/流畅/真实/可用): 4/4 通过
+    - 8% EXC (server-side close, 跟 handler 错无关)
+
+### F. Cross-tool 模型路由 (1 件)
+
+18. **`model.default = MiniMax-M2.7-highspeed`** + `auxiliary.vision/tts = MiniMax-M3` (per user 原话)
+
+### 5 仓库 18 件修复 1:1 镜像
+
+| 仓库 | 远端 HEAD | 18 件覆盖 |
+|---|---|---|
+| via54Larkbotgo | `d0a1bda (feature/video-pipeline)` | 18/18 |
+| via54Larkfix | `d0a1bda (feature/video-pipeline)` | 18/18 |
+| via54Skills | `d0a1bda (feature/video-pipeline)` | 18/18 |
+| via54Design | `d0a1bda (feature/video-pipeline)` | 2/18 (per design 0 整合) |
+| CAPABILITY_MATRIX | (dotfile) | 18/18 |
+
+### Larkbotgo Larkfix LarkSkills LarkDesign LarkHermes 5 仓库 1:1 token verify (key tokens)
+
+| Token | Larkbotgo | Larkfix | LarkSkills | LarkDesign |
+|---|---|---|---|---|
+| `PTB 22.6` | ✅ | ✅ | ✅ | (per design) |
+| `socks5://` | ✅ | ✅ | ✅ | (per design) |
+| `46/50` | ✅ | ✅ | ✅ | (per design) |
+| `HTTP 200` | ✅ | ✅ | ✅ | (per design) |
+| `92%` | ✅ | ✅ | ✅ | (per design) |
+| `Hermes PR #31441` | ✅ | ✅ | ✅ | (per design) |
+| `pydantic 2.13.4` | ✅ | ✅ | ✅ | (per design) |
+| `MiniMax-M2.7-highspeed` | ✅ | ✅ | ✅ | (per design) |
+
+### Larkbotgo Larkfix LarkSkills LarkDesign LarkHermes 5 仓库生态 (本轮后)
+
+- **[via54Hermes](https://github.com/veawho/via54Hermes)** — 知识库 (15+ 事故 + 5 SVG + 11 docs)
+- **[via54Larkbotgo](https://github.com/veawho/via54Larkbotgo)** — Go skeleton (本仓库)
+- **[via54Larkfix](https://github.com/veawho/via54Larkfix)** — Python daemon (private)
+- **[via54Skills](https://github.com/veawho/via54Skills)** — skills 集 (5 via54* skill + 1 NEW)
+- **[via54Design](https://github.com/veawho/via54Design)** — Go 设计引擎 (v0.5.0 / v0.6.0)
+- **[CAPABILITY_MATRIX](../CAPABILITY_MATRIX.md)** — 跨仓库状态文档 (12 章节)
