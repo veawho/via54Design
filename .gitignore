@@ -1,73 +1,63 @@
-# Binaries (all platforms)
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-huashu
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
 
-# Built project binaries (no extension on Linux/macOS)
-# Use leading slash + extension OR explicit binary name to avoid matching directories
-/via54.exe
-/via54
-via54-mcp.exe
-via54-mcp
-via54_new.exe
-via54_test.exe
-via54.exe~
-
-# Explicit binary paths under cmd/ (don't match the cmd/via54/ directory)
-/cmd/via54/via54
-/cmd/via54/via54.exe
-/cmd/via54/via54-mcp
-/cmd/via54/via54-mcp.exe
-
-# Build output
-dist/
-
-# Test binary
-*.test
-
-# IDE
-.idea/
+# Editors
 .vscode/
+.idea/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Temp
-/tmp/
-*.log
-
-# Node
-node_modules/
-
-# Test outputs
-*.html
-
-# But NOT the web UI templates
-!web/templates/*.html
+# Editors (jetbrains etc)
+*~
+*.bak
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*$py.class
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
 
-# Uploads
-web/uploads/
+# Python venv
+venv/
+.venv/
+env/
+.env.local
+.env.*.local
+
+# Output / reports (regenerable)
+reports/
+output.html
+*.log
+
+# Cached media (re-fetchable, see _scripts/{stock,subtitles}/*.mp4)
+_scripts/stock/
+_scripts/subtitles/
+*.mp4
+*.mp3
+*.wav
+
+# One-off artifacts
+DEPLOY_REPORT_*.md
+
+# Sensitive (lark-cli creds are root-only, never to be committed)
+*.enc
+master.key.file
+credentials.json
+secrets.yaml
 
 # Build artifacts
-*.exe~
-via54_new.exe
-minimax-output/
-
-# ============================================
-# Test artifacts (Pexels stock + rendered PNG)
-# ============================================
-# Stock footage (large MP4s, fetched from Pexels, regenerable)
-_scripts/stock/
-# Rendered subtitle PNGs (regenerable via gen_subtitle_*.py)
-_scripts/subtitles/
-# Test f...[truncated]
+bin/
+*.test
+*.out
+*.exe
+backups/
