@@ -1,5 +1,9 @@
 # via54Design
 
+
+> **🌐 Language**: [🇨🇳 中文](./README.md) | [🇺🇸 English](#) (current)
+>
+> _This document is in English. For Chinese, click above._
 > Design template engine + narrative engine + media pipeline (Go). Turn one-line inspiration into video/PPT/creative images.
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
