@@ -610,3 +610,15 @@ via54Design/
 ## 🇬🇧 English Version
 
 Read this README in English: [**README_EN.md**](./README_EN.md)
+
+
+## 🔗 集成 (v0.8.0 新增)
+
+via54Design v0.8.0 跟踪 4 个高星视频生成项目, 计划 v0.9.0 集成 diffusers, v1.0 完整 pipeline:
+
+- [huggingface/diffusers](https://github.com/huggingface/diffusers) (33.9K) - State-of-the-art diffusion models
+- [calesthio/OpenMontage](https://github.com/calesthio/OpenMontage) (27.9K) - Agentic video production (12 pipelines, 52 tools)
+- [AIDC-AI/Pixelle-Video](https://github.com/AIDC-AI/Pixelle-Video) (23.8K) - AI fully automated short video engine
+- [krillinai/KrillinAI](https://github.com/krillinai/KrillinAI) (10.4K) - AI video translation & dubbing
+
+详见 [integrations/README.md](integrations/README.md) 和 [REFERENCES.md](REFERENCES.md).

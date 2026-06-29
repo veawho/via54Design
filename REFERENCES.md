@@ -33,6 +33,20 @@
 
 ---
 
+
+## Top 高星项目 (2026-06-29 audit, by stars)
+
+| Project | ★ Stars | 描述 | Link |
+|---------|---------|------|------|
+| huggingface/diffusers | 33,952 | Diffusion models (image/video/audio) | [GitHub](https://github.com/huggingface/diffusers) |
+| calesthio/OpenMontage | 27,921 | Agentic video production (12 pipelines) | [GitHub](https://github.com/calesthio/OpenMontage) |
+| AIDC-AI/Pixelle-Video | 23,800 | AI fully automated short video engine | [GitHub](https://github.com/AIDC-AI/Pixelle-Video) |
+| krillinai/KrillinAI | 10,419 | AI video translation & dubbing | [GitHub](https://github.com/krillinai/KrillinAI) |
+
+_Inspired by these projects, see CHANGELOG for integration plans._
+
+---
+
 ## English
 
 This project is part of the via54 series. Explore the via54 ecosystem:

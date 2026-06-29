@@ -4,6 +4,17 @@ All notable changes to via54Design are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+
+## [0.8.0] - 2026-06-29
+
+- Add integrations/ for OpenMontage (27K), diffusers (33K), Pixelle-Video (23K), KrillinAI (10K). Plan v6 pipeline release.
+## [0.6.1 + v6 pipeline] - 2026-06-29
+
+- Plan: v6 video pipeline release v1.0 (move _scripts/v6_*.py to src/v6/)
+- Plan: Integrate diffusers API for AI video generation
+- Add architecture-comparison docs (OpenMontage 12 pipelines, 52 tools, 500+ skills)
+
 ## [Unreleased]
 
 ### Added
