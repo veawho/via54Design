@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "via54Design"
+abstract: "Design template engine + narrative engine + media pipeline (Go). Turn one-line inspiration into video/PPT/creative images."
+authors:
+  - family-names: "veawho"
+    given-names: "巫师叔叔"
+    alias: "veawho"
+date-released: 2026-06-29
+license: AGPL-3.0
+repository-code: "https://github.com/veawho/via54Design"
+keywords:
+  - via54
+  - veawho
+  - design
