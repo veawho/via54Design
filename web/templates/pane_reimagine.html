@@ -38,6 +38,20 @@
         <option value="mono-terminal" data-i18n-key="font-hint-mono">字体: JetBrains Mono</option>
       </select>
 
+      <!-- Custom Config File Upload -->
+      <div style="margin-bottom:8px">
+        <label for="cfgFile" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <span data-i18n-key="upload-custom-config">上传自定义配置 (JSON)</span>
+        </label>
+        <input type="file" id="cfgFile" accept=".json" style="display:none" onchange="loadCustomConfig(this)">
+      </div>
+
+      <!-- Hidden inputs for custom style variables -->
+      <input type="hidden" name="custom_color_vars" id="custom_color_vars" value="">
+      <input type="hidden" name="custom_font_import" id="custom_font_import" value="">
+      <input type="hidden" name="custom_font_family" id="custom_font_family" value="">
+
       <div style="display:flex;gap:6px">
         <button type="submit" class="btn-primary">复刻为 HTML</button>
         <span id="rSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">LLM Vision 调用中...</span>
@@ -58,3 +72,165 @@
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  // 1. Load system fonts dynamically from backend API and populate into font_hint select!
+  fetch('/api/local-fonts')
+    .then(r => r.json())
+    .then(fonts => {
+      const select = document.querySelector('select[name="font_hint"]');
+      if (select && fonts && fonts.length > 0) {
+        // Remove existing optgroup if any
+        const existing = select.querySelector('optgroup[label="本地系统字体"]');
+        if (existing) existing.remove();
+
+        const group = document.createElement('optgroup');
+        group.label = "本地系统字体";
+        fonts.forEach(f => {
+          const opt = document.createElement('option');
+          opt.value = f;
+          opt.textContent = `字体: ${f}`;
+          group.appendChild(opt);
+        });
+        select.appendChild(group);
+      }
+    })
+    .catch(err => console.error("读取本地系统字体失败", err));
+
+  // 2. Load custom config from localStorage if it exists and populate selects
+  const cached = localStorage.getItem('via54_custom_design_config');
+  if (cached) {
+    try {
+      const data = JSON.parse(cached);
+      applyCustomConfigToReimagine(data);
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  // 3. Setup form hook to populate hidden inputs if custom styles are chosen
+  const form = document.querySelector('form[hx-post="/api/htmx/reimagine"]');
+  if (form) {
+    // When submitting or changing selections, populate the hidden variables
+    form.addEventListener('submit', function(e) {
+      const colorSelect = form.querySelector('select[name="color_hint"]');
+      const fontSelect = form.querySelector('select[name="font_hint"]');
+      const layoutSelect = form.querySelector('select[name="layout_hint"]');
+
+      // Reset hidden inputs
+      form.querySelector('#custom_color_vars').value = "";
+      form.querySelector('#custom_font_import').value = "";
+      form.querySelector('#custom_font_family').value = "";
+
+      const cachedData = localStorage.getItem('via54_custom_design_config');
+      if (cachedData) {
+        const data = JSON.parse(cachedData);
+        
+        // If chosen color is custom, populate its variables
+        if (colorSelect && colorSelect.value.startsWith('custom-color-')) {
+          const cid = colorSelect.value.replace('custom-color-', '');
+          const cObj = data.colors.find(c => c.id === cid);
+          if (cObj && cObj.variables) {
+            form.querySelector('#custom_color_vars').value = JSON.stringify(cObj.variables);
+            // Temporarily store selected value, replace select value with "" so CLI backend ignores preset ID
+            setTimeout(() => { colorSelect.value = ""; }, 50);
+          }
+        }
+
+        // If chosen font is custom, populate import_url and css_family
+        if (fontSelect && fontSelect.value.startsWith('custom-font-')) {
+          const fid = fontSelect.value.replace('custom-font-', '');
+          const fObj = data.fonts.find(f => f.id === fid);
+          if (fObj) {
+            form.querySelector('#custom_font_import').value = fObj.import_url || "";
+            form.querySelector('#custom_font_family').value = fObj.css_family || "";
+            // Temporarily store selected value, replace select value with "" so CLI backend ignores preset ID
+            setTimeout(() => { fontSelect.value = ""; }, 50);
+          }
+        }
+
+        // If chosen layout is custom, replace layout_hint value with the custom prompt description
+        if (layoutSelect && layoutSelect.value.startsWith('custom-layout-')) {
+          const lid = layoutSelect.value.replace('custom-layout-', '');
+          const lObj = data.layouts.find(l => l.id === lid);
+          if (lObj) {
+            // Temporarily set value to prompt text so it is passed to CLI layout-hint argument
+            const originalVal = layoutSelect.value;
+            layoutSelect.value = lObj.prompt || "";
+            setTimeout(() => { layoutSelect.value = originalVal; }, 50);
+          }
+        }
+      }
+    });
+  }
+})();
+
+// Function called when custom config is uploaded
+function loadCustomConfig(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      // Validate schema
+      if (!data.layouts && !data.colors && !data.fonts) {
+        alert("JSON 格式不正确，需包含 layouts, colors 或 fonts 定义！");
+        return;
+      }
+      localStorage.setItem('via54_custom_design_config', JSON.stringify(data));
+      applyCustomConfigToReimagine(data);
+      alert("自定义样式配置上传并加载成功！");
+    } catch(err) {
+      alert("解析 JSON 失败: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function applyCustomConfigToReimagine(data) {
+  const layoutSelect = document.querySelector('select[name="layout_hint"]');
+  const colorSelect = document.querySelector('select[name="color_hint"]');
+  const fontSelect = document.querySelector('select[name="font_hint"]');
+
+  // Remove existing custom options
+  const removeCustomOptions = (select) => {
+    if (!select) return;
+    Array.from(select.options).forEach(opt => {
+      if (opt.value.startsWith('custom-')) {
+        opt.remove();
+      }
+    });
+  };
+  removeCustomOptions(layoutSelect);
+  removeCustomOptions(colorSelect);
+  removeCustomOptions(fontSelect);
+
+  // Append new custom options
+  if (data.layouts && layoutSelect) {
+    data.layouts.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = `custom-layout-${l.id}`;
+      opt.textContent = `布局: ${l.name} [自定义]`;
+      layoutSelect.appendChild(opt);
+    });
+  }
+  if (data.colors && colorSelect) {
+    data.colors.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = `custom-color-${c.id}`;
+      opt.textContent = `配色: ${c.name} [自定义]`;
+      colorSelect.appendChild(opt);
+    });
+  }
+  if (data.fonts && fontSelect) {
+    data.fonts.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = `custom-font-${f.id}`;
+      opt.textContent = `字体: ${f.name} [自定义]`;
+      fontSelect.appendChild(opt);
+    });
+  }
+}
+</script>

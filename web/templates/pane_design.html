@@ -116,3 +116,30 @@
     <div id="dDocOutput" style="margin-top:8px"></div>
   </div>
 </div>
+
+
+<script>
+(function() {
+  fetch('/api/local-fonts')
+    .then(r => r.json())
+    .then(fonts => {
+      const select = document.querySelector('select[name="font"]');
+      if (select && fonts && fonts.length > 0) {
+        // Clear any previous optgroup
+        const existing = select.querySelector('optgroup[label="本地系统字体"]');
+        if (existing) existing.remove();
+        
+        const group = document.createElement('optgroup');
+        group.label = "本地系统字体";
+        fonts.forEach(f => {
+          const opt = document.createElement('option');
+          opt.value = f;
+          opt.textContent = f;
+          group.appendChild(opt);
+        });
+        select.appendChild(group);
+      }
+    })
+    .catch(err => console.error("读取系统字体失败:", err));
+})();
+</script>

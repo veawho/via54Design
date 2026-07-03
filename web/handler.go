@@ -9,6 +9,7 @@ package web
 import (
 	"bytes"
 	"embed"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -17,8 +18,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
+	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/veawho/via54Design/internal/vision"
@@ -74,6 +78,7 @@ func Handler(bd string) http.Handler {
 	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir(uploadDir()))))
 
 	// ── HTMX endpoints (return HTML fragments, no JS) ──
+	mux.HandleFunc("/api/local-fonts", handleLocalFonts)
 	mux.HandleFunc("/api/htmx/status", handleHTMXStatus)
 	mux.HandleFunc("/api/htmx/pane", handleHTMXPane)
 	mux.HandleFunc("/api/htmx/generate", handleHTMXGenerate)
@@ -1054,9 +1059,16 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 	font := r.FormValue("font")
 	if font == "" {
-		font = "ming-hei-editorial"
+		font = "display-sans-bold"
 	}
 	pres := mode == "presentation"
+
+	// If the chosen font is a local system font rather than preset ID, fallback to display-sans-bold for compiler
+	originalFont := font
+	isPreset := font == "display-sans-bold" || font == "cormorant-elegant" || font == "mono-terminal" || font == "ming-hei-editorial" || font == "system-utility"
+	if !isPreset {
+		font = "display-sans-bold"
+	}
 
 	exe := selfPath()
 	args := []string{"generate", "--layout", layout, "--color", color, "--font", font, "--title", title}
@@ -1070,6 +1082,20 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		htmxError(w, fmt.Sprintf("生成失败: %v\n<pre style='font-size:11px'>%s</pre>", err, string(out)))
 		return
 	}
+	// Post-processing to inject system font override if necessary
+	if !isPreset && originalFont != "" {
+		outPath := filepath.Join(baseDir, "output.html")
+		htmlBytes, err := os.ReadFile(outPath)
+		if err == nil {
+			html := string(htmlBytes)
+			// Replace display font, body font, and general styling fonts with local family name
+			html = strings.ReplaceAll(html, "'Archivo Black', 'Anton', 'Manrope', sans-serif", fmt.Sprintf("'%s', sans-serif", originalFont))
+			html = strings.ReplaceAll(html, "'Inter', -apple-system, 'Helvetica Neue', sans-serif", fmt.Sprintf("'%s', sans-serif", originalFont))
+			html = strings.ReplaceAll(html, "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans', 'Microsoft YaHei', 'Meiryo', 'Noto Sans SC', sans-serif", originalFont)
+			_ = os.WriteFile(outPath, []byte(html), 0644)
+		}
+	}
+
 	htmxWrite(w, fmt.Sprintf(`<div class="output-area">✅ 已生成 (%d bytes)<br><br><a href="/api/htmx/download?name=%s" class="btn-small">📥 下载 HTML</a></div>`, len(out), title))
 }
 
@@ -1432,6 +1458,11 @@ func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
 	layoutHint := r.FormValue("layout_hint")
 	colorHint := r.FormValue("color_hint")
 	fontHint := r.FormValue("font_hint")
+	
+	// Custom config parameters sent from UI
+	customColorVars := r.FormValue("custom_color_vars")
+	customFontImport := r.FormValue("custom_font_import")
+	customFontFamily := r.FormValue("custom_font_family")
 
 	exePath := selfPath()
 	if _, statErr := os.Stat(exePath); statErr != nil {
@@ -1459,12 +1490,19 @@ func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 读生成的 HTML 嵌入预览
+	// 读生成的 HTML 并注入自定义样式参数
 	htmlBytes, err := os.ReadFile(outPath)
 	if err != nil {
 		htmxError(w, "读取生成结果失败: "+err.Error())
 		return
 	}
+	
+	// Override styles if custom configuration variables are present
+	if customColorVars != "" || customFontImport != "" || customFontFamily != "" {
+		htmlBytes = []byte(injectCustomStyles(string(htmlBytes), customColorVars, customFontImport, customFontFamily))
+		_ = os.WriteFile(outPath, htmlBytes, 0644)
+	}
+
 	htmlPreview := string(htmlBytes)
 	if len(htmlPreview) > 8000 {
 		htmlPreview = htmlPreview[:8000] + "\n\n... (truncated)"
@@ -1481,4 +1519,217 @@ func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
   <span style="font-size:11px;color:var(--text-dim);margin-left:8px">/uploads/%s</span>
 </div>
 `, len(htmlBytes), provider, htmlPreview, outFilename, outFilename))
+}
+
+
+// ═══════════════════════════════════════════════════════
+// Local Font Scanning & Custom Styling Injections
+// ═══════════════════════════════════════════════════════
+
+var (
+	localFontsCache []string
+	localFontsMutex sync.Mutex
+)
+
+func handleLocalFonts(w http.ResponseWriter, r *http.Request) {
+	fonts := getLocalFontsCached()
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(fonts)
+}
+
+func getLocalFontsCached() []string {
+	localFontsMutex.Lock()
+	defer localFontsMutex.Unlock()
+
+	if len(localFontsCache) > 0 {
+		return localFontsCache
+	}
+
+	dirs := getSystemFontDirs()
+	fontMap := make(map[string]bool)
+
+	for _, dir := range dirs {
+		_ = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return nil
+			}
+			if info.IsDir() {
+				return nil
+			}
+			ext := strings.ToLower(filepath.Ext(path))
+			if ext == ".ttf" || ext == ".otf" {
+				family, err := readFontFamily(path)
+				if err == nil && family != "" {
+					family = strings.TrimSpace(family)
+					if !strings.HasPrefix(family, ".") && len(family) > 1 {
+						fontMap[family] = true
+					}
+				} else {
+					base := filepath.Base(path)
+					name := strings.TrimSuffix(base, filepath.Ext(base))
+					name = strings.ReplaceAll(name, "-", " ")
+					name = strings.ReplaceAll(name, "_", " ")
+					name = strings.Title(name)
+					fontMap[name] = true
+				}
+			}
+			if len(fontMap) >= 150 {
+				return filepath.SkipDir
+			}
+			return nil
+		})
+		if len(fontMap) >= 150 {
+			break
+		}
+	}
+
+	var list []string
+	for k := range fontMap {
+		list = append(list, k)
+	}
+	sort.Strings(list)
+	localFontsCache = list
+	return list
+}
+
+func getSystemFontDirs() []string {
+	var dirs []string
+	switch runtime.GOOS {
+	case "windows":
+		windir := os.Getenv("WINDIR")
+		if windir == "" {
+			windir = "C:\\Windows"
+		}
+		dirs = append(dirs, filepath.Join(windir, "Fonts"))
+		localappdata := os.Getenv("LOCALAPPDATA")
+		if localappdata != "" {
+			dirs = append(dirs, filepath.Join(localappdata, "Microsoft\\Windows\\Fonts"))
+		}
+	case "darwin":
+		dirs = append(dirs, "/Library/Fonts", "/System/Library/Fonts", filepath.Join(os.Getenv("HOME"), "Library/Fonts"))
+	default:
+		dirs = append(dirs, "/usr/share/fonts", "/usr/local/share/fonts", filepath.Join(os.Getenv("HOME"), ".fonts"))
+	}
+	return dirs
+}
+
+func readFontFamily(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	header := make([]byte, 12)
+	if _, err := io.ReadFull(f, header); err != nil {
+		return "", err
+	}
+
+	numTables := binary.BigEndian.Uint16(header[4:6])
+
+	dirs := make([]byte, numTables*16)
+	if _, err := io.ReadFull(f, dirs); err != nil {
+		return "", err
+	}
+
+	var nameOffset uint32
+	var nameLen uint32
+	for i := 0; i < int(numTables); i++ {
+		offset := i * 16
+		tag := string(dirs[offset : offset+4])
+		if tag == "name" {
+			nameOffset = binary.BigEndian.Uint32(dirs[offset+8 : offset+12])
+			nameLen = binary.BigEndian.Uint32(dirs[offset+12 : offset+16])
+			break
+		}
+	}
+
+	if nameOffset == 0 {
+		return "", io.EOF
+	}
+
+	if _, err := f.Seek(int64(nameOffset), io.SeekStart); err != nil {
+		return "", err
+	}
+	nameTable := make([]byte, nameLen)
+	if _, err := io.ReadFull(f, nameTable); err != nil {
+		return "", err
+	}
+
+	if len(nameTable) < 6 {
+		return "", io.EOF
+	}
+
+	count := binary.BigEndian.Uint16(nameTable[2:4])
+	stringOffset := binary.BigEndian.Uint16(nameTable[4:6])
+
+	for i := 0; i < int(count); i++ {
+		offset := 6 + i*12
+		if offset+12 > len(nameTable) {
+			break
+		}
+		nameID := binary.BigEndian.Uint16(nameTable[offset+6 : offset+8])
+		if nameID == 1 {
+			length := binary.BigEndian.Uint16(nameTable[offset+8 : offset+10])
+			strOff := binary.BigEndian.Uint16(nameTable[offset+10 : offset+12])
+			
+			start := int(stringOffset) + int(strOff)
+			end := start + int(length)
+			if end <= len(nameTable) {
+				raw := nameTable[start:end]
+				platformID := binary.BigEndian.Uint16(nameTable[offset : offset+2])
+				if platformID == 0 || platformID == 3 {
+					runes := make([]rune, len(raw)/2)
+					for j := 0; j < len(runes); j++ {
+						runes[j] = rune(binary.BigEndian.Uint16(raw[j*2 : j*2+2]))
+					}
+					name := string(runes)
+					if name != "" {
+						return name, nil
+					}
+				} else {
+					name := string(raw)
+					if name != "" {
+						return name, nil
+					}
+				}
+			}
+		}
+	}
+
+	return "", io.EOF
+}
+
+func injectCustomStyles(html string, colorVars string, fontImport string, fontFamily string) string {
+	if fontImport != "" {
+		linkTag := fmt.Sprintf(`<link href="%s" rel="stylesheet">`, fontImport)
+		if strings.Contains(html, "</head>") {
+			html = strings.Replace(html, "</head>", linkTag+"\n</head>", 1)
+		} else {
+			html = linkTag + "\n" + html
+		}
+	}
+
+	var cssInject strings.Builder
+	cssInject.WriteString("\n  :root {\n")
+	if colorVars != "" {
+		var vars map[string]string
+		if err := json.Unmarshal([]byte(colorVars), &vars); err == nil {
+			for k, v := range vars {
+				cssInject.WriteString(fmt.Sprintf("    %s: %s !important;\n", k, v))
+			}
+		}
+	}
+	if fontFamily != "" {
+		cssInject.WriteString(fmt.Sprintf("    --font-sans: %s !important;\n", fontFamily))
+		cssInject.WriteString(fmt.Sprintf("    font-family: %s !important;\n", fontFamily))
+	}
+	cssInject.WriteString("  }\n")
+
+	if strings.Contains(html, "</style>") {
+		html = strings.Replace(html, "</style>", cssInject.String()+"</style>", 1)
+	} else if strings.Contains(html, "</head>") {
+		html = strings.Replace(html, "</head>", fmt.Sprintf("<style>%s</style>\n</head>", cssInject.String()), 1)
+	}
+	return html
 }
