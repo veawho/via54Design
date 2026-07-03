@@ -20,6 +20,8 @@ package media
 
 import (
 	"archive/tar"
+	"archive/zip"
+	"bytes"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -37,7 +39,7 @@ const vtracerVersion = "0.6.4"
 
 // vtracerReleaseURL 下载地址模板
 var vtracerReleaseURL = fmt.Sprintf(
-	"https://github.com/visioncortex/vtracer/releases/download/v%s/vtracer-%%s-%%s.%%s",
+	"https://github.com/visioncortex/vtracer/releases/download/%s/vtracer-%%s-%%s.%%s",
 	vtracerVersion)
 
 // downloadURL 返回当前平台的 VTracer 下载 URL
@@ -145,15 +147,36 @@ func vtracerPath() (string, error) {
 		return "", fmt.Errorf("压缩包中未找到 %s", binName)
 	} else {
 		// zip (Windows)
-		out, err := os.Create(localPath)
+		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("读取响应字节失败: %w", err)
 		}
-		defer out.Close()
-		io.Copy(out, resp.Body)
-		os.Chmod(localPath, 0755)
-		fmt.Fprintf(os.Stderr, "✅ VTracer 已下载到 %s\n", localPath)
-		return localPath, nil
+		zr, err := zip.NewReader(bytes.NewReader(bodyBytes), int64(len(bodyBytes)))
+		if err != nil {
+			return "", fmt.Errorf("解析 ZIP 失败: %w", err)
+		}
+		for _, f := range zr.File {
+			if f.Name == binName || strings.HasSuffix(f.Name, "/"+binName) {
+				rc, err := f.Open()
+				if err != nil {
+					return "", err
+				}
+				defer rc.Close()
+				out, err := os.Create(localPath)
+				if err != nil {
+					return "", err
+				}
+				defer out.Close()
+				_, err = io.Copy(out, rc)
+				if err != nil {
+					return "", err
+				}
+				_ = os.Chmod(localPath, 0755)
+				fmt.Fprintf(os.Stderr, "✅ VTracer 已从 ZIP 解压并保存至 %s\n", localPath)
+				return localPath, nil
+			}
+		}
+		return "", fmt.Errorf("ZIP 压缩包中未找到 %s", binName)
 	}
 }
 
