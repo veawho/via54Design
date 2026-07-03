@@ -274,20 +274,128 @@ body::before {
   letter-spacing: 0.5px;
 }
 
-/* Workflow Content Container */
-.workflow-content {
+/* Split Pane Workspace */
+.app-container {
+  display: flex;
   flex: 1;
-  overflow: auto;
-  padding: var(--space-3);
+  overflow: hidden;
+  height: calc(100vh - 210px); /* 100vh minus hero and navigation height */
+}
+.left-pane {
+  width: 40%;
+  min-width: 380px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 24px;
+  background: rgba(10, 10, 15, 0.4);
+}
+.right-pane {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  background: #020203;
   position: relative;
-  z-index: 1;
-  max-width: 1200px;
+}
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  height: 48px;
+  flex-shrink: 0;
+}
+.preview-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.preview-controls {
+  display: flex;
+  gap: 8px;
+}
+.device-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.device-btn:hover {
+  border-color: var(--border-glow);
+  color: var(--text-primary);
+}
+.device-btn.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+.iframe-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #09090c;
+  overflow: auto;
+}
+.preview-iframe {
   width: 100%;
-  margin: 0 auto;
+  height: 100%;
+  border: none;
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 45px rgba(0,0,0,0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Device layouts */
+.preview-iframe.tablet {
+  width: 768px;
+  height: 100%;
+  max-height: 1024px;
+}
+.preview-iframe.mobile {
+  width: 375px;
+  height: 100%;
+  max-height: 812px;
+}
+
+@media (max-width: 992px) {
+  .app-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .left-pane {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    height: auto;
+    overflow: visible;
+  }
+  .right-pane {
+    width: 100%;
+    height: 600px;
+  }
+}
+
+/* Workflow Content Container (Backward compatibility style class) */
+.workflow-content {
+  width: 100%;
+  height: 100%;
 }
 .flow-steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   width: 100%;
 }
@@ -509,9 +617,25 @@ body::before {
   </a>
 </div>
 
-<!-- Main Pane Container -->
-<div id="pane-container" class="workflow-content" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
-  <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">⏳ 正在初始化设计系统环境...</div>
+<!-- Split Pane App Container -->
+<div class="app-container">
+  <div class="left-pane" id="pane-container" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
+    <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">⏳ 正在初始化设计系统环境...</div>
+  </div>
+  
+  <div class="right-pane">
+    <div class="preview-header">
+      <span class="preview-title" id="preview-lbl" data-i18n-key="preview-title">🖥️ 实时交互预览</span>
+      <div class="preview-controls">
+        <button onclick="setDevice('desktop')" class="device-btn active" id="dev-desktop">Desktop</button>
+        <button onclick="setDevice('tablet')" class="device-btn" id="dev-tablet">Tablet</button>
+        <button onclick="setDevice('mobile')" class="device-btn" id="dev-mobile">Mobile</button>
+      </div>
+    </div>
+    <div class="iframe-container">
+      <iframe src="/api/htmx/preview" id="preview-frame" class="preview-iframe"></iframe>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -701,6 +825,11 @@ const i18n = {
 
 let currentLang = localStorage.getItem('via54_lang') || 'zh';
 
+// Add new translation keys to dictionary
+i18n.zh["preview-title"] = "🖥️ 实时交互预览";
+i18n.en["preview-title"] = "🖥️ Live Preview";
+i18n.jp["preview-title"] = "🖥️ リアルタイムプレビュー";
+
 function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('via54_lang', lang);
@@ -720,7 +849,6 @@ function translatePage() {
   document.querySelectorAll('[data-i18n-key]').forEach(el => {
     const key = el.getAttribute('data-i18n-key');
     if (dict[key]) {
-      // Keep em styling in hero-role
       if (key === 'Design') {
         el.innerHTML = dict[key];
       } else {
@@ -735,11 +863,10 @@ function translatePage() {
     NodeFilter.SHOW_TEXT,
     {
       acceptNode: function(node) {
-        // Skip script, style and non-visual nodes
         const parent = node.parentElement;
         if (!parent) return NodeFilter.FILTER_REJECT;
         const tag = parent.tagName.toLowerCase();
-        if (tag === 'script' || tag === 'style' || parent.closest('.lang-switcher')) {
+        if (tag === 'script' || tag === 'style' || parent.closest('.lang-switcher') || parent.closest('.preview-controls')) {
           return NodeFilter.FILTER_REJECT;
         }
         return NodeFilter.FILTER_ACCEPT;
@@ -777,9 +904,52 @@ function translatePage() {
   });
 }
 
+// ── Preview Sandbox Controls ──
+function setDevice(device) {
+  const iframe = document.getElementById('preview-frame');
+  if (!iframe) return;
+  
+  // Update button active style
+  document.querySelectorAll('.device-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('dev-' + device).classList.add('active');
+  
+  // Set iframe device class
+  iframe.className = 'preview-iframe';
+  if (device !== 'desktop') {
+    iframe.classList.add(device);
+  }
+}
+
 // Listen to swaps by HTMX and automatically translate the loaded HTML fragments
 document.addEventListener('htmx:afterSwap', function(evt) {
   translatePage();
+  
+  // Check if a path hidden input was rendered (file upload completed or compilation succeeded)
+  const hiddenPath = evt.detail.target.querySelector('input[name="_path"]');
+  const iframe = document.getElementById('preview-frame');
+  
+  if (hiddenPath && iframe) {
+    const val = hiddenPath.value;
+    const filename = val.split(/\/|\\/).pop();
+    
+    // Auto-update preview iframe source on design or reimagine output success!
+    if (val.includes('reimagined_') || val.includes('shot_')) {
+      iframe.src = '/uploads/' + filename;
+    } else if (val.includes('s2p_')) {
+      // Document uploaded - nothing to display in preview iframe, just keep it
+    }
+  }
+});
+
+// Listen to htmx request completions to refresh the design output preview
+document.addEventListener('htmx:afterRequest', function(evt) {
+  if (evt.detail.pathInfo.requestPath === '/api/htmx/generate' && evt.detail.successful) {
+    const iframe = document.getElementById('preview-frame');
+    if (iframe) {
+      // Force refresh preview by appending time query parameter
+      iframe.src = '/api/htmx/preview?t=' + Date.now();
+    }
+  }
 });
 
 // Run translation once DOM is fully parsed

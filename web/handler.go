@@ -85,6 +85,7 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/htmx/forge-status", handleHTMXForgeStatus)
 	mux.HandleFunc("/api/htmx/reimagine", handleHTMXReimagine)
 	mux.HandleFunc("/api/htmx/download", handleHTMXDownload)
+	mux.HandleFunc("/api/htmx/preview", handleHTMXPreview)
 	return mux
 }
 
@@ -1088,6 +1089,18 @@ func handleHTMXDownload(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+func handleHTMXPreview(w http.ResponseWriter, r *http.Request) {
+	path := filepath.Join(baseDir, "output.html")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Write([]byte(`<html><body style="background:#050508;color:#737068;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:20px;text-align:center"><div><div style="font-size:32px;margin-bottom:12px">🖥️</div><div style="font-size:14px;font-weight:600">via54Design Sandbox Preview</div><div style="font-size:12px;margin-top:6px;opacity:0.8">No preview generated yet. Enter parameters on the left and click Generate HTML.</div></div></body></html>`))
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(data)
+}
+
 
 func handleHTMXPrompt(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -1389,24 +1402,28 @@ func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 拿截图文件
-	file, header, err := r.FormFile("screenshot")
-	if err != nil {
-		htmxError(w, "截图未上传")
+	dst := r.FormValue("_path")
+	if dst == "" {
+		file, header, err := r.FormFile("screenshot")
+		if err == nil {
+			defer file.Close()
+			ext := strings.ToLower(filepath.Ext(header.Filename))
+			filename := fmt.Sprintf("shot_%d%s", time.Now().UnixNano(), ext)
+			dst = filepath.Join(uploadDir(), filename)
+			out, err := os.Create(dst)
+			if err == nil {
+				io.Copy(out, file)
+				out.Close()
+			} else {
+				htmxError(w, "保存截图失败: "+err.Error())
+				return
+			}
+		}
+	}
+	if dst == "" {
+		htmxError(w, "截图未上传，或上传数据损坏")
 		return
 	}
-	defer file.Close()
-
-	ext := strings.ToLower(filepath.Ext(header.Filename))
-	filename := fmt.Sprintf("shot_%d%s", time.Now().UnixNano(), ext)
-	dst := filepath.Join(uploadDir(), filename)
-	out, err := os.Create(dst)
-	if err != nil {
-		htmxError(w, "保存截图失败: "+err.Error())
-		return
-	}
-	io.Copy(out, file)
-	out.Close()
 
 	provider := r.FormValue("provider")
 	if provider == "" {
