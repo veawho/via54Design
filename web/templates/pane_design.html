@@ -1,140 +1,233 @@
 <div class="flow-steps">
-  <!-- Active Template card -->
-  <form hx-post="/api/htmx/generate" hx-target="#dOutput" hx-indicator="#dSpin">
-    <div class="template-card">
-      <div class="template-card-header" data-i18n-key="active-template">Active Template</div>
-      <div class="template-card-title">
-        <select name="layout" class="custom-select" style="font-size:18px;font-weight:700;background:transparent;border:none;padding:0;text-align:left;min-width:200px;color:var(--text-primary)">
-          <option value="">加载中...</option>
-        </select>
-      </div>
-      
-      <div class="form-row">
-        <span class="form-label" data-i18n-key="responsive-design">Responsive Design</span>
-        <div class="control-right">
-          <span style="font-size:11px;color:var(--accent)" data-i18n-key="active">Active</span>
-          <label class="switch">
-            <input type="checkbox" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-      
-      <div class="form-row">
-        <span class="form-label" data-i18n-key="layout-mode">Layout Mode</span>
-        <div class="control-right">
-          <select name="mode" class="custom-select">
-            <option value="presentation" data-i18n-key="presentation-16-9">16:9 Presentation</option>
-            <option value="" data-i18n-key="web-responsive">Web Responsive</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Lovart Style Tabs -->
-    <div class="lovart-tabs">
-      <span class="lovart-tab" onclick="switchDesignTab('details')" id="tab-btn-details" data-i18n-key="tab-details">Details</span>
-      <span class="lovart-tab active" onclick="switchDesignTab('styles')" id="tab-btn-styles" data-i18n-key="tab-styles">Styles</span>
-      <span class="lovart-tab" onclick="switchDesignTab('content')" id="tab-btn-content" data-i18n-key="tab-content">Content</span>
-      <span class="lovart-tab" onclick="switchDesignTab('settings')" id="tab-btn-settings" data-i18n-key="tab-settings">Settings</span>
-    </div>
-    
-    <!-- Tab pane sections -->
-    <div class="template-card" style="margin-bottom: 16px">
-      <!-- Section 1: Details -->
-      <div id="section-details" class="design-section" style="display:none">
-        <div class="form-row">
-          <span class="form-label" data-i18n-key="title-input">Design Title</span>
-          <div class="control-right">
-            <input type="text" name="title" value="Aurum Homes" placeholder="Title" style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:4px 8px;font-size:12px">
-          </div>
-        </div>
-        <div class="form-row">
-          <span class="form-label">作者 (Author)</span>
-          <div class="control-right">
-            <input type="text" value="via54Design" readonly style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);padding:4px 8px;font-size:12px">
-          </div>
-        </div>
-      </div>
+  <!-- Sub Tabs Navigation -->
+  <div class="lovart-tabs" style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px">
+    <span class="lovart-tab active" onclick="switchDesignSubTab('prompt')" id="subtab-design-prompt">💬 一句话生成 (LLM)</span>
+    <span class="lovart-tab" onclick="switchDesignSubTab('image')" id="subtab-design-image">🖼️ 一张图生成 (图片分析)</span>
+    <span class="lovart-tab" onclick="switchDesignSubTab('doc')" id="subtab-design-doc">📄 一个文档生成 (文件分析)</span>
+  </div>
 
-      <!-- Section 2: Styles (Active by default) -->
-      <div id="section-styles" class="design-section">
-        <div class="form-row">
-          <span class="form-label" data-i18n-key="base-color">Theme Palette</span>
-          <div class="control-right">
-            <select name="color" class="custom-select">
-              <option value="">加载中...</option>
-            </select>
-          </div>
+  <!-- Section 1: Prompt Guided Sandbox -->
+  <div id="design-section-prompt" class="subtab-section">
+    <form hx-post="/api/htmx/generate" hx-target="#dOutput" hx-indicator="#dSpin">
+      <div class="template-card">
+        <div class="template-card-header">设计方案 (Active Template)</div>
+        <div class="template-card-title">
+          <select name="layout" class="custom-select" style="font-size:18px;font-weight:700;background:transparent;border:none;padding:0;text-align:left;min-width:200px;color:var(--text-primary)">
+            <option value="">加载中...</option>
+          </select>
         </div>
         
         <div class="form-row">
-          <span class="form-label" data-i18n-key="font-family">Font Family</span>
+          <span class="form-label" data-i18n-key="responsive-design">Responsive Design</span>
           <div class="control-right">
-            <select name="font" class="custom-select">
-              <option value="">加载中...</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 3: Content -->
-      <div id="section-content" class="design-section" style="display:none">
-        <div class="form-row" style="flex-direction:column;align-items:stretch;gap:6px">
-          <span class="form-label" style="margin-bottom:4px">设计内容 (Narrative Content)</span>
-          <textarea rows="3" placeholder="输入您的网页描述，例如: 曜金极简豪宅设计画册页面..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12px"></textarea>
-        </div>
-      </div>
-
-      <!-- Section 4: Settings -->
-      <div id="section-settings" class="design-section" style="display:none">
-        <div class="form-row">
-          <span class="form-label">调试模式 (Debug Mode)</span>
-          <div class="control-right">
-            <label class="switch">
-              <input type="checkbox">
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="form-row">
-          <span class="form-label">代码混淆 (Minify HTML)</span>
-          <div class="control-right">
+            <span style="font-size:11px;color:var(--accent)" data-i18n-key="active">Active</span>
             <label class="switch">
               <input type="checkbox" checked>
               <span class="slider"></span>
             </label>
           </div>
         </div>
+        
+        <div class="form-row">
+          <span class="form-label" data-i18n-key="layout-mode">Layout Mode</span>
+          <div class="control-right">
+            <select name="mode" class="custom-select">
+              <option value="presentation" data-i18n-key="presentation-16-9">16:9 Presentation</option>
+              <option value="" data-i18n-key="web-responsive">Web Responsive</option>
+            </select>
+          </div>
+        </div>
       </div>
+      
+      <!-- Lovart Style Tabs inside sandbox -->
+      <div class="lovart-tabs">
+        <span class="lovart-tab" onclick="switchDesignInnerTab('details')" id="tab-btn-details" data-i18n-key="tab-details">Details</span>
+        <span class="lovart-tab active" onclick="switchDesignInnerTab('styles')" id="tab-btn-styles" data-i18n-key="tab-styles">Styles</span>
+        <span class="lovart-tab" onclick="switchDesignInnerTab('content')" id="tab-btn-content" data-i18n-key="tab-content">Content</span>
+        <span class="lovart-tab" onclick="switchDesignInnerTab('settings')" id="tab-btn-settings" data-i18n-key="tab-settings">Settings</span>
+      </div>
+      
+      <div class="template-card" style="margin-bottom: 16px">
+        <!-- Inner Section: Details -->
+        <div id="section-details" class="design-inner-section" style="display:none">
+          <div class="form-row">
+            <span class="form-label" data-i18n-key="title-input">Design Title</span>
+            <div class="control-right">
+              <input type="text" name="title" value="Aurum Homes" placeholder="Title" style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:4px 8px;font-size:12px">
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-label">作者 (Author)</span>
+            <div class="control-right">
+              <input type="text" value="via54Design" readonly style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);padding:4px 8px;font-size:12px">
+            </div>
+          </div>
+        </div>
 
-      <div style="margin-top:20px">
-        <button type="submit" class="btn-outline-gold" data-i18n-key="save-changes">Save Changes</button>
+        <!-- Inner Section: Styles (Active by default) -->
+        <div id="section-styles" class="design-inner-section">
+          <div class="form-row">
+            <span class="form-label" data-i18n-key="base-color">Theme Palette</span>
+            <div class="control-right">
+              <select name="color" class="custom-select">
+                <option value="">加载中...</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <span class="form-label" data-i18n-key="font-family">Font Family</span>
+            <div class="control-right">
+              <select name="font" class="custom-select">
+                <option value="">加载中...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inner Section: Content -->
+        <div id="section-content" class="design-inner-section" style="display:none">
+          <div class="form-row" style="flex-direction:column;align-items:stretch;gap:6px">
+            <span class="form-label" style="margin-bottom:4px">设计描述/一句话引导 (Narrative Seed)</span>
+            <textarea name="seed" rows="3" placeholder="输入您的网页描述，例如: 曜金极简豪宅设计画册页面..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12px"></textarea>
+          </div>
+        </div>
+
+        <!-- Inner Section: Settings -->
+        <div id="section-settings" class="design-inner-section" style="display:none">
+          <div class="form-row">
+            <span class="form-label">调试模式 (Debug Mode)</span>
+            <div class="control-right">
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-label">代码混淆 (Minify HTML)</span>
+            <div class="control-right">
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px">
+          <button type="submit" class="btn-outline-gold" data-i18n-key="save-changes">开始生成 HTML</button>
+        </div>
       </div>
+    </form>
+  </div>
+
+  <!-- Section 2: Image Guided Reimagine (图片复刻) -->
+  <div id="design-section-image" class="subtab-section" style="display:none">
+    <div class="flow-step-card">
+      <h3 data-i18n-key="image-reim">一张图生成 — 网页图片复刻</h3>
+      <form hx-post="/api/htmx/reimagine" hx-target="#dOutput" hx-indicator="#dSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+        <!-- Screenshot Upload Dropzone -->
+        <label for="dsFile" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          <span style="font-weight:600;font-size:12px;color:var(--text-primary)">点击上传网页截图参考图 (PNG/JPG)</span>
+        </label>
+        <input type="file" id="dsFile" name="screenshot" accept="image/*" style="display:none"
+               hx-post="/api/htmx/upload" hx-target="#dsUploadResult" hx-encoding="multipart/form-data"
+               onchange="document.getElementById('dsFileName').textContent = this.files[0] ? this.files[0].name : '';">
+        <div id="dsFileName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+        <div id="dsUploadResult"></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+          <select name="layout_hint" class="custom-select">
+            <option value="">布局: 默认自适应</option>
+          </select>
+          <select name="color_hint" class="custom-select">
+            <option value="">配色: 默认自适应</option>
+          </select>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+          <select name="font_hint" class="custom-select">
+            <option value="">字体: 默认自适应</option>
+          </select>
+          <select name="provider" class="custom-select">
+            <option value="openai">OpenAI GPT-4o</option>
+            <option value="gemini">Gemini 1.5 Pro</option>
+            <option value="anthropic">Claude 3.5 Sonnet</option>
+          </select>
+        </div>
+
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">⚡ 开始分析并复刻</button>
+        </div>
+      </form>
     </div>
-  </form>
-  
+  </div>
+
+  <!-- Section 3: Document Guided Website -->
+  <div id="design-section-doc" class="subtab-section" style="display:none">
+    <div class="flow-step-card">
+      <h3>一个文档生成 — 网页大纲分析生成</h3>
+      <form hx-post="/api/htmx/generate" hx-target="#dOutput" hx-indicator="#dSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+        <!-- Document Upload Dropzone -->
+        <label for="ddFile" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span style="font-weight:600;font-size:12px;color:var(--text-primary)">上传参考文档 (.docx, .pdf, .txt, .pptx)</span>
+        </label>
+        <input type="file" id="ddFile" name="doc" accept=".docx,.pdf,.txt,.pptx" style="display:none"
+               onchange="document.getElementById('ddFileName').textContent = this.files[0] ? this.files[0].name : '';">
+        <div id="ddFileName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+          <select name="layout_doc" class="custom-select">
+            <option value="">布局: 默认自适应</option>
+          </select>
+          <select name="color_doc" class="custom-select">
+            <option value="">配色: 默认自适应</option>
+          </select>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+          <select name="font_doc" class="custom-select">
+            <option value="">字体: 默认自适应</option>
+          </select>
+          <input type="text" name="title" value="Doc Design Preview" placeholder="页面标题" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px">
+        </div>
+
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">📊 解析文档并设计网页</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared indicator and output slots -->
   <div style="display:flex;justify-content:center;margin-bottom:12px">
-    <span id="dSpin" class="htmx-indicator" style="font-size:12px;color:var(--accent)">⏳ <span data-i18n-key="compiling">Compiling design pipeline...</span></span>
+    <span id="dSpin" class="htmx-indicator" style="font-size:12px;color:var(--accent)">⏳ 正在解析并生成设计流水线...</span>
   </div>
   
   <div id="dOutput"></div>
-
-  </div>
-
+</div>
 
 <script>
-function switchDesignTab(tabName) {
-  // Toggle active class on buttons
-  document.querySelectorAll('.lovart-tab').forEach(t => t.classList.remove('active'));
-  const activeTab = document.getElementById('tab-btn-' + tabName);
+function switchDesignSubTab(tabName) {
+  document.querySelectorAll('.lovart-tabs:first-child .lovart-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById('subtab-design-' + tabName);
   if (activeTab) activeTab.classList.add('active');
 
-  // Hide all sections
-  document.querySelectorAll('.design-section').forEach(s => s.style.display = 'none');
-  
-  // Show target section
-  const targetSection = document.getElementById('section-' + tabName);
+  document.querySelectorAll('.subtab-section').forEach(s => s.style.display = 'none');
+  const targetSection = document.getElementById('design-section-' + tabName);
+  if (targetSection) targetSection.style.display = 'block';
+}
+
+function switchDesignInnerTab(innerName) {
+  document.querySelectorAll('#design-section-prompt .lovart-tabs .lovart-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById('tab-btn-' + innerName);
+  if (activeTab) activeTab.classList.add('active');
+
+  document.querySelectorAll('.design-inner-section').forEach(s => s.style.display = 'none');
+  const targetSection = document.getElementById('section-' + innerName);
   if (targetSection) targetSection.style.display = 'block';
 }
 
@@ -153,49 +246,86 @@ function switchDesignTab(tabName) {
     return idVal;
   }
 
-  // Load and populate presets
+  // Load and populate presets across all dropdown selectors
   fetch('/api/presets')
     .then(r => r.json())
     .then(data => {
-      const layoutSelect = document.querySelector('select[name="layout"]');
-      const colorSelect = document.querySelector('select[name="color"]');
-      const fontSelect = document.querySelector('select[name="font"]');
+      // Prompt selects
+      const layoutSelect1 = document.querySelector('select[name="layout"]');
+      const colorSelect1 = document.querySelector('select[name="color"]');
+      const fontSelect1 = document.querySelector('select[name="font"]');
 
-      if (data.layouts && layoutSelect) {
-        layoutSelect.innerHTML = '';
-        data.layouts.forEach(l => {
-          const opt = new Option(getPresetName(l), l.ID || l.id);
-          layoutSelect.add(opt);
-        });
-        if (data.active && data.active.layout) {
-          layoutSelect.value = data.active.layout;
+      // Image selects
+      const layoutSelect2 = document.querySelector('select[name="layout_hint"]');
+      const colorSelect2 = document.querySelector('select[name="color_hint"]');
+      const fontSelect2 = document.querySelector('select[name="font_hint"]');
+
+      // Doc selects
+      const layoutSelect3 = document.querySelector('select[name="layout_doc"]');
+      const colorSelect3 = document.querySelector('select[name="color_doc"]');
+      const fontSelect3 = document.querySelector('select[name="font_doc"]');
+
+      if (data.layouts) {
+        if (layoutSelect1) {
+          layoutSelect1.innerHTML = '';
+          data.layouts.forEach(l => {
+            layoutSelect1.add(new Option(getPresetName(l), l.ID || l.id));
+          });
+          if (data.active && data.active.layout) layoutSelect1.value = data.active.layout;
         }
-      }
-      if (data.color_schemes && colorSelect) {
-        colorSelect.innerHTML = '';
-        data.color_schemes.forEach(c => {
-          const opt = new Option(getPresetName(c), c.ID || c.id);
-          colorSelect.add(opt);
+        [layoutSelect2, layoutSelect3].forEach(sel => {
+          if (sel) {
+            sel.innerHTML = '<option value="">布局: 默认自适应</option>';
+            data.layouts.forEach(l => {
+              sel.add(new Option('布局: ' + getPresetName(l), l.ID || l.id));
+            });
+            if (data.active && data.active.layout) sel.value = data.active.layout;
+          }
         });
-        if (data.active && data.active.color) {
-          colorSelect.value = data.active.color;
-        }
-      }
-      if (data.typography && fontSelect) {
-        fontSelect.innerHTML = '';
-        data.typography.forEach(f => {
-          const opt = new Option(getPresetName(f), f.ID || f.id);
-          fontSelect.add(opt);
-        });
-        if (data.active && data.active.font) {
-          fontSelect.value = data.active.font;
-        }
-        
-        // After presets are loaded, fetch local system fonts
-        fetchLocalFonts(fontSelect, data.active ? data.active.font : null);
       }
 
-      // Restore active layout mode
+      if (data.color_schemes) {
+        if (colorSelect1) {
+          colorSelect1.innerHTML = '';
+          data.color_schemes.forEach(c => {
+            colorSelect1.add(new Option(getPresetName(c), c.ID || c.id));
+          });
+          if (data.active && data.active.color) colorSelect1.value = data.active.color;
+        }
+        [colorSelect2, colorSelect3].forEach(sel => {
+          if (sel) {
+            sel.innerHTML = '<option value="">配色: 默认自适应</option>';
+            data.color_schemes.forEach(c => {
+              sel.add(new Option('配色: ' + getPresetName(c), c.ID || c.id));
+            });
+            if (data.active && data.active.color) sel.value = data.active.color;
+          }
+        });
+      }
+
+      if (data.typography) {
+        if (fontSelect1) {
+          fontSelect1.innerHTML = '';
+          data.typography.forEach(f => {
+            fontSelect1.add(new Option(getPresetName(f), f.ID || f.id));
+          });
+          if (data.active && data.active.font) fontSelect1.value = data.active.font;
+        }
+        [fontSelect2, fontSelect3].forEach(sel => {
+          if (sel) {
+            sel.innerHTML = '<option value="">字体: 默认自适应</option>';
+            data.typography.forEach(f => {
+              sel.add(new Option('字体: ' + getPresetName(f), f.ID || f.id));
+            });
+            if (data.active && data.active.font) sel.value = data.active.font;
+          }
+        });
+
+        // Load local fonts to font selects
+        fetchLocalFonts([fontSelect1, fontSelect2, fontSelect3], data.active ? data.active.font : null);
+      }
+
+      // Mode restore
       const modeSelect = document.querySelector('select[name="mode"]');
       if (modeSelect && data.active && data.active.mode !== undefined) {
         modeSelect.value = data.active.mode;
@@ -203,24 +333,26 @@ function switchDesignTab(tabName) {
     })
     .catch(err => console.error("加载系统预置失败:", err));
 
-  function fetchLocalFonts(select, activeFont) {
+  function fetchLocalFonts(selects, activeFont) {
     fetch('/api/local-fonts')
       .then(r => r.json())
       .then(fonts => {
-        if (select && fonts && fonts.length > 0) {
-          const group = document.createElement('optgroup');
-          group.label = "本地系统字体";
-          fonts.forEach(f => {
-            const opt = document.createElement('option');
-            opt.value = f;
-            opt.textContent = f;
-            group.appendChild(opt);
+        if (fonts && fonts.length > 0) {
+          selects.forEach(select => {
+            if (!select) return;
+            const group = document.createElement('optgroup');
+            group.label = "本地系统字体";
+            fonts.forEach(f => {
+              const opt = document.createElement('option');
+              opt.value = f;
+              opt.textContent = select.name.includes('hint') || select.name.includes('doc') ? `字体: ${f}` : f;
+              group.appendChild(opt);
+            });
+            select.appendChild(group);
+            if (activeFont && fonts.includes(activeFont)) {
+              select.value = activeFont;
+            }
           });
-          select.appendChild(group);
-          
-          if (activeFont && fonts.includes(activeFont)) {
-            select.value = activeFont;
-          }
         }
       })
       .catch(err => console.error("读取系统字体失败:", err));

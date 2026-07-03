@@ -1,48 +1,115 @@
 <div class="flow-steps">
-  <!-- Card 1: Doc to PPT -->
-  <div class="flow-step-card">
-    <span class="step-badge">1</span>
-    <h3 data-i18n-key="doc-to-ppt">上传文档 → PPT 框架</h3>
-    <form hx-post="/api/htmx/story2ppt" hx-target="#s2pOutput" hx-indicator="#s2pSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
-      <label for="s2pFile" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        <span style="font-weight:600;font-size:12px;color:var(--text-primary)" data-i18n-key="click-upload-doc">点击选择本地文档 (.docx, .txt, .pdf)</span>
-      </label>
-      <input type="file" id="s2pFile" name="file" accept=".docx,.pptx,.txt,.md" style="display:none"
-             hx-post="/api/htmx/upload" hx-target="#s2pUploadResult" hx-encoding="multipart/form-data"
-             onchange="document.getElementById('s2pFileName').textContent = this.files[0] ? this.files[0].name : '';">
-      <div id="s2pFileName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
-      <div id="s2pUploadResult"></div>
-      
-      <input type="text" name="seed" placeholder="补充背景/受众描述（可选）" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px 12px;font-size:12.5px;margin-bottom:12px">
-      
-      <div style="display:flex;gap:6px">
-        <button type="submit" class="btn-primary">📊 生成 PPT 框架</button>
-        <span id="s2pSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="analyzing">分析中...</span>
-      </div>
-    </form>
-    <div id="s2pOutput" style="margin-top:8px"></div>
+  <!-- Sub Tabs Navigation -->
+  <div class="lovart-tabs" style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px">
+    <span class="lovart-tab active" onclick="switchPresentSubTab('prompt')" id="subtab-present-prompt">💬 一句话生成 (LLM)</span>
+    <span class="lovart-tab" onclick="switchPresentSubTab('image')" id="subtab-present-image">🖼️ 一张图生成 (图片分析)</span>
+    <span class="lovart-tab" onclick="switchPresentSubTab('doc')" id="subtab-present-doc">📄 一个文档生成 (文件分析)</span>
   </div>
 
-  <!-- Card 2: Narrative Seed to Deck -->
-  <div class="flow-step-card">
-    <span class="step-badge">2</span>
-    <h3>故事种子 → 叙事框架</h3>
-    <form hx-post="/api/htmx/narrate" hx-target="#s2pNarrateOut" hx-indicator="#s2pNarrSpin" style="margin-top:12px">
-      <textarea name="seed" rows="3" placeholder="例如: 智能驾驶汽车的下一代感知系统演进..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px;font-size:12.5px;margin-bottom:10px"></textarea>
-      
-      <select name="model" class="custom-select" style="margin-bottom:10px;width:100%">
-        <option value="three-act">三幕剧 — 产品发布三段论</option>
-        <option value="heros-journey">英雄之旅 — 品牌创立故事</option>
-        <option value="cognitive-arc">认知弧 — 专业科普与研究教程</option>
-        <option value="problem-solution">问题解决 — 商业销售与路演</option>
-      </select>
-      
-      <div style="display:flex;gap:6px">
-        <button type="submit" class="btn-primary">⚡ 生成叙事框架</button>
-        <span id="s2pNarrSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="thinking">生成中...</span>
-      </div>
-    </form>
-    <div id="s2pNarrateOut" style="margin-top:8px"></div>
+  <!-- Section 1: Prompt Guided Slides (一句话生成) -->
+  <div id="present-section-prompt" class="subtab-section">
+    <div class="flow-step-card">
+      <h3>一句话生成 — 叙事种子生成 PPT</h3>
+      <form hx-post="/api/htmx/story2ppt" hx-target="#s2pOutput" hx-indicator="#s2pSpin" style="margin-top:12px">
+        <textarea name="seed" rows="3" placeholder="在此输入演示文稿的标题或叙事主题，例如: 智能驾驶汽车的下一代感知系统演进..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px;font-size:12.5px;margin-bottom:10px" required></textarea>
+        
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <select name="model" class="custom-select" style="flex:1">
+            <option value="three-act">三幕剧 — 产品发布三段论</option>
+            <option value="heros-journey">英雄之旅 — 品牌创立故事</option>
+            <option value="cognitive-arc">认知弧 — 专业科普与研究教程</option>
+            <option value="problem-solution">问题解决 — 商业销售与路演</option>
+          </select>
+          <input type="number" name="duration" value="30" min="10" max="300" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="秒">
+        </div>
+        
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">⚡ 开始设计幻灯片</button>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <!-- Section 2: Image Guided Slides (一张图生成) -->
+  <div id="present-section-image" class="subtab-section" style="display:none">
+    <div class="flow-step-card">
+      <h3>一张图生成 — 网页配图提取主题生成 PPT</h3>
+      <form hx-post="/api/htmx/story2ppt" hx-target="#s2pOutput" hx-indicator="#s2pSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+        <!-- Image Upload Dropzone -->
+        <label for="s2pImage" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span style="font-weight:600;font-size:12px;color:var(--text-primary)">点击上传主题参考配图 (PNG/JPG)</span>
+        </label>
+        <input type="file" id="s2pImage" name="image" accept="image/*" style="display:none"
+               onchange="document.getElementById('s2pImgName').textContent = this.files[0] ? this.files[0].name : '';" required>
+        <div id="s2pImgName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <select name="model" class="custom-select" style="flex:1">
+            <option value="three-act">三幕剧 — 产品发布三段论</option>
+            <option value="heros-journey">英雄之旅 — 品牌创立故事</option>
+            <option value="cognitive-arc">认知弧 — 专业科普与研究教程</option>
+            <option value="problem-solution">问题解决 — 商业销售与路演</option>
+          </select>
+          <input type="number" name="duration" value="30" min="10" max="300" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="秒">
+        </div>
+        
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">🖼️ 分析图片并生成 PPT</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section 3: Document Guided Slides (一个文档生成) -->
+  <div id="present-section-doc" class="subtab-section" style="display:none">
+    <div class="flow-step-card">
+      <h3 data-i18n-key="doc-to-ppt">一个文档生成 — 参考文档转 PPT</h3>
+      <form hx-post="/api/htmx/story2ppt" hx-target="#s2pOutput" hx-indicator="#s2pSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+        <!-- Document Upload Dropzone -->
+        <label for="s2pDoc" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span style="font-weight:600;font-size:12px;color:var(--text-primary)" data-i18n-key="click-upload-doc">点击选择本地文档 (.docx, .txt, .pdf)</span>
+        </label>
+        <input type="file" id="s2pDoc" name="doc" accept=".docx,.pptx,.txt,.pdf" style="display:none"
+               onchange="document.getElementById('s2pDocName').textContent = this.files[0] ? this.files[0].name : '';" required>
+        <div id="s2pDocName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+        <input type="text" name="seed" placeholder="补充背景/故事种子引导描述（可选）" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px 12px;font-size:12.5px;margin-bottom:12px">
+
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <select name="model" class="custom-select" style="flex:1">
+            <option value="three-act">三幕剧 — 产品发布三段论</option>
+            <option value="heros-journey">英雄之旅 — 品牌创立故事</option>
+            <option value="cognitive-arc">认知弧 — 专业科普与研究教程</option>
+            <option value="problem-solution">问题解决 — 商业销售与路演</option>
+          </select>
+          <input type="number" name="duration" value="30" min="10" max="300" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="秒">
+        </div>
+        
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">📊 解析文档并生成 PPT</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared indicator and output slots -->
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <span id="s2pSpin" class="htmx-indicator" style="font-size:12px;color:var(--accent)">⏳ 正在解析并生成幻灯片...</span>
+  </div>
+  
+  <div id="s2pOutput" style="margin-top:8px"></div>
 </div>
+
+<script>
+function switchPresentSubTab(tabName) {
+  document.querySelectorAll('.lovart-tabs:first-child .lovart-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById('subtab-present-' + tabName);
+  if (activeTab) activeTab.classList.add('active');
+
+  document.querySelectorAll('.subtab-section').forEach(s => s.style.display = 'none');
+  const targetSection = document.getElementById('present-section-' + tabName);
+  if (targetSection) targetSection.style.display = 'block';
+}
+</script>

@@ -1052,9 +1052,8 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		htmxError(w, "use POST")
 		return
 	}
-	if err := r.ParseForm(); err != nil {
-		htmxError(w, err.Error())
-		return
+	if err := r.ParseMultipartForm(64 << 20); err != nil {
+		_ = r.ParseForm()
 	}
 	exePath := selfPath()
 	if _, statErr := os.Stat(exePath); statErr != nil {
@@ -1062,23 +1061,45 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	layout := r.FormValue("layout")
+	if layout == "" {
+		layout = r.FormValue("layout_doc")
+	}
+	if layout == "" {
+		layout = r.FormValue("layout_hint")
+	}
+	if layout == "" {
+		layout = "hero-split-16-9"
+	}
+
+	color := r.FormValue("color")
+	if color == "" {
+		color = r.FormValue("color_doc")
+	}
+	if color == "" {
+		color = r.FormValue("color_hint")
+	}
+	if color == "" {
+		color = "ink-wash"
+	}
+
+	font := r.FormValue("font")
+	if font == "" {
+		font = r.FormValue("font_doc")
+	}
+	if font == "" {
+		font = r.FormValue("font_hint")
+	}
+	if font == "" {
+		font = "display-sans-bold"
+	}
+
 	title := r.FormValue("title")
 	if title == "" {
 		title = "via54Design"
 	}
 	mode := r.FormValue("mode")
-	layout := r.FormValue("layout")
-	if layout == "" {
-		layout = "hero-split-16-9"
-	}
-	color := r.FormValue("color")
-	if color == "" {
-		color = "ink-wash"
-	}
-	font := r.FormValue("font")
-	if font == "" {
-		font = "display-sans-bold"
-	}
+	seed := r.FormValue("seed")
 	pres := mode == "presentation"
 
 	// Save active selection variables
@@ -1100,8 +1121,56 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		font = "display-sans-bold"
 	}
 
+	// Try parsing doc file upload if present
+	var docContentText string
+	docFile, docHeader, err := r.FormFile("doc")
+	if err == nil {
+		defer docFile.Close()
+		ext := strings.ToLower(filepath.Ext(docHeader.Filename))
+		docFilename := fmt.Sprintf("doc_%d%s", time.Now().UnixNano(), ext)
+		dstDoc := filepath.Join(uploadDir(), docFilename)
+		outDoc, err := os.Create(dstDoc)
+		if err == nil {
+			io.Copy(outDoc, docFile)
+			outDoc.Close()
+			
+			extRes := vision.ExtractContent(dstDoc)
+			if textVal, ok := extRes["content"].(string); ok {
+				docContentText = textVal
+			} else if titleVal, ok := extRes["title"].(string); ok {
+				docContentText = titleVal
+			}
+		}
+	}
+
+	combinedDesc := seed
+	if docContentText != "" {
+		if combinedDesc != "" {
+			combinedDesc += "\n\n" + docContentText
+		} else {
+			combinedDesc = docContentText
+		}
+	}
+
+	var narrativeJSONPath string
+	if combinedDesc != "" {
+		scaffold := vision.BuildNarrativeScaffold(nil, "three-act", 30, combinedDesc)
+		scaffoldBytes, err := json.Marshal(scaffold)
+		if err == nil {
+			tmpFile := filepath.Join(uploadDir(), fmt.Sprintf("narrative_%d.json", time.Now().UnixNano()))
+			_ = os.WriteFile(tmpFile, scaffoldBytes, 0644)
+			narrativeJSONPath = tmpFile
+		}
+	}
+	if narrativeJSONPath != "" {
+		defer os.Remove(narrativeJSONPath)
+	}
+
 	exe := selfPath()
 	args := []string{"generate", "--layout", layout, "--color", color, "--font", font, "--title", title}
+	if narrativeJSONPath != "" {
+		args = append(args, "--from-narrative", narrativeJSONPath)
+	}
 	if pres {
 		args = append(args, "--presentation")
 	}
@@ -1328,13 +1397,47 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 		htmxError(w, "use POST")
 		return
 	}
-	if err := r.ParseForm(); err != nil {
-		htmxError(w, err.Error())
-		return
+	if err := r.ParseMultipartForm(64 << 20); err != nil {
+		_ = r.ParseForm()
 	}
 
 	path := r.FormValue("_path")
 	seed := r.FormValue("seed")
+
+	// 1. Process document file upload if any
+	docFile, docHeader, err := r.FormFile("doc")
+	if err == nil {
+		defer docFile.Close()
+		ext := strings.ToLower(filepath.Ext(docHeader.Filename))
+		docFilename := fmt.Sprintf("ppt_doc_%d%s", time.Now().UnixNano(), ext)
+		dstDoc := filepath.Join(uploadDir(), docFilename)
+		outDoc, err := os.Create(dstDoc)
+		if err == nil {
+			io.Copy(outDoc, docFile)
+			outDoc.Close()
+			path = dstDoc
+		}
+	}
+
+	// 2. Process image file upload if any
+	imageFile, imageHeader, err := r.FormFile("image")
+	if err == nil {
+		defer imageFile.Close()
+		ext := strings.ToLower(filepath.Ext(imageHeader.Filename))
+		imgFilename := fmt.Sprintf("ppt_img_%d%s", time.Now().UnixNano(), ext)
+		dstImg := filepath.Join(uploadDir(), imgFilename)
+		outImg, err := os.Create(dstImg)
+		if err == nil {
+			io.Copy(outImg, imageFile)
+			outImg.Close()
+			
+			// Analyze image via ProcessStoryboard in single mode to extract descriptor prompt
+			res := vision.ProcessStoryboard([]string{dstImg}, "three-act", 30, "", true)
+			if promptVal, ok := res["opening_prompt"].(string); ok {
+				seed = promptVal
+			}
+		}
+	}
 
 	if path == "" && seed == "" {
 		htmxError(w, "请上传文件或输入故事种子")
