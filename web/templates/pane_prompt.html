@@ -4,7 +4,7 @@
     <h3>生成提示词</h3>
     <form hx-post="/api/htmx/prompt" hx-target="#pOutput" hx-indicator="#pSpin">
       <textarea name="scene" rows="3" placeholder="描述场景..." style="margin-bottom:6px"></textarea>
-      <select name="platform" style="margin-bottom:6px">
+      <select name="platform" class="custom-select" style="margin-bottom:6px;width:100%">
         <option value="midjourney">Midjourney</option>
         <option value="flux">Flux</option>
         <option value="dalle3">DALL-E 3</option>

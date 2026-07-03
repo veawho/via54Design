@@ -7,7 +7,7 @@
     <form hx-post="/api/htmx/regen" hx-target="#fOutput" hx-indicator="#fSpin">
       <textarea name="prompt" rows="4" placeholder="输入提示词..." style="margin-bottom:6px"></textarea>
       <textarea name="negative" rows="2" placeholder="负面提示词（可选）" style="margin-bottom:6px;font-size:11px"></textarea>
-      <select name="workflow" style="margin-bottom:6px">
+      <select name="workflow" class="custom-select" style="margin-bottom:6px;width:100%">
         <option value="sdxl_txt2img">SDXL 文生图</option>
         <option value="flux_dev_txt2img">Flux Dev 文生图</option>
         <option value="sdxl_img2img">SDXL 图生图</option>

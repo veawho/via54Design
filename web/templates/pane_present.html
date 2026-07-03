@@ -23,7 +23,7 @@
     <h3>故事种子 → 叙事框架</h3>
     <form hx-post="/api/htmx/narrate" hx-target="#s2pNarrateOut" hx-indicator="#s2pNarrSpin">
       <textarea name="seed" rows="2" placeholder="输入故事种子..." style="margin-bottom:6px"></textarea>
-      <select name="model" style="margin-bottom:6px">
+      <select name="model" class="custom-select" style="margin-bottom:6px;width:100%">
         <option value="three-act">三幕剧 — 产品发布</option>
         <option value="heros-journey">英雄之旅 — 品牌故事</option>
         <option value="cognitive-arc">认知弧 — 科普教程</option>
