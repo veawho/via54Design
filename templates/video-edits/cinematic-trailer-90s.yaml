@@ -1,0 +1,90 @@
+# via54Design 影视驱动视频模板
+# Cinematic Trailer — 电影感史诗预告片 90秒
+id: cinematic-trailer-90s
+name:
+  zh: "史诗预告片"
+  en: "Cinematic Trailer"
+model: "史诗三段式预告片 (Cinematic Epic Trailer)"
+
+story_seed:
+  prompt: "描述你的电影创意或概念核心"
+  example: "在被沙暴吞噬的末世中，一个机械师寻找最后的绿色源泉"
+  expand_to: "90秒史诗级电影预告片"
+
+narration:
+  hook: "宏大的世界观设定与危机展示"
+  confrontation: "主角的冲突、冒险与挣扎"
+  climax: "快节奏的高潮混剪与命运决战"
+  resolution: "片名展示、上映信息与最后的悬念回响"
+
+arc:
+  - act: "第一幕·引子 (The Setup)"
+    duration: 20
+    beats:
+      - time: 0
+        event: "黑屏渐显，大远景慢摇，展示末世废土"
+        voiceover: "当最后的风沙平息，世界只剩下一片寂静。"
+        camera: "WIDE LANDSCAPE - SLOW DRONE TILT"
+        lighting: "VOLUMETRIC SUNBEAMS - DUST DUSTY"
+        mood: mysterious
+      - time: 10
+        event: "中景展示残破的机械飞船，主角背影出现"
+        voiceover: "有人选择顺从毁灭，而有人选择寻找答案。"
+        camera: "CLOSE-UP TRACKING TO WIDE PROFILE"
+        lighting: "HIGH-CONTRAST CHIAROSCURO"
+        mood: reflective
+
+  - act: "第二幕·冲突 (The Rising)"
+    duration: 35
+    beats:
+      - time: 20
+        event: "动作镜头：主角启动古老引擎，火花飞溅"
+        voiceover: "这是一个被遗忘的传说，也是唯一的希望。"
+        camera: "DUTCH ANGLE - FAST TRACKING"
+        lighting: "INDUSTRIAL AMBER GLOW"
+        mood: tense
+      - time: 35
+        event: "展示旅途中的危机，沙暴追逐战"
+        voiceover: "时间不多了，它正在吞噬一切。"
+        camera: "WHIP PAN - DYNAMIC HANDHELD"
+        lighting: "STORM DUSK - RED ACCENTS"
+        mood: urgent
+      - time: 48
+        event: "慢动作：主角与反派对峙，眼神微波"
+        voiceover: "如果注定毁灭，我选择战死在路上。"
+        camera: "EXTREME CLOSE-UP ON EYES"
+        lighting: "REMBRANDT LIGHTING - SHADOWY"
+        mood: confident
+
+  - act: "第三幕·高潮 (The Climax)"
+    duration: 25
+    beats:
+      - time: 55
+        event: "激烈的动作快剪，机械巨兽苏醒，爆炸火光"
+        voiceover: "（无旁白 - 重低音音效与交响乐高潮交织）"
+        camera: "CRASH ZOOM - STROBE CUTS"
+        lighting: "HIGH-DYNAMIC-RANGE EXPLOSIONS"
+        mood: triumphant
+      - time: 70
+        event: "史诗交响乐最高音符切断，黑屏 1 秒"
+        voiceover: "（寂静）"
+        camera: "BLACK SCREEN"
+        lighting: "NONE"
+        mood: tense
+
+  - act: "第四幕·余音 (The Stinger)"
+    duration: 10
+    beats:
+      - time: 80
+        event: "震撼片名特效出现，烫金金属质感字样"
+        voiceover: "《最后一缕微光》 — 2026年全球启航"
+        camera: "STATIC TITLE CARD - EMBOSS SHIMMER"
+        lighting: "METALLIC GLINT"
+        mood: inspiring
+        sfx: sub-bass-boom
+
+export:
+  format: mp4-24fps
+  resolution: [3840, 2160]
+  bgm: cinematic-orchestral-epic.mp3
+  subtitles: true

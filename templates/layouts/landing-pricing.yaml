@@ -1,0 +1,168 @@
+# via54Design 布局模板 v2
+# Landing + Pricing — 落地页+价格表 · 16:9 · 四端适配
+# 参考: Linear / Vercel / Stripe pricing page
+id: landing-pricing
+name:
+  zh: "落地页+定价 (16:9)"
+  en: "Landing + Pricing (16:9)"
+version: "2.0.0"
+category: layout/landing
+tags: [landing, pricing, marketing, saas, conversion, 16-9, video-ready]
+
+when:
+  content_has: [hero, features, pricing_tiers, faq]
+  suitable_for: [landing_page, product_launch, saas_marketing]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
+
+structure:
+  type: stack-sections
+  ratio: "1fr"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    section_padding: "step-8"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    font_scale: 1.25
+    safe_area: [60, 100, 60, 100]
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    font_scale: 0.95
+  - name: phone
+    min_width: 0
+    max_width: 767
+    font_scale: 0.85
+
+elements:
+  - role: nav
+    tag: nav
+    position: top
+  - role: hero
+    tag: section
+    padding: [120, 40, 80, 40]
+    children:
+      - role: headline
+        tag: h1
+      - role: subheadline
+        tag: p
+      - role: cta-group
+        tag: div
+  - role: features
+    tag: section
+    padding: [80, 40]
+  - role: pricing
+    tag: section
+    padding: [80, 40]
+    children:
+      - role: pricing-card
+        tag: article
+  - role: faq
+    tag: section
+    padding: [80, 40]
+  - role: footer
+    tag: footer
+
+css: |
+  .layout-landing {
+    container-type: inline-size;
+    container-name: landing;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-landing__nav {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 40px;
+    background: color-mix(in oklab, var(--bg, #fff) 90%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border, #eee);
+  }
+
+  .layout-landing__hero {
+    padding: clamp(80px, 12vw, 160px) clamp(20px, 5vw, 80px);
+    text-align: center;
+  }
+  .layout-landing__hero h1 {
+    font-size: clamp(36px, 6vw, 96px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--text-primary, #1a1a1a), var(--accent, #6c63ff));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .layout-landing__hero p {
+    font-size: clamp(16px, 1.5vw, 22px);
+    color: var(--text-secondary, #666);
+    max-width: 56ch;
+    margin: 0 auto 40px;
+  }
+
+  .layout-landing__pricing {
+    padding: 80px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .layout-landing__pricing-card {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border, #eee);
+    border-radius: var(--radius-lg, 16px);
+    padding: 32px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .layout-landing__pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px color-mix(in oklab, var(--accent, #000) 12%, transparent);
+  }
+  .layout-landing__pricing-card--featured {
+    border-color: var(--accent, #6c63ff);
+    border-width: 2px;
+  }
+
+  @media (max-width: 767px) {
+    .layout-landing__nav { padding: 16px 20px; }
+    .layout-landing__pricing { grid-template-columns: 1fr; padding: 60px 20px; }
+  }
+
+quality:
+  min_font_size: 14px
+  max_line_length: 60ch
+  min_contrast_ratio: 4.5:1
+
+examples:
+  - brand: Linear
+    url: https://linear.app/pricing
+    notes: "3-tier pricing 卡片 + gradient headline"
+  - brand: Vercel
+    url: https://vercel.com
+    notes: "Sticky nav + hero gradient text"
+
+changelog:
+  "1.0.0": "新增 Landing + Pricing layout"

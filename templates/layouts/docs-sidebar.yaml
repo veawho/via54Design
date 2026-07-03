@@ -1,0 +1,175 @@
+# via54Design 布局模板 v2
+# Docs Sidebar — 文档站 · 16:9 · 四端适配
+# 参考: shadcn docs / Tailwind docs / Hugo docuapi / Nextra
+id: docs-sidebar
+name:
+  zh: "文档站 (侧栏+正文)"
+  en: "Docs Sidebar + Content"
+version: "2.0.0"
+category: layout/docs
+tags: [docs, documentation, sidebar, content, toc, 16-9, video-ready]
+
+when:
+  content_has: [nav, article, toc, code_blocks]
+  suitable_for: [documentation, knowledge_base, api_reference, tutorial]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
+
+structure:
+  type: grid-3col-docs
+  ratio: "260px 1fr 220px"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    content_max: "720px"
+    code_padding: "step-4"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    columns: "300px 1fr 260px"
+    font_scale: 1.15
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    columns: "260px 1fr 220px"
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    columns: "220px 1fr 0"
+    font_scale: 0.95
+    hide_roles: [toc]
+  - name: phone
+    min_width: 0
+    max_width: 767
+    columns: "0 1fr 0"
+    font_scale: 0.9
+    hide_roles: [sidebar, toc]
+
+elements:
+  - role: sidebar
+    tag: nav
+    position: left
+    padding: [32, 16]
+  - role: article
+    tag: article
+    position: center
+    padding: [48, 56]
+    max_width: 720px
+  - role: toc
+    tag: aside
+    position: right
+    padding: [48, 24]
+
+css: |
+  .layout-docs {
+    container-type: inline-size;
+    container-name: docs;
+    display: grid;
+    grid-template-columns: 260px 1fr 220px;
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-docs__sidebar {
+    border-right: 1px solid var(--border, #eee);
+    padding: 32px 16px;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .layout-docs__article {
+    padding: 48px clamp(24px, 5vw, 80px);
+    max-width: 720px;
+    margin: 0 auto;
+    line-height: 1.75;
+  }
+
+  .layout-docs__article h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .layout-docs__article h2 {
+    font-size: clamp(22px, 2.5vw, 32px);
+    font-weight: 600;
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border, #eee);
+  }
+
+  .layout-docs__article pre,
+  .layout-docs__article code {
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    background: var(--bg-inset, #f5f5f5);
+    border-radius: var(--radius-sm, 4px);
+  }
+
+  .layout-docs__article pre {
+    padding: 16px 20px;
+    overflow-x: auto;
+    border: 1px solid var(--border, #eee);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .layout-docs__article :not(pre) > code {
+    padding: 2px 6px;
+    font-size: 0.9em;
+  }
+
+  .layout-docs__toc {
+    border-left: 1px solid var(--border, #eee);
+    padding: 48px 24px;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    overflow-y: auto;
+    font-size: 13px;
+  }
+
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .layout-docs { grid-template-columns: 220px 1fr; }
+    .layout-docs__toc { display: none; }
+  }
+
+  @media (max-width: 767px) {
+    .layout-docs { grid-template-columns: 1fr; }
+    .layout-docs__sidebar, .layout-docs__toc { display: none; }
+    .layout-docs__article { padding: 32px 20px; }
+  }
+
+quality:
+  min_font_size: 14px
+  max_line_length: 72ch
+  min_contrast_ratio: 7:1
+
+examples:
+  - brand: shadcn-ui docs
+    url: https://ui.shadcn.com/docs
+    notes: "左侧 nav + 中间内容 + 右侧 toc"
+  - brand: Nextra
+    url: https://nextra.site
+    notes: "可折叠的侧栏 + 代码块主题"
+  - brand: Tailwind docs
+    url: https://tailwindcss.com/docs
+    notes: "搜索 + 版本切换 + toc 锚点"
+
+changelog:
+  "1.0.0": "新增 Docs Sidebar layout"

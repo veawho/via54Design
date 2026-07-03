@@ -107,9 +107,13 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text-primary)
     <span class="intent-icon">⚡</span>
     <span class="intent-label">提交 Forge</span>
   </a>
+  <a href="#" class="intent-btn" role="tab"
+     hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+    <span class="intent-icon">📸</span>
+    <span class="intent-label">截图复刻</span>
+  </a>
 </div>
 
-<!-- Pane Container (HTMX target for all pane switching) -->
 <div id="pane-container" class="workflow-content" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
   <div style="text-align:center;padding:40px;color:var(--text-dim)">⏳ 加载中...</div>
 </div>

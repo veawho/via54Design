@@ -1,0 +1,46 @@
+# via54Design 配色模板 — GitHub Primer 风
+# 参考: GitHub Primer Design System
+# 暗色优先 + 紫粉渐变 accent
+id: github-primer
+name:
+  zh: "GitHub Primer 暗"
+  en: "GitHub Primer Dark"
+version: "1.0.0"
+tags: [github, developer, dark, primer, code, modern]
+
+mood: [technical, focused, dark, developer-friendly]
+
+palette:
+  - role: background
+    hex: "#0D1117"
+    name_zh: "深空黑"
+    cultural_note: "GitHub 暗色模式默认"
+  - role: text_primary
+    hex: "#E6EDF3"
+    name_zh: "月白"
+  - role: text_secondary
+    hex: "#8B949E"
+    name_zh: "暮灰"
+  - role: accent
+    hex: "#8957E5"
+    name_zh: "紫罗兰"
+    cultural_note: "GitHub Copilot 标志性紫"
+  - role: accent_alt
+    hex: "#39D353"
+    name_zh: "春芽绿"
+    cultural_note: "Commit graph 增长色"
+  - role: border
+    hex: "#30363D"
+    name_zh: "铁灰"
+
+css_variables: |
+  --bg: #0D1117;
+  --text-primary: #E6EDF3;
+  --text-secondary: #8B949E;
+  --accent: #8957E5;
+  --accent-alt: #39D353;
+  --border: #30363D;
+
+compatibility:
+  layouts: [dashboard-3pane, docs-sidebar, settings-form]
+  fonts: [mono-code, sans-geometric-tech]

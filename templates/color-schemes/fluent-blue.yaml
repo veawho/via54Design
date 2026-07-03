@@ -1,0 +1,45 @@
+# via54Design 配色模板 — Fluent Design / Microsoft 风
+# 参考: Windows 11 / Microsoft Fluent 2 设计系统
+# 现代企业蓝灰, 阴影与亚克力玻璃
+id: fluent-blue
+name:
+  zh: "微软 Fluent 蓝"
+  en: "Microsoft Fluent Blue"
+version: "1.0.0"
+tags: [enterprise, modern, tech, blue, microsoft, fluent, glassmorphism]
+
+mood: [professional, modern, calm, trustworthy, sophisticated]
+
+palette:
+  - role: background
+    hex: "#FAFAFA"
+    name_zh: "云端"
+  - role: text_primary
+    hex: "#1F1F1F"
+    name_zh: "夜墨"
+  - role: text_secondary
+    hex: "#605E5C"
+    name_zh: "远山灰"
+  - role: accent
+    hex: "#0078D4"
+    name_zh: "微软蓝"
+    cultural_note: "Fluent Design 标志性主色,Windows 11 任务栏和 Office 通用"
+  - role: accent_alt
+    hex: "#50E6FF"
+    name_zh: "天青色"
+    cultural_note: "Fluent 强调辅色, hover 和 focus 状态"
+  - role: border
+    hex: "#EDEBE9"
+    name_zh: "薄雾"
+
+css_variables: |
+  --bg: #FAFAFA;
+  --text-primary: #1F1F1F;
+  --text-secondary: #605E5C;
+  --accent: #0078D4;
+  --accent-alt: #50E6FF;
+  --border: #EDEBE9;
+
+compatibility:
+  layouts: [dashboard-3pane, docs-sidebar, settings-form]
+  fonts: [sans-geometric-tech, hei-modern]

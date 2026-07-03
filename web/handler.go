@@ -31,6 +31,8 @@ import (
 //go:embed templates/pane_present.html
 //go:embed templates/pane_video.html
 //go:embed templates/pane_forge.html
+//go:embed templates/pane_reimagine.html
+//go:embed templates/phases45.html
 var embeddedFiles embed.FS
 
 var baseDir string
@@ -82,6 +84,7 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/htmx/story2ppt", handleHTMXStory2PPT)
 	mux.HandleFunc("/api/htmx/storyboard", handleHTMXStoryboard)
 	mux.HandleFunc("/api/htmx/forge-status", handleHTMXForgeStatus)
+	mux.HandleFunc("/api/htmx/reimagine", handleHTMXReimagine)
 	return mux
 }
 
@@ -1000,11 +1003,12 @@ func handleHTMXStatus(w http.ResponseWriter, r *http.Request) {
 func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 	intent := r.URL.Query().Get("intent")
 	names := map[string]string{
-		"design":  "pane_design.html",
-		"prompt":  "pane_prompt.html",
-		"present": "pane_present.html",
-		"video":   "pane_video.html",
-		"forge":   "pane_forge.html",
+		"design":    "pane_design.html",
+		"prompt":    "pane_prompt.html",
+		"present":   "pane_present.html",
+		"video":     "pane_video.html",
+		"forge":     "pane_forge.html",
+		"reimagine": "pane_reimagine.html",
 	}
 	file, ok := names[intent]
 	if !ok {
@@ -1335,4 +1339,93 @@ func handleHTMXForgeStatus(w http.ResponseWriter, r *http.Request) {
 		dot, text = "dot ok", "✅ 已连接"
 	}
 	htmxWrite(w, fmt.Sprintf(`<span class="status-chip"><span class="dot %s"></span>%s</span>`, dot, text))
+}
+
+// handleHTMXReimagine — HTMX 调用 via54 reimagine 子命令
+// 流程: HTMX 上传文件 → 拿路径 → exec via54 reimagine → 输出 HTML
+func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseMultipartForm(32 << 20); err != nil {
+		htmxError(w, err.Error())
+		return
+	}
+
+	// 拿截图文件
+	file, header, err := r.FormFile("screenshot")
+	if err != nil {
+		htmxError(w, "截图未上传")
+		return
+	}
+	defer file.Close()
+
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+	filename := fmt.Sprintf("shot_%d%s", time.Now().UnixNano(), ext)
+	dst := filepath.Join(uploadDir(), filename)
+	out, err := os.Create(dst)
+	if err != nil {
+		htmxError(w, "保存截图失败: "+err.Error())
+		return
+	}
+	io.Copy(out, file)
+	out.Close()
+
+	provider := r.FormValue("provider")
+	if provider == "" {
+		provider = "openai"
+	}
+	layoutHint := r.FormValue("layout_hint")
+	colorHint := r.FormValue("color_hint")
+	fontHint := r.FormValue("font_hint")
+
+	exePath := selfPath()
+	if _, statErr := os.Stat(exePath); statErr != nil {
+		htmxError(w, fmt.Sprintf("via54.exe not found: %s", exePath))
+		return
+	}
+
+	// exec via54 reimagine
+	outFilename := fmt.Sprintf("reimagined_%d.html", time.Now().UnixNano())
+	outPath := filepath.Join(uploadDir(), outFilename)
+	args := []string{"reimagine", "--screenshot", dst, "--provider", provider, "--output", outPath}
+	if layoutHint != "" {
+		args = append(args, "--layout-hint", layoutHint)
+	}
+	if colorHint != "" {
+		args = append(args, "--color-hint", colorHint)
+	}
+	if fontHint != "" {
+		args = append(args, "--font-hint", fontHint)
+	}
+	cmd := exec.Command(exePath, args...)
+	cmdOutput, err := cmd.CombinedOutput()
+	if err != nil {
+		htmxError(w, fmt.Sprintf("reimagine 失败: %v<br><pre style='font-size:11px;color:var(--text-dim)'>%s</pre>", err, string(cmdOutput)))
+		return
+	}
+
+	// 读生成的 HTML 嵌入预览
+	htmlBytes, err := os.ReadFile(outPath)
+	if err != nil {
+		htmxError(w, "读取生成结果失败: "+err.Error())
+		return
+	}
+	htmlPreview := string(htmlBytes)
+	if len(htmlPreview) > 8000 {
+		htmlPreview = htmlPreview[:8000] + "\n\n... (truncated)"
+	}
+
+	htmxWrite(w, fmt.Sprintf(`
+<div class="output-area" style="margin-bottom:8px;color:var(--accent3)">✅ 复刻完成 (%d bytes HTML) — provider: %s</div>
+<details style="margin-top:6px">
+  <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary)">📄 查看生成 HTML (前 8000 字符)</summary>
+  <pre style="background:var(--bg-inset);padding:10px;border-radius:var(--radius-sm);font-size:11px;overflow:auto;max-height:400px;margin-top:6px;color:var(--text-secondary)"><code>%s</code></pre>
+</details>
+<div style="margin-top:6px">
+  <a href="/uploads/%s" target="_blank" class="btn-primary" style="display:inline-block;text-decoration:none;font-size:12px">🔗 在新窗口打开</a>
+  <span style="font-size:11px;color:var(--text-dim);margin-left:8px">/uploads/%s</span>
+</div>
+`, len(htmlBytes), provider, htmlPreview, outFilename, outFilename))
 }

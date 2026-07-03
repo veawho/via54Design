@@ -1,0 +1,42 @@
+<div class="flow-steps">
+  <div class="flow-step-card">
+    <span class="step-badge">1</span>
+    <h3>📸 上传截图</h3>
+    <form hx-post="/api/htmx/reimagine" hx-target="#rOutput" hx-encoding="multipart/form-data" hx-trigger="submit" hx-indicator="#rSpin">
+      <label for="rFile" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
+        📎 点击上传截图 (PNG/JPG/WebP)
+      </label>
+      <input type="file" id="rFile" name="screenshot" accept="image/png,image/jpeg,image/webp" style="display:none"
+             hx-post="/api/htmx/upload" hx-target="#rUploadResult" hx-encoding="multipart/form-data">
+      <div id="rUploadResult"></div>
+
+      <select name="provider" style="margin-bottom:6px">
+        <option value="openai">OpenAI (gpt-4o)</option>
+        <option value="anthropic">Anthropic (claude-sonnet-4)</option>
+        <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+      </select>
+
+      <input type="text" name="layout_hint" placeholder="可选: layout 提示 (如 bento-grid-2x2)" style="margin-bottom:6px;font-size:11px">
+      <input type="text" name="color_hint" placeholder="可选: 配色 ID (如 ink-wash)" style="margin-bottom:6px;font-size:11px">
+      <input type="text" name="font_hint" placeholder="可选: 字体 ID (如 ming-hei-editorial)" style="margin-bottom:6px;font-size:11px">
+
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">✨ 复刻为 HTML</button>
+        <span id="rSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ LLM Vision 调用中...</span>
+      </div>
+    </form>
+    <div id="rOutput" style="margin-top:8px"></div>
+  </div>
+
+  <div class="flow-step-card">
+    <span class="step-badge">2</span>
+    <h3>💡 用法说明</h3>
+    <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
+      <p style="margin-bottom:8px"><strong>原理:</strong> 截图 → Base64 → LLM Vision API (GPT-4o / Claude / Gemini) → 纯 HTML+CSS 复刻</p>
+      <p style="margin-bottom:8px"><strong>API Key:</strong> 在 <code style="background:var(--bg-inset);padding:1px 6px;border-radius:3px">OPENAI_API_KEY</code> / <code style="background:var(--bg-inset);padding:1px 6px;border-radius:3px">ANTHROPIC_API_KEY</code> / <code style="background:var(--bg-inset);padding:1px 6px;border-radius:3px">GEMINI_API_KEY</code> 环境变量中设置</p>
+      <p style="margin-bottom:8px"><strong>layout-hint / color-hint / font-hint:</strong> 可选, 强引导 LLM 走 via54Design 的对应 layout/color/font 风格</p>
+      <p style="margin-bottom:8px"><strong>参考:</strong> 借鉴 <a href="https://github.com/abi/screenshot-to-code" style="color:var(--accent)" target="_blank">abi/screenshot-to-code (73k⭐)</a>, 但保持 via54Design 单二进制零依赖路线</p>
+      <p><strong>CLI 等价:</strong> <code style="background:var(--bg-inset);padding:1px 6px;border-radius:3px;font-size:11px">via54 reimagine --screenshot shot.png --provider openai</code></p>
+    </div>
+  </div>
+</div>

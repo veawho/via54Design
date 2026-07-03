@@ -1,0 +1,164 @@
+# via54Design 布局模板 v2
+# Blog Magazine — 杂志风博客 · 16:9 · 四端适配
+# 参考: Medium / Substack / Vercel Blog
+id: blog-magazine
+name:
+  zh: "杂志风博客"
+  en: "Blog Magazine"
+version: "2.0.0"
+category: layout/blog
+tags: [blog, article, magazine, typography, reading, 16-9, video-ready]
+
+when:
+  content_has: [title, author, date, body, related_posts]
+  suitable_for: [blog, magazine, long_form, article, essay, news]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1200px
+
+structure:
+  type: stack-article
+  ratio: "1fr"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    article_max: "680px"
+    section_gap: "step-7"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    font_scale: 1.15
+    safe_area: [60, 100, 60, 100]
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    font_scale: 1.0
+  - name: phone
+    min_width: 0
+    max_width: 767
+    font_scale: 0.95
+
+elements:
+  - role: header
+    tag: header
+    padding: [80, 40, 40, 40]
+  - role: cover-image
+    tag: figure
+    padding: [0, 0, 48, 0]
+  - role: meta
+    tag: div
+  - role: body
+    tag: article
+    max_width: 680px
+  - role: author-card
+    tag: section
+  - role: related
+    tag: section
+
+css: |
+  .layout-blog {
+    container-type: inline-size;
+    container-name: blog;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-blog__header {
+    padding: clamp(60px, 8vw, 120px) clamp(20px, 5vw, 80px) 40px;
+    text-align: center;
+  }
+  .layout-blog__header h1 {
+    font-size: clamp(32px, 5vw, 72px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+    max-width: 22ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .layout-blog__cover {
+    margin: 0 0 48px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--accent, #6c63ff);
+  }
+  .layout-blog__cover img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .layout-blog__meta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: var(--text-secondary, #666);
+    margin-bottom: 48px;
+  }
+  .layout-blog__avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+  }
+
+  .layout-blog__body {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 80px) 80px;
+    font-size: clamp(16px, 1.2vw, 19px);
+    line-height: 1.8;
+    font-family: var(--font-serif, Georgia, serif);
+  }
+  .layout-blog__body p { margin-bottom: 1.6em; }
+  .layout-blog__body h2 {
+    font-size: clamp(22px, 2.2vw, 32px);
+    font-weight: 700;
+    margin: 2em 0 0.8em;
+    letter-spacing: -0.02em;
+  }
+  .layout-blog__body blockquote {
+    border-left: 4px solid var(--accent, #6c63ff);
+    padding: 16px 24px;
+    margin: 2em 0;
+    font-style: italic;
+    font-size: 1.1em;
+    color: var(--text-secondary, #444);
+  }
+
+  @media (max-width: 767px) {
+    .layout-blog__header { padding: 40px 20px 24px; }
+    .layout-blog__body { padding: 0 20px 60px; }
+  }
+
+quality:
+  min_font_size: 16px
+  max_line_length: 68ch
+  min_contrast_ratio: 7:1
+
+examples:
+  - brand: Medium
+    url: https://medium.com
+    notes: "衬线正文 + 居中标题 + 阅读节奏"
+  - brand: Substack
+    url: https://substack.com
+    notes: "订阅按钮 + 作者卡片 + 相关推荐"
+
+changelog:
+  "1.0.0": "新增 Blog Magazine layout"

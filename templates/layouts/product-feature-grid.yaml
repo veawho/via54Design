@@ -1,0 +1,171 @@
+# via54Design 布局模板 v2
+# Product Feature Grid — 产品特性栅格 · 16:9 · 四端适配
+# 参考: Vercel feature grid / Linear / Stripe features
+id: product-feature-grid
+name:
+  zh: "产品特性栅格"
+  en: "Product Feature Grid"
+version: "2.0.0"
+category: layout/marketing
+tags: [features, grid, cards, product, marketing, 16-9, video-ready]
+
+when:
+  content_has: [features, icons, headlines, descriptions]
+  suitable_for: [product_page, feature_showcase, capability_overview]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
+
+structure:
+  type: feature-grid
+  ratio: "1fr"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    card_padding: "step-5"
+    section_padding: "step-8"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    cols: 4
+    font_scale: 1.2
+    safe_area: [60, 100, 60, 100]
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    cols: 3
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    cols: 2
+    font_scale: 0.95
+  - name: phone
+    min_width: 0
+    max_width: 767
+    cols: 1
+    font_scale: 0.9
+
+elements:
+  - role: section-header
+    tag: header
+    padding: [80, 40, 40, 40]
+  - role: feature-card
+    tag: article
+    children:
+      - role: feature-icon
+        tag: div
+      - role: feature-title
+        tag: h3
+      - role: feature-desc
+        tag: p
+  - role: feature-card--wide
+    tag: article
+
+css: |
+  .layout-features {
+    container-type: inline-size;
+    container-name: features;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    min-height: 100dvh;
+    padding: clamp(40px, 8vw, 120px) clamp(20px, 5vw, 80px);
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-features__header {
+    text-align: center;
+    margin-bottom: clamp(40px, 6vw, 80px);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .layout-features__header h2 {
+    font-size: clamp(28px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .layout-features__header p {
+    font-size: clamp(16px, 1.4vw, 20px);
+    color: var(--text-secondary, #666);
+  }
+
+  .layout-features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 2vw, 32px);
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .layout-features__card {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border, #eee);
+    border-radius: var(--radius-lg, 12px);
+    padding: clamp(20px, 3vw, 40px);
+    transition: all 0.25s ease;
+  }
+  .layout-features__card:hover {
+    border-color: var(--accent, #6c63ff);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px color-mix(in oklab, var(--accent, #000) 8%, transparent);
+  }
+
+  .layout-features__icon {
+    width: 48px; height: 48px;
+    border-radius: var(--radius, 8px);
+    background: color-mix(in oklab, var(--accent, #6c63ff) 12%, var(--bg-card, #fff));
+    color: var(--accent, #6c63ff);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  .layout-features__card h3 {
+    font-size: clamp(16px, 1.4vw, 20px);
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .layout-features__card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary, #666);
+  }
+
+  .layout-features__card--wide {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 1279px) { .layout-features__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 767px)  { .layout-features__grid { grid-template-columns: 1fr; } .layout-features__card--wide { grid-column: auto; } }
+
+quality:
+  min_font_size: 14px
+  max_line_length: 60ch
+  min_contrast_ratio: 4.5:1
+
+examples:
+  - brand: Vercel
+    url: https://vercel.com
+    notes: "3 列卡片栅格 + hover 抬升"
+  - brand: Linear features
+    url: https://linear.app/features
+    notes: "图标 + 标题 + 简短描述"
+
+changelog:
+  "1.0.0": "新增 Product Feature Grid layout"

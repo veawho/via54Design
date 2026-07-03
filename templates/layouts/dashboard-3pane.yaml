@@ -1,0 +1,173 @@
+# via54Design 布局模板 v2
+# 三栏 Dashboard — sidebar + main + aside · 16:9 视频基准 · 四端适配
+# 参考: Linear / Vercel / Stripe Dashboard 经典布局 + shadcn dashboard blocks
+id: dashboard-3pane
+name:
+  zh: "三栏 Dashboard (16:9)"
+  en: "Three-Pane Dashboard (16:9)"
+version: "2.0.0"
+category: layout/dashboard
+tags: [dashboard, sidebar, data, metrics, admin, 16-9, video-ready]
+
+when:
+  content_has: [sidebar, metrics, charts, primary_content]
+  suitable_for: [dashboard, admin_panel, monitoring, saas, analytics, video_demo]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
+
+structure:
+  type: grid-3col
+  ratio: "240px 1fr 320px"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    nav_padding: "step-4"
+    main_padding: "step-6"
+    aside_padding: "step-4"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    columns: "280px 1fr 360px"
+    font_scale: 1.2
+    safe_area: [60, 100, 60, 100]
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    columns: "240px 1fr 320px"
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    columns: "200px 1fr 0"
+    font_scale: 0.9
+    hide_roles: [aside]
+  - name: phone
+    min_width: 0
+    max_width: 767
+    columns: "0 1fr 0"
+    font_scale: 0.85
+    stack: true
+    hide_roles: [sidebar, aside]
+    stack_order: [main]
+
+elements:
+  - role: sidebar
+    tag: aside
+    position: left
+    padding: [24, 16]
+    children:
+      - role: brand
+        tag: div
+      - role: nav-section
+        tag: nav
+  - role: main
+    tag: main
+    position: center
+    padding: [48, 40]
+  - role: aside
+    tag: aside
+    position: right
+    padding: [24, 20]
+  - role: header-bar
+    tag: header
+    position: top
+    children:
+      - role: page-title
+        tag: h1
+      - role: breadcrumb
+        tag: nav
+  - role: metrics-grid
+    tag: div
+    children:
+      - role: metric-card
+        tag: article
+  - role: chart-area
+    tag: section
+  - role: data-table
+    tag: section
+
+css: |
+  /* ── 三栏 Dashboard 容器 (16:9 baseline) ── */
+  .layout-dashboard {
+    container-type: inline-size;
+    container-name: dashboard;
+    display: grid;
+    grid-template-columns: 240px 1fr 320px;
+    grid-template-rows: 64px 1fr;
+    grid-template-areas:
+      "sidebar header header"
+      "sidebar main   aside";
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-dashboard__sidebar { grid-area: sidebar; border-right: 1px solid var(--border, #eee); padding: 24px 16px; background: var(--bg-elevated, #fafafa); }
+  .layout-dashboard__header  { grid-area: header;  border-bottom: 1px solid var(--border, #eee); padding: 0 40px; display: flex; align-items: center; }
+  .layout-dashboard__main    { grid-area: main;    padding: 32px 40px; overflow-y: auto; }
+  .layout-dashboard__aside   { grid-area: aside;   border-left: 1px solid var(--border, #eee); padding: 24px 20px; background: var(--bg-elevated, #fafafa); }
+
+  /* ── 指标卡片 ── */
+  .layout-dashboard__metric-card {
+    background: var(--bg-card, #fff);
+    border: 1px solid var(--border, #eee);
+    border-radius: var(--radius, 8px);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* ── Tablet: 隐 aside ── */
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .layout-dashboard {
+      grid-template-columns: 200px 1fr;
+      grid-template-areas: "sidebar header" "sidebar main";
+    }
+    .layout-dashboard__aside { display: none; }
+  }
+
+  /* ── Phone: 只剩 main ── */
+  @media (max-width: 767px) {
+    .layout-dashboard {
+      grid-template-columns: 1fr;
+      grid-template-areas: "header" "main";
+    }
+    .layout-dashboard__sidebar, .layout-dashboard__aside { display: none; }
+    .layout-dashboard__header { padding: 0 20px; }
+    .layout-dashboard__main   { padding: 20px; }
+  }
+
+  /* ── TV overscan ── */
+  @media (min-width: 1920px) {
+    .layout-dashboard { padding: 60px 100px; }
+    .layout-dashboard__main { padding: 48px 60px; }
+  }
+
+quality:
+  min_font_size: 13px
+  max_line_length: 80ch
+  min_contrast_ratio: 4.5:1
+
+examples:
+  - brand: Linear
+    url: https://linear.app
+    notes: "三栏布局 + 暗色玻璃风格,metric-card 卡片化"
+  - brand: Stripe Dashboard
+    url: https://stripe.com/dashboard
+    notes: "主区表格 + aside 详情面板"
+  - brand: Vercel
+    url: https://vercel.com/dashboard
+    notes: "侧栏导航 + 顶栏面包屑 + 内容栅格"
+
+changelog:
+  "1.0.0": "新增三栏 Dashboard layout,适配 16:9 演示场景"

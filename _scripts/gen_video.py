@@ -8,7 +8,7 @@ import sys
 import os
 from pathlib import Path
 
-ROOT = Path(r"G:\agent\hermes\via54Design-v6")
+ROOT = Path(r"G:\agent\ai\hermes\via54Design-v6")
 TEMPLATE = ROOT / "spec" / "lithium_30s_v6_template.json5"
 
 # ★ 字幕黄金模板 (5 段 × 3 语言) ★

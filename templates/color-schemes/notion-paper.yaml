@@ -1,0 +1,45 @@
+# via54Design 配色模板 — Notion 风
+# 参考: Notion 极简文档工作区
+# 米白纸感 + 中性灰 + 极淡 accent
+id: notion-paper
+name:
+  zh: "Notion 纸感"
+  en: "Notion Paper"
+version: "1.0.0"
+tags: [notion, paper, neutral, productivity, writing, minimal]
+
+mood: [paper, calm, writing, productive, soft]
+
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "纸白"
+  - role: text_primary
+    hex: "#37352F"
+    name_zh: "墨黑"
+    cultural_note: "Notion 文档主文字,略带温暖灰"
+  - role: text_secondary
+    hex: "#787774"
+    name_zh: "远山灰"
+  - role: accent
+    hex: "#2383E2"
+    name_zh: "链接蓝"
+  - role: accent_alt
+    hex: "#D44C47"
+    name_zh: "红印章"
+    cultural_note: "Notion 数据库红 tag"
+  - role: border
+    hex: "#E9E9E7"
+    name_zh: "纸张纹路"
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #37352F;
+  --text-secondary: #787774;
+  --accent: #2383E2;
+  --accent-alt: #D44C47;
+  --border: #E9E9E7;
+
+compatibility:
+  layouts: [docs-sidebar, blog-magazine, settings-form]
+  fonts: [song-literary, ming-hei-editorial]

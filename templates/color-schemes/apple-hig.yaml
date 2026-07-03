@@ -1,0 +1,44 @@
+# via54Design 配色模板 — Apple HIG / Apple 风
+# 参考: Apple Human Interface Guidelines + macOS Sonoma
+# 纯净白底 + 系统灰 + SF Pro 蓝调
+id: apple-hig
+name:
+  zh: "苹果 HIG 白"
+  en: "Apple HIG White"
+version: "1.0.0"
+tags: [apple, macos, premium, minimal, white, soft-shadow]
+
+mood: [clean, premium, minimal, refined, modern]
+
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "素白"
+  - role: text_primary
+    hex: "#1D1D1F"
+    name_zh: "炭黑"
+    cultural_note: "Apple.com 主文字色"
+  - role: text_secondary
+    hex: "#6E6E73"
+    name_zh: "银灰"
+  - role: accent
+    hex: "#0066CC"
+    name_zh: "苹果蓝"
+  - role: accent_alt
+    hex: "#BF5AF2"
+    name_zh: "紫水晶"
+  - role: border
+    hex: "#D2D2D7"
+    name_zh: "薄雾银"
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #6E6E73;
+  --accent: #0066CC;
+  --accent-alt: #BF5AF2;
+  --border: #D2D2D7;
+
+compatibility:
+  layouts: [landing-pricing, product-feature-grid, hero-split-16-9]
+  fonts: [sans-geometric-tech, display-sans-bold, elegant-didone]

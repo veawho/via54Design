@@ -1,0 +1,43 @@
+# 史诗电影预告片叙事模型 (Epic Cinematic Trailer Model)
+# 参考: 经典好莱坞史诗级电影预告片结构
+id: cinematic-epic
+name:
+  en: "Cinematic Epic Trailer"
+  zh: "史诗电影预告片"
+description:
+  en: "Volumetric lighting, slow build, rising action, climax and stinger"
+  zh: "电影感史诗预告片模型。引入→悬念上升→高潮动作→余音悬念"
+source: "Classic Hollywood Movie Trailer Structure"
+suitable_for: [电影预告片, 品牌概念片, 剧情长片宣传]
+
+beats:
+  - id: setup
+    name: {en: "Setup", zh: "世界设定"}
+    mood: mysterious
+    duration_weight: 0.25
+    duration_min: 10
+    voiceover_template: "在这个被忘却的世界里，只有一个声音依旧回响..."
+
+  - id: call_to_adventure
+    name: {en: "The Call", zh: "危机爆发"}
+    mood: tense
+    duration_weight: 0.3
+    duration_min: 15
+    voiceover_template: "但黑暗并没有因此散去..."
+
+  - id: transformation
+    name: {en: "Rising Action", zh: "命运抉择"}
+    mood: urgent
+    duration_weight: 0.25
+    duration_min: 10
+    voiceover_template: "现在，是做出抉择的时候了。"
+
+  - id: climax
+    name: {en: "Climax & Resolution", zh: "史诗决战"}
+    mood: triumphant
+    duration_weight: 0.2
+    duration_min: 10
+    voiceover_template: "《片名》 —— 寻找最后的绿色源泉。"
+
+shot_types: [WIDE, MEDIUM, DETAIL, EXTREME-CLOSE-UP]
+camera_moves: [Dolly zoom, Slow pan, Orbit, Whip pan]

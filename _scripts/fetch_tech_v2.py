@@ -15,7 +15,7 @@ if not KEY:
         "设置方式 (Windows): set PEXELS_API_KEY=你的新key\n"
         "设置方式 (bash): export PEXELS_API_KEY=你的新key"
     )
-DIR = r"G:\agent\hermes\via54Design-v6\stock"
+DIR = r"G:\agent\ai\hermes\via54Design-v6\stock"
 os.makedirs(DIR, exist_ok=True)
 
 # 8 个新关键词, 优先电芯/电池工厂

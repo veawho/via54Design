@@ -1,0 +1,151 @@
+# via54Design 布局模板 v2
+# Pricing Comparison — 横向价格对比表 · 16:9 · 四端适配
+# 参考: Stripe Pricing / Linear Pricing / GitHub Pricing
+id: pricing-comparison
+name:
+  zh: "横向价格对比表"
+  en: "Pricing Comparison Table"
+version: "2.0.0"
+category: layout/pricing
+tags: [pricing, comparison, table, plans, features, 16-9, video-ready]
+
+when:
+  content_has: [plans, features, comparison_matrix]
+  suitable_for: [pricing_page, plan_comparison, feature_matrix, saas]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
+
+structure:
+  type: pricing-table
+  ratio: "240px repeat(3, 1fr)"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    cell_padding: "step-3"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    font_scale: 1.15
+    safe_area: [60, 100, 60, 100]
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    font_scale: 0.95
+  - name: phone
+    min_width: 0
+    max_width: 767
+    font_scale: 0.9
+    stack: true
+
+elements:
+  - role: feature-column
+    tag: div
+  - role: plan-column
+    tag: article
+    children:
+      - role: plan-name
+        tag: h3
+      - role: plan-price
+        tag: div
+      - role: plan-cta
+        tag: a
+      - role: plan-features
+        tag: ul
+
+css: |
+  .layout-pricing-table {
+    container-type: inline-size;
+    container-name: pricing;
+    display: grid;
+    grid-template-columns: 240px repeat(3, 1fr);
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-pricing-table__header-cell {
+    padding: 32px 24px;
+    border-bottom: 2px solid var(--border, #eee);
+    text-align: center;
+    background: var(--bg-elevated, #fafafa);
+  }
+  .layout-pricing-table__header-cell h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .layout-pricing-table__price {
+    font-size: clamp(28px, 3vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 16px 0;
+  }
+  .layout-pricing-table__price span {
+    font-size: 0.4em;
+    color: var(--text-secondary, #666);
+    font-weight: 400;
+  }
+
+  .layout-pricing-table__feature-cell {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border, #eee);
+    font-size: 14px;
+    color: var(--text-secondary, #666);
+  }
+  .layout-pricing-table__feature-cell--name {
+    font-weight: 600;
+    color: var(--text-primary, #1a1a1a);
+  }
+
+  .layout-pricing-table__plan-cell {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border, #eee);
+    text-align: center;
+    border-left: 1px solid var(--border, #eee);
+  }
+  .layout-pricing-table__plan-cell--featured {
+    background: color-mix(in oklab, var(--accent, #6c63ff) 6%, var(--bg, #fff));
+    border-left: 2px solid var(--accent, #6c63ff);
+    border-right: 2px solid var(--accent, #6c63ff);
+  }
+
+  @media (max-width: 767px) {
+    .layout-pricing-table {
+      grid-template-columns: 1fr;
+    }
+    .layout-pricing-table__feature-cell:not(.layout-pricing-table__feature-cell--name) { display: none; }
+  }
+
+quality:
+  min_font_size: 13px
+  max_line_length: 40ch
+  min_contrast_ratio: 4.5:1
+
+examples:
+  - brand: Stripe Pricing
+    url: https://stripe.com/pricing
+    notes: "横向矩阵 + 推荐列高亮"
+  - brand: Linear Pricing
+    url: https://linear.app/pricing
+    notes: "极简 3-tier + 勾选标记"
+  - brand: GitHub Pricing
+    url: https://github.com/pricing
+    notes: "对比表 + 详细 feature 行"
+
+changelog:
+  "1.0.0": "新增 Pricing Comparison Table layout"

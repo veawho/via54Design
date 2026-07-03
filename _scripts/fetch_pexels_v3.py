@@ -5,7 +5,7 @@ import subprocess
 import os
 
 KEY = "aHyfRPK9DM8s7nV4Rv9xVK7aIDmkKoLwOx0tZzcGtxDaI4zhftgRvDPO"
-DIR = r"G:\agent\hermes\via54Design-v6\stock"
+DIR = r"G:\agent\ai\hermes\via54Design-v6\stock"
 os.makedirs(DIR, exist_ok=True)
 
 # 5 段关键词

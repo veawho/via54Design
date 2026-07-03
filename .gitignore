@@ -71,3 +71,8 @@ _scripts/stock/
 # Rendered subtitle PNGs (regenerable via gen_subtitle_*.py)
 _scripts/subtitles/
 # Test f...[truncated]
+
+# Local test reports and backup executables
+depth_test/
+*.exe.bak
+

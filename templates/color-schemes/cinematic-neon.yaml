@@ -1,0 +1,29 @@
+# via54Design 配色方案
+# Cinematic Neon — 电影感深色霓虹 (适用于科幻/史诗预告片)
+id: cinematic-neon
+name:
+  zh: "电影霓虹"
+  en: "Cinematic Neon"
+version: "2.0.0"
+category: color-scheme/dark
+
+colors:
+  background: "#09090b"           # 极黑 (Space Black)
+  bg-card: "rgba(18, 18, 24, 0.6)" # 半透明深黑 (Dark Obsidian)
+  text-primary: "#f4f4f5"          # 浅白 (Off-White)
+  text-secondary: "#a1a1aa"        # 柔灰 (Soft Silver)
+  accent: "#f59e0b"                # 琥珀金 (Volumetric Amber Glow)
+  accent-2: "#8b5cf6"              # 荧光紫 (Neon Violet Glow)
+  border: "rgba(255, 255, 255, 0.08)" # 微发光边界
+  shadow: "rgba(0, 0, 0, 0.6)"
+
+css_variables: |
+  --bg: #09090b;
+  --bg-card: rgba(18, 18, 24, 0.6);
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --accent: #f59e0b;
+  --accent-2: #8b5cf6;
+  --border: rgba(255, 255, 255, 0.08);
+  --glow: 0 0 15px rgba(139, 92, 246, 0.25);
+  --radius-lg: 12px;

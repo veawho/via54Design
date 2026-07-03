@@ -1,0 +1,218 @@
+# via54Design 布局模板 v2
+# Settings Form — 设置面板表单 · 16:9 · 四端适配
+# 参考: shadcn forms / Stripe settings / GitHub settings / Linear settings
+id: settings-form
+name:
+  zh: "设置面板表单"
+  en: "Settings Form Panel"
+version: "2.0.0"
+category: layout/settings
+tags: [settings, form, panel, configuration, admin, 16-9, video-ready]
+
+when:
+  content_has: [nav_tabs, form_fields, save_button, sections]
+  suitable_for: [settings_page, admin, user_profile, configuration_panel]
+
+viewport:
+  baseline: "16:9"
+  min_height: 100dvh
+  max_width: 1920px
+
+structure:
+  type: grid-2col-settings
+  ratio: "240px 1fr"
+  gap: "0"
+
+spacing:
+  base: 4
+  ratio: 1.618
+  semantic:
+    nav_padding: "step-4"
+    content_padding: "step-7"
+
+responsive:
+  - name: tv
+    min_width: 1920
+    columns: "300px 1fr"
+    font_scale: 1.15
+    safe_area: [60, 100, 60, 100]
+  - name: desktop
+    min_width: 1280
+    max_width: 1919
+    columns: "240px 1fr"
+    font_scale: 1.0
+  - name: tablet
+    min_width: 768
+    max_width: 1279
+    columns: "200px 1fr"
+    font_scale: 0.95
+  - name: phone
+    min_width: 0
+    max_width: 767
+    columns: "1fr"
+    stack: true
+    font_scale: 0.9
+    hide_roles: [tabs-nav]
+
+elements:
+  - role: tabs-nav
+    tag: nav
+    position: left
+    padding: [32, 16]
+  - role: content
+    tag: main
+    position: right
+    padding: [48, 56]
+    children:
+      - role: section
+        tag: section
+        children:
+          - role: section-title
+            tag: h2
+          - role: field-group
+            tag: div
+            children:
+              - role: field
+                tag: div
+                children:
+                  - role: label
+                    tag: label
+                  - role: input
+                    tag: input
+                  - role: help-text
+                    tag: p
+      - role: footer-actions
+        tag: div
+
+css: |
+  .layout-settings {
+    container-type: inline-size;
+    container-name: settings;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    width: 100%;
+    max-width: var(--layout-max-width, 1920px);
+    margin: 0 auto;
+    min-height: 100dvh;
+    background: var(--bg, #fff);
+    color: var(--text-primary, #1a1a1a);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
+
+  .layout-settings__nav {
+    border-right: 1px solid var(--border, #eee);
+    padding: 32px 16px;
+    background: var(--bg-elevated, #fafafa);
+  }
+  .layout-settings__nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm, 6px);
+    color: var(--text-secondary, #666);
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .layout-settings__nav a:hover { background: var(--bg-inset, #f0f0f0); color: var(--text-primary, #1a1a1a); }
+  .layout-settings__nav a.active {
+    background: color-mix(in oklab, var(--accent, #6c63ff) 12%, transparent);
+    color: var(--accent, #6c63ff);
+    font-weight: 500;
+  }
+
+  .layout-settings__content {
+    padding: clamp(32px, 6vw, 80px);
+    max-width: 720px;
+  }
+
+  .layout-settings__section {
+    margin-bottom: 48px;
+  }
+  .layout-settings__section-title {
+    font-size: clamp(20px, 2vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+  }
+  .layout-settings__section-desc {
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .layout-settings__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .layout-settings__field label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .layout-settings__field input,
+  .layout-settings__field select,
+  .layout-settings__field textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border, #ddd);
+    border-radius: var(--radius-sm, 6px);
+    background: var(--bg-input, #fff);
+    font-size: 14px;
+    font-family: inherit;
+    color: inherit;
+  }
+  .layout-settings__field input:focus,
+  .layout-settings__field select:focus,
+  .layout-settings__field textarea:focus {
+    outline: none;
+    border-color: var(--accent, #6c63ff);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent, #6c63ff) 16%, transparent);
+  }
+  .layout-settings__help {
+    font-size: 12px;
+    color: var(--text-secondary, #888);
+  }
+
+  .layout-settings__footer-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border, #eee);
+  }
+  .layout-settings__btn-primary {
+    padding: 10px 20px;
+    background: var(--accent, #6c63ff);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm, 6px);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  @media (max-width: 767px) {
+    .layout-settings { grid-template-columns: 1fr; }
+    .layout-settings__nav { display: none; }
+  }
+
+quality:
+  min_font_size: 13px
+  max_line_length: 60ch
+  min_contrast_ratio: 4.5:1
+
+examples:
+  - brand: Stripe Settings
+    url: https://dashboard.stripe.com/settings
+    notes: "左侧 tab nav + 右侧分组表单"
+  - brand: GitHub Settings
+    url: https://github.com/settings/profile
+    notes: "分组标题 + 帮助文字 + 保存按钮"
+  - brand: Linear Settings
+    url: https://linear.app/settings
+    notes: "sticky nav + focus state 蓝圈"
+
+changelog:
+  "1.0.0": "新增 Settings Form layout"

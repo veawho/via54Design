@@ -444,11 +444,28 @@ func assembleHTML(r *GenerationResult, layout *LayoutTemplate) string {
 	_ = safeTitleHTML // 未直接用, 由 heroBodyHTML 内部处理
 
 	// 布局特有 HTML body 内容 (根据 layout ID 选择)
-	bodyContent := heroBodyHTML(titleHTML)
-	if layout.ID == "bento-grid-2x2" {
+	var bodyContent string
+	switch layout.ID {
+	case "bento-grid-2x2":
 		bodyContent = bentoBodyHTML()
-	} else if layout.ID == "gallery-waterfall" {
+	case "gallery-waterfall":
 		bodyContent = galleryBodyHTML()
+	case "dashboard-3pane":
+		bodyContent = dashboardBodyHTML()
+	case "landing-pricing":
+		bodyContent = landingPricingBodyHTML(titleHTML)
+	case "docs-sidebar":
+		bodyContent = docsSidebarBodyHTML()
+	case "blog-magazine":
+		bodyContent = blogMagazineBodyHTML()
+	case "pricing-comparison":
+		bodyContent = pricingComparisonBodyHTML()
+	case "product-feature-grid":
+		bodyContent = productFeatureGridBodyHTML()
+	case "settings-form":
+		bodyContent = settingsFormBodyHTML()
+	default:
+		bodyContent = heroBodyHTML(titleHTML)
 	}
 
 	// 演示模式：外层包裹 .presentation-mode 容器
@@ -535,6 +552,237 @@ func galleryBodyHTML() string {
 	out += "</div>"
 	return out
 }
+
+func dashboardBodyHTML() string {
+	return `
+<div class="layout-dashboard">
+  <aside class="layout-dashboard__sidebar">
+    <div class="logo">via54Design</div>
+    <nav>
+      <a href="#" class="active">Overview</a>
+      <a href="#">Analytics</a>
+      <a href="#">Projects</a>
+      <a href="#">Settings</a>
+    </nav>
+  </aside>
+  <main class="layout-dashboard__main">
+    <header>
+      <h2>Console Overview</h2>
+      <div class="user-profile">User</div>
+    </header>
+    <div class="metrics-grid">
+      <div class="metric-card"><h3>Active Users</h3><p>24.8K</p></div>
+      <div class="metric-card"><h3>Conversion Rate</h3><p>3.42%</p></div>
+      <div class="metric-card"><h3>Bounce Rate</h3><p>42.1%</p></div>
+    </div>
+    <div class="content-block">
+      <h3>System Performance</h3>
+      <div class="chart-placeholder">Chart</div>
+    </div>
+  </main>
+  <aside class="layout-dashboard__aside">
+    <h3>Activity Feed</h3>
+    <ul>
+      <li>User registered 2m ago</li>
+      <li>Deployment success 15m ago</li>
+      <li>Database backup ok 1h ago</li>
+    </ul>
+  </aside>
+</div>`
+}
+
+func landingPricingBodyHTML(titleHTML string) string {
+	return fmt.Sprintf(`
+<div class="layout-landing">
+  <nav class="layout-landing__nav">
+    <div class="logo">via54Design</div>
+    <div class="nav-links">
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Docs</a>
+    </div>
+    <button class="nav-cta">Get Started</button>
+  </nav>
+  <header class="layout-landing__hero">
+    <h1>%s</h1>
+    <p>Aesthetic, modular, responsive, and performance-tuned layouts powered by Golang & modern design agents.</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#" class="btn-secondary">View Docs</a>
+    </div>
+  </header>
+  <section class="layout-landing__pricing">
+    <article class="layout-landing__pricing-card">
+      <h3>Hobby</h3>
+      <div class="price">$0<span>/mo</span></div>
+      <p>Perfect for exploring design capabilities.</p>
+      <ul>
+        <li>10 Projects</li>
+        <li>Community Support</li>
+      </ul>
+      <button class="btn-card">Start Free</button>
+    </article>
+    <article class="layout-landing__pricing-card layout-landing__pricing-card--featured">
+      <h3>Pro</h3>
+      <div class="price">$19<span>/mo</span></div>
+      <p>Everything you need for production apps.</p>
+      <ul>
+        <li>Unlimited Projects</li>
+        <li>Priority SLA Support</li>
+        <li>Custom Domain Mapping</li>
+      </ul>
+      <button class="btn-card btn-card--featured">Upgrade Pro</button>
+    </article>
+    <article class="layout-landing__pricing-card">
+      <h3>Enterprise</h3>
+      <div class="price">Custom</div>
+      <p>Dedicated scale and custom integration.</p>
+      <ul>
+        <li>Single Sign-On (SSO)</li>
+        <li>Dedicated Infrastructure</li>
+      </ul>
+      <button class="btn-card">Contact Sales</button>
+    </article>
+  </section>
+</div>`, html.EscapeString(titleHTML))
+}
+
+func docsSidebarBodyHTML() string {
+	return `
+<div class="layout-docs">
+  <aside class="layout-docs__sidebar">
+    <h3>Getting Started</h3>
+    <a href="#" class="active">Introduction</a>
+    <a href="#">Installation</a>
+    <a href="#">Quick Start</a>
+    <h3>Customization</h3>
+    <a href="#">Color Schemes</a>
+    <a href="#">Layout Templates</a>
+  </aside>
+  <article class="layout-docs__content">
+    <h1>Documentation Guide</h1>
+    <p>Welcome to the official developer guide. Discover how to create stunning UI components, define responsive layouts, and configure advanced color schemes using the via54Design system.</p>
+    <h2>Core Concepts</h2>
+    <p>Layouts are defined in structured YAML configurations featuring multiple screen adaptions, baseline aspect ratios, and golden ratio spacing systems.</p>
+  </article>
+  <aside class="layout-docs__toc">
+    <h3>On This Page</h3>
+    <a href="#">Overview</a>
+    <a href="#">Core Concepts</a>
+    <a href="#">Next Steps</a>
+  </aside>
+</div>`
+}
+
+func blogMagazineBodyHTML() string {
+	return `
+<article class="layout-blog">
+  <header class="layout-blog__header">
+    <div class="meta">DESIGN ARCHIVE • 2026</div>
+    <h1>The Art of Aesthetics: Vibe Coding in the Age of Agents</h1>
+    <p class="subtitle">Exploring Lovable, v0, and the craft of high-fidelity visual design systems.</p>
+  </header>
+  <div class="layout-blog__image" style="background:var(--accent,#ccc); min-height:400px; border-radius:12px;"></div>
+  <div class="layout-blog__content">
+    <p>Design is not just what it looks like and feels like. Design is how it works. In the modern era of agentic workflows, software development is moving towards high-speed visual iterations.</p>
+    <blockquote>"Aesthetics is the language of quality. If a product looks elegant and responds instantly, it breeds trust."</blockquote>
+    <p>By leveraging standard color variables, golden ratio spacing scales, and fluid typography, we build websites that adapt gracefully to any viewport.</p>
+  </div>
+</article>`
+}
+
+func pricingComparisonBodyHTML() string {
+	return `
+<div class="layout-pricing-comparison">
+  <header>
+    <h2>Compare Plan Features</h2>
+    <p>Select the plan that fits your operational scale.</p>
+  </header>
+  <table class="layout-pricing-comparison__table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Hobby</th>
+        <th>Pro</th>
+        <th>Enterprise</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>API Access</td>
+        <td>100 req/day</td>
+        <td>Unlimited</td>
+        <td>Custom SLA</td>
+      </tr>
+      <tr>
+        <td>Custom Branding</td>
+        <td>❌</td>
+        <td>✅</td>
+        <td>✅</td>
+      </tr>
+      <tr>
+        <td>SSO Login</td>
+        <td>❌</td>
+        <td>❌</td>
+        <td>✅</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`
+}
+
+func productFeatureGridBodyHTML() string {
+	return `
+<div class="layout-product-features">
+  <header>
+    <h2>Built for High-Speed Visual Delivery</h2>
+    <p>Everything you need to craft pixel-perfect web interfaces.</p>
+  </header>
+  <div class="layout-product-features__grid">
+    <div class="layout-product-features__card">
+      <div class="icon">⚡</div>
+      <h3>Ultra-fast Compiles</h3>
+      <p>Go compiled binaries output fully integrated layouts in milliseconds.</p>
+    </div>
+    <div class="layout-product-features__card">
+      <div class="icon">🎨</div>
+      <h3>Golden Spacing</h3>
+      <p>Mathematical design harmony utilizing standard golden ratio scaling.</p>
+    </div>
+    <div class="layout-product-features__card">
+      <div class="icon">📱</div>
+      <h3>4-Device Responsive</h3>
+      <p>Optimized for TV, Desktop, Tablet, and Phone layout structures.</p>
+    </div>
+  </div>
+</div>`
+}
+
+func settingsFormBodyHTML() string {
+	return `
+<div class="layout-settings">
+  <aside class="layout-settings__nav">
+    <a href="#" class="active">General Profile</a>
+    <a href="#">API Keys</a>
+    <a href="#">Team Access</a>
+  </aside>
+  <form class="layout-settings__form" onsubmit="event.preventDefault()">
+    <h2>Account Settings</h2>
+    <div class="form-group">
+      <label>Workspace Name</label>
+      <input type="text" value="My Awesome Workspace">
+    </div>
+    <div class="form-group">
+      <label>Contact Email</label>
+      <input type="email" value="admin@workspace.com">
+    </div>
+    <div class="form-actions">
+      <button class="btn-save">Save Changes</button>
+    </div>
+  </form>
+</div>`
+}
+
 
 func (r *GenerationResult) SaveToFile(path string) error {
 	return os.WriteFile(path, []byte(r.HTML), 0644)

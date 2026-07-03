@@ -24,6 +24,55 @@ layouts:
     tags: [gallery, waterfall, masonry, images, portfolio, 16-9, video-ready]
     file: templates/layouts/gallery-waterfall.yaml
 
+  - id: dashboard-3pane
+    name: 三栏 Dashboard (16:9) — sidebar + main + aside
+    version: "1.0.0"
+    category: layout/dashboard
+    tags: [dashboard, sidebar, data, metrics, admin, 16-9, video-ready]
+    file: templates/layouts/dashboard-3pane.yaml
+
+  - id: landing-pricing
+    name: 落地页+定价 (16:9) — sticky nav + hero + pricing cards
+    version: "1.0.0"
+    category: layout/landing
+    tags: [landing, pricing, marketing, saas, conversion, 16-9, video-ready]
+    file: templates/layouts/landing-pricing.yaml
+
+  - id: docs-sidebar
+    name: 文档站 (侧栏+正文+toc)
+    version: "1.0.0"
+    category: layout/docs
+    tags: [docs, documentation, sidebar, content, toc, 16-9, video-ready]
+    file: templates/layouts/docs-sidebar.yaml
+
+  - id: blog-magazine
+    name: 杂志风博客 — 长文阅读体验
+    version: "1.0.0"
+    category: layout/blog
+    tags: [blog, article, magazine, typography, reading, 16-9, video-ready]
+    file: templates/layouts/blog-magazine.yaml
+
+  - id: pricing-comparison
+    name: 横向价格对比表 — 4 列 feature matrix
+    version: "1.0.0"
+    category: layout/pricing
+    tags: [pricing, comparison, table, plans, features, 16-9, video-ready]
+    file: templates/layouts/pricing-comparison.yaml
+
+  - id: product-feature-grid
+    name: 产品特性栅格 — 3 列 icon+title+desc
+    version: "1.0.0"
+    category: layout/marketing
+    tags: [features, grid, cards, product, marketing, 16-9, video-ready]
+    file: templates/layouts/product-feature-grid.yaml
+
+  - id: settings-form
+    name: 设置面板表单 — tab nav + grouped fields
+    version: "1.0.0"
+    category: layout/settings
+    tags: [settings, form, panel, configuration, admin, 16-9, video-ready]
+    file: templates/layouts/settings-form.yaml
+
 color_schemes:
   # ── 中国传统配色 (8) ──
   - id: crimson-elegance
@@ -101,126 +150,113 @@ color_schemes:
     tags: [classic, playful, bold, geometric, educational]
     file: templates/color-schemes/bauhaus-primary.yaml
   - id: candy-duolingo
-    name: 糖果色 — 绿+黄+天蓝(Duolingo风)
-    tags: [classic, playful, friendly, educational, candy]
-    file: templates/color-schemes/candy-duolingo.yaml
-  - id: cosmic-retro
-    name: 复古未来 — 黑+奶油+钴蓝(Perplexity风)
-    tags: [classic, cosmic, retro, futuristic, mysterious]
-    file: templates/color-schemes/cosmic-retro.yaml
-  # ── Adobe/Behance (6) ──
-  - id: spectrum-indigo
-    name: Adobe Spectrum — 创意行业色彩标准
-    tags: [adobe, professional, creative, accessible]
-    file: templates/color-schemes/spectrum-indigo.yaml
-  - id: flat-ui-vibrant
-    name: Flat UI — Behance最常用扁平配色
-    tags: [adobe, vibrant, bold, modern, youthful]
-    file: templates/color-schemes/flat-ui-vibrant.yaml
-  - id: millennial-sage
-    name: 千禧鼠尾草 — Behance最出圈粉绿搭配
-    tags: [adobe, trendy, gentle, warm, femine]
-    file: templates/color-schemes/millennial-sage.yaml
-  - id: glassmorphism-pastel
-    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
-    tags: [adobe, futuristic, ethereal, tech, glass]
-    file: templates/color-schemes/glassmorphism-pastel.yaml
-  - id: neon-dark
-    name: 暗黑霓虹 — 赛博朋克荧光对决
-    tags: [adobe, dark, vibrant, futuristic, cyberpunk]
-    file: templates/color-schemes/neon-dark.yaml
-  - id: earth-terracotta
-    name: 大地陶土 — 2026年度色趋势
-    tags: [adobe, warm, earthy, natural, premium]
-    file: templates/color-schemes/earth-terracotta.yaml
-
-  - id: dark-terminal-blue
-    name: 暗色终端美学（近黑+紫蓝强调/Linear风）
-    version: "1.0.0"
-    category: color-scheme/dark
-    tags: [dark, terminal, tech, developer, bento, glassmorphism]
-    file: templates/color-schemes/dark-terminal-blue.yaml
-
-  - id: mono-brand-bold
-    name: 单色品牌撞色（满版主色+反白字/Spotify风）
-    version: "1.0.0"
-    category: color-scheme/mono
-    tags: [mono, bold, brand, poster, high-contrast]
-    file: templates/color-schemes/mono-brand-bold.yaml
-
-  - id: editorial-brutalist
-    name: 媒体粗野主义（纯黑白+超链接蓝/Bloomberg风）
-    version: "1.0.0"
-    category: color-scheme/editorial
-    tags: [editorial, brutalist, high-contrast, black-white, media]
-    file: templates/color-schemes/editorial-brutalist.yaml
-
-  - id: cosmic-retro
-    name: 复古未来太空图录（黑+奶油+钴蓝/Perplexity风）
-    version: "1.0.0"
-    category: color-scheme/cosmic
-    tags: [cosmic, retro, futuristic, dark, warm-dark]
-    file: templates/color-schemes/cosmic-retro.yaml
-  # ── Adobe/Behance (6) ──
-  - id: spectrum-indigo
-    name: Adobe Spectrum — 创意行业色彩标准
-    tags: [adobe, professional, creative, accessible]
-    file: templates/color-schemes/spectrum-indigo.yaml
-  - id: flat-ui-vibrant
-    name: Flat UI — Behance最常用扁平配色
-    tags: [adobe, vibrant, bold, modern, youthful]
-    file: templates/color-schemes/flat-ui-vibrant.yaml
-  - id: millennial-sage
-    name: 千禧鼠尾草 — Behance最出圈粉绿搭配
-    tags: [adobe, trendy, gentle, warm, femine]
-    file: templates/color-schemes/millennial-sage.yaml
-  - id: glassmorphism-pastel
-    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
-    tags: [adobe, futuristic, ethereal, tech, glass]
-    file: templates/color-schemes/glassmorphism-pastel.yaml
-  - id: neon-dark
-    name: 暗黑霓虹 — 赛博朋克荧光对决
-    tags: [adobe, dark, vibrant, futuristic, cyberpunk]
-    file: templates/color-schemes/neon-dark.yaml
-  - id: earth-terracotta
-    name: 大地陶土 — 2026年度色趋势
-    tags: [adobe, warm, earthy, natural, premium]
-    file: templates/color-schemes/earth-terracotta.yaml
-
-  - id: neo-brutalist-vibrant
-    name: 新粗野主义撞色（电光紫+品红+亮黄/The Verge风）
-    version: "1.0.0"
-    category: color-scheme/vibrant
-    tags: [vibrant, brutalist, colorful, high-energy, youth]
-    file: templates/color-schemes/neo-brutalist-vibrant.yaml
-
-  - id: bauhaus-primary
-    name: 包豪斯三原色（红黄蓝+黑白/Khan Academy风）
-    version: "1.0.0"
-    category: color-scheme/bauhaus
-    tags: [bauhaus, primary, geometric, education, playful]
-    file: templates/color-schemes/bauhaus-primary.yaml
-
-  - id: swiss-monochrome
-    name: Swiss极致黑白（纯黑+纯白+灰阶/Vercel风）
-    version: "1.0.0"
-    category: color-scheme/monochrome
-    tags: [swiss, monochrome, minimal, clean, vercel]
-    file: templates/color-schemes/swiss-monochrome.yaml
-
-  - id: bento-dark-glass
-    name: Linear暗色发光+Bento玻璃拟态
-    version: "1.0.0"
-    category: color-scheme/dark-glass
-    tags: [dark, glass, bento, glow, gradient, saas]
-    file: templates/color-schemes/bento-dark-glass.yaml
-
-  - id: candy-duolingo
     name: 糖果色凸起立体（绿+黄+天蓝/Duolingo风）
     version: "1.0.0"
     category: color-scheme/candy
     tags: [candy, playful, friendly, game, rounded]
     file: templates/color-schemes/candy-duolingo.yaml
+  - id: fluent-blue
+    name: 微软 Fluent 蓝 — 企业级 (Windows 11)
+    version: "1.0.0"
+    category: color-scheme/enterprise
+    tags: [enterprise, modern, tech, blue, microsoft, fluent]
+    file: templates/color-schemes/fluent-blue.yaml
+  - id: apple-hig
+    name: 苹果 HIG 白 — 纯净 (macOS)
+    version: "1.0.0"
+    category: color-scheme/premium
+    tags: [apple, macos, premium, minimal, white]
+    file: templates/color-schemes/apple-hig.yaml
+  - id: github-primer
+    name: GitHub Primer 暗 — 开发者优先
+    version: "1.0.0"
+    category: color-scheme/developer
+    tags: [github, developer, dark, primer, code, modern]
+    file: templates/color-schemes/github-primer.yaml
+  - id: notion-paper
+    name: Notion 纸感 — 文档工作区
+    version: "1.0.0"
+    category: color-scheme/productivity
+    tags: [notion, paper, neutral, productivity, writing, minimal]
+    file: templates/color-schemes/notion-paper.yaml
+  - id: stripe-spectrum
+    name: Stripe 光谱 — 金融科技紫
+    version: "1.0.0"
+    category: color-scheme/fintech
+    tags: [stripe, saas, fintech, gradient, professional, modern]
+    file: templates/color-schemes/stripe-spectrum.yaml
+  - id: bento-dark-glass
+    name: Linear 暗色玻璃拟态 — 玻璃+发光 (Linear 风)
+    version: "1.0.0"
+    category: color-scheme/dark-glass
+    tags: [dark, glass, bento, linear, glow, gradient, saas]
+    file: templates/color-schemes/bento-dark-glass.yaml
+  - id: cosmic-retro
+    name: 复古未来太空图录 — 黑+奶油+钴蓝 (Perplexity 风)
+    version: "1.0.0"
+    category: color-scheme/retro
+    tags: [retro, cosmic, perplexity, dark, accent]
+    file: templates/color-schemes/cosmic-retro.yaml
+  - id: earth-terracotta
+    name: 大地陶土 — 2026 年度色趋势
+    version: "1.0.0"
+    category: color-scheme/trend
+    tags: [earth, terracotta, 2026, warm, organic]
+    file: templates/color-schemes/earth-terracotta.yaml
+  - id: editorial-brutalist
+    name: 媒体粗野主义 — 纯黑白+超链接蓝 (Bloomberg 风)
+    version: "1.0.0"
+    category: color-scheme/editorial
+    tags: [editorial, brutalist, high-contrast, media, bold]
+    file: templates/color-schemes/editorial-brutalist.yaml
+  - id: flat-ui-vibrant
+    name: Flat UI — Behance 最常用扁平配色
+    version: "1.0.0"
+    category: color-scheme/flat
+    tags: [flat-ui, vibrant, behance, modern, youthful]
+    file: templates/color-schemes/flat-ui-vibrant.yaml
+  - id: glassmorphism-pastel
+    name: 玻璃拟态 — 磨砂玻璃粉彩渐变
+    version: "1.0.0"
+    category: color-scheme/glass
+    tags: [glass, pastel, ethereal, tech, futuristic]
+    file: templates/color-schemes/glassmorphism-pastel.yaml
+  - id: millennial-sage
+    name: 千禧鼠尾草 — Behance 最出圈粉绿搭配
+    version: "1.0.0"
+    category: color-scheme/trend
+    tags: [millennial, sage, behance, gentle, warm, femine]
+    file: templates/color-schemes/millennial-sage.yaml
+  - id: mono-brand-bold
+    name: 单色品牌撞色海报 — 满版主色+反白字 (Spotify/Mailchimp 风)
+    version: "1.0.0"
+    category: color-scheme/brand
+    tags: [mono, bold, brand, poster, high-contrast]
+    file: templates/color-schemes/mono-brand-bold.yaml
+  - id: neo-brutalist-vibrant
+    name: 新粗野主义撞色信息流 — 电光紫+品红+亮黄 (The Verge 风)
+    version: "1.0.0"
+    category: color-scheme/brutalist
+    tags: [vibrant, brutalist, colorful, high-energy, youth]
+    file: templates/color-schemes/neo-brutalist-vibrant.yaml
+  - id: neon-dark
+    name: 暗黑霓虹 — 赛博朋克荧光对决
+    version: "1.0.0"
+    category: color-scheme/cyber
+    tags: [neon, dark, cyberpunk, fluorescent, edgy]
+    file: templates/color-schemes/neon-dark.yaml
+  - id: spectrum-indigo
+    name: Adobe Spectrum — 创意行业色彩标准
+    version: "1.0.0"
+    category: color-scheme/professional
+    tags: [adobe, professional, creative, accessible]
+    file: templates/color-schemes/spectrum-indigo.yaml
+  - id: cinematic-neon
+    name: 电影霓虹 — 深邃黑加琥珀金与荧光紫
+    version: "2.0.0"
+    category: color-scheme/dark
+    tags: [cinematic, dark, neon, creative, luxury, golden, video-ready]
+    file: templates/color-schemes/cinematic-neon.yaml
 
 typography:
   # ── 中文排版 (6) ──
@@ -309,6 +345,11 @@ narratology:
     category: narratology/model
     tags: [品牌故事, 纪录片, 关于我们]
     file: templates/narratology/models/heros-journey.yaml
+  - id: cinematic-epic
+    name: 史诗电影预告片 — 引入→危机→抉择→决战
+    category: narratology/model
+    tags: [电影预告片, 品牌概念片, 剧情长片]
+    file: templates/narratology/models/cinematic-epic.yaml
   - id: cognitive-arc
     name: 认知弧 — 开场→核心→收尾
     category: narratology/model
@@ -329,6 +370,9 @@ video_edits:
   - id: educational-explain-5min
     name: 科普讲解 — 认知弧5分钟教育视频
     file: templates/video-edits/educational-explain-5min.yaml
+  - id: cinematic-trailer-90s
+    name: 史诗预告片 — 电影感史诗预告片90秒
+    file: templates/video-edits/cinematic-trailer-90s.yaml
 combinations:
   - name: 暖色编辑Hero
     layout: hero-split-16-9

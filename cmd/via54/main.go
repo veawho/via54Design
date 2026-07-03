@@ -66,6 +66,10 @@ func main() {
 		cmdForge()
 	case "img":
 		cmdImg()
+	case "reimagine":
+		cmdReimagine()
+	case "ai":
+		cmdAI()
 	case "web":
 		cmdWeb()
 	case "version":
@@ -91,6 +95,8 @@ func help() {
 	fmt.Println("  prompt ...         图片提示词 (scene→MJ/Kling/即梦/Gemini)")
 	fmt.Println("  forge ...           Forge Classic / A1111 生图")
 	fmt.Println("  img ...             生图 (通过 mmx MiniMax CLI, 调 mmx image generate)")
+	fmt.Println("  reimagine ...       截图→HTML (LLM Vision: openai/anthropic/gemini)")
+	fmt.Println("  ai ...              统一 LLM 文本生成 (openai/anthropic/gemini/mmx/replicate)")
 	fmt.Println("  comfyui ...         ComfyUI 工作流执行 (21模板)")
 	fmt.Println("  pipeline ...        LLM提示词管道 (扩展/翻译/存档)")
 	fmt.Println("  web ...            Web UI (全功能控制面板)")

@@ -36,9 +36,11 @@ func cmdGenerate() {
 	font := fs.String("font", "", "字体模板ID")
 	title := fs.String("title", "via54Design", "页面标题")
 	output := fs.String("output", "output.html", "输出路径")
+	stdout := fs.Bool("stdout", false, "输出到 stdout (覆盖 --output)")
 	letteringSVG := fs.String("lettering-svg", "", "SVG lettering 文件路径 (手写/书法文字)")
 	fromNarrative := fs.String("from-narrative", "", "叙事脚手架 JSON 路径 (via54 narrate --format json 的输出)")
 	presentation := fs.Bool("presentation", false, "演示模式: 锁定 16:9 (PPT/视频输出)")
+	strict := fs.Bool("strict", false, "严格模式: layout/color/font ID 必须存在, 否则报错 (默认宽松)")
 	fs.Parse(os.Args[2:])
 
 	bd := baseDir()
@@ -46,6 +48,15 @@ func cmdGenerate() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "失败: %v\n", err)
 		os.Exit(1)
+	}
+
+	// ── 严格模式 ID 校验 ──
+	if *strict {
+		if err := validateIDs(eng, *layout, *color, *font); err != nil {
+			fmt.Fprintf(os.Stderr, "❌ %v\n", err)
+			fmt.Fprintln(os.Stderr, "提示: 用 'via54 list' 查看可用 ID; 用 --strict=false (默认) 跳过校验")
+			os.Exit(1)
+		}
 	}
 
 	// ── 叙事驱动生成 ──
@@ -79,8 +90,148 @@ func cmdGenerate() {
 		fmt.Fprintf(os.Stderr, "生成失败: %v\n", err)
 		os.Exit(1)
 	}
+
+	// ── --stdout 模式: 输出到 stdout 而非文件 ──
+	if *stdout {
+		fmt.Print(result.HTML)
+		return
+	}
+
 	result.SaveToFile(*output)
 	fmt.Printf("✅ %s (%d bytes)\n   layout=%s color=%s font=%s\n", *output, len(result.HTML), result.LayoutID, result.ColorID, result.FontID)
+}
+
+// validateIDs 严格模式下校验 layout/color/font ID 是否存在
+func validateIDs(eng *template.Engine, layoutID, colorID, fontID string) error {
+	if layoutID == "" || colorID == "" || fontID == "" {
+		return fmt.Errorf("严格模式: layout/color/font 都不能为空")
+	}
+	all := eng.Registry.ListAll()
+	ids := map[string]map[string]bool{
+		"layouts":       make(map[string]bool),
+		"color_schemes": make(map[string]bool),
+		"typography":    make(map[string]bool),
+	}
+	for cat, entries := range all {
+		if _, ok := ids[cat]; !ok {
+			ids[cat] = make(map[string]bool)
+		}
+		for _, e := range entries {
+			ids[cat][e.ID] = true
+		}
+	}
+	checks := []struct {
+		id    string
+		category string
+		label string
+	}{
+		{layoutID, "layouts", "layout"},
+		{colorID, "color_schemes", "color"},
+		{fontID, "typography", "font"},
+	}
+	for _, c := range checks {
+		if !ids[c.category][c.id] {
+			// 提示相似 ID
+			suggestions := findSimilar(c.id, ids[c.category])
+			hint := ""
+			if len(suggestions) > 0 {
+				hint = fmt.Sprintf(" (相近: %s)", strings.Join(suggestions, ", "))
+			}
+			return fmt.Errorf("%s ID %q 不存在%s", c.label, c.id, hint)
+		}
+	}
+	return nil
+}
+
+// findSimilar 综合相似度: Levenshtein 距离 + 前缀匹配
+// 用户 typo 模式: "heroo-split" → "hero-split-16-9" (1 字符替换 + 后缀差异)
+//                "bento-2x2"   → "bento-grid-2x2"  (中段不同)
+func findSimilar(target string, pool map[string]bool) []string {
+	targetLower := strings.ToLower(target)
+	threshold := len(targetLower) / 3
+	if threshold < 2 {
+		threshold = 2
+	}
+	type scored struct {
+		id    string
+		score int
+	}
+	var all []scored
+	for id := range pool {
+		if id == target {
+			continue
+		}
+		idLower := strings.ToLower(id)
+		d := levenshtein(targetLower, idLower)
+		// 前缀匹配加分(距离相同但前缀更长优先)
+		prefixBonus := 0
+		for i := 0; i < minBytes(len(targetLower), len(idLower)); i++ {
+			if targetLower[i] == idLower[i] {
+				prefixBonus++
+			} else {
+				break
+			}
+		}
+		// 综合得分: 距离 - 前缀奖励
+		score := d - prefixBonus/2
+		if d <= threshold || (prefixBonus >= 4 && d <= threshold+3) {
+			all = append(all, scored{id, score})
+		}
+	}
+	// 按得分排序(越小越相似)
+	for i := 0; i < len(all); i++ {
+		for j := i + 1; j < len(all); j++ {
+			if all[j].score < all[i].score {
+				all[i], all[j] = all[j], all[i]
+			}
+		}
+	}
+	var suggestions []string
+	for _, s := range all {
+		suggestions = append(suggestions, s.id)
+		if len(suggestions) >= 5 {
+			break
+		}
+	}
+	return suggestions
+}
+
+func levenshtein(a, b string) int {
+	if len(a) == 0 {
+		return len(b)
+	}
+	if len(b) == 0 {
+		return len(a)
+	}
+	dp := make([][]int, len(a)+1)
+	for i := range dp {
+		dp[i] = make([]int, len(b)+1)
+		dp[i][0] = i
+	}
+	for j := 0; j <= len(b); j++ {
+		dp[0][j] = j
+	}
+	for i := 1; i <= len(a); i++ {
+		for j := 1; j <= len(b); j++ {
+			if a[i-1] == b[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			} else {
+				dp[i][j] = 1 + min3(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+			}
+		}
+	}
+	return dp[len(a)][len(b)]
+}
+
+func min3(a, b, c int) int {
+	m := a
+	if b < m {
+		m = b
+	}
+	if c < m {
+		m = c
+	}
+	return m
 }
 
 // generateFromNarrative 从叙事脚手架 JSON 生成多场景 HTML 动画

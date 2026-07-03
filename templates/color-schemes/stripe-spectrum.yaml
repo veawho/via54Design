@@ -1,0 +1,45 @@
+# via54Design 配色模板 — Stripe 风 (高对比度商业)
+# 参考: Stripe Brand Guidelines + Dashboard UI
+# 深紫 + 彩虹渐变 + 高对比中性
+id: stripe-spectrum
+name:
+  zh: "Stripe 光谱"
+  en: "Stripe Spectrum"
+version: "1.0.0"
+tags: [stripe, saas, fintech, gradient, professional, modern]
+
+mood: [professional, bold, fintech, confident, rainbow-accent]
+
+palette:
+  - role: background
+    hex: "#FFFFFF"
+    name_zh: "纯白"
+  - role: text_primary
+    hex: "#0A2540"
+    name_zh: "深海蓝"
+    cultural_note: "Stripe 招牌深蓝, 信任感"
+  - role: text_secondary
+    hex: "#425466"
+    name_zh: "雾霾蓝"
+  - role: accent
+    hex: "#635BFF"
+    name_zh: "Stripe 紫"
+    cultural_note: "Stripe 品牌主色, 支付按钮色"
+  - role: accent_alt
+    hex: "#00D4FF"
+    name_zh: "信号青"
+  - role: border
+    hex: "#E3E8EE"
+    name_zh: "晨雾"
+
+css_variables: |
+  --bg: #FFFFFF;
+  --text-primary: #0A2540;
+  --text-secondary: #425466;
+  --accent: #635BFF;
+  --accent-alt: #00D4FF;
+  --border: #E3E8EE;
+
+compatibility:
+  layouts: [landing-pricing, pricing-comparison, dashboard-3pane, product-feature-grid]
+  fonts: [sans-geometric-tech, display-sans-bold]
