@@ -3,13 +3,12 @@
   <div class="lovart-tabs" style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px">
     <span class="lovart-tab active" onclick="switchPromptSubTab('t2i')" id="subtab-prompt-t2i"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>文生图提示词</span>
     <span class="lovart-tab" onclick="switchPromptSubTab('i2i')" id="subtab-prompt-i2i"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>图生图提示词</span>
-    <span class="lovart-tab" onclick="switchPromptSubTab('workflow')" id="subtab-prompt-workflow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>工作流提示词</span>
   </div>
 
-  <!-- Section 1: Text-to-Image Prompt compiler (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>文生图提示词) -->
+  <!-- Section 1: Text-to-Image Prompt compiler (文生图提示词) -->
   <div id="prompt-section-t2i" class="subtab-section">
     <div class="flow-step-card">
-      <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>文生图提示词编译</h3>
+      <h3>文生图提示词编译</h3>
       <form hx-post="/api/htmx/prompt" hx-target="#pOutput" hx-indicator="#pSpin" style="margin-top:12px">
         <textarea name="scene" rows="3" placeholder="在此描述生图场景，例如: 曜金科技极简会客厅，带有落地窗，日落余晖..." style="margin-bottom:10px" required></textarea>
         
@@ -35,10 +34,10 @@
     </div>
   </div>
 
-  <!-- Section 2: Image-to-Image Prompt compiler (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>图生图提示词) -->
+  <!-- Section 2: Image-to-Image Prompt compiler (图生图提示词) -->
   <div id="prompt-section-i2i" class="subtab-section" style="display:none">
     <div class="flow-step-card">
-      <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>图生图提示词编译</h3>
+      <h3>图生图提示词编译</h3>
       <form hx-post="/api/htmx/upload" hx-target="#pUploadResult" hx-encoding="multipart/form-data" style="margin-top:12px">
         <input type="hidden" name="_field" value="image">
         <!-- Image Upload Dropzone -->
@@ -49,43 +48,13 @@
         <input type="file" id="pFile" name="image" accept="image/*" style="display:none"
                hx-post="/api/htmx/upload" hx-target="#pUploadResult" hx-encoding="multipart/form-data"
                onchange="document.getElementById('pFileName').textContent = this.files[0] ? this.files[0].name : '';">
-        <div id="pFileName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+        <div id="pFileName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center"></div>
         <div id="pUploadResult"></div>
 
         <div style="margin-top:12px">
           <p style="font-size:11px;color:var(--text-dim);line-height:1.4">💡 说明：上传参考图片后，系统将自动基于 Vision-LLM 模型对图片内容与构图风格进行深度语义提炼，输出可在生图平台直接使用的反推提示词。</p>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- Section 3: Forge Workflow prompt manager (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>工作流提示词) -->
-  <div id="prompt-section-workflow" class="subtab-section" style="display:none">
-    <div class="flow-step-card">
-      <h3><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>工作流提示词编译 (Forge WebUI API)</h3>
-      
-      <!-- Connect status chip -->
-      <div style="margin-bottom:12px" hx-get="/api/htmx/forge-status" hx-trigger="load, every 15s" hx-target="#pForgeStatus"></div>
-      <div id="pForgeStatus"></div>
-      
-      <form hx-post="/api/htmx/regen" hx-target="#pForgeOut" hx-indicator="#pForgeSpin" style="margin-top:12px">
-        <textarea name="prompt" rows="3" placeholder="在此输入正面提示词，或者直接复制上方生成出的平台提示词..." style="margin-bottom:10px" required></textarea>
-        <textarea name="negative" rows="2" placeholder="反面提示词 (Optional)" style="margin-bottom:10px;font-size:11px"></textarea>
-        
-        <div style="display:flex;gap:6px;margin-bottom:12px">
-          <select name="workflow" class="custom-select" style="width:100%">
-            <option value="sdxl_txt2img">SDXL 官方基础工作流 (Text to Image)</option>
-            <option value="animatediff_txt2vid">AnimateDiff 动态微短视频工作流 (Text to Video)</option>
-            <option value="face_swap">InstantID 肖像面部替换工作流 (Face Swap)</option>
-          </select>
-        </div>
-        
-        <div style="display:flex;gap:6px">
-          <button type="submit" class="btn-primary">🚀 提交到 Forge</button>
-          <span id="pForgeSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">提交中...</span>
-        </div>
-      </form>
-      <div id="pForgeOut" style="margin-top:8px"></div>
     </div>
   </div>
 </div>

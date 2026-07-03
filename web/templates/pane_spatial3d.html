@@ -1,0 +1,140 @@
+<div class="flow-steps">
+  <!-- Sub Tabs Navigation -->
+  <div class="lovart-tabs" style="margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:8px">
+    <span class="lovart-tab active" onclick="switchSpatialSubTab('prompt')" id="subtab-spatial-prompt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>一句话生成 (LLM)</span>
+    <span class="lovart-tab" onclick="switchSpatialSubTab('image')" id="subtab-spatial-image"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>一张图生成 (图片分析)</span>
+    <span class="lovart-tab" onclick="switchSpatialSubTab('doc')" id="subtab-spatial-doc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>一个文档生成 (文件分析)</span>
+  </div>
+
+  <!-- Section 1: Prompt Guided Spatial (一句话生成) -->
+  <div id="spatial-section-prompt" class="subtab-section">
+    <div class="flow-step-card">
+      <h3>一句话生成 — 文本大纲设计空间3D结构</h3>
+      <form hx-post="/api/htmx/spatial3d" hx-target="#spOutput" hx-indicator="#spSpin" style="margin-top:12px">
+        <textarea name="seed" rows="3" placeholder="在此输入空间设计主题描述，例如: 曜金极简未来派玻璃别墅，悬挑阳台，大理石立柱..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px;font-size:12.5px;margin-bottom:10px" required></textarea>
+        
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <select name="style" class="custom-select" style="flex:1">
+            <option value="futuristic">未来主义风格 (Futuristic)</option>
+            <option value="brutalism">粗野主义风格 (Brutalism)</option>
+            <option value="cyberpunk">赛博朋克风格 (Cyberpunk)</option>
+            <option value="minimalist">现代极简风格 (Minimalist)</option>
+          </select>
+          <input type="number" name="scale" value="20" min="5" max="100" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="尺寸(m)">
+        </div>
+        
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">⚡ 开始设计空间</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section 2: Image Guided Spatial (一张图生成) -->
+  <div id="spatial-section-image" class="subtab-section" style="display:none">
+    <div class="flow-step-card">
+      <h3>一张图生成 — 渲染概念图转换 3D 空间</h3>
+      <form hx-post="/api/htmx/spatial3d" hx-target="#spOutput" hx-indicator="#spSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+        <!-- Image Upload Dropzone -->
+        <label for="spImage" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span style="font-weight:600;font-size:12px;color:var(--text-primary)">点击上传 3D 渲染图或概念手稿</span>
+        </label>
+        <input type="file" id="spImage" name="image" accept="image/*" style="display:none"
+               onchange="document.getElementById('spImgName').textContent = this.files[0] ? this.files[0].name : '';" required>
+        <div id="spImgName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <select name="style" class="custom-select" style="flex:1">
+            <option value="futuristic">未来主义风格 (Futuristic)</option>
+            <option value="brutalism">粗野主义风格 (Brutalism)</option>
+            <option value="cyberpunk">赛博朋克风格 (Cyberpunk)</option>
+            <option value="minimalist">现代极简风格 (Minimalist)</option>
+          </select>
+          <input type="number" name="scale" value="20" min="5" max="100" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="尺寸(m)">
+        </div>
+        
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">📐 提取图片并设计 3D 空间</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section 3: Document Guided Spatial (一个文档生成) -->
+  <div id="spatial-section-doc" class="subtab-section" style="display:none">
+    <div class="flow-step-card">
+      <h3>一个文档生成 — 空间设计说明文档转 3D 布局</h3>
+      <form hx-post="/api/htmx/spatial3d" hx-target="#spOutput" hx-indicator="#spSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+        <!-- Document Upload Dropzone -->
+        <label for="spDoc" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span style="font-weight:600;font-size:12px;color:var(--text-primary)">上传参考说明文档 (.docx, .pdf, .txt)</span>
+        </label>
+        <input type="file" id="spDoc" name="doc" accept=".docx,.pdf,.txt" style="display:none"
+               onchange="document.getElementById('spDocName').textContent = this.files[0] ? this.files[0].name : '';" required>
+        <div id="spDocName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+        <input type="text" name="seed" placeholder="补充背景/大纲种子描述（可选）" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px 12px;font-size:12.5px;margin-bottom:12px">
+
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <select name="style" class="custom-select" style="flex:1">
+            <option value="futuristic">未来主义风格 (Futuristic)</option>
+            <option value="brutalism">粗野主义风格 (Brutalism)</option>
+            <option value="cyberpunk">赛博朋克风格 (Cyberpunk)</option>
+            <option value="minimalist">现代极简风格 (Minimalist)</option>
+          </select>
+          <input type="number" name="scale" value="20" min="5" max="100" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="尺寸(m)">
+        </div>
+        
+        <div style="display:flex;gap:6px">
+          <button type="submit" class="btn-primary">📊 解析说明书并设计空间</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shared indicator and output slots -->
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <span id="spSpin" class="htmx-indicator" style="font-size:12px;color:var(--accent)">⏳ 正在解析并设计 3D 空间架构...</span>
+  </div>
+  
+  <div id="spOutput" style="margin-top:8px"></div>
+
+  <!-- Integrated 3D Forge Workflow Engine -->
+  <div class="flow-step-card" style="margin-top:20px">
+    <div style="display:flex;justify-content:between;align-items:center;margin-bottom:10px">
+      <h3 style="margin:0;display:flex;align-items:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>3D 空间工作流引擎 (Forge Engine)</h3>
+      <div style="margin-left:auto" hx-get="/api/htmx/forge-status" hx-trigger="load, every 15s" hx-target="#spForgeStatus"></div>
+    </div>
+    <div id="spForgeStatus"></div>
+    <form hx-post="/api/htmx/regen" hx-target="#spForgeOut" hx-indicator="#spForgeSpin" style="margin-top:10px">
+      <textarea name="prompt" rows="3" placeholder="在此输入 3D Mesh / 渲染提示词，或者直接复制生成出来的空间元素..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px 12px;font-size:12px;margin-bottom:10px" required></textarea>
+      
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <select name="workflow" class="custom-select" style="flex:1">
+          <option value="tripo3d_mesh_gen">Tripo3D 物体模型高保真重建工作流</option>
+          <option value="sv3d_orbit_render">Stable Video 3D 环绕轨道渲染工作流</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">🚀 提交到 3D 工作流</button>
+        <span id="spForgeSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">提交中...</span>
+      </div>
+    </form>
+    <div id="spForgeOut" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<script>
+function switchSpatialSubTab(tabName) {
+  document.querySelectorAll('.lovart-tabs:first-child .lovart-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById('subtab-spatial-' + tabName);
+  if (activeTab) activeTab.classList.add('active');
+
+  document.querySelectorAll('.subtab-section').forEach(s => s.style.display = 'none');
+  const targetSection = document.getElementById('spatial-section-' + tabName);
+  if (targetSection) targetSection.style.display = 'block';
+}
+</script>

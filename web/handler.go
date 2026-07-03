@@ -99,6 +99,7 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/htmx/story2ppt", handleHTMXStory2PPT)
 	mux.HandleFunc("/api/htmx/forge-status", handleHTMXForgeStatus)
 	mux.HandleFunc("/api/htmx/reimagine", handleHTMXReimagine)
+	mux.HandleFunc("/api/htmx/spatial3d", handleHTMXSpatial3D)
 	mux.HandleFunc("/api/htmx/download", handleHTMXDownload)
 	mux.HandleFunc("/api/htmx/preview", handleHTMXPreview)
 	return mux
@@ -1024,6 +1025,7 @@ func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 		"present":   "pane_present.html",
 		"video":     "pane_video.html",
 		"forge":     "pane_forge.html",
+		"spatial3d": "pane_spatial3d.html",
 		"reimagine": "pane_reimagine.html",
 		"tools":     "pane_tools.html",
 	}
@@ -2532,4 +2534,319 @@ func handlePresets(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	_ = json.NewEncoder(w).Encode(resp)
+}
+
+
+func handleHTMXSpatial3D(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	if err := r.ParseMultipartForm(64 << 20); err != nil {
+		_ = r.ParseForm()
+	}
+
+	seed := r.FormValue("seed")
+	style := r.FormValue("style")
+	scaleStr := r.FormValue("scale")
+	scale := 20
+	if s, err := strconv.Atoi(scaleStr); err == nil && s > 0 {
+		scale = s
+	}
+
+	// 1. Process document file upload if any
+	var docContentText string
+	docFile, docHeader, err := r.FormFile("doc")
+	if err == nil {
+		defer docFile.Close()
+		ext := strings.ToLower(filepath.Ext(docHeader.Filename))
+		docFilename := fmt.Sprintf("3d_doc_%d%s", time.Now().UnixNano(), ext)
+		dstDoc := filepath.Join(uploadDir(), docFilename)
+		outDoc, err := os.Create(dstDoc)
+		if err == nil {
+			io.Copy(outDoc, docFile)
+			outDoc.Close()
+			
+			// Extract document text using vision.ExtractContent
+			extRes := vision.ExtractContent(dstDoc)
+			if textVal, ok := extRes["content"].(string); ok {
+				docContentText = textVal
+			} else if titleVal, ok := extRes["title"].(string); ok {
+				docContentText = titleVal
+			}
+		}
+	}
+
+	// 2. Process image file upload if any
+	var imageContentText string
+	imageFile, imageHeader, err := r.FormFile("image")
+	if err == nil {
+		defer imageFile.Close()
+		ext := strings.ToLower(filepath.Ext(imageHeader.Filename))
+		imgFilename := fmt.Sprintf("3d_img_%d%s", time.Now().UnixNano(), ext)
+		dstImg := filepath.Join(uploadDir(), imgFilename)
+		outImg, err := os.Create(dstImg)
+		if err == nil {
+			io.Copy(outImg, imageFile)
+			outImg.Close()
+			
+			// Extract concept image descriptor using ProcessStoryboard single mode
+			res := vision.ProcessStoryboard([]string{dstImg}, "three-act", 30, "", true)
+			if promptVal, ok := res["opening_prompt"].(string); ok {
+				imageContentText = promptVal
+			}
+		}
+	}
+
+	// Combine descriptions
+	combinedDesc := seed
+	if imageContentText != "" {
+		if combinedDesc != "" {
+			combinedDesc += "\n\n" + imageContentText
+		} else {
+			combinedDesc = imageContentText
+		}
+	}
+	if docContentText != "" {
+		if combinedDesc != "" {
+			combinedDesc += "\n\n" + docContentText
+		} else {
+			combinedDesc = docContentText
+		}
+	}
+
+	if combinedDesc == "" {
+		combinedDesc = "Minimalist Modern Space"
+	}
+
+	// Parse style for Three.js render options
+	meshColorHex := "0xd4af37" // gold
+	meshRoughness := "0.1"
+	meshMetalness := "0.9"
+	wallOpacity := "0.25"
+	extraElementsJS := ""
+
+	styleTitle := "现代极简空间 (Minimalist Modern)"
+	if style == "futuristic" {
+		styleTitle = "未来主义太空舱 (Futuristic Canopy)"
+		meshColorHex = "0x4a90e2" // bright cyan
+		meshRoughness = "0.2"
+		meshMetalness = "0.8"
+		wallOpacity = "0.15"
+		// Add some floating nodes
+		extraElementsJS = `
+    const floatingGroup = new THREE.Group();
+    const nodeGeo = new THREE.SphereGeometry(0.2, 8, 8);
+    const nodeMat = new THREE.MeshBasicMaterial({ color: 0x4a90e2 });
+    for(let i=0; i<6; i++) {
+      const node = new THREE.Mesh(nodeGeo, nodeMat);
+      node.position.set((Math.random()-0.5)*10, 3 + Math.random()*3, (Math.random()-0.5)*10);
+      floatingGroup.add(node);
+    }
+    group.add(floatingGroup);
+		`
+	} else if style == "brutalism" {
+		styleTitle = "粗野混凝土城堡 (Brutalist Concrete)"
+		meshColorHex = "0x8a8a8f" // concrete gray
+		meshRoughness = "0.9"
+		meshMetalness = "0.1"
+		wallOpacity = "0.7"
+	} else if style == "cyberpunk" {
+		styleTitle = "赛博朋克霓虹网格 (Cyberpunk Grid)"
+		meshColorHex = "0xff0055" // neon hot pink
+		meshRoughness = "0.0"
+		meshMetalness = "1.0"
+		wallOpacity = "0.3"
+		extraElementsJS = `
+    const lightGeo = new THREE.CylinderGeometry(0.1, 0.1, 4, 8);
+    const lightMat = new THREE.MeshBasicMaterial({ color: 0x00ffcc }); // cyan glow
+    const laser = new THREE.Mesh(lightGeo, lightMat);
+    laser.position.set(-3, 2, 3);
+    group.add(laser);
+		`
+	}
+
+	// 3. Render Three.js Preview page to output.html
+	threeJSHTML := fmt.Sprintf(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>via54Design - 3D Spatial Canvas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    body { margin: 0; background: #050508; overflow: hidden; font-family: 'Outfit', -apple-system, sans-serif; }
+    #canvas-container { width: 100vw; height: 100vh; }
+    #info-overlay {
+      position: absolute; top: 16px; left: 16px;
+      color: #f5f0e0; font-size: 13px; font-weight: 600;
+      background: rgba(13, 13, 18, 0.85);
+      border: 1px solid #23221c; padding: 12px;
+      border-radius: 8px; backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="info-overlay">
+    <div style="color:#d4af37;font-weight:bold;margin-bottom:4px">📐 空间 3D 实时渲染沙盒</div>
+    <div id="mesh-title">模型：%s (%dm)</div>
+    <div style="font-size:10px;color:#a69e8b;margin-top:6px">鼠标左键拖拽旋转 · 右键平移 · 滚轮缩放</div>
+  </div>
+  <div id="canvas-container"></div>
+  <script>
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050508);
+    scene.fog = new THREE.FogExp2(0x050508, 0.015);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(15, 10, 15);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 - 0.01;
+
+    // Grid Floor
+    const grid = new THREE.GridHelper(30, 30, 0xd4af37, 0x23221c);
+    grid.position.y = -0.01;
+    scene.add(grid);
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xd4af37, 0.8);
+    dirLight1.position.set(10, 20, 10);
+    dirLight1.castShadow = true;
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0x4a90e2, 0.5);
+    dirLight2.position.set(-10, 10, -10);
+    scene.add(dirLight2);
+
+    // Build structure elements
+    const group = new THREE.Group();
+
+    // Base slab
+    const slabGeo = new THREE.BoxGeometry(16, 0.5, 16);
+    const slabMat = new THREE.MeshStandardMaterial({ color: 0x18181c, roughness: 0.8 });
+    const slab = new THREE.Mesh(slabGeo, slabMat);
+    slab.position.y = -0.25;
+    slab.receiveShadow = true;
+    group.add(slab);
+
+    // Glass/Concrete Walls
+    const wallGeo = new THREE.BoxGeometry(14, 4, 14);
+    const wallMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: %s,
+      transmission: 0.9,
+      roughness: 0.1,
+      metalness: 0.1,
+      thickness: 1.0,
+      side: THREE.DoubleSide
+    });
+    const walls = new THREE.Mesh(wallGeo, wallMat);
+    walls.position.y = 2;
+    group.add(walls);
+
+    // Columns
+    const colGeo = new THREE.CylinderGeometry(0.15, 0.15, 4, 16);
+    const colMat = new THREE.MeshStandardMaterial({ color: %s, metalness: %s, roughness: %s });
+    const positions = [
+      [-6.8, -6.8], [-6.8, 6.8], [6.8, -6.8], [6.8, 6.8],
+      [0, -6.8], [0, 6.8], [-6.8, 0], [6.8, 0]
+    ];
+    positions.forEach(pos => {
+      const col = new THREE.Mesh(colGeo, colMat);
+      col.position.set(pos[0], 2, pos[1]);
+      col.castShadow = true;
+      group.add(col);
+    });
+
+    // Roof
+    const roofGeo = new THREE.BoxGeometry(17, 0.4, 17);
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x0d0d12, metalness: 0.5, roughness: 0.5 });
+    const roof = new THREE.Mesh(roofGeo, roofMat);
+    roof.position.y = 4.2;
+    roof.castShadow = true;
+    group.add(roof);
+
+    // Interior core structure
+    const coreGeo = new THREE.BoxGeometry(3, 4, 2);
+    const coreMat = new THREE.MeshStandardMaterial({ color: %s, roughness: 0.4 });
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    core.position.set(0, 2, 0);
+    group.add(core);
+
+    %s
+
+    scene.add(group);
+
+    // Animate rotation slightly
+    function animate() {
+      requestAnimationFrame(animate);
+      group.rotation.y += 0.001;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>`, combinedDesc, scale, wallOpacity, meshColorHex, meshMetalness, meshRoughness, meshColorHex, extraElementsJS)
+
+	outPath := filepath.Join(baseDir, "output.html")
+	_ = os.WriteFile(outPath, []byte(threeJSHTML), 0644)
+
+	// 4. Output structural layers list
+	var htmlBuilder strings.Builder
+	htmlBuilder.WriteString(fmt.Sprintf(`
+<div style="margin-bottom:12px;font-weight:bold;color:var(--text-primary)">
+  📐 空间 3D 结构大纲设计完成 | 风格：%s (%dm)
+</div>
+<div class="3d-structure-timeline" style="margin-top:10px">`, styleTitle, scale))
+
+	layers := []map[string]string{
+		{"name": "基座与基础层 (Base Foundation)", "mesh": "BoxGeometry(16, 0.5, 16)", "material": "MeshStandardMaterial(roughness: 0.8)", "desc": "空间定位与荷载底板层"},
+		{"name": "承重柱廊构架 (Structural Columns)", "mesh": "CylinderGeometry(0.15, 0.15, 4)", "material": fmt.Sprintf("MeshStandardMaterial(color: %s)", meshColorHex), "desc": "8组对称受力金属网格支柱"},
+		{"name": "通透围护幕墙 (Facade Wall Enclosure)", "mesh": "BoxGeometry(14, 4, 14)", "material": fmt.Sprintf("MeshPhysicalMaterial(opacity: %s)", wallOpacity), "desc": "高透光防辐射智能玻璃围护层"},
+		{"name": "屋盖悬挑层 (Roof Cantilever)", "mesh": "BoxGeometry(17, 0.4, 17)", "material": "MeshStandardMaterial(metalness: 0.5)", "desc": "太阳能集成式悬 Cantilever 顶板"},
+		{"name": "内部核心机房/壁炉 (Interior Core Box)", "mesh": "BoxGeometry(3, 4, 2)", "material": fmt.Sprintf("MeshStandardMaterial(color: %s)", meshColorHex), "desc": "中心管井与壁炉功能隔墙"},
+	}
+
+	for i, ly := range layers {
+		htmlBuilder.WriteString(fmt.Sprintf(`
+  <div class="beat-timeline-card" style="display:flex;gap:16px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm)">
+    <div style="width:40px;height:40px;border-radius:50%%;background:rgba(212,175,55,0.1);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0">
+      %d
+    </div>
+    <div style="flex-grow:1">
+      <div style="font-weight:bold;color:var(--text-primary);font-size:13px">%s</div>
+      <div style="font-size:11px;color:var(--text-secondary);margin:4px 0">
+        几何体: <code style="background:#13120f;padding:2px 6px;border-radius:4px">%s</code> | 材质: <code style="background:#13120f;padding:2px 6px;border-radius:4px">%s</code>
+      </div>
+      <div style="font-size:10px;color:var(--text-dim)">
+        功能说明: %s
+      </div>
+    </div>
+  </div>`, i+1, ly["name"], ly["mesh"], ly["material"], ly["desc"]))
+	}
+	htmlBuilder.WriteString("</div>")
+
+	htmxWrite(w, htmlBuilder.String())
 }
