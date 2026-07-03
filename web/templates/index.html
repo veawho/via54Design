@@ -1583,8 +1583,18 @@ function resetZoomAndPan() {
   let startX, startY;
   
   window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+    const activeEl = document.activeElement;
+    const isTextEntry = activeEl && (
+      activeEl.tagName === 'TEXTAREA' ||
+      (activeEl.tagName === 'INPUT' && ['text', 'search', 'url', 'email', 'password'].includes(activeEl.type)) ||
+      activeEl.isContentEditable
+    );
+    
+    if (e.code === 'Space' && !isTextEntry) {
       e.preventDefault();
+      if (activeEl && activeEl.blur) {
+        activeEl.blur();
+      }
       if (!spacePressed) {
         spacePressed = true;
         const overlay = document.getElementById('drag-overlay');
