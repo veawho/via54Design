@@ -380,17 +380,17 @@ body::before {
   flex-shrink: 0;
 }
 .dot.ok {
-  background: var(--accent3);
-  box-shadow: 0 0 10px var(--accent3);
-  animation: pulse-green 2s infinite;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+  animation: pulse-gold 2s infinite;
 }
 .dot.warn {
-  background: var(--accent4);
-  box-shadow: 0 0 10px var(--accent4);
+  background: #a8a8a8;
+  box-shadow: 0 0 10px rgba(168,168,168,0.3);
 }
 .dot.off {
-  background: var(--accent2);
-  box-shadow: 0 0 10px var(--accent2);
+  background: var(--text-dim);
+  box-shadow: 0 0 10px rgba(146,144,136,0.3);
 }
 .status-chip .label {
   color: var(--text-secondary);
@@ -923,10 +923,10 @@ input:checked + .slider:before {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes pulse-green {
-  0% { box-shadow: 0 0 0 0 rgba(67, 228, 176, 0.7); }
-  70% { box-shadow: 0 0 0 8px rgba(67, 228, 176, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(67, 228, 176, 0); }
+@keyframes pulse-gold {
+  0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
 }
 .intent-pane {
   animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -953,7 +953,7 @@ input:checked + .slider:before {
       <span class="nav-label" data-i18n-key="Projects">Projects</span>
     </a>
     <a href="#" class="nav-item" role="tab"
-       hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+       hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
       <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
       <span class="nav-label" data-i18n-key="Templates">Templates</span>
     </a>
@@ -975,8 +975,9 @@ input:checked + .slider:before {
   </nav>
   
   <div class="mode-toggle-container">
-    <button onclick="toggleThemeMode()" class="mode-toggle-btn" id="theme-mode-btn">
-      ☀️ Light Mode
+    <button onclick="toggleThemeMode()" class="mode-toggle-btn" id="theme-mode-btn" style="display:inline-flex;align-items:center;gap:6px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <span>Light Mode</span>
     </button>
   </div>
 </div>
@@ -1005,7 +1006,7 @@ input:checked + .slider:before {
   <!-- Split Pane App Container -->
   <div class="app-container">
     <div class="left-pane" id="pane-container" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
-      <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">⏳ 正在初始化设计系统环境...</div>
+      <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">正在初始化设计系统环境...</div>
     </div>
     
     <div class="right-pane">
@@ -1601,13 +1602,14 @@ function setThemeMode(mode) {
   
   const btn = document.getElementById('theme-mode-btn');
   if (!btn) return;
+  const label = btn.querySelector('span');
   
   if (mode === 'light') {
     document.body.classList.add('light-mode');
-    btn.textContent = '🌙 Dark Mode';
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> <span>Dark Mode</span>`;
   } else {
     document.body.classList.remove('light-mode');
-    btn.textContent = '☀️ Light Mode';
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> <span>Light Mode</span>`;
   }
 }
 
