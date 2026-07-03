@@ -9,21 +9,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 <style>
-/* ── Design System Base ── */
+/* ── Design System Base (黑金风格 Black & Gold) ── */
 :root {
-  --bg: #07070a;
-  --bg-elevated: rgba(13, 13, 21, 0.7);
-  --bg-card: rgba(20, 20, 31, 0.5);
-  --bg-inset: rgba(10, 10, 15, 0.8);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(108, 99, 255, 0.3);
-  --text-primary: #f0f0f5;
-  --text-secondary: #a0a0c0;
-  --text-dim: #5c5c7a;
-  --accent: #6c63ff;
-  --accent-hover: #827aff;
-  --accent-subtle: rgba(108, 99, 255, 0.15);
-  --accent-glow: rgba(108, 99, 255, 0.4);
+  --bg: #050508;
+  --bg-elevated: rgba(15, 15, 20, 0.75);
+  --bg-card: rgba(22, 22, 28, 0.55);
+  --bg-inset: rgba(8, 8, 12, 0.85);
+  --border: rgba(197, 160, 89, 0.15);
+  --border-glow: rgba(212, 175, 55, 0.35);
+  --text-primary: #f5f4f0;
+  --text-secondary: #c8c5bc;
+  --text-dim: #737068;
+  --accent: #d4af37; /* Luxury Gold */
+  --accent-hover: #e5c158;
+  --accent-subtle: rgba(212, 175, 55, 0.12);
+  --accent-glow: rgba(212, 175, 55, 0.3);
   --accent2: #ff5e7e;
   --accent3: #39e5a4;
   --accent4: #ff9f43;
@@ -40,7 +40,7 @@
 }
 
 @media(prefers-reduced-motion: no-preference) {
-  .intent-btn, .status-chip, .btn-primary, .flow-step-card, input, select, textarea {
+  .intent-btn, .status-chip, .btn-primary, .flow-step-card, input, select, textarea, .lang-btn {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
@@ -89,7 +89,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Background Ambient Glows */
+/* Background Ambient Gold Glows */
 body::before {
   content: '';
   position: absolute;
@@ -98,9 +98,43 @@ body::before {
   transform: translateX(-50%);
   width: 100vw;
   height: 600px;
-  background: radial-gradient(circle at top, rgba(108, 99, 255, 0.12) 0%, transparent 60%);
+  background: radial-gradient(circle at top, rgba(212, 175, 55, 0.09) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Lang Switcher group */
+.lang-switcher {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  padding: 4px;
+  border-radius: 20px;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.lang-btn:hover {
+  color: var(--text-primary);
+}
+.lang-btn.active {
+  background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+  color: #000;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
 }
 
 /* Hero Section */
@@ -118,11 +152,11 @@ body::before {
 }
 .hero-role em {
   font-style: normal;
-  background: linear-gradient(135deg, #a8a4ff, var(--accent), var(--accent3));
+  background: linear-gradient(135deg, #fff2cc, var(--accent), #bfa15f);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 40px rgba(108, 99, 255, 0.2);
+  text-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
 }
 .hero-tagline {
   font-size: clamp(14px, 2vw, 17px);
@@ -141,7 +175,7 @@ body::before {
   border-bottom: 1px solid var(--border);
   padding: var(--space-2) var(--space-3);
   z-index: 2;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 .status-grid {
   display: flex;
@@ -156,9 +190,9 @@ body::before {
   padding: 6px 14px;
   border-radius: var(--radius-sm);
   font-size: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.01);
   border: 1px solid var(--border);
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.03);
 }
 .status-chip .dot {
   width: 8px;
@@ -215,23 +249,23 @@ body::before {
   min-width: 110px;
   flex-shrink: 0;
   text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 .intent-btn:hover {
   border-color: var(--border-glow);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.1);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.12);
 }
 .intent-btn.active, .intent-btn:focus {
   border-color: var(--accent);
   background: var(--accent-subtle);
-  box-shadow: 0 0 20px var(--accent-subtle), inset 0 1px 1px rgba(255,255,255,0.1);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15), inset 0 1px 1px rgba(255,255,255,0.05);
   transform: none;
 }
 .intent-btn .intent-icon {
   font-size: 24px;
-  filter: drop-shadow(0 0 8px rgba(255,255,255,0.1));
+  filter: drop-shadow(0 0 8px rgba(212,175,55,0.2));
 }
 .intent-btn .intent-label {
   font-size: 13px;
@@ -265,11 +299,11 @@ body::before {
   border-radius: var(--radius);
   padding: 24px;
   position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 .flow-step-card:hover {
   border-color: var(--border-glow);
-  box-shadow: 0 12px 40px rgba(108, 99, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.1);
 }
 .step-badge {
   position: absolute;
@@ -279,7 +313,7 @@ body::before {
   height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: #fff;
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -308,16 +342,16 @@ body::before {
   font-size: 13.5px;
   padding: 10px 14px;
   outline: none;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
 }
 .flow-step-card textarea:focus, .flow-step-card select:focus, .flow-step-card input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25), inset 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25), inset 0 2px 4px rgba(0,0,0,0.5);
 }
 .flow-step-card select {
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0c0'%3E%3Cpath d='M2.5 4.5l3.5 3.5 3.5-3.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23c5a059'%3E%3Cpath d='M2.5 4.5l3.5 3.5 3.5-3.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 36px;
@@ -335,29 +369,29 @@ body::before {
   word-break: break-word;
   color: var(--text-secondary);
   margin-top: 12px;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
 }
 
 /* Buttons */
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-  color: #fff;
+  color: #000;
   border: none;
   padding: 10px 20px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: 13.5px;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
 }
 .btn-primary:hover {
-  background: linear-gradient(135deg, var(--accent-hover), #958eff);
-  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.5);
+  background: linear-gradient(135deg, var(--accent-hover), #f3e5ab);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
   transform: translateY(-1px);
 }
 .btn-primary:active {
@@ -388,7 +422,7 @@ body::before {
 .upload-mini:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(108,99,255,0.04);
+  background: rgba(212,175,55,0.04);
 }
 
 /* HTMX Loading Indicator */
@@ -421,16 +455,23 @@ body::before {
 </head>
 <body>
 
+<!-- Language Switcher -->
+<div class="lang-switcher">
+  <button onclick="setLanguage('zh')" class="lang-btn active" id="btn-zh">CN</button>
+  <button onclick="setLanguage('en')" class="lang-btn" id="btn-en">EN</button>
+  <button onclick="setLanguage('jp')" class="lang-btn" id="btn-jp">JP</button>
+</div>
+
 <!-- Hero -->
 <div class="hero-section">
-  <div class="hero-role">via54<em>Design</em></div>
-  <div class="hero-tagline">将人类的创意灵感种子，编译为工业级 AI 设计与叙事脚手架</div>
+  <div class="hero-role">via54<em data-i18n-key="Design">Design</em></div>
+  <div class="hero-tagline" data-i18n-key="tagline">将人类的创意灵感种子，编译为工业级 AI 设计与叙事脚手架</div>
 </div>
 
 <!-- Status Bar -->
 <div class="principles-bar">
   <div hx-get="/api/htmx/status" hx-trigger="load, every 30s" hx-target="this">
-    <div style="text-align:center;font-size:11px;color:var(--text-dim)">连接引擎中...</div>
+    <div style="text-align:center;font-size:11px;color:var(--text-dim)" data-i18n-key="connecting">连接引擎中...</div>
   </div>
 </div>
 
@@ -439,41 +480,314 @@ body::before {
   <a href="#" class="intent-btn active" role="tab"
      hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
     <span class="intent-icon">🎨</span>
-    <span class="intent-label">做设计</span>
+    <span class="intent-label" data-i18n-key="做设计">做设计</span>
   </a>
   <a href="#" class="intent-btn" role="tab"
      hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
     <span class="intent-icon">📝</span>
-    <span class="intent-label">写提示词</span>
+    <span class="intent-label" data-i18n-key="写提示词">写提示词</span>
   </a>
   <a href="#" class="intent-btn" role="tab"
      hx-get="/api/htmx/pane?intent=present" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
     <span class="intent-icon">📊</span>
-    <span class="intent-label">做演示</span>
+    <span class="intent-label" data-i18n-key="做演示">做演示</span>
   </a>
   <a href="#" class="intent-btn" role="tab"
      hx-get="/api/htmx/pane?intent=video" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
     <span class="intent-icon">🎬</span>
-    <span class="intent-label">做视频</span>
+    <span class="intent-label" data-i18n-key="做视频">做视频</span>
   </a>
   <a href="#" class="intent-btn" role="tab"
      hx-get="/api/htmx/pane?intent=forge" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
     <span class="intent-icon">⚡</span>
-    <span class="intent-label">提交 Forge</span>
+    <span class="intent-label" data-i18n-key="提交 Forge">提交 Forge</span>
   </a>
   <a href="#" class="intent-btn" role="tab"
      hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
     <span class="intent-icon">📸</span>
-    <span class="intent-label">截图复刻</span>
+    <span class="intent-label" data-i18n-key="截图复刻">截图复刻</span>
   </a>
 </div>
 
 <!-- Main Pane Container -->
 <div id="pane-container" class="workflow-content" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
-  <div style="text-align:center;padding:40px;color:var(--text-dim)">⏳ 正在初始化设计系统环境...</div>
+  <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">⏳ 正在初始化设计系统环境...</div>
 </div>
 
 <script>
+// ── Translation Dictionary ──
+const i18n = {
+  zh: {
+    "Design": "Design",
+    "tagline": "将人类的创意灵感种子，编译为工业级 AI 设计与叙事脚手架",
+    "connecting": "连接引擎中...",
+    "init": "⏳ 正在初始化设计系统环境...",
+    "做设计": "做设计",
+    "写提示词": "写提示词",
+    "做演示": "做演示",
+    "做视频": "做视频",
+    "提交 Forge": "提交 Forge",
+    "截图复刻": "截图复刻",
+    
+    // Server status chips
+    "引擎": "引擎",
+    "模板": "模板",
+    "二进制": "二进制",
+    "未连接": "未连接",
+    "已连接": "已连接",
+    
+    // Panes static text
+    "🎨 生成 HTML 设计": "🎨 生成 HTML 设计",
+    "标题（可选）": "标题（可选）",
+    "网页模式（自适应）": "网页模式（自适应）",
+    "演示文稿（16:9 锁定）": "演示文稿（16:9 锁定）",
+    "🎨 生成 HTML": "🎨 生成 HTML",
+    "📄 文档 → PPT 框架": "📄 文档 → PPT 框架",
+    "点击上传文档": "📎 点击上传文档",
+    "故事种子（可选）": "故事种子（可选）",
+    "📊 生成框架": "📊 生成框架",
+    
+    "📝 生成提示词": "📝 生成提示词",
+    "场景描述（英文或中文，如: 一个科技风的网页布局）": "场景描述（英文或中文，如: 一个科技风的网页布局）",
+    "目标平台": "目标平台",
+    "生成格式": "生成格式",
+    "📝 生成提示词": "📝 生成提示词",
+    
+    "📊 生成演讲文稿": "📊 生成演讲文稿",
+    "演讲主题/大纲": "演讲主题/大纲",
+    "演示比例": "演示比例",
+    "配色方案": "配色方案",
+    "字体方案": "字体方案",
+    "📊 生成演示": "📊 生成演示",
+    
+    "🎬 叙事到视频编译": "🎬 叙事到视频编译",
+    "叙事文本/视频脚本": "叙事文本/视频脚本",
+    "视频时长": "视频时长",
+    "风格模板": "风格模板",
+    "🎬 生成视频": "🎬 生成视频",
+    
+    "⚡ 提交工作流到 Forge": "⚡ 提交工作流到 Forge",
+    "提示词": "提示词",
+    "反向提示词": "反向提示词",
+    "⚡ 提交任务": "⚡ 提交任务",
+    
+    "📸 上传截图": "📸 上传截图",
+    "点击上传截图 (PNG/JPG/WebP)": "📎 点击上传截图 (PNG/JPG/WebP)",
+    "✨ 复刻为 HTML": "✨ 复刻为 HTML",
+    "用法说明": "💡 用法说明",
+    "原理:": "原理:",
+    "截图 → Base64 → LLM Vision API": "截图 → Base64 → LLM Vision API",
+    "加载中...": "加载中..."
+  },
+  en: {
+    "Design": "Design",
+    "tagline": "Compile creative seeds into production-grade AI design & narrative storyboards",
+    "connecting": "Connecting to engine...",
+    "init": "⏳ Initializing design system environment...",
+    "做设计": "Design",
+    "写提示词": "Prompt",
+    "做演示": "Present",
+    "做视频": "Video",
+    "提交 Forge": "Forge",
+    "截图复刻": "Reimagine",
+    
+    "引擎": "Engine",
+    "模板": "Templates",
+    "二进制": "Binary",
+    "未连接": "Offline",
+    "已连接": "Online",
+    
+    "🎨 生成 HTML 设计": "🎨 Generate HTML Design",
+    "标题（可选）": "Title (Optional)",
+    "网页模式（自适应）": "Web Mode (Responsive)",
+    "演示文稿（16:9 锁定）": "Presentation (16:9 Widescreen)",
+    "🎨 生成 HTML": "🎨 Generate HTML",
+    "📄 文档 → PPT 框架": "📄 Doc to PPT Outline",
+    "点击上传文档": "📎 Click to Upload Document",
+    "故事种子（可选）": "Story Seed (Optional)",
+    "📊 生成框架": "📊 Generate Outline",
+    
+    "📝 生成提示词": "📝 Generate Prompt",
+    "场景描述（英文或中文，如: 一个科技风的网页布局）": "Scene description (e.g., a futuristic sci-fi webpage layout)",
+    "目标平台": "Target Platform",
+    "生成格式": "Output Format",
+    
+    "📊 生成演讲文稿": "📊 Generate Slide Presentation",
+    "演讲主题/大纲": "Presentation topic or outline text",
+    "演示比例": "Slide Aspect Ratio",
+    "配色方案": "Color Scheme",
+    "字体方案": "Font Scheme",
+    "📊 生成演示": "📊 Generate Slides",
+    
+    "🎬 叙事到视频编译": "🎬 Narrative to Video Compiler",
+    "叙事文本/视频脚本": "Narrative script / teleprompter text",
+    "视频时长": "Video Duration (seconds)",
+    "风格模板": "Visual Style Template",
+    "🎬 生成视频": "🎬 Compile Video",
+    
+    "⚡ 提交工作流到 Forge": "⚡ Submit Workflow to Forge",
+    "提示词": "Positive Prompt",
+    "反向提示词": "Negative Prompt",
+    "⚡ 提交任务": "⚡ Submit Task",
+    
+    "📸 上传截图": "📸 Upload Screenshot",
+    "点击上传截图 (PNG/JPG/WebP)": "📎 Click to Upload Screenshot (PNG/JPG/WebP)",
+    "✨ 复刻为 HTML": "✨ Reimagine to HTML",
+    "用法说明": "💡 Usage Instructions",
+    "原理:": "How it works:",
+    "截图 → Base64 → LLM Vision API": "Screenshot → Base64 → LLM Vision API",
+    "加载中...": "Loading..."
+  },
+  jp: {
+    "Design": "デザイン",
+    "tagline": "人間のインスピレーションの種を、実用的な AI デザイン＆ナラティブの骨組みにコンパイル",
+    "connecting": "エンジン接続中...",
+    "init": "⏳ デザイン環境を初期化中...",
+    "做设计": "デザイン",
+    "写提示词": "プロンプト",
+    "做演示": "プレゼン",
+    "做视频": "ビデオ",
+    "提交 Forge": "Forge送信",
+    "截图复刻": "画面復刻",
+    
+    "引擎": "エンジン",
+    "模板": "テンプレート",
+    "二进制": "バイナリ",
+    "未连接": "未接続",
+    "已连接": "接続済",
+    
+    "🎨 生成 HTML 设计": "🎨 HTMLデザイン作成",
+    "标题（可选）": "タイトル（任意）",
+    "网页模式（自适应）": "Webモード（レスポンシブ）",
+    "演示文稿（16:9 锁定）": "プレゼンテーション（16:9 固定）",
+    "🎨 生成 HTML": "🎨 HTML生成",
+    "📄 文档 → PPT 框架": "📄 ドキュメント ➜ PPT構成",
+    "点击上传文档": "📎 ドキュメントをアップロード",
+    "故事种子（可选）": "ストーリーの種（任意）",
+    "📊 生成框架": "📊 構成案を生成",
+    
+    "📝 生成提示词": "📝 プロンプト生成",
+    "场景描述（英文或中文，如: 一个科技风的网页布局）": "場面説明（例：サイバーパンク風のWebレイアウト）",
+    "目标平台": "対象プラットフォーム",
+    "生成格式": "出力フォーマット",
+    
+    "📊 生成演讲文稿": "📊 スライドプレゼン生成",
+    "演讲主题/大纲": "プレゼンテーマ / 構成案テキスト",
+    "演示比例": "スライド比率",
+    "配色方案": "配色パターン",
+    "字体方案": "フォントスタイル",
+    "📊 生成演示": "📊 スライド生成",
+    
+    "🎬 叙事到视频编译": "🎬 ナラティブ ➜ 動画コンパイル",
+    "叙事文本/视频脚本": "ナラティブテキスト / 動画台本",
+    "视频时长": "動画の長さ (秒)",
+    "风格模板": "スタイルテンプレート",
+    "🎬 生成视频": "🎬 動画生成",
+    
+    "⚡ 提交工作流到 Forge": "⚡ ワークフローをForgeへ送信",
+    "提示词": "ポジティブプロンプト",
+    "反向提示词": "ネガティブプロンプト",
+    "⚡ 提交任务": "⚡ タスク送信",
+    
+    "📸 上传截图": "📸 スクリーンショット送信",
+    "点击上传截图 (PNG/JPG/WebP)": "📎 スクリーンショットをアップロード (PNG/JPG/WebP)",
+    "✨ 复刻为 HTML": "✨ HTMLに復刻",
+    "用法说明": "💡 使用方法",
+    "原理:": "仕組み:",
+    "截图 → Base64 → LLM Vision API": "スクリーンショット ➜ Base64 ➜ LLM Vision API",
+    "加载中...": "読み込み中..."
+  }
+};
+
+let currentLang = localStorage.getItem('via54_lang') || 'zh';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('via54_lang', lang);
+  
+  // Highlight switcher buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('btn-' + lang).classList.add('active');
+  
+  translatePage();
+}
+
+function translatePage() {
+  const dict = i18n[currentLang];
+  if (!dict) return;
+
+  // 1. Translate elements with explicit data-i18n-key
+  document.querySelectorAll('[data-i18n-key]').forEach(el => {
+    const key = el.getAttribute('data-i18n-key');
+    if (dict[key]) {
+      // Keep em styling in hero-role
+      if (key === 'Design') {
+        el.innerHTML = dict[key];
+      } else {
+        el.textContent = dict[key];
+      }
+    }
+  });
+
+  // 2. Traversal of all text nodes (supports dynamic elements swapped in by HTMX)
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: function(node) {
+        // Skip script, style and non-visual nodes
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        const tag = parent.tagName.toLowerCase();
+        if (tag === 'script' || tag === 'style' || parent.closest('.lang-switcher')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    },
+    false
+  );
+
+  let node;
+  const nodesToTranslate = [];
+  while (node = walker.nextNode()) {
+    nodesToTranslate.push(node);
+  }
+
+  nodesToTranslate.forEach(n => {
+    const origText = n.nodeValue.trim();
+    if (origText && dict[origText]) {
+      n.nodeValue = n.nodeValue.replace(origText, dict[origText]);
+    }
+  });
+
+  // 3. Form input placeholders & option labels
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+    const ph = el.getAttribute('placeholder');
+    if (ph && dict[ph]) {
+      el.setAttribute('placeholder', dict[ph]);
+    }
+  });
+  
+  document.querySelectorAll('option').forEach(el => {
+    const text = el.textContent.trim();
+    if (text && dict[text]) {
+      el.textContent = dict[text];
+    }
+  });
+}
+
+// Listen to swaps by HTMX and automatically translate the loaded HTML fragments
+document.addEventListener('htmx:afterSwap', function(evt) {
+  translatePage();
+});
+
+// Run translation once DOM is fully parsed
+document.addEventListener('DOMContentLoaded', () => {
+  setLanguage(currentLang);
+});
+
+// Setup tab navigation visual state swap
 document.addEventListener('click', function(e) {
   const btn = e.target.closest('.intent-btn');
   if (btn) {
