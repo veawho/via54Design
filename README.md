@@ -509,13 +509,24 @@ via54 media trace --input sketch.jpg             # 照片→SVG 矢量化
 
 ---
 
-## 🌐 Web UI (意图驱动)
+## 🌐 Web UI (意图驱动 & 实时沙盒工作区)
 
 ```bash
 via54 web --port 8080
 ```
 
-浏览器打开 `http://localhost:8080`，五个意图按钮：
+在浏览器中打开 `http://localhost:8080`，即可进入全新重构的 AI 设计沙盒工作区：
+
+![via54Design Web UI Sandbox](./docs/images/webui_sandbox_preview.jpg)
+
+**核心沙盒功能（借鉴 Lovart / v0）**：
+*   **双栏交互工作区** ➜ 左栏进行参数控制与文档上传，右栏以 iframe 载入实时交互预览。
+*   **响应式多端模拟** ➜ 顶部内置 Desktop / Tablet / Mobile 模拟器，可即时对自适应布局进行多画幅比例走查。
+*   **WYSIWYG 所见即所得编辑** ➜ 开启“编辑文本”后可直接点击预览页面中的任意文字图层进行实时修改打字。
+*   **零延迟实时换肤** ➜ 提供拉丝金（Obsidian Gold）、终端蓝（Terminal Blue）和水墨灰（Ink Wash）等多套高级配色方案，通过前端 CSS 变量一键零延迟应用新主题。
+*   **净化客户端导出** ➜ 提供“导出 HTML”功能，在客户端自动克隆并清洗掉开发用 contenteditable 等标记，净化下载当前编辑后的最新成果。
+
+五个意图控制选项卡：
 
 | 按钮 | 功能 |
 |------|------|

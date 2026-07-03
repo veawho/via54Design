@@ -125,6 +125,23 @@ via54
 via54 generate --layout <layout-id> --color <color-id> --font <font-id>
 ```
 
+## 🌐 Interactive Sandbox Web UI (Lovart-style Sandbox)
+
+```bash
+via54 web --port 8080
+```
+
+Start the interactive Web UI to access the E2E design sandbox:
+
+![via54Design Web UI Sandbox](./docs/images/webui_sandbox_preview.jpg)
+
+**Key Features (Inspired by Lovart.ai / v0)**:
+*   **Dual-Pane Workspace** ➜ Left panel for generation controls, right panel for interactive live previews.
+*   **Device Simulator** ➜ Desktop, Tablet, and Mobile viewport emulation.
+*   **WYSIWYG Inline Editor** ➜ Turn on text editing to click and modify text layers directly in the preview.
+*   **Instant Theme Swapper** ➜ Switch color schemes dynamically (Gold, Blue, Ink Wash) with zero rendering lag.
+*   **Clean Client-side Exporter** ➜ Filter development layers and export your customized designs instantly.
+
 ---
 
 ## 🖥️ Platform Compatibility
