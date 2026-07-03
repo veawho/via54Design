@@ -2,7 +2,7 @@
   <!-- Card 1: Multi-image Storyboard to Video -->
   <div class="flow-step-card">
     <span class="step-badge">1</span>
-    <h3>上传故事板图片</h3>
+    <h3>上传故事板图片 → 视频分镜</h3>
     <form hx-post="/api/htmx/storyboard" hx-target="#vbOutput" hx-indicator="#vbSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
       <label for="vbFiles" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -28,5 +28,38 @@
       </div>
     </form>
     <div id="vbOutput" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Card 2: Document / Text-Guided Video Storyboard -->
+  <div class="flow-step-card">
+    <span class="step-badge">2</span>
+    <h3>文档 / 文字引导 → 视频分镜</h3>
+    <form hx-post="/api/htmx/storyboard" hx-target="#vbtOutput" hx-indicator="#vbtSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+      <label for="vbtDoc" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span style="font-weight:600;font-size:12px;color:var(--text-primary)">上传参考文档 (.docx, .pdf, .txt, .pptx) (可选)</span>
+      </label>
+      <input type="file" id="vbtDoc" name="doc" accept=".docx,.pdf,.txt,.pptx" style="display:none"
+             onchange="document.getElementById('vbtDocName').textContent = this.files[0] ? this.files[0].name : '';">
+      <div id="vbtDocName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+      <textarea name="seed" rows="3" placeholder="在此输入视频脚本描述、叙事大纲或文字引导提示词..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:10px;font-size:12.5px;margin-bottom:10px"></textarea>
+
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <select name="model" class="custom-select" style="flex:1">
+          <option value="three-act">三幕剧架构</option>
+          <option value="heros-journey">英雄之旅架构</option>
+          <option value="cognitive-arc">认知弧学习模型</option>
+          <option value="problem-solution">问题解决营销模型</option>
+        </select>
+        <input type="number" name="duration" value="30" min="10" max="300" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="秒">
+      </div>
+      
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary">🎬 生成分镜脚本</button>
+        <span id="vbtSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="analyzing">分析中...</span>
+      </div>
+    </form>
+    <div id="vbtOutput" style="margin-top:8px"></div>
   </div>
 </div>

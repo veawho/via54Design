@@ -1671,12 +1671,6 @@ func handleHTMXStoryboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := r.MultipartForm.File["images"]
-	if len(files) == 0 {
-		htmxError(w, "请上传至少一张故事板图片")
-		return
-	}
-
 	model := r.FormValue("model")
 	if model == "" {
 		model = "three-act"
@@ -1686,23 +1680,100 @@ func handleHTMXStoryboard(w http.ResponseWriter, r *http.Request) {
 		duration = d
 	}
 
-	var paths []string
-	for _, fh := range files {
-		f, err := fh.Open()
-		if err != nil {
-			continue
+	seed := r.FormValue("seed")
+
+	// 1. Process reference document upload if any
+	var docContentText string
+	docFile, docHeader, err := r.FormFile("doc")
+	if err == nil {
+		defer docFile.Close()
+		ext := strings.ToLower(filepath.Ext(docHeader.Filename))
+		docFilename := fmt.Sprintf("doc_%d%s", time.Now().UnixNano(), ext)
+		dstDoc := filepath.Join(uploadDir(), docFilename)
+		outDoc, err := os.Create(dstDoc)
+		if err == nil {
+			io.Copy(outDoc, docFile)
+			outDoc.Close()
+			
+			// Extract document text using vision.ExtractContent
+			extRes := vision.ExtractContent(dstDoc)
+			if textVal, ok := extRes["content"].(string); ok {
+				docContentText = textVal
+			} else if titleVal, ok := extRes["title"].(string); ok {
+				docContentText = titleVal
+			}
 		}
-		ext := strings.ToLower(filepath.Ext(fh.Filename))
-		filename := fmt.Sprintf("sb_%d%s", time.Now().UnixNano(), ext)
-		dst := filepath.Join(uploadDir(), filename)
-		out, _ := os.Create(dst)
-		io.Copy(out, f)
-		out.Close()
-		f.Close()
-		paths = append(paths, dst)
 	}
 
-	result := vision.ProcessStoryboard(paths, model, duration, "", len(files) == 1)
+	// Combine seed and document content
+	combinedDesc := seed
+	if docContentText != "" {
+		if combinedDesc != "" {
+			combinedDesc += "\n\n" + docContentText
+		} else {
+			combinedDesc = docContentText
+		}
+	}
+
+	// 2. Process image uploads if any
+	files := r.MultipartForm.File["images"]
+	var paths []string
+	if len(files) > 0 {
+		for _, fh := range files {
+			f, err := fh.Open()
+			if err != nil {
+				continue
+			}
+			ext := strings.ToLower(filepath.Ext(fh.Filename))
+			filename := fmt.Sprintf("sb_%d%s", time.Now().UnixNano(), ext)
+			dst := filepath.Join(uploadDir(), filename)
+			out, _ := os.Create(dst)
+			io.Copy(out, f)
+			out.Close()
+			f.Close()
+			paths = append(paths, dst)
+		}
+	}
+
+	// 3. Generate storyboard based on inputs
+	var result map[string]interface{}
+	if len(paths) > 0 {
+		result = vision.ProcessStoryboard(paths, model, duration, combinedDesc, len(files) == 1)
+	} else {
+		// Pure text-guided/document flow
+		if combinedDesc == "" {
+			htmxError(w, "请上传故事板图片、参考文档，或输入文字故事种子")
+			return
+		}
+		
+		scaffold := vision.BuildNarrativeScaffold(nil, model, duration, combinedDesc)
+		
+		var beatsMaps []interface{}
+		for _, b := range scaffold.Beats {
+			beatsMaps = append(beatsMaps, map[string]interface{}{
+				"name":           b.Name,
+				"start_time":     float64(b.StartTime),
+				"duration":       float64(b.Duration),
+				"mood":           b.Mood,
+				"voiceover":      b.Voiceover,
+				"image_hint":     b.ImageHint,
+				"image_count":    b.ImageCount,
+				"translation":    b.Translation,
+				"visual_context": b.VisualContext,
+			})
+		}
+		
+		scaffoldMap := map[string]interface{}{
+			"model_name":     scaffold.ModelName,
+			"total_duration": float64(scaffold.TotalDuration),
+			"beats":          beatsMaps,
+		}
+		
+		result = map[string]interface{}{
+			"mode":               "storyboard",
+			"narrative_scaffold": scaffoldMap,
+		}
+	}
 
 	var htmlBuilder strings.Builder
 	
