@@ -1416,6 +1416,248 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 	}
 	cardsBuilder.WriteString("</div>")
 
+	// Compile and write beautiful interactive HTML presentation preview to output.html
+	var slidesHTML strings.Builder
+	for idx, s := range slidesList {
+		t, _ := s["title"].(string)
+		sub, _ := s["subtitle"].(string)
+		md, _ := s["mood"].(string)
+		st, _ := s["type"].(string)
+		if st == "" {
+			st = "content"
+		}
+		activeClass := ""
+		if idx == 0 {
+			activeClass = " active"
+		}
+		slidesHTML.WriteString(fmt.Sprintf(`
+    <div class="slide%s">
+      <div class="slide-header">
+        <span>SLIDE %d</span>
+        <span class="slide-type">%s</span>
+      </div>
+      <div class="slide-body">
+        <h2 class="slide-title">%s</h2>
+        <div class="slide-accent-line"></div>
+        <p class="slide-subtitle">%s</p>
+      </div>
+      <div class="slide-footer">
+        <span>via54Design Narrative Deck</span>
+        <span>Mood: %s</span>
+      </div>
+    </div>`, activeClass, idx+1, strings.ToUpper(st), t, sub, md))
+	}
+
+	fullHTML := fmt.Sprintf(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>via54Design - Presentation Deck Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050508;
+      --card-bg: #0d0d12;
+      --text: #f5f0e0;
+      --text-sec: #a69e8b;
+      --accent: #d4af37;
+      --border: #23221c;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .slides-container {
+      width: 100%%;
+      height: calc(100vh - 100px);
+      max-width: 960px;
+      aspect-ratio: 16/9;
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .slide {
+      width: 100%%;
+      height: 100%%;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 50px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .slide.active {
+      display: flex;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-sec);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+    }
+    .slide-type {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 9px;
+    }
+    .slide-body {
+      margin: auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+    .slide-title {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      margin: 0;
+      max-width: 90%%;
+    }
+    .slide-subtitle {
+      font-size: 18px;
+      color: var(--text-sec);
+      margin: 0;
+      max-width: 80%%;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+    .slide-accent-line {
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #59564f;
+      font-family: 'Inter', sans-serif;
+    }
+    .slide-controls {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 10;
+    }
+    .ctrl-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.2s;
+      outline: none;
+    }
+    .ctrl-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+    }
+    .ctrl-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .page-indicator {
+      font-size: 12px;
+      color: var(--text-sec);
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="slides-container">
+    %s
+  </div>
+  <div class="slide-controls">
+    <button class="ctrl-btn" onclick="prevSlide()" id="prev-btn">&lt; Prev</button>
+    <span class="page-indicator" id="page-num">1 / %d</span>
+    <button class="ctrl-btn" onclick="nextSlide()" id="next-btn">Next &gt;</button>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const pageNumEl = document.getElementById('page-num');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function updateSlide() {
+      slides.forEach((slide, idx) => {
+        slide.classList.toggle('active', idx === currentSlide);
+      });
+      if (pageNumEl) {
+        pageNumEl.textContent = (currentSlide + 1) + ' / ' + slides.length;
+      }
+      if (prevBtn) prevBtn.disabled = currentSlide === 0;
+      if (nextBtn) nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    // Keyboard support
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') nextSlide();
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>`, slidesHTML.String(), len(slidesList))
+
+	_ = os.WriteFile(filepath.Join(baseDir, "output.html"), []byte(fullHTML), 0644)
+
 	htmxWrite(w, cardsBuilder.String())
 }
 

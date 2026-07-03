@@ -1745,7 +1745,8 @@ document.addEventListener('htmx:afterSwap', function(evt) {
 
 // Listen to htmx request completions to refresh the design output preview
 document.addEventListener('htmx:afterRequest', function(evt) {
-  if (evt.detail.pathInfo.requestPath === '/api/htmx/generate' && evt.detail.successful) {
+  const path = evt.detail.pathInfo.requestPath;
+  if ((path === '/api/htmx/generate' || path === '/api/htmx/story2ppt' || path === '/api/htmx/reimagine') && evt.detail.successful) {
     const iframe = document.getElementById('preview-frame');
     if (iframe) {
       // Force refresh preview by appending time query parameter
