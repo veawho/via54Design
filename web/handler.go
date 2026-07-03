@@ -1206,19 +1206,20 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		htmxError(w, fmt.Sprintf("生成失败: %v\n<pre style='font-size:11px'>%s</pre>", err, string(out)))
 		return
 	}
-	// Post-processing to inject system font override if necessary
-	if !isPreset && originalFont != "" {
-		outPath := filepath.Join(baseDir, "output.html")
-		htmlBytes, err := os.ReadFile(outPath)
-		if err == nil {
-			html := string(htmlBytes)
-			html = contextualizeHTML(html, combinedDesc)
-			// Replace display font, body font, and general styling fonts with local family name
+	// Post-processing to inject system font override & contextualize template texts
+	outPath := filepath.Join(baseDir, "output.html")
+	htmlBytes, err := os.ReadFile(outPath)
+	if err == nil {
+		html := string(htmlBytes)
+		html = contextualizeHTML(html, combinedDesc)
+		
+		// Replace display font, body font, and general styling fonts with local family name if custom font uploaded
+		if !isPreset && originalFont != "" {
 			html = strings.ReplaceAll(html, "'Archivo Black', 'Anton', 'Manrope', sans-serif", fmt.Sprintf("'%s', sans-serif", originalFont))
 			html = strings.ReplaceAll(html, "'Inter', -apple-system, 'Helvetica Neue', sans-serif", fmt.Sprintf("'%s', sans-serif", originalFont))
 			html = strings.ReplaceAll(html, "'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans', 'Microsoft YaHei', 'Meiryo', 'Noto Sans SC', sans-serif", originalFont)
-			_ = os.WriteFile(outPath, []byte(html), 0644)
 		}
+		_ = os.WriteFile(outPath, []byte(html), 0644)
 	}
 
 	htmxWrite(w, fmt.Sprintf(`<div class="output-area">✅ 已生成 (%d bytes)<br><br><a href="/api/htmx/download?name=%s" class="btn-small">📥 下载 HTML</a></div>`, len(out), title))
