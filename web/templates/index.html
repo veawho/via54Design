@@ -82,11 +82,47 @@ body {
   background: var(--bg);
   color: var(--text-primary);
   line-height: 1.6;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Sidebar is left, main content is right */
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Light Mode Overrides */
+body.light-mode {
+  --bg: #f5f5f7;
+  --bg-elevated: #e5e5ea;
+  --bg-card: #ffffff;
+  --bg-inset: #eaeaea;
+  --text-primary: #1c1c1e;
+  --text-secondary: #5e5e62;
+  --text-dim: #8e8e93;
+  --border: rgba(197, 160, 89, 0.3);
+  --border-glow: rgba(212, 175, 55, 0.6);
+  --accent-subtle: rgba(212, 175, 55, 0.1);
+  --accent-glow: rgba(212, 175, 55, 0.4);
+}
+body.light-mode .sidebar {
+  background: #eaeaea;
+}
+body.light-mode .top-bar {
+  background: #eaeaea;
+}
+body.light-mode .right-pane {
+  background: #f5f5f7;
+}
+body.light-mode .iframe-container {
+  background: #e5e5ea;
+}
+body.light-mode .device-btn {
+  background: #eaeaea;
+  color: #1c1c1e;
+}
+body.light-mode .device-btn.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
 }
 
 /* Background Ambient Gold Glows */
@@ -103,18 +139,146 @@ body::before {
   z-index: 0;
 }
 
+/* Sidebar Navigation */
+.sidebar {
+  width: 220px;
+  background: #08080a;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100vh;
+  padding: 24px 16px;
+  position: relative;
+  z-index: 10;
+  transition: background 0.3s;
+}
+.sidebar-brand {
+  margin-bottom: 40px;
+  text-align: center;
+}
+.brand-num {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -1px;
+}
+.brand-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-indent: 4px;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-item:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+}
+.nav-item.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+}
+.nav-icon {
+  font-size: 16px;
+}
+
+/* Theme toggle btn */
+.mode-toggle-container {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.mode-toggle-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.mode-toggle-btn:hover {
+  border-color: var(--border-glow);
+  color: var(--text-primary);
+}
+
+/* Main Content Workspace */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Top Bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  height: 64px;
+  flex-shrink: 0;
+  z-index: 2;
+  transition: background 0.3s;
+}
+.top-logo {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+}
+.top-logo em {
+  font-style: normal;
+  color: var(--accent);
+}
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 /* Lang Switcher group */
 .lang-switcher {
-  position: absolute;
-  top: 20px;
-  right: 20px;
   display: flex;
   gap: 4px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border);
   padding: 4px;
   border-radius: 20px;
-  z-index: 10;
   box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 .lang-btn {
@@ -124,9 +288,10 @@ body::before {
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 700;
-  padding: 5px 12px;
+  padding: 4px 12px;
   border-radius: 16px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 .lang-btn:hover {
   color: var(--text-primary);
@@ -563,84 +728,98 @@ body::before {
 </head>
 <body>
 
-<!-- Language Switcher -->
-<div class="lang-switcher">
-  <button onclick="setLanguage('zh')" class="lang-btn active" id="btn-zh">CN</button>
-  <button onclick="setLanguage('en')" class="lang-btn" id="btn-en">EN</button>
-  <button onclick="setLanguage('jp')" class="lang-btn" id="btn-jp">JP</button>
-</div>
-
-<!-- Hero -->
-<div class="hero-section">
-  <div class="hero-role">via54<em data-i18n-key="Design">Design</em></div>
-  <div class="hero-tagline" data-i18n-key="tagline">将人类的创意灵感种子，编译为工业级 AI 设计与叙事脚手架</div>
-</div>
-
-<!-- Status Bar -->
-<div class="principles-bar">
-  <div hx-get="/api/htmx/status" hx-trigger="load, every 30s" hx-target="this">
-    <div style="text-align:center;font-size:11px;color:var(--text-dim)" data-i18n-key="connecting">连接引擎中...</div>
+<!-- Vertical Sidebar Navigation -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-num">54</div>
+    <div class="brand-text">DESIGN</div>
   </div>
-</div>
-
-<!-- Intent Bar -->
-<div class="intent-bar" role="tablist">
-  <a href="#" class="intent-btn active" role="tab"
-     hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-    <span class="intent-icon">🎨</span>
-    <span class="intent-label" data-i18n-key="做设计">做设计</span>
-  </a>
-  <a href="#" class="intent-btn" role="tab"
-     hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-    <span class="intent-icon">📝</span>
-    <span class="intent-label" data-i18n-key="写提示词">写提示词</span>
-  </a>
-  <a href="#" class="intent-btn" role="tab"
-     hx-get="/api/htmx/pane?intent=present" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-    <span class="intent-icon">📊</span>
-    <span class="intent-label" data-i18n-key="做演示">做演示</span>
-  </a>
-  <a href="#" class="intent-btn" role="tab"
-     hx-get="/api/htmx/pane?intent=video" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-    <span class="intent-icon">🎬</span>
-    <span class="intent-label" data-i18n-key="做视频">做视频</span>
-  </a>
-  <a href="#" class="intent-btn" role="tab"
-     hx-get="/api/htmx/pane?intent=forge" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-    <span class="intent-icon">⚡</span>
-    <span class="intent-label" data-i18n-key="提交 Forge">提交 Forge</span>
-  </a>
-  <a href="#" class="intent-btn" role="tab"
-     hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-    <span class="intent-icon">📸</span>
-    <span class="intent-label" data-i18n-key="截图复刻">截图复刻</span>
-  </a>
-</div>
-
-<!-- Split Pane App Container -->
-<div class="app-container">
-  <div class="left-pane" id="pane-container" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
-    <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">⏳ 正在初始化设计系统环境...</div>
-  </div>
+  <nav class="sidebar-nav" role="tablist">
+    <a href="#" class="nav-item active" role="tab"
+       hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">🎨</span>
+      <span class="nav-label" data-i18n-key="做设计">做设计</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">📝</span>
+      <span class="nav-label" data-i18n-key="写提示词">写提示词</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=present" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label" data-i18n-key="做演示">做演示</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=video" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">🎬</span>
+      <span class="nav-label" data-i18n-key="做视频">做视频</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=forge" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label" data-i18n-key="提交 Forge">提交 Forge</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">📸</span>
+      <span class="nav-label" data-i18n-key="截图复刻">截图复刻</span>
+    </a>
+  </nav>
   
-  <div class="right-pane">
-    <div class="preview-header">
-      <span class="preview-title" id="preview-lbl" data-i18n-key="preview-title">🖥️ 实时交互预览</span>
-      <div class="preview-controls">
-        <select onchange="applyLiveTheme(this.value)" class="device-btn" style="background:var(--bg-inset);padding:3px 8px;font-size:11px">
-          <option value="gold" data-i18n-key="theme-gold">⚜️ Obsidian Gold</option>
-          <option value="blue" data-i18n-key="theme-blue">💙 Terminal Blue</option>
-          <option value="ink" data-i18n-key="theme-ink">🤍 Ink Wash</option>
-        </select>
-        <button onclick="toggleDesignMode()" class="device-btn" id="btn-edit" data-i18n-key="edit-text">✏️ 编辑文本</button>
-        <button onclick="setDevice('desktop')" class="device-btn active" id="dev-desktop">Desktop</button>
-        <button onclick="setDevice('tablet')" class="device-btn" id="dev-tablet">Tablet</button>
-        <button onclick="setDevice('mobile')" class="device-btn" id="dev-mobile">Mobile</button>
-        <button onclick="downloadSandboxHTML()" class="device-btn" id="btn-export" style="background:var(--accent);color:#000;border-color:var(--accent);font-weight:700" data-i18n-key="export-html">📥 导出 HTML</button>
+  <div class="mode-toggle-container">
+    <button onclick="toggleThemeMode()" class="mode-toggle-btn" id="theme-mode-btn">
+      ☀️ Light Mode
+    </button>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="main-content">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-logo">via54<em>Design</em></div>
+    
+    <!-- Status / Principles Bar -->
+    <div hx-get="/api/htmx/status" hx-trigger="load, every 30s" hx-target="this" style="margin-left: 20px;">
+      <div style="font-size:11px;color:var(--text-dim)" data-i18n-key="connecting">连接引擎中...</div>
+    </div>
+    
+    <div class="top-actions">
+      <!-- Language Switcher -->
+      <div class="lang-switcher">
+        <button onclick="setLanguage('zh')" class="lang-btn active" id="btn-zh">CN</button>
+        <button onclick="setLanguage('en')" class="lang-btn" id="btn-en">EN</button>
+        <button onclick="setLanguage('jp')" class="lang-btn" id="btn-jp">JP</button>
       </div>
     </div>
-    <div class="iframe-container">
-      <iframe src="/api/htmx/preview" id="preview-frame" class="preview-iframe"></iframe>
+  </div>
+  
+  <!-- Split Pane App Container -->
+  <div class="app-container">
+    <div class="left-pane" id="pane-container" hx-get="/api/htmx/pane?intent=design" hx-trigger="load" hx-swap="innerHTML">
+      <div style="text-align:center;padding:40px;color:var(--text-dim)" data-i18n-key="init">⏳ 正在初始化设计系统环境...</div>
+    </div>
+    
+    <div class="right-pane">
+      <div class="preview-header">
+        <span class="preview-title" id="preview-lbl" data-i18n-key="preview-title">🖥️ 实时交互预览</span>
+        <div class="preview-controls">
+          <select onchange="applyLiveTheme(this.value)" class="device-btn" style="background:var(--bg-inset);padding:3px 8px;font-size:11px">
+            <option value="gold" data-i18n-key="theme-gold">⚜️ Obsidian Gold</option>
+            <option value="blue" data-i18n-key="theme-blue">💙 Terminal Blue</option>
+            <option value="ink" data-i18n-key="theme-ink">🤍 Ink Wash</option>
+          </select>
+          <button onclick="toggleDesignMode()" class="device-btn" id="btn-edit" data-i18n-key="edit-text">✏️ 编辑文本</button>
+          <button onclick="setDevice('desktop')" class="device-btn active" id="dev-desktop">Desktop</button>
+          <button onclick="setDevice('tablet')" class="device-btn" id="dev-tablet">Tablet</button>
+          <button onclick="setDevice('mobile')" class="device-btn" id="dev-mobile">Mobile</button>
+          <button onclick="downloadSandboxHTML()" class="device-btn" id="btn-export" style="background:var(--accent);color:#000;border-color:var(--accent);font-weight:700" data-i18n-key="export-html">📥 导出 HTML</button>
+        </div>
+      </div>
+      <div class="iframe-container">
+        <iframe src="/api/htmx/preview" id="preview-frame" class="preview-iframe"></iframe>
+      </div>
     </div>
   </div>
 </div>
@@ -1087,16 +1266,43 @@ document.addEventListener('htmx:afterRequest', function(evt) {
   }
 });
 
-// Run translation once DOM is fully parsed
+let currentThemeMode = localStorage.getItem('via54_theme_mode') || 'dark';
+
+function setThemeMode(mode) {
+  currentThemeMode = mode;
+  localStorage.setItem('via54_theme_mode', mode);
+  
+  const btn = document.getElementById('theme-mode-btn');
+  if (!btn) return;
+  
+  if (mode === 'light') {
+    document.body.classList.add('light-mode');
+    btn.textContent = '🌙 Dark Mode';
+  } else {
+    document.body.classList.remove('light-mode');
+    btn.textContent = '☀️ Light Mode';
+  }
+}
+
+function toggleThemeMode() {
+  if (currentThemeMode === 'dark') {
+    setThemeMode('light');
+  } else {
+    setThemeMode('dark');
+  }
+}
+
+// Run translation and theme setup once DOM is fully parsed
 document.addEventListener('DOMContentLoaded', () => {
   setLanguage(currentLang);
+  setThemeMode(currentThemeMode);
 });
 
-// Setup tab navigation visual state swap and reset sandbox designer mode
+// Setup sidebar tab navigation visual state swap and reset sandbox designer mode
 document.addEventListener('click', function(e) {
-  const btn = e.target.closest('.intent-btn');
+  const btn = e.target.closest('.nav-item');
   if (btn) {
-    document.querySelectorAll('.intent-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     
     // Reset design mode
