@@ -82,9 +82,9 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/htmx/upload", handleHTMXUpload)
 	mux.HandleFunc("/api/htmx/regen", handleHTMXRegen)
 	mux.HandleFunc("/api/htmx/story2ppt", handleHTMXStory2PPT)
-	mux.HandleFunc("/api/htmx/storyboard", handleHTMXStoryboard)
 	mux.HandleFunc("/api/htmx/forge-status", handleHTMXForgeStatus)
 	mux.HandleFunc("/api/htmx/reimagine", handleHTMXReimagine)
+	mux.HandleFunc("/api/htmx/download", handleHTMXDownload)
 	return mux
 }
 
@@ -1071,6 +1071,23 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 	}
 	htmxWrite(w, fmt.Sprintf(`<div class="output-area">✅ 已生成 (%d bytes)<br><br><a href="/api/htmx/download?name=%s" class="btn-small">📥 下载 HTML</a></div>`, len(out), title))
 }
+
+func handleHTMXDownload(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		name = "output"
+	}
+	path := filepath.Join(baseDir, "output.html")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		htmxError(w, "文件未生成")
+		return
+	}
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s.html\"", name))
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write(data)
+}
+
 
 func handleHTMXPrompt(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {

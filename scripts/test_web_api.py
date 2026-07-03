@@ -57,7 +57,24 @@ def test_endpoints():
     assert "_path" in r.text, "Image path hidden input missing in response"
     print("  ✓ POST /api/htmx/upload (Image - fallback 'screenshot') OK")
 
+    # 8. POST /api/htmx/generate (Real task generation)
+    data = {"title": "TestDesignSuite", "mode": "presentation"}
+    r = requests.post(f"{BASE_URL}/api/htmx/generate", data=data)
+    assert r.status_code == 200, f"POST /api/htmx/generate failed: {r.status_code}"
+    assert "已生成" in r.text, "Generation response text missing success notice"
+    assert "/api/htmx/download" in r.text, "Download link missing in response"
+    print("  ✓ POST /api/htmx/generate (Real HTML Generation task) OK")
+
+    # 9. GET /api/htmx/download
+    r = requests.get(f"{BASE_URL}/api/htmx/download?name=TestDesignSuite")
+    assert r.status_code == 200, f"GET /api/htmx/download failed: {r.status_code}"
+    assert "Content-Disposition" in r.headers, "Response missing Content-Disposition header"
+    assert "TestDesignSuite.html" in r.headers["Content-Disposition"], "Incorrect download attachment filename"
+    assert "<html" in r.text.lower(), "Downloaded content is not valid HTML"
+    print("  ✓ GET /api/htmx/download (Output Retrieval) OK")
+
     print("\n🎉 Web UI API Verification completed successfully! All endpoints function 100% correctly.")
 
 if __name__ == "__main__":
     test_endpoints()
+
