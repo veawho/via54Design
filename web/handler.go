@@ -1212,6 +1212,7 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		htmlBytes, err := os.ReadFile(outPath)
 		if err == nil {
 			html := string(htmlBytes)
+			html = contextualizeHTML(html, combinedDesc)
 			// Replace display font, body font, and general styling fonts with local family name
 			html = strings.ReplaceAll(html, "'Archivo Black', 'Anton', 'Manrope', sans-serif", fmt.Sprintf("'%s', sans-serif", originalFont))
 			html = strings.ReplaceAll(html, "'Inter', -apple-system, 'Helvetica Neue', sans-serif", fmt.Sprintf("'%s', sans-serif", originalFont))
@@ -2875,4 +2876,137 @@ func handleHTMXSpatial3D(w http.ResponseWriter, r *http.Request) {
 	htmlBuilder.WriteString("</div>")
 
 	htmxWrite(w, htmlBuilder.String())
+}
+
+
+func contextualizeHTML(htmlStr string, seed string) string {
+	if seed == "" {
+		return htmlStr
+	}
+
+	lower := strings.ToLower(seed)
+
+	// 1. Architecture & Design (建筑/空间/别墅/室内/地产)
+	if strings.Contains(lower, "别墅") || strings.Contains(lower, "空间") || strings.Contains(lower, "建筑") || strings.Contains(lower, "设计") || strings.Contains(lower, "地产") || strings.Contains(lower, "villa") || strings.Contains(lower, "architecture") || strings.Contains(lower, "interior") {
+		replacements := map[string]string{
+			"EYEBROW":                                                                            "空间美学 (SPATIAL ART)",
+			"副标题内容":                                                                           "用数字生成解构极简未来派建筑，完美重塑曜金主义设计美学与感官体验。",
+			"CTA 按钮":                                                                           "开启三维设计",
+			"Aesthetic, modular, responsive, and performance-tuned layouts powered by Golang & modern design agents.": "基于 WebGL 与物理光影追踪算法，自适应构建多维度智能空间与超现实建筑布局。",
+			"Start Free Trial":             "预约空间规划",
+			"View Docs":                    "浏览设计手册",
+			"Hobby":                        "个人创意版 (Hobby)",
+			"Pro":                          "专业设计师版 (Pro)",
+			"Enterprise":                   "大客户定制版 (Enterprise)",
+			"Perfect for exploring design capabilities.":                                         "适合设计师与创意发烧友探索建筑概念与快速模型渲染。",
+			"Everything you need for production apps.":                                           "包含无限渲染队列、高精物理材质库与商业授权支持。",
+			"Dedicated scale and custom integration.":                                            "提供独占式计算集群、私有渲染节点及大客户专属定制集成。",
+			"月活用户":    "在线渲染节点",
+			"ARR":     "已计算网格 (Mesh)",
+			"客户留存率":   "平均光影拟真度",
+			"活跃项目":    "光栅化渲染帧率",
+			"12,847":  "18,450",
+			"$8.2M":   "98.4%",
+			"94.7%":   "99.9%",
+			"3,201":   "120 FPS",
+			"Console Overview":     "空间渲染管理终端",
+			"Active Users":         "光追解算率",
+			"Conversion Rate":      "抗锯齿采样",
+			"Bounce Rate":          "噪声收敛差",
+			"System Performance":   "计算流体动力学能效",
+			"Featured Post":        "本期主打设计案例",
+			"Latest Articles":      "前沿空间探索洞察",
+			"Smart Homes":          "曜金智能住宅",
+			"Architecture & Spaces": "未来主义悬挑结构",
+			"Documentation":        "空间生成器文档",
+			"Getting Started":      "光追配置指引",
+			"Customizing Themes":   "曜金材质着色器",
+		}
+		for oldStr, newStr := range replacements {
+			htmlStr = strings.ReplaceAll(htmlStr, oldStr, newStr)
+		}
+		return htmlStr
+	}
+
+	// 2. Cannes Lions / Advertising / Marketing (戛纳/案例/广告/营销/金奖/创意)
+	if strings.Contains(lower, "戛纳") || strings.Contains(lower, "案例") || strings.Contains(lower, "广告") || strings.Contains(lower, "营销") || strings.Contains(lower, "cannes") || strings.Contains(lower, "case") || strings.Contains(lower, "marketing") || strings.Contains(lower, "advertising") {
+		replacements := map[string]string{
+			"EYEBROW":                                                                            "戛纳创意库 (CANNES LIONS)",
+			"副标题内容":                                                                           "全量捕获戛纳国际创意节金奖案例，智能分析行业趋势并输出创新创意灵感。",
+			"CTA 按钮":                                                                           "检索创意案例",
+			"Aesthetic, modular, responsive, and performance-tuned layouts powered by Golang & modern design agents.": "由大模型驱动的戛纳金奖数据库，覆盖近十年全品类营销及公关现象级案例分析。",
+			"Start Free Trial":             "开启创意检索",
+			"View Docs":                    "案例分析白皮书",
+			"Hobby":                        "免费体验版 (Free)",
+			"Pro":                          "高级分析版 (Pro)",
+			"Enterprise":                   "企业智库版 (Enterprise)",
+			"Perfect for exploring design capabilities.":                                         "提供近期经典案例检索、单月分析报表与趋势导览。",
+			"Everything you need for production apps.":                                           "全量金奖案例文献库、定制分析图表及案例核心数据包导出。",
+			"Dedicated scale and custom integration.":                                            "提供集团创意大模型专属 API、跨团队协作工作区及定制趋势雷达。",
+			"月活用户":    "已收录案例",
+			"ARR":     "创意洞察指数",
+			"客户留存率":   "趋势分析吻合度",
+			"活跃项目":    "大牌主创访谈",
+			"12,847":  "42,800",
+			"$8.2M":   "96.8%",
+			"94.7%":   "98.2%",
+			"3,201":   "1,450 篇",
+			"Console Overview":     "戛纳创意趋势仪表盘",
+			"Active Users":         "检索吞吐量",
+			"Conversion Rate":      "洞察提取率",
+			"Bounce Rate":          "智能降噪比",
+			"System Performance":   "大模型创意理解引擎状态",
+			"Featured Post":        "本周现象级金奖复盘",
+			"Latest Articles":      "行业洞察与创意洞察",
+			"Smart Homes":          "整合营销传播",
+			"Architecture & Spaces": "公关与媒体叙事",
+			"Documentation":        "戛纳智库使用说明",
+			"Getting Started":      "快速检索与智能问答",
+			"Customizing Themes":   "数据可视化图表配置",
+		}
+		for oldStr, newStr := range replacements {
+			htmlStr = strings.ReplaceAll(htmlStr, oldStr, newStr)
+		}
+		return htmlStr
+	}
+
+	// 3. Tech / SaaS / AI / General Platform (系统/技术/AI/开发/接口/平台)
+	replacements := map[string]string{
+		"EYEBROW":                                                                            "智能驱动 (AI ENGINE)",
+		"副标题内容":                                                                           "基于自适应神经网络，为您快速排布响应式布局并实时调配配色风格。",
+		"CTA 按钮":                                                                           "立即启动",
+		"Aesthetic, modular, responsive, and performance-tuned layouts powered by Golang & modern design agents.": "高度一体化的现代化架构，将文本、图像、文档解构并自动编译为完美的数字资产。",
+		"Start Free Trial":             "免费注册体验",
+		"View Docs":                    "开发文档中心",
+		"Hobby":                        "标准版",
+		"Pro":                          "专业版",
+		"Enterprise":                   "定制版",
+		"Perfect for exploring design capabilities.":                                         "适合小型团队或个人开发者开展前沿概念验证与轻量级部署。",
+		"Everything you need for production apps.":                                           "包含高吞吐量 API 节点、安全沙箱环境与 SLA 服务等级协议支持。",
+		"Dedicated scale and custom integration.":                                            "为超大型业务提供专享隔离宿主机、私有云协同与源码级定制授权。",
+		"月活用户":    "API 调用量",
+		"ARR":     "模型收敛速率",
+		"客户留存率":   "生成精度指标",
+		"活跃项目":    "承载服务实例",
+		"12,847":  "12,482K",
+		"$8.2M":   "99.98%",
+		"94.7%":   "98.9%",
+		"3,201":   "2,480 Node",
+		"Console Overview":     "智能运行调度台",
+		"Active Users":         "当前请求并发",
+		"Conversion Rate":      "生成响应延迟",
+		"Bounce Rate":          "资源利用率",
+		"System Performance":   "AI 集群推理健康度",
+		"Featured Post":        "最新模型能力发布",
+		"Latest Articles":      "技术前沿与研究白皮书",
+		"Smart Homes":          "边缘计算节点",
+		"Architecture & Spaces": "流式生成总线",
+		"Documentation":        "智能引擎开发指南",
+		"Getting Started":      "SDK 快速集成指南",
+		"Customizing Themes":   "流式输出参数配置",
+	}
+	for oldStr, newStr := range replacements {
+		htmlStr = strings.ReplaceAll(htmlStr, oldStr, newStr)
+	}
+	return htmlStr
 }

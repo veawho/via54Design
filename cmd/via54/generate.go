@@ -351,6 +351,17 @@ body { font-family: system-ui; overflow-x: hidden; }
 		}
 		if bodyContent == "" {
 			bodyContent = fmt.Sprintf("<h2>%s</h2><p>%s</p>", beat.Act, beat.Voiceover)
+		} else {
+			// Contextualize static placeholders with beat attributes
+			bodyContent = strings.ReplaceAll(bodyContent, "EYEBROW", beat.Act)
+			bodyContent = strings.ReplaceAll(bodyContent, "副标题内容", beat.Voiceover)
+			bodyContent = strings.ReplaceAll(bodyContent, "CTA 按钮", "查看详情")
+			bodyContent = strings.ReplaceAll(bodyContent, "Aesthetic, modular, responsive, and performance-tuned layouts powered by Golang & modern design agents.", beat.Voiceover)
+			bodyContent = strings.ReplaceAll(bodyContent, "月活用户", "分镜场景")
+			bodyContent = strings.ReplaceAll(bodyContent, "ARR", "叙事节奏")
+			bodyContent = strings.ReplaceAll(bodyContent, "客户留存率", "情感指数")
+			bodyContent = strings.ReplaceAll(bodyContent, "活跃项目", "镜头时长")
+			bodyContent = strings.ReplaceAll(bodyContent, "Console Overview", "场景视觉概述")
 		}
 
 		scenesHTML.WriteString(fmt.Sprintf(`<div class="scene" id="scene-%d" data-beat="%s" data-mood="%s" data-duration="%d">
