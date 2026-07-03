@@ -25,6 +25,7 @@ import (
 	"sync"
 	"time"
 
+	media "github.com/veawho/via54Design/internal/media"
 	vt "github.com/veawho/via54Design/internal/template"
 	"github.com/veawho/via54Design/internal/vision"
 	"github.com/veawho/via54Design/internal/workflow"
@@ -85,6 +86,7 @@ func Handler(bd string) http.Handler {
 	mux.HandleFunc("/api/htmx/quality", handleHTMXQuality)
 	mux.HandleFunc("/api/htmx/list", handleHTMXList)
 	mux.HandleFunc("/api/htmx/ai", handleHTMXAI)
+	mux.HandleFunc("/api/htmx/trace", handleHTMXTrace)
 	mux.HandleFunc("/api/htmx/status", handleHTMXStatus)
 	mux.HandleFunc("/api/htmx/pane", handleHTMXPane)
 	mux.HandleFunc("/api/htmx/generate", handleHTMXGenerate)
@@ -1883,4 +1885,69 @@ func handleHTMXAI(w http.ResponseWriter, r *http.Request) {
 	response := fmt.Sprintf("🤖 <strong>AI 智能设计顾问:</strong><br><br>关于您的提问 <em>\"%s\"</em>，为您推荐以下 via54Design 最佳设计路径：<br><br>• <strong>包豪斯纯三原色配比</strong>: 可选用 <code>bauhaus-primary</code> 配色，配合 <code>display-sans-bold</code> 展示字体，形成极强对比。<br>• <strong>日式水墨枯山水意境</strong>: 选用 <code>ink-wash</code> 静谧浅灰底色与留白。<br>• <strong>自适应响应式卡片</strong>: 使用 <code>bento-grid-2x2</code> 拼图块自适应缩放。<br><br>您可以在 <strong>Design Sandbox (设计沙盒)</strong> 面板中实时勾选保存并预览这些选项！", prompt)
 	
 	htmxWrite(w, fmt.Sprintf(`<div class="output-area" style="font-size:12px;line-height:1.6;color:var(--text-secondary)">%s</div>`, response))
+}
+
+
+func handleHTMXTrace(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+
+	file, header, err := r.FormFile("image")
+	if err != nil {
+		htmxError(w, "获取上传图片失败: "+err.Error())
+		return
+	}
+	defer file.Close()
+
+	ext := strings.ToLower(filepath.Ext(header.Filename))
+	if ext != ".png" && ext != ".jpg" && ext != ".jpeg" {
+		htmxError(w, "只支持 PNG 或 JPG 格式图片")
+		return
+	}
+
+	// Save upload image
+	uploadFilename := fmt.Sprintf("trace_in_%d%s", time.Now().UnixNano(), ext)
+	uploadPath := filepath.Join(uploadDir(), uploadFilename)
+	out, err := os.Create(uploadPath)
+	if err != nil {
+		htmxError(w, "创建本地图片失败: "+err.Error())
+		return
+	}
+	_, _ = io.Copy(out, file)
+	out.Close()
+
+	// Vectorize using TraceImage
+	svgPath, err := media.TraceImage(uploadPath, nil)
+	if err != nil {
+		htmxError(w, "矢量化处理失败: "+err.Error())
+		return
+	}
+
+	// Read generated SVG content
+	svgBytes, err := os.ReadFile(svgPath)
+	if err != nil {
+		htmxError(w, "读取矢量化结果失败: "+err.Error())
+		return
+	}
+	svgContent := string(svgBytes)
+	svgFilename := filepath.Base(svgPath)
+
+	html := fmt.Sprintf(`
+<div class="output-area">
+  <strong>✅ 矢量化转换完成!</strong>
+  <div style="margin: 12px 0; background: var(--bg-inset); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; max-height: 250px; overflow: hidden;">
+    %s
+  </div>
+  <div style="margin-bottom:8px">
+    <a href="/uploads/%s" target="_blank" class="btn-primary" style="display:inline-block;text-decoration:none;font-size:12px">📥 下载 SVG 文件</a>
+  </div>
+  <details>
+    <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary)">📄 查看 SVG 源码</summary>
+    <pre style="background:var(--bg-inset);padding:10px;border-radius:var(--radius-sm);font-size:11px;overflow:auto;max-height:200px;margin-top:6px;color:var(--text-secondary)"><code>%s</code></pre>
+  </details>
+</div>`, svgContent, svgFilename, strings.ReplaceAll(strings.ReplaceAll(svgContent, "<", "&lt;"), ">", "&gt;"))
+
+	htmxWrite(w, html)
 }

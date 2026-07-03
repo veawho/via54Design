@@ -58,4 +58,26 @@
     </form>
     <div id="aiOutput" style="margin-top:8px"></div>
   </div>
+
+
+  <!-- Card 5: Handwriting/Logo to SVG Vectorizer -->
+  <div class="flow-step-card">
+    <span class="step-badge">5</span>
+    <h3 data-i18n-key="tool-trace-title">🖋️ 手写文字/Logo 矢量化 (Image to SVG)</h3>
+    <form hx-post="/api/htmx/trace" hx-target="#traOutput" hx-indicator="#traSpin" hx-encoding="multipart/form-data" style="margin-top:10px">
+      <label for="traFile" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:6px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        <span data-i18n-key="tool-trace-btn-label">点击上传手写文字或 Logo 图片</span>
+      </label>
+      <input type="file" id="traFile" name="image" accept=".png,.jpg,.jpeg" style="display:none"
+             onchange="document.getElementById('traFileName').textContent = this.files[0] ? this.files[0].name : '';">
+      <div id="traFileName" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center"></div>
+
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary" data-i18n-key="tool-trace-btn">⚡ 矢量化为 SVG</button>
+        <span id="traSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="analyzing">矢量化转换中...</span>
+      </div>
+    </form>
+    <div id="traOutput" style="margin-top:8px"></div>
+  </div>
 </div>
