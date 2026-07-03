@@ -1,24 +1,30 @@
 <div class="flow-steps">
+  <!-- Card 1: Multi-image Storyboard to Video -->
   <div class="flow-step-card">
     <span class="step-badge">1</span>
     <h3>上传故事板图片</h3>
-    <form hx-post="/api/htmx/storyboard" hx-target="#vbOutput" hx-indicator="#vbSpin" hx-encoding="multipart/form-data">
-      <label for="vbFiles" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
-        点击上传故事板图片（支持多选）
+    <form hx-post="/api/htmx/storyboard" hx-target="#vbOutput" hx-indicator="#vbSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+      <label for="vbFiles" class="upload-mini btn-edit-icon" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-bottom:12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        <span style="font-weight:600;font-size:12px;color:var(--text-primary)">点击多选上传故事板配图 (PNG/JPG)</span>
       </label>
-      <input type="file" id="vbFiles" name="images" accept="image/*" multiple style="display:none">
-      <div style="display:flex;gap:6px;margin-bottom:6px">
+      <input type="file" id="vbFiles" name="images" accept="image/*" multiple style="display:none"
+             onchange="document.getElementById('vbFilesCount').textContent = this.files.length + ' 个分镜文件已就绪';">
+      <div id="vbFilesCount" style="font-size:11px;color:var(--accent3);margin-bottom:8px;text-align:center;font-weight:600"></div>
+
+      <div style="display:flex;gap:6px;margin-bottom:12px">
         <select name="model" class="custom-select" style="flex:1">
-          <option value="three-act">三幕剧</option>
-          <option value="heros-journey">英雄之旅</option>
-          <option value="cognitive-arc">认知弧</option>
-          <option value="problem-solution">问题解决</option>
+          <option value="three-act">三幕剧架构</option>
+          <option value="heros-journey">英雄之旅架构</option>
+          <option value="cognitive-arc">认知弧学习模型</option>
+          <option value="problem-solution">问题解决营销模型</option>
         </select>
-        <input type="number" name="duration" value="30" min="10" max="300" style="width:80px" placeholder="秒">
+        <input type="number" name="duration" value="30" min="10" max="300" style="width:90px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12.5px" placeholder="秒">
       </div>
+      
       <div style="display:flex;gap:6px">
-        <button type="submit" class="btn-primary">生成脚本</button>
-        <span id="vbSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">分析中...</span>
+        <button type="submit" class="btn-primary">🎬 生成分镜脚本</button>
+        <span id="vbSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="analyzing">分析中...</span>
       </div>
     </form>
     <div id="vbOutput" style="margin-top:8px"></div>

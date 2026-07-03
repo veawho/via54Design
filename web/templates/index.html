@@ -1077,8 +1077,18 @@ input:checked + .slider:before {
           </button>
         </div>
       </div>
-      <div class="iframe-container">
-        <iframe src="/api/htmx/preview" id="preview-frame" class="preview-iframe"></iframe>
+      <div class="iframe-container" style="position:relative;overflow:auto;display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+        <div id="preview-wrapper" style="transform-origin:center center;transition:transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);transform:scale(1);display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+          <iframe src="/api/htmx/preview" id="preview-frame" class="preview-iframe"></iframe>
+        </div>
+        <!-- Floating Design Controls -->
+        <div class="zoom-controls" style="position:absolute;bottom:20px;right:20px;z-index:100;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.6)">
+          <button onclick="changeZoom(-10)" class="device-btn" style="padding:2px 8px;font-weight:bold;font-size:14px;background:none;border:1px solid var(--border);color:var(--text-primary);cursor:pointer">−</button>
+          <input type="range" id="zoom-slider" min="30" max="200" value="100" style="width:100px;cursor:pointer;accent-color:var(--accent)" oninput="setZoom(this.value)">
+          <button onclick="changeZoom(10)" class="device-btn" style="padding:2px 8px;font-weight:bold;font-size:14px;background:none;border:1px solid var(--border);color:var(--text-primary);cursor:pointer">+</button>
+          <span id="zoom-value" style="font-size:11px;font-family:var(--font-mono);min-width:40px;text-align:right;color:var(--text-secondary)">100%</span>
+          <button onclick="setZoom(100)" class="device-btn" style="padding:2px 6px;font-size:10px;background:none;border:1px solid var(--border);color:var(--text-primary);cursor:pointer" data-i18n-key="reset">重置</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1529,6 +1539,91 @@ function applyLiveTheme(themeKey) {
     iframeDoc.body.style.color = variables['--text-primary'];
   }
 }
+
+// ── Zoom & Spacebar Panning Functionality ──
+let currentZoom = 100;
+function setZoom(val) {
+  currentZoom = parseInt(val);
+  const slider = document.getElementById('zoom-slider');
+  const label = document.getElementById('zoom-value');
+  const wrapper = document.getElementById('preview-wrapper');
+  if (slider) slider.value = currentZoom;
+  if (label) label.textContent = currentZoom + '%';
+  if (wrapper) {
+    wrapper.style.transform = `scale(${currentZoom / 100})`;
+  }
+}
+function changeZoom(delta) {
+  let next = currentZoom + delta;
+  if (next < 30) next = 30;
+  if (next > 200) next = 200;
+  setZoom(next);
+}
+
+// Spacebar Drag & Pan
+(function() {
+  let spacePressed = false;
+  let isPanning = false;
+  let startX, startY, scrollLeft, scrollTop;
+  
+  const container = document.querySelector('.main-content');
+  
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      if (!spacePressed) {
+        spacePressed = true;
+        const targetContainer = document.querySelector('.iframe-container');
+        if (targetContainer) targetContainer.style.cursor = 'grab';
+      }
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+      spacePressed = false;
+      isPanning = false;
+      const targetContainer = document.querySelector('.iframe-container');
+      if (targetContainer) targetContainer.style.cursor = 'default';
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const targetContainer = document.querySelector('.iframe-container');
+    if (!targetContainer) return;
+    
+    targetContainer.addEventListener('mousedown', (e) => {
+      if (!spacePressed) return;
+      isPanning = true;
+      targetContainer.style.cursor = 'grabbing';
+      startX = e.pageX - targetContainer.offsetLeft;
+      startY = e.pageY - targetContainer.offsetTop;
+      scrollLeft = targetContainer.scrollLeft;
+      scrollTop = targetContainer.scrollTop;
+    });
+
+    targetContainer.addEventListener('mouseleave', () => {
+      isPanning = false;
+      if (spacePressed) targetContainer.style.cursor = 'grab';
+    });
+
+    targetContainer.addEventListener('mouseup', () => {
+      isPanning = false;
+      if (spacePressed) targetContainer.style.cursor = 'grab';
+    });
+
+    targetContainer.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - targetContainer.offsetLeft;
+      const y = e.pageY - targetContainer.offsetTop;
+      const walkX = (x - startX);
+      const walkY = (y - startY);
+      targetContainer.scrollLeft = scrollLeft - walkX;
+      targetContainer.scrollTop = scrollTop - walkY;
+    });
+  });
+})();
 
 let designModeActive = false;
 

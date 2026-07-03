@@ -16,7 +16,7 @@
         <div class="control-right">
           <span style="font-size:11px;color:var(--accent)" data-i18n-key="active">Active</span>
           <label class="switch">
-            <input type="checkbox" checked disabled>
+            <input type="checkbox" checked>
             <span class="slider"></span>
           </label>
         </div>
@@ -35,44 +35,86 @@
     
     <!-- Lovart Style Tabs -->
     <div class="lovart-tabs">
-      <span class="lovart-tab" data-i18n-key="tab-details">Details</span>
-      <span class="lovart-tab active" data-i18n-key="tab-styles">Styles</span>
-      <span class="lovart-tab" data-i18n-key="tab-content">Content</span>
-      <span class="lovart-tab" data-i18n-key="tab-settings">Settings</span>
+      <span class="lovart-tab" onclick="switchDesignTab('details')" id="tab-btn-details" data-i18n-key="tab-details">Details</span>
+      <span class="lovart-tab active" onclick="switchDesignTab('styles')" id="tab-btn-styles" data-i18n-key="tab-styles">Styles</span>
+      <span class="lovart-tab" onclick="switchDesignTab('content')" id="tab-btn-content" data-i18n-key="tab-content">Content</span>
+      <span class="lovart-tab" onclick="switchDesignTab('settings')" id="tab-btn-settings" data-i18n-key="tab-settings">Settings</span>
     </div>
     
-    <!-- Style settings -->
+    <!-- Tab pane sections -->
     <div class="template-card" style="margin-bottom: 16px">
-      <div class="form-row">
-        <span class="form-label" data-i18n-key="title-input">Design Title</span>
-        <div class="control-right">
-          <input type="text" name="title" value="Aurum Homes" placeholder="Title" style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:4px 8px;font-size:12px">
+      <!-- Section 1: Details -->
+      <div id="section-details" class="design-section" style="display:none">
+        <div class="form-row">
+          <span class="form-label" data-i18n-key="title-input">Design Title</span>
+          <div class="control-right">
+            <input type="text" name="title" value="Aurum Homes" placeholder="Title" style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:4px 8px;font-size:12px">
+          </div>
+        </div>
+        <div class="form-row">
+          <span class="form-label">作者 (Author)</span>
+          <div class="control-right">
+            <input type="text" value="via54Design" readonly style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);padding:4px 8px;font-size:12px">
+          </div>
         </div>
       </div>
-      
-      <div class="form-row">
-        <span class="form-label" data-i18n-key="base-color">Theme Palette</span>
-        <div class="control-right">
-          <select name="color" class="custom-select">
-            <option value="rinpa-gold">Obsidian Gold</option>
-            <option value="dark-terminal-blue">Terminal Blue</option>
-            <option value="ink-wash">Ink Wash</option>
-            <option value="cinematic-neon">Cyber Neon</option>
-          </select>
+
+      <!-- Section 2: Styles (Active by default) -->
+      <div id="section-styles" class="design-section">
+        <div class="form-row">
+          <span class="form-label" data-i18n-key="base-color">Theme Palette</span>
+          <div class="control-right">
+            <select name="color" class="custom-select">
+              <option value="rinpa-gold">Obsidian Gold</option>
+              <option value="dark-terminal-blue">Terminal Blue</option>
+              <option value="ink-wash">Ink Wash</option>
+              <option value="cinematic-neon">Cyber Neon</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <span class="form-label" data-i18n-key="font-family">Font Family</span>
+          <div class="control-right">
+            <select name="font" class="custom-select">
+              <option value="display-sans-bold">Outfit (Sans)</option>
+              <option value="cormorant-elegant">Cormorant (Serif)</option>
+              <option value="mono-terminal">JetBrains Mono</option>
+            </select>
+          </div>
         </div>
       </div>
-      
-      <div class="form-row">
-        <span class="form-label" data-i18n-key="font-family">Font Family</span>
-        <div class="control-right">
-          <select name="font" class="custom-select">
-            <option value="display-sans-bold">Outfit (Sans)</option>
-            <option value="cormorant-elegant">Cormorant (Serif)</option>
-            <option value="mono-terminal">JetBrains Mono</option>
-          </select>
+
+      <!-- Section 3: Content -->
+      <div id="section-content" class="design-section" style="display:none">
+        <div class="form-row" style="flex-direction:column;align-items:stretch;gap:6px">
+          <span class="form-label" style="margin-bottom:4px">设计内容 (Narrative Content)</span>
+          <textarea rows="3" placeholder="输入您的网页描述，例如: 曜金极简豪宅设计画册页面..." style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px;font-size:12px"></textarea>
         </div>
       </div>
-      
+
+      <!-- Section 4: Settings -->
+      <div id="section-settings" class="design-section" style="display:none">
+        <div class="form-row">
+          <span class="form-label">调试模式 (Debug Mode)</span>
+          <div class="control-right">
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <span class="form-label">代码混淆 (Minify HTML)</span>
+          <div class="control-right">
+            <label class="switch">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div style="margin-top:20px">
         <button type="submit" class="btn-outline-gold" data-i18n-key="save-changes">Save Changes</button>
       </div>
@@ -86,3 +128,20 @@
   <div id="dOutput"></div>
 
   </div>
+
+
+<script>
+function switchDesignTab(tabName) {
+  // Toggle active class on buttons
+  document.querySelectorAll('.lovart-tab').forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById('tab-btn-' + tabName);
+  if (activeTab) activeTab.classList.add('active');
+
+  // Hide all sections
+  document.querySelectorAll('.design-section').forEach(s => s.style.display = 'none');
+  
+  // Show target section
+  const targetSection = document.getElementById('section-' + tabName);
+  if (targetSection) targetSection.style.display = 'block';
+}
+</script>
