@@ -627,9 +627,16 @@ body::before {
     <div class="preview-header">
       <span class="preview-title" id="preview-lbl" data-i18n-key="preview-title">🖥️ 实时交互预览</span>
       <div class="preview-controls">
+        <select onchange="applyLiveTheme(this.value)" class="device-btn" style="background:var(--bg-inset);padding:3px 8px;font-size:11px">
+          <option value="gold" data-i18n-key="theme-gold">⚜️ Obsidian Gold</option>
+          <option value="blue" data-i18n-key="theme-blue">💙 Terminal Blue</option>
+          <option value="ink" data-i18n-key="theme-ink">🤍 Ink Wash</option>
+        </select>
+        <button onclick="toggleDesignMode()" class="device-btn" id="btn-edit" data-i18n-key="edit-text">✏️ 编辑文本</button>
         <button onclick="setDevice('desktop')" class="device-btn active" id="dev-desktop">Desktop</button>
         <button onclick="setDevice('tablet')" class="device-btn" id="dev-tablet">Tablet</button>
         <button onclick="setDevice('mobile')" class="device-btn" id="dev-mobile">Mobile</button>
+        <button onclick="downloadSandboxHTML()" class="device-btn" id="btn-export" style="background:var(--accent);color:#000;border-color:var(--accent);font-weight:700" data-i18n-key="export-html">📥 导出 HTML</button>
       </div>
     </div>
     <div class="iframe-container">
@@ -830,6 +837,27 @@ i18n.zh["preview-title"] = "🖥️ 实时交互预览";
 i18n.en["preview-title"] = "🖥️ Live Preview";
 i18n.jp["preview-title"] = "🖥️ リアルタイムプレビュー";
 
+i18n.zh["edit-text"] = "✏️ 编辑文本";
+i18n.en["edit-text"] = "✏️ Edit Text";
+i18n.jp["edit-text"] = "✏️ テキスト編集";
+
+i18n.zh["export-html"] = "📥 导出 HTML";
+i18n.en["export-html"] = "📥 Export HTML";
+i18n.jp["export-html"] = "📥 HTML書き出し";
+
+i18n.zh["theme-gold"] = "⚜️ Obsidian Gold";
+i18n.en["theme-gold"] = "⚜️ Obsidian Gold";
+i18n.jp["theme-gold"] = "⚜️ 漆黒金箔";
+
+i18n.zh["theme-blue"] = "💙 Terminal Blue";
+i18n.en["theme-blue"] = "💙 Terminal Blue";
+i18n.jp["theme-blue"] = "💙 ターミナル青";
+
+i18n.zh["theme-ink"] = "🤍 Ink Wash";
+i18n.en["theme-ink"] = "🤍 Ink Wash";
+i18n.jp["theme-ink"] = "🤍 水墨画风";
+
+
 function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('via54_lang', lang);
@@ -905,15 +933,122 @@ function translatePage() {
 }
 
 // ── Preview Sandbox Controls ──
+const themes = {
+  gold: {
+    '--bg': '#1A1A1A',
+    '--text-primary': '#F5F0E0',
+    '--text-secondary': '#B8A88A',
+    '--accent': '#C89B3C',
+    '--accent-alt': '#2E5CB8',
+    '--border': '#3A3528'
+  },
+  blue: {
+    '--bg': '#08090A',
+    '--text-primary': '#E8E8ED',
+    '--text-secondary': '#8B8B9E',
+    '--accent': '#5E6AD2',
+    '--accent-alt': '#4EA7FC',
+    '--border': '#1C1C23'
+  },
+  ink: {
+    '--bg': '#F5F0E6',
+    '--text-primary': '#1A1A1A',
+    '--text-secondary': '#6B6B6B',
+    '--accent': '#C43C3A',
+    '--accent-alt': '#2A2A2A',
+    '--border': '#D9D4CA'
+  }
+};
+
+function applyLiveTheme(themeKey) {
+  const iframe = document.getElementById('preview-frame');
+  if (!iframe) return;
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  const variables = themes[themeKey];
+  if (!variables || !iframeDoc) return;
+  
+  const root = iframeDoc.documentElement;
+  for (const [key, val] of Object.entries(variables)) {
+    root.style.setProperty(key, val);
+  }
+  
+  if (iframeDoc.body) {
+    iframeDoc.body.style.backgroundColor = variables['--bg'];
+    iframeDoc.body.style.color = variables['--text-primary'];
+  }
+}
+
+let designModeActive = false;
+
+function toggleDesignMode() {
+  const iframe = document.getElementById('preview-frame');
+  if (!iframe) return;
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  if (!iframeDoc) return;
+  
+  designModeActive = !designModeActive;
+  const btn = document.getElementById('btn-edit');
+  const dict = i18n[currentLang] || {};
+  
+  if (designModeActive) {
+    btn.classList.add('active');
+    btn.textContent = (dict["edit-text"] || "✏️ 编辑文本") + " (ON)";
+    
+    iframeDoc.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, li, a, td, th').forEach(el => {
+      if (el.children.length === 0 || (el.children.length > 0 && Array.from(el.childNodes).some(n => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim().length > 0))) {
+        el.setAttribute('contenteditable', 'true');
+        el.style.outline = '1px dashed rgba(212, 175, 55, 0.5)';
+        el.style.outlineOffset = '2px';
+        el.style.cursor = 'text';
+      }
+    });
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = dict["edit-text"] || "✏️ 编辑文本";
+    
+    iframeDoc.querySelectorAll('[contenteditable]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.style.outline = '';
+      el.style.outlineOffset = '';
+      el.style.cursor = '';
+    });
+  }
+}
+
+function downloadSandboxHTML() {
+  const iframe = document.getElementById('preview-frame');
+  if (!iframe) return;
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  if (!iframeDoc) return;
+  
+  // Clone element to prevent visual disruption during export
+  const exportDoc = iframeDoc.documentElement.cloneNode(true);
+  exportDoc.querySelectorAll('[contenteditable]').forEach(el => {
+    el.removeAttribute('contenteditable');
+    el.style.outline = '';
+    el.style.outlineOffset = '';
+    el.style.cursor = '';
+  });
+  
+  const htmlString = '<!DOCTYPE html>\n' + exportDoc.outerHTML;
+  const blob = new Blob([htmlString], { type: 'text/html; charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'via54_custom_design.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 function setDevice(device) {
   const iframe = document.getElementById('preview-frame');
   if (!iframe) return;
   
-  // Update button active style
   document.querySelectorAll('.device-btn').forEach(btn => btn.classList.remove('active'));
   document.getElementById('dev-' + device).classList.add('active');
   
-  // Set iframe device class
   iframe.className = 'preview-iframe';
   if (device !== 'desktop') {
     iframe.classList.add(device);
@@ -957,12 +1092,21 @@ document.addEventListener('DOMContentLoaded', () => {
   setLanguage(currentLang);
 });
 
-// Setup tab navigation visual state swap
+// Setup tab navigation visual state swap and reset sandbox designer mode
 document.addEventListener('click', function(e) {
   const btn = e.target.closest('.intent-btn');
   if (btn) {
     document.querySelectorAll('.intent-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    
+    // Reset design mode
+    designModeActive = false;
+    const editBtn = document.getElementById('btn-edit');
+    if (editBtn) {
+      editBtn.classList.remove('active');
+      const dict = i18n[currentLang] || {};
+      editBtn.textContent = dict["edit-text"] || "✏️ 编辑文本";
+    }
   }
 });
 </script>
