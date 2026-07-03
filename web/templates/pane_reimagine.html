@@ -17,25 +17,15 @@
       </select>
 
       <select name="layout_hint" class="custom-select" style="margin-bottom:6px;width:100%">
-        <option value="" data-i18n-key="layout-hint-default">布局: 默认自适应</option>
-        <option value="hero-split-16-9" data-i18n-key="layout-hint-hero">布局: Aurum Minimalist</option>
-        <option value="bento-grid-2x2" data-i18n-key="layout-hint-bento">布局: Bento Grid 2x2</option>
-        <option value="gallery-waterfall" data-i18n-key="layout-hint-waterfall">布局: Gallery Waterfall</option>
+        <option value="">布局: 默认自适应</option>
       </select>
 
       <select name="color_hint" class="custom-select" style="margin-bottom:6px;width:100%">
-        <option value="" data-i18n-key="color-hint-default">配色: 默认自适应</option>
-        <option value="rinpa-gold" data-i18n-key="color-hint-gold">配色: Obsidian Gold</option>
-        <option value="dark-terminal-blue" data-i18n-key="color-hint-blue">配色: Terminal Blue</option>
-        <option value="ink-wash" data-i18n-key="color-hint-ink">配色: Ink Wash</option>
-        <option value="cinematic-neon" data-i18n-key="color-hint-neon">配色: Cyber Neon</option>
+        <option value="">配色: 默认自适应</option>
       </select>
 
       <select name="font_hint" class="custom-select" style="margin-bottom:6px;width:100%">
-        <option value="" data-i18n-key="font-hint-default">字体: 默认自适应</option>
-        <option value="display-sans-bold" data-i18n-key="font-hint-sans">字体: Outfit (Sans)</option>
-        <option value="cormorant-elegant" data-i18n-key="font-hint-serif">字体: Cormorant (Serif)</option>
-        <option value="mono-terminal" data-i18n-key="font-hint-mono">字体: JetBrains Mono</option>
+        <option value="">字体: 默认自适应</option>
       </select>
 
       <!-- Custom Config File Upload -->
@@ -75,37 +65,99 @@
 
 <script>
 (function() {
-  // 1. Load system fonts dynamically from backend API and populate into font_hint select!
-  fetch('/api/local-fonts')
-    .then(r => r.json())
-    .then(fonts => {
-      const select = document.querySelector('select[name="font_hint"]');
-      if (select && fonts && fonts.length > 0) {
-        // Remove existing optgroup if any
-        const existing = select.querySelector('optgroup[label="本地系统字体"]');
-        if (existing) existing.remove();
+  const lang = localStorage.getItem('via54_lang') || 'zh';
 
-        const group = document.createElement('optgroup');
-        group.label = "本地系统字体";
-        fonts.forEach(f => {
-          const opt = document.createElement('option');
-          opt.value = f;
-          opt.textContent = `字体: ${f}`;
-          group.appendChild(opt);
+  function getPresetName(entry) {
+    if (!entry) return '';
+    const nameVal = entry.Name || entry.name;
+    const idVal = entry.ID || entry.id;
+    if (!nameVal) return idVal;
+    if (typeof nameVal === 'string') return nameVal;
+    if (typeof nameVal === 'object') {
+      return nameVal[lang] || nameVal['zh'] || nameVal['en'] || idVal;
+    }
+    return idVal;
+  }
+
+  // Load and populate presets
+  fetch('/api/presets')
+    .then(r => r.json())
+    .then(data => {
+      const layoutSelect = document.querySelector('select[name="layout_hint"]');
+      const colorSelect = document.querySelector('select[name="color_hint"]');
+      const fontSelect = document.querySelector('select[name="font_hint"]');
+
+      if (data.layouts && layoutSelect) {
+        layoutSelect.innerHTML = '<option value="">布局: 默认自适应</option>';
+        data.layouts.forEach(l => {
+          const opt = new Option('布局: ' + getPresetName(l), l.ID || l.id);
+          layoutSelect.add(opt);
         });
-        select.appendChild(group);
+        if (data.active && data.active.layout) {
+          layoutSelect.value = data.active.layout;
+        }
+      }
+      if (data.color_schemes && colorSelect) {
+        colorSelect.innerHTML = '<option value="">配色: 默认自适应</option>';
+        data.color_schemes.forEach(c => {
+          const opt = new Option('配色: ' + getPresetName(c), c.ID || c.id);
+          colorSelect.add(opt);
+        });
+        if (data.active && data.active.color) {
+          colorSelect.value = data.active.color;
+        }
+      }
+      if (data.typography && fontSelect) {
+        fontSelect.innerHTML = '<option value="">字体: 默认自适应</option>';
+        data.typography.forEach(f => {
+          const opt = new Option('字体: ' + getPresetName(f), f.ID || f.id);
+          fontSelect.add(opt);
+        });
+        if (data.active && data.active.font) {
+          fontSelect.value = data.active.font;
+        }
+        
+        // After presets are loaded, load system fonts and custom configs
+        fetchLocalFonts(fontSelect, data.active ? data.active.font : null);
       }
     })
-    .catch(err => console.error("读取本地系统字体失败", err));
+    .catch(err => console.error("加载系统预置失败:", err));
 
-  // 2. Load custom config from localStorage if it exists and populate selects
-  const cached = localStorage.getItem('via54_custom_design_config');
-  if (cached) {
-    try {
-      const data = JSON.parse(cached);
-      applyCustomConfigToReimagine(data);
-    } catch(e) {
-      console.error(e);
+  function fetchLocalFonts(select, activeFont) {
+    fetch('/api/local-fonts')
+      .then(r => r.json())
+      .then(fonts => {
+        if (select && fonts && fonts.length > 0) {
+          const group = document.createElement('optgroup');
+          group.label = "本地系统字体";
+          fonts.forEach(f => {
+            const opt = document.createElement('option');
+            opt.value = f;
+            opt.textContent = `字体: ${f}`;
+            group.appendChild(opt);
+          });
+          select.appendChild(group);
+          
+          if (activeFont && fonts.includes(activeFont)) {
+            select.value = activeFont;
+          }
+        }
+        
+        // Finally restore custom configs
+        restoreCustomConfigs();
+      })
+      .catch(err => console.error("读取系统字体失败:", err));
+  }
+
+  function restoreCustomConfigs() {
+    const cached = localStorage.getItem('via54_custom_design_config');
+    if (cached) {
+      try {
+        const data = JSON.parse(cached);
+        applyCustomConfigToReimagine(data);
+      } catch(e) {
+        console.error(e);
+      }
     }
   }
 

@@ -1078,6 +1078,8 @@ input:checked + .slider:before {
         </div>
       </div>
       <div class="iframe-container" style="position:relative;overflow:auto;display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
+        <!-- Intercept drag overlay when panning -->
+        <div id="drag-overlay" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;cursor:grab;display:none;background:transparent;"></div>
         <div id="preview-wrapper" style="transform-origin:center center;transition:transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);transform:scale(1);display:flex;align-items:center;justify-content:center;width:100%;height:100%;">
           <iframe src="/api/htmx/preview" id="preview-frame" class="preview-iframe"></iframe>
         </div>
@@ -1566,15 +1568,16 @@ function changeZoom(delta) {
   let isPanning = false;
   let startX, startY, scrollLeft, scrollTop;
   
-  const container = document.querySelector('.main-content');
-  
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
       e.preventDefault();
       if (!spacePressed) {
         spacePressed = true;
-        const targetContainer = document.querySelector('.iframe-container');
-        if (targetContainer) targetContainer.style.cursor = 'grab';
+        const overlay = document.getElementById('drag-overlay');
+        if (overlay) {
+          overlay.style.display = 'block';
+          overlay.style.cursor = 'grab';
+        }
       }
     }
   });
@@ -1583,36 +1586,33 @@ function changeZoom(delta) {
     if (e.code === 'Space') {
       spacePressed = false;
       isPanning = false;
-      const targetContainer = document.querySelector('.iframe-container');
-      if (targetContainer) targetContainer.style.cursor = 'default';
+      const overlay = document.getElementById('drag-overlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
     }
   });
 
   document.addEventListener('DOMContentLoaded', () => {
     const targetContainer = document.querySelector('.iframe-container');
-    if (!targetContainer) return;
+    const overlay = document.getElementById('drag-overlay');
+    if (!targetContainer || !overlay) return;
     
-    targetContainer.addEventListener('mousedown', (e) => {
-      if (!spacePressed) return;
+    overlay.addEventListener('mousedown', (e) => {
       isPanning = true;
-      targetContainer.style.cursor = 'grabbing';
+      overlay.style.cursor = 'grabbing';
       startX = e.pageX - targetContainer.offsetLeft;
       startY = e.pageY - targetContainer.offsetTop;
       scrollLeft = targetContainer.scrollLeft;
       scrollTop = targetContainer.scrollTop;
     });
 
-    targetContainer.addEventListener('mouseleave', () => {
+    overlay.addEventListener('mouseup', () => {
       isPanning = false;
-      if (spacePressed) targetContainer.style.cursor = 'grab';
+      if (spacePressed) overlay.style.cursor = 'grab';
     });
 
-    targetContainer.addEventListener('mouseup', () => {
-      isPanning = false;
-      if (spacePressed) targetContainer.style.cursor = 'grab';
-    });
-
-    targetContainer.addEventListener('mousemove', (e) => {
+    overlay.addEventListener('mousemove', (e) => {
       if (!isPanning) return;
       e.preventDefault();
       const x = e.pageX - targetContainer.offsetLeft;
