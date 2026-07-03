@@ -41,6 +41,7 @@ type PPTXSlide struct {
 	Body     []string // 正文段落
 	Color    string   // 强调色 hex
 	Image    string   // 图片路径(可选) // TODO: image embedding not yet implemented
+	Notes    string   // 演讲者备注 / 旁白 (导入 Google Vids 时将自动转换为视频配音剧本)
 }
 
 // PPTXStyleElement 布局元素坐标
@@ -240,7 +241,54 @@ func ExportPPTX(slides []PPTXSlide, outputPath string, widescreen bool, styleID,
 		if err := writeZip(w, fmt.Sprintf("ppt/slides/slide%d.xml", num), slideXML); err != nil {
 			return err
 		}
-		if err := writeZip(w, fmt.Sprintf("ppt/slides/_rels/slide%d.xml.rels", num), `<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>`); err != nil {
+
+		// 关联 notesSlide 到 slide
+		slideRelsXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide" Target="../notesSlides/notesSlide%d.xml"/>
+</Relationships>`, num)
+		if err := writeZip(w, fmt.Sprintf("ppt/slides/_rels/slide%d.xml.rels", num), slideRelsXML); err != nil {
+			return err
+		}
+
+		// 写入 notesSlide 文件 (包含演讲者备注，供 Google Vids 提取为 AI 旁白)
+		notesXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld>
+    <p:spTree>
+      <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+      <p:grpSpPr/>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="2" name="Notes Placeholder 2"/>
+          <p:cNvSpPr/>
+          <p:nvPr><p:ph type="body" idx="1"/></p:nvPr>
+        </p:nvSpPr>
+        <p:spPr/>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          <a:p>
+            <a:r>
+              <a:rPr lang="zh-CN" sz="1200"/>
+              <a:t>%s</a:t>
+            </a:r>
+          </a:p>
+        </p:txBody>
+      </p:sp>
+    </p:spTree>
+  </p:cSld>
+</p:notes>`, escapeXML(s.Notes))
+		if err := writeZip(w, fmt.Sprintf("ppt/notesSlides/notesSlide%d.xml", num), notesXML); err != nil {
+			return err
+		}
+
+		// 关联 slide 到 notesSlide (反向链接)
+		notesRelsXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide%d.xml"/>
+</Relationships>`, num)
+		if err := writeZip(w, fmt.Sprintf("ppt/notesSlides/_rels/notesSlide%d.xml.rels", num), notesRelsXML); err != nil {
 			return err
 		}
 	}
@@ -270,6 +318,7 @@ func genSlideTypes(n int) string {
 	var b strings.Builder
 	for i := 1; i <= n; i++ {
 		b.WriteString(fmt.Sprintf(`  <Override PartName="/ppt/slides/slide%d.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`, i))
+		b.WriteString(fmt.Sprintf(`  <Override PartName="/ppt/notesSlides/notesSlide%d.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>`, i))
 	}
 	return b.String()
 }
@@ -411,6 +460,7 @@ func PPTXSlideFromBeat(act, voiceover, mood string, idx, total int) PPTXSlide {
 		Subtitle: "via54 叙事引擎",
 		Body:     []string{voiceover},
 		Color:    c,
+		Notes:    voiceover,
 	}
 }
 

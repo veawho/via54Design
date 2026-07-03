@@ -147,6 +147,23 @@ via54 export pptx scaffold.json --output story.pptx --style editorial --theme te
 - 31 种配色主题，情绪映射强调色
 - 16:9 宽屏，文字直接在 PPT 中可编辑
 
+**🎥 Google Vids 自动化音视频工作流**
+
+由于 Google Vids (Google Workspace AI 视频创作工具) 支持导入 Google Slides 演示文稿，并在导入时有如下对应关系：
+1. **幻灯片页面** ➜ 自动转化为 **独立视频场景**。
+2. **演讲者备注 (Speaker Notes)** ➜ 自动提取为 **AI 旁白配音剧本**。
+
+我们在 PPTX 导出引擎中实现了对演讲者备注的原生注入。只需两步，即可将叙事大纲一键生成为 Google Vids 视频草稿：
+```bash
+# 1. 导出包含演讲者备注的 PPTX 文件 (旁白自动写入备注 XML)
+via54 export pptx scaffold.json --output vids_project.pptx
+
+# 2. 导入与转换：
+#    - 将 vids_project.pptx 上传至 Google Drive，并选择“使用 Google Slides 打开”
+#    - 在 Google Slides 中，点击“文件 (File)” -> “转换为视频 (Convert to video)”
+#    - Google Vids 将自动提取备注作为剧本并生成完整的视频草稿！
+```
+
 **叙事种子 → 设计生成**
 
 ```bash

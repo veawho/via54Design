@@ -104,6 +104,8 @@ via54 generate --layout landing-pricing --color cinematic-neon --font sans-geome
 *   **10 Responsive Layouts** ➜ Full high-fidelity HTML & CSS rendering for `landing-pricing`, `dashboard-3pane`, `blog-magazine`, `docs-sidebar`, `bento-grid-2x2`, and more.
 *   **Golden Ratio Spacing System** ➜ Mathematical spacing and fluid typography that automatically adapts to TV, Desktop, Tablet, and Mobile screens.
 *   **Cinematic Neon Color Scheme** ➜ A premium dark-ambient color scheme utilizing space black backdrop, translucent obsidian panels, golden amber glows, and electric violet accents.
+*   **Google Vids Workflow Bridge** ➜ The Go-based PPTX exporter automatically writes narrative voiceover scripts into PowerPoint **Speaker Notes** XML. When you upload this PPTX to Google Drive and convert it into a Google Vids project, Google Vids extracts the speaker notes as the AI video voiceover script automatically!
+
 
 ---
 
