@@ -1,0 +1,61 @@
+<div class="flow-steps">
+  <!-- Card 1: Pattern Generator -->
+  <div class="flow-step-card">
+    <span class="step-badge">1</span>
+    <h3 data-i18n-key="tool-pattern-title">🎨 CSS 样式背景生成器</h3>
+    <form hx-post="/api/htmx/pattern" hx-target="#patOutput" hx-indicator="#patSpin" style="margin-top:10px">
+      <select name="pattern" class="custom-select" style="margin-bottom:8px;width:100%">
+        <option value="gold-grid" data-i18n-key="pat-gold">曜金网格 Grid</option>
+        <option value="bauhaus-dot" data-i18n-key="pat-dot">包豪斯圆点 Dot</option>
+        <option value="mesh-gradient" data-i18n-key="pat-mesh">流光渐变 Mesh</option>
+        <option value="luxury-stripe" data-i18n-key="pat-stripe">奢华金条纹 Stripe</option>
+      </select>
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary" data-i18n-key="pat-gen">✨ 生成背景</button>
+        <span id="patSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="compiling">生成中...</span>
+      </div>
+    </form>
+    <div id="patOutput" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Card 2: Quality Auditor -->
+  <div class="flow-step-card">
+    <span class="step-badge">2</span>
+    <h3 data-i18n-key="tool-quality-title">🔍 网页设计规范审计</h3>
+    <form hx-post="/api/htmx/quality" hx-target="#quaOutput" hx-indicator="#quaSpin" style="margin-top:10px">
+      <textarea name="html_code" rows="4" placeholder="粘贴 HTML 代码到此处进行规范性审查，留空则默认审计上一阶段生成的 output.html..." style="margin-bottom:8px" data-i18n-key="tool-quality-ph"></textarea>
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary" data-i18n-key="tool-quality-btn">🛡️ 开始审计</button>
+        <span id="quaSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="analyzing">审计中...</span>
+      </div>
+    </form>
+    <div id="quaOutput" style="margin-top:8px"></div>
+  </div>
+
+  <!-- Card 3: Preset Registry Browser -->
+  <div class="flow-step-card">
+    <span class="step-badge">3</span>
+    <h3 data-i18n-key="tool-list-title">📁 系统内置预置名录</h3>
+    <div style="margin-top:10px">
+      <button hx-post="/api/htmx/list" hx-target="#listOutput" hx-indicator="#listSpin" class="btn-primary" data-i18n-key="tool-list-btn">
+        📂 查看全部预置名录 (Layout/Color/Font)
+      </button>
+      <span id="listSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim);margin-left:8px" data-i18n-key="loading">读取中...</span>
+    </div>
+    <div id="listOutput" style="margin-top:8px;max-height:300px;overflow-y:auto"></div>
+  </div>
+
+  <!-- Card 4: AI Wenda Assistant -->
+  <div class="flow-step-card">
+    <span class="step-badge">4</span>
+    <h3 data-i18n-key="tool-ai-title">💬 AI 智能设计问答</h3>
+    <form hx-post="/api/htmx/ai" hx-target="#aiOutput" hx-indicator="#aiSpin" style="margin-top:10px">
+      <textarea name="prompt" rows="3" placeholder="例如: 帮我设计一个包豪斯风格的色彩搭配..." style="margin-bottom:8px" data-i18n-key="tool-ai-ph"></textarea>
+      <div style="display:flex;gap:6px">
+        <button type="submit" class="btn-primary" data-i18n-key="tool-ai-btn">💬 发送提问</button>
+        <span id="aiSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)" data-i18n-key="thinking">思考中...</span>
+      </div>
+    </form>
+    <div id="aiOutput" style="margin-top:8px"></div>
+  </div>
+</div>

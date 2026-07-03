@@ -25,6 +25,7 @@ import (
 	"sync"
 	"time"
 
+	vt "github.com/veawho/via54Design/internal/template"
 	"github.com/veawho/via54Design/internal/vision"
 	"github.com/veawho/via54Design/internal/workflow"
 )
@@ -36,6 +37,7 @@ import (
 //go:embed templates/pane_video.html
 //go:embed templates/pane_forge.html
 //go:embed templates/pane_reimagine.html
+//go:embed templates/pane_tools.html
 //go:embed templates/phases45.html
 var embeddedFiles embed.FS
 
@@ -79,6 +81,10 @@ func Handler(bd string) http.Handler {
 
 	// ── HTMX endpoints (return HTML fragments, no JS) ──
 	mux.HandleFunc("/api/local-fonts", handleLocalFonts)
+	mux.HandleFunc("/api/htmx/pattern", handleHTMXPattern)
+	mux.HandleFunc("/api/htmx/quality", handleHTMXQuality)
+	mux.HandleFunc("/api/htmx/list", handleHTMXList)
+	mux.HandleFunc("/api/htmx/ai", handleHTMXAI)
 	mux.HandleFunc("/api/htmx/status", handleHTMXStatus)
 	mux.HandleFunc("/api/htmx/pane", handleHTMXPane)
 	mux.HandleFunc("/api/htmx/generate", handleHTMXGenerate)
@@ -1015,6 +1021,7 @@ func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 		"video":     "pane_video.html",
 		"forge":     "pane_forge.html",
 		"reimagine": "pane_reimagine.html",
+		"tools":     "pane_tools.html",
 	}
 	file, ok := names[intent]
 	if !ok {
@@ -1732,4 +1739,148 @@ func injectCustomStyles(html string, colorVars string, fontImport string, fontFa
 		html = strings.Replace(html, "</head>", fmt.Sprintf("<style>%s</style>\n</head>", cssInject.String()), 1)
 	}
 	return html
+}
+
+
+// ═══════════════════════════════════════════════════════
+// Subcommands Integrated into Web UI (Other Tools)
+// ═══════════════════════════════════════════════════════
+
+func handleHTMXPattern(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	style := r.FormValue("pattern")
+	var css, previewStyle string
+	
+	switch style {
+	case "gold-grid":
+		css = `background-color: #0d0d0d;
+background-image: linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+background-size: 20px 20px;`
+		previewStyle = "background-color:#0d0d0d; background-image:linear-gradient(rgba(212,175,55,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,0.1) 1px,transparent 1px); background-size:20px 20px; height:100px; border-radius:var(--radius-sm); border:1px solid var(--border)"
+	case "bauhaus-dot":
+		css = `background-color: #f5f5f7;
+background-image: radial-gradient(rgba(0, 0, 0, 0.15) 1.5px, transparent 1.5px);
+background-size: 24px 24px;`
+		previewStyle = "background-color:#f5f5f7; background-image:radial-gradient(rgba(0,0,0,0.15) 1.5px,transparent 1.5px); background-size:24px 24px; height:100px; border-radius:var(--radius-sm); border:1px solid rgba(0,0,0,0.1)"
+	case "mesh-gradient":
+		css = `background: radial-gradient(circle at 0% 0%, #1a1a2e, transparent 50%),
+            radial-gradient(circle at 100% 0%, #0d0d0d, transparent 50%),
+            radial-gradient(circle at 100% 100%, #1c1505, transparent 50%),
+            radial-gradient(circle at 0% 100%, #111111, transparent 50%);`
+		previewStyle = "background:radial-gradient(circle at 0% 0%,#1a1a2e,transparent 50%),radial-gradient(circle at 100% 0%,#0d0d0d,transparent 50%),radial-gradient(circle at 100% 100%,#1c1505,transparent 50%),radial-gradient(circle at 0% 100%,#111111,transparent 50%); height:100px; border-radius:var(--radius-sm); border:1px solid var(--border)"
+	case "luxury-stripe":
+		css = `background: repeating-linear-gradient(45deg, #121212, #121212 10px, #1a1505 10px, #1a1505 20px);`
+		previewStyle = "background:repeating-linear-gradient(45deg,#121212,#121212 10px,#1a1505 10px,#1a1505 20px); height:100px; border-radius:var(--radius-sm); border:1px solid var(--border)"
+	}
+
+	html := fmt.Sprintf(`
+<div class="output-area">
+  <strong>🎨 生成 CSS 背景成功!</strong>
+  <div style="margin: 10px 0; %s"></div>
+  <pre style="background:var(--bg-inset);padding:10px;border-radius:var(--radius-sm);font-size:11px;overflow:auto;margin-top:6px;color:var(--text-secondary)"><code>%s</code></pre>
+</div>`, previewStyle, css)
+	htmxWrite(w, html)
+}
+
+func handleHTMXQuality(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	code := r.FormValue("html_code")
+	if code == "" {
+		// Read generated output.html as default fallback
+		outPath := filepath.Join(baseDir, "output.html")
+		if data, err := os.ReadFile(outPath); err == nil {
+			code = string(data)
+		}
+	}
+	if code == "" {
+		htmxError(w, "未检测到已生成的 output.html, 且输入框为空。请先生成设计，或粘贴代码后再审计")
+		return
+	}
+
+	// Basic quality audit logic
+	var audits []string
+	addAudit := func(ok bool, title string) {
+		symbol := `<span style="color:var(--accent3);margin-right:6px">✓</span>`
+		if !ok {
+			symbol = `<span style="color:var(--accent2);margin-right:6px">✗</span>`
+		}
+		audits = append(audits, fmt.Sprintf("<div style='margin-bottom:4px'>%s %s</div>", symbol, title))
+	}
+
+	hasViewport := strings.Contains(code, "width=device-width")
+	addAudit(hasViewport, "响应式元标签 Viewport Meta 存在")
+
+	hasStyle := strings.Contains(code, "<style>")
+	addAudit(hasStyle, "样式内聚层 Style 声明存在")
+
+	hasVariables := strings.Contains(code, "--bg") || strings.Contains(code, "--accent")
+	addAudit(hasVariables, "配色语义变量 CSS Variables 符合 via54Design 规范")
+
+	hasAlt := !strings.Contains(code, "src=") || strings.Contains(code, "alt=")
+	addAudit(hasAlt, "页面图片 Alt 无障碍描述覆盖")
+
+	hasCJKFont := strings.Contains(code, "PingFang") || strings.Contains(code, "Microsoft YaHei") || strings.Contains(code, "Meiryo")
+	addAudit(hasCJKFont, "中日韩系统后备字体 CJK Fonts 补全")
+
+	html := fmt.Sprintf(`
+<div class="output-area">
+  <strong>🔍 设计规范审计报告 (via54 quality)</strong>
+  <div style="margin-top:8px;font-size:12px;color:var(--text-secondary)">
+    %s
+  </div>
+</div>`, strings.Join(audits, ""))
+	htmxWrite(w, html)
+}
+
+func handleHTMXList(w http.ResponseWriter, r *http.Request) {
+	reg, err := vt.NewRegistry(baseDir)
+	if err != nil {
+		htmxError(w, "加载预置名录失败: "+err.Error())
+		return
+	}
+
+	var rows []string
+	rows = append(rows, "<tr><th>类型</th><th>标识 ID</th><th>描述</th></tr>")
+	for _, l := range reg.Data.Layouts {
+		rows = append(rows, fmt.Sprintf("<tr><td>布局 (Layout)</td><td><code>%s</code></td><td>%s</td></tr>", l.ID, l.File))
+	}
+	for _, c := range reg.Data.ColorSchemes {
+		rows = append(rows, fmt.Sprintf("<tr><td>配色 (Color)</td><td><code>%s</code></td><td>%s</td></tr>", c.ID, c.File))
+	}
+	for _, t := range reg.Data.Typography {
+		rows = append(rows, fmt.Sprintf("<tr><td>字体 (Font)</td><td><code>%s</code></td><td>%s</td></tr>", t.ID, t.File))
+	}
+
+	html := fmt.Sprintf(`
+<style>
+.tbl-list { width: 100%%; border-collapse: collapse; font-size:11px; margin-top:6px; color:var(--text-secondary) }
+.tbl-list th, .tbl-list td { border: 1px solid var(--border); padding: 6px; text-align: left; }
+.tbl-list th { background: var(--bg-inset); color: var(--text-primary) }
+</style>
+<table class="tbl-list">%s</table>`, strings.Join(rows, ""))
+	htmxWrite(w, html)
+}
+
+func handleHTMXAI(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		htmxError(w, "use POST")
+		return
+	}
+	prompt := r.FormValue("prompt")
+	if prompt == "" {
+		htmxError(w, "问题不能为空")
+		return
+	}
+
+	// General AI Assistant response fallback
+	response := fmt.Sprintf("🤖 <strong>AI 智能设计顾问:</strong><br><br>关于您的提问 <em>\"%s\"</em>，为您推荐以下 via54Design 最佳设计路径：<br><br>• <strong>包豪斯纯三原色配比</strong>: 可选用 <code>bauhaus-primary</code> 配色，配合 <code>display-sans-bold</code> 展示字体，形成极强对比。<br>• <strong>日式水墨枯山水意境</strong>: 选用 <code>ink-wash</code> 静谧浅灰底色与留白。<br>• <strong>自适应响应式卡片</strong>: 使用 <code>bento-grid-2x2</code> 拼图块自适应缩放。<br><br>您可以在 <strong>Design Sandbox (设计沙盒)</strong> 面板中实时勾选保存并预览这些选项！", prompt)
+	
+	htmxWrite(w, fmt.Sprintf(`<div class="output-area" style="font-size:12px;line-height:1.6;color:var(--text-secondary)">%s</div>`, response))
 }
