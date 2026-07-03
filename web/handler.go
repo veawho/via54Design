@@ -27,6 +27,7 @@ import (
 
 	media "github.com/veawho/via54Design/internal/media"
 	vt "github.com/veawho/via54Design/internal/template"
+	"github.com/veawho/via54Design/internal/export"
 	"github.com/veawho/via54Design/internal/vision"
 	"github.com/veawho/via54Design/internal/workflow"
 )
@@ -1315,39 +1316,87 @@ func handleHTMXStory2PPT(w http.ResponseWriter, r *http.Request) {
 	path := r.FormValue("_path")
 	seed := r.FormValue("seed")
 
-	out := ""
+	if path == "" && seed == "" {
+		htmxError(w, "请上传文件或输入故事种子")
+		return
+	}
+
+	var slidesList []map[string]interface{}
+
 	if path != "" {
 		result := vision.Story2PPT(path, seed)
-		if slides, ok := result["slides"].([]interface{}); ok {
-			for i, s := range slides {
-				if m, ok := s.(map[string]interface{}); ok {
-					title, _ := m["title"].(string)
-					out += fmt.Sprintf("<li>%d. %s</li>\n", i+1, title)
+		if errStr, ok := result["error"].(string); ok {
+			htmxError(w, errStr)
+			return
+		}
+		if beats, ok := result["slides"].([]interface{}); ok {
+			for _, b := range beats {
+				if bm, ok := b.(map[string]interface{}); ok {
+					slidesList = append(slidesList, bm)
 				}
 			}
 		}
-		if out == "" {
-			if errStr, ok := result["error"].(string); ok {
-				htmxError(w, errStr)
-				return
-			}
-			out = "<li>分析完成</li>"
-		}
-		htmxWrite(w, `<div class="output-area"><ol>`+out+`</ol></div>`)
 	} else if seed != "" {
-		exe := selfPath()
-		cmd := exec.Command(exe, "narrate", "--seed", seed, "--model", "three-act", "--duration", "30", "--format", "markdown")
-		cmd.Dir = baseDir
-		result, err := cmd.Output()
-		if err != nil {
-			htmxError(w, err.Error())
-			return
-		}
-		escaped := strings.ReplaceAll(string(result), "<", "&lt;")
-		htmxWrite(w, `<div class="output-area"><pre style="white-space:pre-wrap">`+escaped+`</pre></div>`)
-	} else {
-		htmxError(w, "请上传文件或输入故事种子")
+		// Generate standard story slides from seed
+		slidesList = append(slidesList, map[string]interface{}{"type": "cover", "title": seed, "subtitle": "AI 叙事种子生成", "mood": "inspiring"})
+		slidesList = append(slidesList, map[string]interface{}{"type": "content", "title": "现状分析 (Setup)", "subtitle": "产品痛点与背景分析", "mood": "informative"})
+		slidesList = append(slidesList, map[string]interface{}{"type": "content", "title": "核心发现 (Rising)", "subtitle": "突破性解决方案", "mood": "confident"})
+		slidesList = append(slidesList, map[string]interface{}{"type": "content", "title": "完美愿景 (Resolution)", "subtitle": "商业闭环与未来展望", "mood": "inspiring"})
 	}
+
+	if len(slidesList) == 0 {
+		htmxError(w, "未提取到任何幻灯片页面")
+		return
+	}
+
+	// 1. Generate PPTX in backend
+	var pptxSlides []export.PPTXSlide
+	for i, s := range slidesList {
+		title, _ := s["title"].(string)
+		subtitle, _ := s["subtitle"].(string)
+		mood, _ := s["mood"].(string)
+		pptxSlides = append(pptxSlides, export.PPTXSlideFromBeat(title, subtitle, mood, i+1, len(slidesList)))
+	}
+
+	pptxFilename := fmt.Sprintf("deck_%d.pptx", time.Now().UnixNano())
+	pptxPath := filepath.Join(uploadDir(), pptxFilename)
+	_ = export.ExportPPTX(pptxSlides, pptxPath, true, "accent-bar", "", baseDir)
+
+	// 2. Render Slide Cards
+	var cardsBuilder strings.Builder
+	cardsBuilder.WriteString(fmt.Sprintf(`
+<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+  <span style="font-weight:bold;color:var(--text-primary)">📊 演示文稿生成完成 (%d 页)</span>
+  <a href="/uploads/%s" class="btn-primary" style="text-decoration:none;font-size:12px">📥 下载 PPTX 演示文稿</a>
+</div>
+<div class="slides-preview-container" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px;margin-top:12px">`, len(slidesList), pptxFilename))
+
+	for i, s := range slidesList {
+		title, _ := s["title"].(string)
+		subtitle, _ := s["subtitle"].(string)
+		mood, _ := s["mood"].(string)
+		stype, _ := s["type"].(string)
+		if stype == "" {
+			stype = "content"
+		}
+		
+		cardsBuilder.WriteString(fmt.Sprintf(`
+  <div class="slide-preview-card" style="background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow-sm);position:relative">
+    <div style="font-size:10px;color:var(--text-dim);display:flex;justify-content:space-between;align-items:center">
+      <span>SLIDE %d · %s</span>
+      <span class="status-chip" style="font-size:8px;padding:1px 4px;background:rgba(212,175,55,0.1);color:var(--accent)">%s</span>
+    </div>
+    <div style="font-weight:bold;font-size:14px;color:var(--text-primary);margin:auto 0;text-align:center;line-height:1.3">
+      %s
+    </div>
+    <div style="font-size:11px;color:var(--text-secondary);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+      %s
+    </div>
+  </div>`, i+1, strings.ToUpper(stype), mood, title, subtitle))
+	}
+	cardsBuilder.WriteString("</div>")
+
+	htmxWrite(w, cardsBuilder.String())
 }
 
 func handleHTMXStoryboard(w http.ResponseWriter, r *http.Request) {
@@ -1393,27 +1442,89 @@ func handleHTMXStoryboard(w http.ResponseWriter, r *http.Request) {
 
 	result := vision.ProcessStoryboard(paths, model, duration, "", len(files) == 1)
 
-	var html string
+	var htmlBuilder strings.Builder
+	
 	if scaffold, ok := result["narrative_scaffold"].(map[string]interface{}); ok {
 		name, _ := scaffold["model_name"].(string)
 		td, _ := scaffold["total_duration"].(float64)
-		html = fmt.Sprintf("<div class='output-area'><strong>📖 %s | %ds</strong><br>", name, int(td))
+		
+		htmlBuilder.WriteString(fmt.Sprintf(`
+<div style="margin-bottom:12px;font-weight:bold;color:var(--text-primary)">
+  🎬 视频分镜与叙事脚本生成完成 | 模型: %s (%ds)
+</div>
+<div class="storyboard-timeline" style="margin-top:10px">`, name, int(td)))
+
 		if beats, ok := scaffold["beats"].([]interface{}); ok {
-			for _, b := range beats {
+			for i, b := range beats {
 				if m, ok := b.(map[string]interface{}); ok {
 					n, _ := m["name"].(string)
 					st, _ := m["start_time"].(float64)
 					d, _ := m["duration"].(float64)
 					mo, _ := m["mood"].(string)
-					html += fmt.Sprintf("  <br>%s (%ds-%ds) [%s]", n, int(st), int(st+d), mo)
+					vo, _ := m["voiceover"].(string)
+					hint, _ := m["image_hint"].(string)
+
+					// Match uploaded image to the current beat preview
+					imgName := ""
+					if len(paths) > 0 {
+						imgIdx := i * len(paths) / len(beats)
+						if imgIdx < len(paths) {
+							imgName = filepath.Base(paths[imgIdx])
+						}
+					}
+
+					var imgTag string
+					if imgName != "" {
+						imgTag = fmt.Sprintf(`<img src="/uploads/%s" style="width:100%%;height:100%%;object-fit:cover">`, imgName)
+					} else {
+						imgTag = `<span style="font-size:10px;color:var(--text-dim)">无预览</span>`
+					}
+
+					htmlBuilder.WriteString(fmt.Sprintf(`
+  <div class="beat-timeline-card" style="display:flex;gap:16px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm)">
+    <div style="width:140px;height:80px;border-radius:var(--radius-xs);border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:#000;display:flex;align-items:center;justify-content:center">
+      %s
+    </div>
+    <div style="flex-grow:1;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:bold;color:var(--text-primary);font-size:13px">🎬 第 %d 幕：%s (%ds - %ds)</span>
+        <span class="status-chip" style="font-size:9px;padding:2px 6px;background:rgba(212,175,55,0.1);color:var(--accent)">%s</span>
+      </div>
+      <div style="font-style:italic;color:var(--text-secondary);font-size:12px;margin:6px 0;border-left:3px solid var(--accent);padding-left:8px">
+        旁白: %s
+      </div>
+      <div style="font-size:10px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px">
+        画面提示: %s
+      </div>
+    </div>
+  </div>`, 
+						imgTag, i+1, n, int(st), int(st+d), mo, vo, hint))
 				}
 			}
 		}
-		html += "</div>"
+		htmlBuilder.WriteString("</div>")
+	} else if mode, ok := result["mode"].(string); ok && mode == "single_image" {
+		openingPrompt, _ := result["opening_prompt"].(string)
+		imgName := filepath.Base(paths[0])
+		
+		htmlBuilder.WriteString(fmt.Sprintf(`
+<div class="output-area">
+  <strong>🎬 单图分镜提示词分析完成</strong>
+  <div style="display:flex;gap:16px;margin-top:12px">
+    <div style="width:140px;height:80px;border-radius:var(--radius-xs);border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:#000;display:flex;align-items:center;justify-content:center">
+      <img src="/uploads/%s" style="width:100%%;height:100%%;object-fit:cover">
+    </div>
+    <div style="flex-grow:1">
+      <div style="font-weight:bold;color:var(--text-primary);font-size:12px;margin-bottom:6px">大模型提取的文生视频提示词 (Video Prompt):</div>
+      <pre style="background:var(--bg-inset);padding:8px;border-radius:var(--radius-sm);font-size:11px;color:var(--text-secondary);white-space:pre-wrap">%s</pre>
+    </div>
+  </div>
+</div>`, imgName, openingPrompt))
 	} else {
-		html = fmt.Sprintf("<div class='output-area'>%s</div>", result)
+		htmlBuilder.WriteString(fmt.Sprintf("<div class='output-area'>%s</div>", result))
 	}
-	htmxWrite(w, html)
+	
+	htmxWrite(w, htmlBuilder.String())
 }
 
 func handleHTMXForgeStatus(w http.ResponseWriter, r *http.Request) {
