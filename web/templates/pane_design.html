@@ -63,10 +63,7 @@
           <span class="form-label" data-i18n-key="base-color">Theme Palette</span>
           <div class="control-right">
             <select name="color" class="custom-select">
-              <option value="rinpa-gold">Obsidian Gold</option>
-              <option value="dark-terminal-blue">Terminal Blue</option>
-              <option value="ink-wash">Ink Wash</option>
-              <option value="cinematic-neon">Cyber Neon</option>
+              <option value="">加载中...</option>
             </select>
           </div>
         </div>
@@ -75,9 +72,7 @@
           <span class="form-label" data-i18n-key="font-family">Font Family</span>
           <div class="control-right">
             <select name="font" class="custom-select">
-              <option value="display-sans-bold">Outfit (Sans)</option>
-              <option value="cormorant-elegant">Cormorant (Serif)</option>
-              <option value="mono-terminal">JetBrains Mono</option>
+              <option value="">加载中...</option>
             </select>
           </div>
         </div>
@@ -142,4 +137,93 @@ function switchDesignTab(tabName) {
   const targetSection = document.getElementById('section-' + tabName);
   if (targetSection) targetSection.style.display = 'block';
 }
+
+(function() {
+  const lang = localStorage.getItem('via54_lang') || 'zh';
+
+  function getPresetName(entry) {
+    if (!entry) return '';
+    const nameVal = entry.Name || entry.name;
+    const idVal = entry.ID || entry.id;
+    if (!nameVal) return idVal;
+    if (typeof nameVal === 'string') return nameVal;
+    if (typeof nameVal === 'object') {
+      return nameVal[lang] || nameVal['zh'] || nameVal['en'] || idVal;
+    }
+    return idVal;
+  }
+
+  // Load and populate presets
+  fetch('/api/presets')
+    .then(r => r.json())
+    .then(data => {
+      const layoutSelect = document.querySelector('select[name="layout"]');
+      const colorSelect = document.querySelector('select[name="color"]');
+      const fontSelect = document.querySelector('select[name="font"]');
+
+      if (data.layouts && layoutSelect) {
+        layoutSelect.innerHTML = '';
+        data.layouts.forEach(l => {
+          const opt = new Option(getPresetName(l), l.ID || l.id);
+          layoutSelect.add(opt);
+        });
+        if (data.active && data.active.layout) {
+          layoutSelect.value = data.active.layout;
+        }
+      }
+      if (data.color_schemes && colorSelect) {
+        colorSelect.innerHTML = '';
+        data.color_schemes.forEach(c => {
+          const opt = new Option(getPresetName(c), c.ID || c.id);
+          colorSelect.add(opt);
+        });
+        if (data.active && data.active.color) {
+          colorSelect.value = data.active.color;
+        }
+      }
+      if (data.typography && fontSelect) {
+        fontSelect.innerHTML = '';
+        data.typography.forEach(f => {
+          const opt = new Option(getPresetName(f), f.ID || f.id);
+          fontSelect.add(opt);
+        });
+        if (data.active && data.active.font) {
+          fontSelect.value = data.active.font;
+        }
+        
+        // After presets are loaded, fetch local system fonts
+        fetchLocalFonts(fontSelect, data.active ? data.active.font : null);
+      }
+
+      // Restore active layout mode
+      const modeSelect = document.querySelector('select[name="mode"]');
+      if (modeSelect && data.active && data.active.mode !== undefined) {
+        modeSelect.value = data.active.mode;
+      }
+    })
+    .catch(err => console.error("加载系统预置失败:", err));
+
+  function fetchLocalFonts(select, activeFont) {
+    fetch('/api/local-fonts')
+      .then(r => r.json())
+      .then(fonts => {
+        if (select && fonts && fonts.length > 0) {
+          const group = document.createElement('optgroup');
+          group.label = "本地系统字体";
+          fonts.forEach(f => {
+            const opt = document.createElement('option');
+            opt.value = f;
+            opt.textContent = f;
+            group.appendChild(opt);
+          });
+          select.appendChild(group);
+          
+          if (activeFont && fonts.includes(activeFont)) {
+            select.value = activeFont;
+          }
+        }
+      })
+      .catch(err => console.error("读取系统字体失败:", err));
+  }
+})();
 </script>

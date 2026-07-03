@@ -1089,7 +1089,7 @@ input:checked + .slider:before {
           <input type="range" id="zoom-slider" min="30" max="200" value="100" style="width:100px;cursor:pointer;accent-color:var(--accent)" oninput="setZoom(this.value)">
           <button onclick="changeZoom(10)" class="device-btn" style="padding:2px 8px;font-weight:bold;font-size:14px;background:none;border:1px solid var(--border);color:var(--text-primary);cursor:pointer">+</button>
           <span id="zoom-value" style="font-size:11px;font-family:var(--font-mono);min-width:40px;text-align:right;color:var(--text-secondary)">100%</span>
-          <button onclick="setZoom(100)" class="device-btn" style="padding:2px 6px;font-size:10px;background:none;border:1px solid var(--border);color:var(--text-primary);cursor:pointer" data-i18n-key="reset">重置</button>
+          <button onclick="resetZoomAndPan()" class="device-btn" style="padding:2px 6px;font-size:10px;background:none;border:1px solid var(--border);color:var(--text-primary);cursor:pointer" data-i18n-key="reset">重置</button>
         </div>
       </div>
     </div>
@@ -1544,17 +1544,25 @@ function applyLiveTheme(themeKey) {
 
 // ── Zoom & Spacebar Panning Functionality ──
 let currentZoom = 100;
+let panX = 0;
+let panY = 0;
+
+function updateTransform() {
+  const wrapper = document.getElementById('preview-wrapper');
+  if (wrapper) {
+    wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${currentZoom / 100})`;
+  }
+}
+
 function setZoom(val) {
   currentZoom = parseInt(val);
   const slider = document.getElementById('zoom-slider');
   const label = document.getElementById('zoom-value');
-  const wrapper = document.getElementById('preview-wrapper');
   if (slider) slider.value = currentZoom;
   if (label) label.textContent = currentZoom + '%';
-  if (wrapper) {
-    wrapper.style.transform = `scale(${currentZoom / 100})`;
-  }
+  updateTransform();
 }
+
 function changeZoom(delta) {
   let next = currentZoom + delta;
   if (next < 30) next = 30;
@@ -1562,11 +1570,17 @@ function changeZoom(delta) {
   setZoom(next);
 }
 
+function resetZoomAndPan() {
+  panX = 0;
+  panY = 0;
+  setZoom(100);
+}
+
 // Spacebar Drag & Pan
 (function() {
   let spacePressed = false;
   let isPanning = false;
-  let startX, startY, scrollLeft, scrollTop;
+  let startX, startY;
   
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
@@ -1601,10 +1615,8 @@ function changeZoom(delta) {
     overlay.addEventListener('mousedown', (e) => {
       isPanning = true;
       overlay.style.cursor = 'grabbing';
-      startX = e.pageX - targetContainer.offsetLeft;
-      startY = e.pageY - targetContainer.offsetTop;
-      scrollLeft = targetContainer.scrollLeft;
-      scrollTop = targetContainer.scrollTop;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
     });
 
     overlay.addEventListener('mouseup', () => {
@@ -1615,12 +1627,9 @@ function changeZoom(delta) {
     overlay.addEventListener('mousemove', (e) => {
       if (!isPanning) return;
       e.preventDefault();
-      const x = e.pageX - targetContainer.offsetLeft;
-      const y = e.pageY - targetContainer.offsetTop;
-      const walkX = (x - startX);
-      const walkY = (y - startY);
-      targetContainer.scrollLeft = scrollLeft - walkX;
-      targetContainer.scrollTop = scrollTop - walkY;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform();
     });
   });
 })();
