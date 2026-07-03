@@ -31,7 +31,46 @@
 
 ---
 
+### 🚀 v1.0 完整 Pipeline (v1.0 Complete Pipeline)
+
+via54Design 提供了从人类灵感 Seed 出发，全自动/半自动流转到最终高保真视觉与多媒体交付的完整 Pipeline 工作流：
+
+```mermaid
+graph TD
+    Seed["💡 1. 一句话灵感 (Seed)"] -->|via54 narrate| Scaffold["📋 2. 叙事大纲 (Scaffold JSON)"]
+    Scaffold -->|via54 prompt| GenAI["🎨 3a. AI 生图提示词 (Prompt)"]
+    Scaffold -->|via54 generate| WebHTML["🌐 3b. 高保真响应式网页 (HTML)"]
+    Scaffold -->|via54 export| MultiFormat["📊 3c. PPTX / SVG / 剧本导出"]
+    Scaffold -->|python gen_video.py| VideoMux["🎬 4. 音视频多轨合成 (MP4 Video)"]
+```
+
+#### 完整 Pipeline 运行命令示范：
+1. **第一步：生成叙事大纲 JSON**
+   ```bash
+   via54 narrate --seed "在废土中寻找最后一滴水源的机械师" --model cinematic-epic --duration 90 --format json --output scaffold.json
+   ```
+2. **第二步：渲染 AI 绘画提示词**
+   ```bash
+   via54 prompt --from-scaffold scaffold.json --platform midjourney --output prompt.md
+   ```
+3. **第三步：渲染高保真响应式网页**
+   ```bash
+   via54 generate --from-narrative scaffold.json --layout landing-pricing --color cinematic-neon --font sans-geometric-tech --output index.html
+   ```
+4. **第四步：导出 PPTX 或无损 SVG**
+   ```bash
+   via54 export pptx scaffold.json --output story.pptx
+   via54 export svg scaffold.json --output ./scenes
+   ```
+5. **第五步：运行多轨合成管道制作三语视频**
+   ```bash
+   python _scripts/gen_video.py --step all
+   ```
+
+---
+
 ### 第一部分：故事 → 视频能力
+
 
 #### 从一句话到 90 秒品牌故事
 

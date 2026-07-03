@@ -20,7 +20,46 @@ via54Design is not just a tool for aggregating skills or compiling code. It acts
 
 ---
 
+### 🚀 v1.0 Complete Pipeline
+
+via54Design provides a complete, end-to-end pipeline that transforms a simple seed sentence into final high-aesthetic visual layouts and media deliverables:
+
+```mermaid
+graph TD
+    Seed["💡 1. One-Line Seed"] -->|via54 narrate| Scaffold["📋 2. Narrative Scaffold (JSON)"]
+    Scaffold -->|via54 prompt| GenAI["🎨 3a. AI Image Prompts"]
+    Scaffold -->|via54 generate| WebHTML["🌐 3b. High-Fidelity Web Page (HTML)"]
+    Scaffold -->|via54 export| MultiFormat["📊 3c. Export PPTX / SVG / Script"]
+    Scaffold -->|python gen_video.py| VideoMux["🎬 4. Multi-track Video Muxing (MP4)"]
+```
+
+#### E2E Command Showcase:
+1. **Step 1: Generate the Narrative Scaffold (JSON)**
+   ```bash
+   via54 narrate --seed "A lone mechanic searching for green source..." --model cinematic-epic --duration 90 --format json --output scaffold.json
+   ```
+2. **Step 2: Compile AI Image Prompts (26 control dimensions)**
+   ```bash
+   via54 prompt --from-scaffold scaffold.json --platform midjourney --output prompt.md
+   ```
+3. **Step 3: Compile High-Fidelity Web Presentation**
+   ```bash
+   via54 generate --from-narrative scaffold.json --layout landing-pricing --color cinematic-neon --font sans-geometric-tech --output index.html
+   ```
+4. **Step 4: Export Presentations and Vector Visuals**
+   ```bash
+   via54 export pptx scaffold.json --output story.pptx
+   via54 export svg scaffold.json --output ./scenes
+   ```
+5. **Step 5: Run the Multi-track Muxing Pipeline for Video Rendering**
+   ```bash
+   python _scripts/gen_video.py --step all
+   ```
+
+---
+
 ### Part 1: Story → Cinematic Video Pipeline
+
 
 #### From A Single Sentence to a 90-Second Cinematic Trailer
 
