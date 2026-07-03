@@ -18,8 +18,8 @@
   --border: rgba(197, 160, 89, 0.15);
   --border-glow: rgba(212, 175, 55, 0.35);
   --text-primary: #f5f4f0;
-  --text-secondary: #c8c5bc;
-  --text-dim: #737068;
+  --text-secondary: #d2d0c8;
+  --text-dim: #929088;
   --accent: #d4af37; /* Luxury Gold */
   --accent-hover: #e5c158;
   --accent-subtle: rgba(212, 175, 55, 0.12);
@@ -29,7 +29,7 @@
   --accent4: #ff9f43;
   --radius: 12px;
   --radius-sm: 8px;
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Microsoft YaHei', 'Meiryo', 'Noto Sans SC', 'Noto Sans CJK JP', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --space-1: 6px;
   --space-2: 12px;
@@ -96,11 +96,11 @@ body.light-mode {
   --bg-elevated: #e5e5ea;
   --bg-card: #ffffff;
   --bg-inset: #eaeaea;
-  --text-primary: #1c1c1e;
-  --text-secondary: #5e5e62;
-  --text-dim: #8e8e93;
-  --border: rgba(197, 160, 89, 0.3);
-  --border-glow: rgba(212, 175, 55, 0.6);
+  --text-primary: #111112;
+  --text-secondary: #444448;
+  --text-dim: #636366;
+  --border: rgba(197, 160, 89, 0.35);
+  --border-glow: rgba(212, 175, 55, 0.65);
   --accent-subtle: rgba(212, 175, 55, 0.1);
   --accent-glow: rgba(212, 175, 55, 0.4);
 }
@@ -202,7 +202,21 @@ body::before {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
 }
 .nav-icon {
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  width: 18px;
+  height: 18px;
+}
+.nav-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.btn-edit-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Theme toggle btn */
@@ -930,32 +944,32 @@ input:checked + .slider:before {
   <nav class="sidebar-nav" role="tablist">
     <a href="#" class="nav-item active" role="tab"
        hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">🎛️</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span>
       <span class="nav-label" data-i18n-key="Dashboard">Dashboard</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=present" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">📁</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></span>
       <span class="nav-label" data-i18n-key="Projects">Projects</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">📄</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
       <span class="nav-label" data-i18n-key="Templates">Templates</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">✏️</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></span>
       <span class="nav-label" data-i18n-key="Editor">Editor</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=video" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">🖼️</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
       <span class="nav-label" data-i18n-key="Assets">Assets</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=forge" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">⚙️</span>
+      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
       <span class="nav-label" data-i18n-key="Settings">Settings</span>
     </a>
   </nav>
@@ -996,18 +1010,27 @@ input:checked + .slider:before {
     
     <div class="right-pane">
       <div class="preview-header">
-        <span class="preview-title" id="preview-lbl" data-i18n-key="preview-title">🖥️ 实时交互预览</span>
+        <span class="preview-title" id="preview-lbl" style="display:inline-flex;align-items:center;gap:6px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span data-i18n-key="preview-title">实时交互预览</span>
+        </span>
         <div class="preview-controls">
           <select onchange="applyLiveTheme(this.value)" class="device-btn" style="background:var(--bg-inset);padding:3px 8px;font-size:11px">
-            <option value="gold" data-i18n-key="theme-gold">⚜️ Obsidian Gold</option>
-            <option value="blue" data-i18n-key="theme-blue">💙 Terminal Blue</option>
-            <option value="ink" data-i18n-key="theme-ink">🤍 Ink Wash</option>
+            <option value="gold" data-i18n-key="theme-gold">Obsidian Gold</option>
+            <option value="blue" data-i18n-key="theme-blue">Terminal Blue</option>
+            <option value="ink" data-i18n-key="theme-ink">Ink Wash</option>
           </select>
-          <button onclick="toggleDesignMode()" class="device-btn" id="btn-edit" data-i18n-key="edit-text">✏️ 编辑文本</button>
+          <button onclick="toggleDesignMode()" class="device-btn btn-edit-icon" id="btn-edit">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span data-i18n-key="edit-text">编辑文本</span>
+          </button>
           <button onclick="setDevice('desktop')" class="device-btn active" id="dev-desktop">Desktop</button>
           <button onclick="setDevice('tablet')" class="device-btn" id="dev-tablet">Tablet</button>
           <button onclick="setDevice('mobile')" class="device-btn" id="dev-mobile">Mobile</button>
-          <button onclick="downloadSandboxHTML()" class="device-btn" id="btn-export" style="background:var(--accent);color:#000;border-color:var(--accent);font-weight:700" data-i18n-key="export-html">📥 导出 HTML</button>
+          <button onclick="downloadSandboxHTML()" class="device-btn btn-edit-icon" id="btn-export" style="background:var(--accent);color:#000;border-color:var(--accent);font-weight:700">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span data-i18n-key="export-html">导出 HTML</span>
+          </button>
         </div>
       </div>
       <div class="iframe-container">
@@ -1024,7 +1047,7 @@ const i18n = {
     "Design": "Design",
     "tagline": "将人类的创意灵感种子，编译为工业级 AI 设计与叙事脚手架",
     "connecting": "连接引擎中...",
-    "init": "⏳ 正在初始化设计系统环境...",
+    "init": "正在初始化设计系统环境...",
     "做设计": "做设计",
     "写提示词": "写提示词",
     "做演示": "做演示",
@@ -1040,44 +1063,44 @@ const i18n = {
     "已连接": "已连接",
     
     // Panes static text
-    "🎨 生成 HTML 设计": "🎨 生成 HTML 设计",
+    "🎨 生成 HTML 设计": "生成 HTML 设计",
     "标题（可选）": "标题（可选）",
     "网页模式（自适应）": "网页模式（自适应）",
     "演示文稿（16:9 锁定）": "演示文稿（16:9 锁定）",
-    "🎨 生成 HTML": "🎨 生成 HTML",
-    "📄 文档 → PPT 框架": "📄 文档 → PPT 框架",
-    "点击上传文档": "📎 点击上传文档",
+    "🎨 生成 HTML": "生成 HTML",
+    "📄 文档 → PPT 框架": "文档 → PPT 框架",
+    "点击上传文档": "点击上传文档",
     "故事种子（可选）": "故事种子（可选）",
-    "📊 生成框架": "📊 生成框架",
+    "📊 生成框架": "生成框架",
     
-    "📝 生成提示词": "📝 生成提示词",
+    "📝 生成提示词": "生成提示词",
     "场景描述（英文或中文，如: 一个科技风的网页布局）": "场景描述（英文或中文，如: 一个科技风的网页布局）",
     "目标平台": "目标平台",
     "生成格式": "生成格式",
-    "📝 生成提示词": "📝 生成提示词",
+    "📝 生成提示词": "生成提示词",
     
-    "📊 生成演讲文稿": "📊 生成演讲文稿",
+    "📊 生成演讲文稿": "生成演讲文稿",
     "演讲主题/大纲": "演讲主题/大纲",
     "演示比例": "演示比例",
     "配色方案": "配色方案",
     "字体方案": "字体方案",
-    "📊 生成演示": "📊 生成演示",
+    "📊 生成演示": "生成演示",
     
-    "🎬 叙事到视频编译": "🎬 叙事到视频编译",
+    "🎬 叙事到视频编译": "叙事到视频编译",
     "叙事文本/视频脚本": "叙事文本/视频脚本",
     "视频时长": "视频时长",
     "风格模板": "风格模板",
-    "🎬 生成视频": "🎬 生成视频",
+    "🎬 生成视频": "生成视频",
     
-    "⚡ 提交工作流到 Forge": "⚡ 提交工作流到 Forge",
+    "⚡ 提交工作流到 Forge": "提交工作流到 Forge",
     "提示词": "提示词",
     "反向提示词": "反向提示词",
-    "⚡ 提交任务": "⚡ 提交任务",
+    "⚡ 提交任务": "提交任务",
     
-    "📸 上传截图": "📸 上传截图",
-    "点击上传截图 (PNG/JPG/WebP)": "📎 点击上传截图 (PNG/JPG/WebP)",
-    "✨ 复刻为 HTML": "✨ 复刻为 HTML",
-    "用法说明": "💡 用法说明",
+    "📸 上传截图": "上传截图",
+    "点击上传截图 (PNG/JPG/WebP)": "点击上传截图 (PNG/JPG/WebP)",
+    "✨ 复刻为 HTML": "复刻为 HTML",
+    "用法说明": "用法说明",
     "原理:": "原理:",
     "截图 → Base64 → LLM Vision API": "截图 → Base64 → LLM Vision API",
     "加载中...": "加载中..."
@@ -1086,7 +1109,7 @@ const i18n = {
     "Design": "Design",
     "tagline": "Compile creative seeds into production-grade AI design & narrative storyboards",
     "connecting": "Connecting to engine...",
-    "init": "⏳ Initializing design system environment...",
+    "init": "Initializing design system environment...",
     "做设计": "Design",
     "写提示词": "Prompt",
     "做演示": "Present",
@@ -1100,43 +1123,43 @@ const i18n = {
     "未连接": "Offline",
     "已连接": "Online",
     
-    "🎨 生成 HTML 设计": "🎨 Generate HTML Design",
+    "🎨 生成 HTML 设计": "Generate HTML Design",
     "标题（可选）": "Title (Optional)",
     "网页模式（自适应）": "Web Mode (Responsive)",
     "演示文稿（16:9 锁定）": "Presentation (16:9 Widescreen)",
-    "🎨 生成 HTML": "🎨 Generate HTML",
-    "📄 文档 → PPT 框架": "📄 Doc to PPT Outline",
-    "点击上传文档": "📎 Click to Upload Document",
+    "🎨 生成 HTML": "Generate HTML",
+    "📄 文档 → PPT 框架": "Doc to PPT Outline",
+    "点击上传文档": "Click to Upload Document",
     "故事种子（可选）": "Story Seed (Optional)",
-    "📊 生成框架": "📊 Generate Outline",
+    "📊 生成框架": "Generate Outline",
     
-    "📝 生成提示词": "📝 Generate Prompt",
+    "📝 生成提示词": "Generate Prompt",
     "场景描述（英文或中文，如: 一个科技风的网页布局）": "Scene description (e.g., a futuristic sci-fi webpage layout)",
     "目标平台": "Target Platform",
     "生成格式": "Output Format",
     
-    "📊 生成演讲文稿": "📊 Generate Slide Presentation",
+    "📊 生成演讲文稿": "Generate Slide Presentation",
     "演讲主题/大纲": "Presentation topic or outline text",
     "演示比例": "Slide Aspect Ratio",
     "配色方案": "Color Scheme",
     "字体方案": "Font Scheme",
-    "📊 生成演示": "📊 Generate Slides",
+    "📊 生成演示": "Generate Slides",
     
-    "🎬 叙事到视频编译": "🎬 Narrative to Video Compiler",
+    "🎬 叙事到视频编译": "Narrative to Video Compiler",
     "叙事文本/视频脚本": "Narrative script / teleprompter text",
     "视频时长": "Video Duration (seconds)",
     "风格模板": "Visual Style Template",
-    "🎬 生成视频": "🎬 Compile Video",
+    "🎬 生成视频": "Compile Video",
     
-    "⚡ 提交工作流到 Forge": "⚡ Submit Workflow to Forge",
+    "⚡ 提交工作流到 Forge": "Submit Workflow to Forge",
     "提示词": "Positive Prompt",
     "反向提示词": "Negative Prompt",
-    "⚡ 提交任务": "⚡ Submit Task",
+    "⚡ 提交任务": "Submit Task",
     
-    "📸 上传截图": "📸 Upload Screenshot",
-    "点击上传截图 (PNG/JPG/WebP)": "📎 Click to Upload Screenshot (PNG/JPG/WebP)",
-    "✨ 复刻为 HTML": "✨ Reimagine to HTML",
-    "用法说明": "💡 Usage Instructions",
+    "📸 上传截图": "Upload Screenshot",
+    "点击上传截图 (PNG/JPG/WebP)": "Click to Upload Screenshot (PNG/JPG/WebP)",
+    "✨ 复刻为 HTML": "Reimagine to HTML",
+    "用法说明": "Usage Instructions",
     "原理:": "How it works:",
     "截图 → Base64 → LLM Vision API": "Screenshot → Base64 → LLM Vision API",
     "加载中...": "Loading..."
@@ -1145,7 +1168,7 @@ const i18n = {
     "Design": "デザイン",
     "tagline": "人間のインスピレーションの種を、実用的な AI デザイン＆ナラティブの骨組みにコンパイル",
     "connecting": "エンジン接続中...",
-    "init": "⏳ デザイン環境を初期化中...",
+    "init": "デザイン環境を初期化中...",
     "做设计": "デザイン",
     "写提示词": "プロンプト",
     "做演示": "プレゼン",
@@ -1159,43 +1182,43 @@ const i18n = {
     "未连接": "未接続",
     "已连接": "接続済",
     
-    "🎨 生成 HTML 设计": "🎨 HTMLデザイン作成",
+    "🎨 生成 HTML 设计": "HTMLデザイン作成",
     "标题（可选）": "タイトル（任意）",
     "网页模式（自适应）": "Webモード（レスポンシブ）",
     "演示文稿（16:9 锁定）": "プレゼンテーション（16:9 固定）",
-    "🎨 生成 HTML": "🎨 HTML生成",
-    "📄 文档 → PPT 框架": "📄 ドキュメント ➜ PPT構成",
-    "点击上传文档": "📎 ドキュメントをアップロード",
+    "🎨 生成 HTML": "HTML生成",
+    "📄 文档 → PPT 框架": "ドキュメント ➜ PPT構成",
+    "点击上传文档": "ドキュメントをアップロード",
     "故事种子（可选）": "ストーリーの種（任意）",
-    "📊 生成框架": "📊 構成案を生成",
+    "📊 生成框架": "構成案を生成",
     
-    "📝 生成提示词": "📝 プロンプト生成",
+    "📝 生成提示词": "プロンプト生成",
     "场景描述（英文或中文，如: 一个科技风的网页布局）": "場面説明（例：サイバーパンク風のWebレイアウト）",
     "目标平台": "対象プラットフォーム",
     "生成格式": "出力フォーマット",
     
-    "📊 生成演讲文稿": "📊 スライドプレゼン生成",
+    "📊 生成演讲文稿": "スライドプレゼン生成",
     "演讲主题/大纲": "プレゼンテーマ / 構成案テキスト",
     "演示比例": "スライド比率",
     "配色方案": "配色パターン",
     "字体方案": "フォントスタイル",
-    "📊 生成演示": "📊 スライド生成",
+    "📊 生成演示": "スライド生成",
     
-    "🎬 叙事到视频编译": "🎬 ナラティブ ➜ 動画コンパイル",
+    "🎬 叙事到视频编译": "ナラティブ ➜ 動画コンパイル",
     "叙事文本/视频脚本": "ナラティブテキスト / 動画台本",
     "视频时长": "動画の長さ (秒)",
     "风格模板": "スタイルテンプレート",
-    "🎬 生成视频": "🎬 動画生成",
+    "🎬 生成视频": "動画生成",
     
-    "⚡ 提交工作流到 Forge": "⚡ ワークフローをForgeへ送信",
+    "⚡ 提交工作流到 Forge": "ワークフローをForgeへ送信",
     "提示词": "ポジティブプロンプト",
     "反向提示词": "ネガティブプロンプト",
-    "⚡ 提交任务": "⚡ タスク送信",
+    "⚡ 提交任务": "タスク送信",
     
-    "📸 上传截图": "📸 スクリーンショット送信",
-    "点击上传截图 (PNG/JPG/WebP)": "📎 スクリーンショットをアップロード (PNG/JPG/WebP)",
-    "✨ 复刻为 HTML": "✨ HTMLに復刻",
-    "用法说明": "💡 使用方法",
+    "📸 上传截图": "スクリーンショット送信",
+    "点击上传截图 (PNG/JPG/WebP)": "スクリーンショットをアップロード (PNG/JPG/WebP)",
+    "✨ 复刻为 HTML": "HTMLに復刻",
+    "用法说明": "使用方法",
     "原理:": "仕組み:",
     "截图 → Base64 → LLM Vision API": "スクリーンショット ➜ Base64 ➜ LLM Vision API",
     "加载中...": "読み込み中..."
@@ -1205,29 +1228,29 @@ const i18n = {
 let currentLang = localStorage.getItem('via54_lang') || 'zh';
 
 // Add new translation keys to dictionary
-i18n.zh["preview-title"] = "🖥️ 实时交互预览";
-i18n.en["preview-title"] = "🖥️ Live Preview";
-i18n.jp["preview-title"] = "🖥️ リアルタイムプレビュー";
+i18n.zh["preview-title"] = "实时交互预览";
+i18n.en["preview-title"] = "Live Preview";
+i18n.jp["preview-title"] = "リアルタイムプレビュー";
 
-i18n.zh["edit-text"] = "✏️ 编辑文本";
-i18n.en["edit-text"] = "✏️ Edit Text";
-i18n.jp["edit-text"] = "✏️ テキスト編集";
+i18n.zh["edit-text"] = "编辑文本";
+i18n.en["edit-text"] = "Edit Text";
+i18n.jp["edit-text"] = "テキスト編集";
 
-i18n.zh["export-html"] = "📥 导出 HTML";
-i18n.en["export-html"] = "📥 Export HTML";
-i18n.jp["export-html"] = "📥 HTML書き出し";
+i18n.zh["export-html"] = "导出 HTML";
+i18n.en["export-html"] = "Export HTML";
+i18n.jp["export-html"] = "HTML書き出し";
 
-i18n.zh["theme-gold"] = "⚜️ Obsidian Gold";
-i18n.en["theme-gold"] = "⚜️ Obsidian Gold";
-i18n.jp["theme-gold"] = "⚜️ 漆黒金箔";
+i18n.zh["theme-gold"] = "Obsidian Gold";
+i18n.en["theme-gold"] = "Obsidian Gold";
+i18n.jp["theme-gold"] = "漆黒金箔";
 
-i18n.zh["theme-blue"] = "💙 Terminal Blue";
-i18n.en["theme-blue"] = "💙 Terminal Blue";
-i18n.jp["theme-blue"] = "💙 ターミナル青";
+i18n.zh["theme-blue"] = "Terminal Blue";
+i18n.en["theme-blue"] = "Terminal Blue";
+i18n.jp["theme-blue"] = "ターミナル青";
 
-i18n.zh["theme-ink"] = "🤍 Ink Wash";
-i18n.en["theme-ink"] = "🤍 Ink Wash";
-i18n.jp["theme-ink"] = "🤍 水墨画风";
+i18n.zh["theme-ink"] = "Ink Wash";
+i18n.en["theme-ink"] = "Ink Wash";
+i18n.jp["theme-ink"] = "水墨画风";
 
 i18n.zh["Dashboard"] = "控制台";
 i18n.en["Dashboard"] = "Dashboard";
@@ -1470,11 +1493,12 @@ function toggleDesignMode() {
   
   designModeActive = !designModeActive;
   const btn = document.getElementById('btn-edit');
+  const labelEl = btn ? btn.querySelector('span') : null;
   const dict = i18n[currentLang] || {};
   
   if (designModeActive) {
-    btn.classList.add('active');
-    btn.textContent = (dict["edit-text"] || "✏️ 编辑文本") + " (ON)";
+    if (btn) btn.classList.add('active');
+    if (labelEl) labelEl.textContent = (dict["edit-text"] || "编辑文本") + " (ON)";
     
     iframeDoc.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, li, a, td, th').forEach(el => {
       if (el.children.length === 0 || (el.children.length > 0 && Array.from(el.childNodes).some(n => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim().length > 0))) {
@@ -1485,8 +1509,8 @@ function toggleDesignMode() {
       }
     });
   } else {
-    btn.classList.remove('active');
-    btn.textContent = dict["edit-text"] || "✏️ 编辑文本";
+    if (btn) btn.classList.remove('active');
+    if (labelEl) labelEl.textContent = dict["edit-text"] || "编辑文本";
     
     iframeDoc.querySelectorAll('[contenteditable]').forEach(el => {
       el.removeAttribute('contenteditable');
@@ -1613,8 +1637,9 @@ document.addEventListener('click', function(e) {
     const editBtn = document.getElementById('btn-edit');
     if (editBtn) {
       editBtn.classList.remove('active');
+      const labelEl = editBtn.querySelector('span');
       const dict = i18n[currentLang] || {};
-      editBtn.textContent = dict["edit-text"] || "✏️ 编辑文本";
+      if (labelEl) labelEl.textContent = dict["edit-text"] || "编辑文本";
     }
   }
 });
