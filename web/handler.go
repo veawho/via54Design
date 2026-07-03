@@ -1159,7 +1159,18 @@ func handleHTMXUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	file, header, err := r.FormFile(field)
 	if err != nil {
-		htmxError(w, "文件未上传")
+		// Fallback for standard layout upload field names used across templates
+		for _, fallbackField := range []string{"file", "screenshot", "image"} {
+			if f, h, e := r.FormFile(fallbackField); e == nil {
+				file = f
+				header = h
+				err = nil
+				break
+			}
+		}
+	}
+	if err != nil {
+		htmxError(w, "文件未上传: "+err.Error())
 		return
 	}
 	defer file.Close()
@@ -1175,12 +1186,20 @@ func handleHTMXUpload(w http.ResponseWriter, r *http.Request) {
 	defer out.Close()
 	io.Copy(out, file)
 
-	url := "/uploads/" + filename
+	isImg := ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".webp" || ext == ".gif"
+	previewHTML := ""
+	if isImg {
+		url := "/uploads/" + filename
+		previewHTML = fmt.Sprintf(`<img src="%s" style="width:40px;height:40px;object-fit:cover;border-radius:4px">`, url)
+	} else {
+		previewHTML = `<span style="font-size:24px;margin-right:4px">📄</span>`
+	}
+
 	htmxWrite(w, fmt.Sprintf(`<input type="hidden" name="_path" value="%s">
 <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
-  <img src="%s" style="width:40px;height:40px;object-fit:cover;border-radius:4px">
+  %s
   <span style="font-size:12px;color:var(--text-secondary)">%s (%d bytes)</span>
-</div>`, dst, url, header.Filename, header.Size))
+</div>`, dst, previewHTML, header.Filename, header.Size))
 }
 
 func handleHTMXRegen(w http.ResponseWriter, r *http.Request) {

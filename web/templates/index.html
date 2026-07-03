@@ -118,5 +118,14 @@ body{font-family:var(--font-sans);background:var(--bg);color:var(--text-primary)
   <div style="text-align:center;padding:40px;color:var(--text-dim)">⏳ 加载中...</div>
 </div>
 
+<script>
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.intent-btn');
+  if (btn) {
+    document.querySelectorAll('.intent-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+});
+</script>
 </body>
 </html>
