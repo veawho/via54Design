@@ -1,10 +1,10 @@
 <div class="flow-steps">
   <div class="flow-step-card">
     <span class="step-badge">1</span>
-    <h3>上传截图</h3>
+    <h3>上传图片</h3>
     <form hx-post="/api/htmx/reimagine" hx-target="#rOutput" hx-encoding="multipart/form-data" hx-trigger="submit" hx-indicator="#rSpin">
       <label for="rFile" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
-        点击上传截图 (PNG/JPG/WebP)
+        点击上传图片 (PNG/JPG/WebP)
       </label>
       <input type="file" id="rFile" name="screenshot" accept="image/png,image/jpeg,image/webp" style="display:none"
              hx-post="/api/htmx/upload" hx-target="#rUploadResult" hx-encoding="multipart/form-data">
@@ -16,9 +16,27 @@
         <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
       </select>
 
-      <input type="text" name="layout_hint" placeholder="可选: layout 提示 (如 bento-grid-2x2)" style="margin-bottom:6px;font-size:11px">
-      <input type="text" name="color_hint" placeholder="可选: 配色 ID (如 ink-wash)" style="margin-bottom:6px;font-size:11px">
-      <input type="text" name="font_hint" placeholder="可选: 字体 ID (如 ming-hei-editorial)" style="margin-bottom:6px;font-size:11px">
+      <select name="layout_hint" class="custom-select" style="margin-bottom:6px;width:100%">
+        <option value="" data-i18n-key="layout-hint-default">布局提示: 默认自适应</option>
+        <option value="hero-split-16-9" data-i18n-key="layout-hint-hero">布局提示: Aurum Minimalist</option>
+        <option value="bento-grid-2x2" data-i18n-key="layout-hint-bento">布局提示: Bento Grid 2x2</option>
+        <option value="gallery-waterfall" data-i18n-key="layout-hint-waterfall">布局提示: Gallery Waterfall</option>
+      </select>
+
+      <select name="color_hint" class="custom-select" style="margin-bottom:6px;width:100%">
+        <option value="" data-i18n-key="color-hint-default">配色提示: 默认自适应</option>
+        <option value="rinpa-gold" data-i18n-key="color-hint-gold">配色提示: Obsidian Gold</option>
+        <option value="dark-terminal-blue" data-i18n-key="color-hint-blue">配色提示: Terminal Blue</option>
+        <option value="ink-wash" data-i18n-key="color-hint-ink">配色提示: Ink Wash</option>
+        <option value="cinematic-neon" data-i18n-key="color-hint-neon">配色提示: Cyber Neon</option>
+      </select>
+
+      <select name="font_hint" class="custom-select" style="margin-bottom:6px;width:100%">
+        <option value="" data-i18n-key="font-hint-default">字体提示: 默认自适应</option>
+        <option value="display-sans-bold" data-i18n-key="font-hint-sans">字体提示: Outfit (Sans)</option>
+        <option value="cormorant-elegant" data-i18n-key="font-hint-serif">字体提示: Cormorant (Serif)</option>
+        <option value="mono-terminal" data-i18n-key="font-hint-mono">字体提示: JetBrains Mono</option>
+      </select>
 
       <div style="display:flex;gap:6px">
         <button type="submit" class="btn-primary">复刻为 HTML</button>

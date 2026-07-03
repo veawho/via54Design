@@ -993,7 +993,7 @@ input:checked + .slider:before {
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
       <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span>
-      <span class="nav-label" data-i18n-key="Reimagine Code">Reimagine Code</span>
+      <span class="nav-label" data-i18n-key="Image Replicate">Image Replicate</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
@@ -1092,7 +1092,7 @@ const i18n = {
     "做演示": "做演示",
     "做视频": "做视频",
     "提交 Forge": "提交 Forge",
-    "截图复刻": "截图复刻",
+    "图片复刻": "图片复刻",
     
     // Server status chips
     "引擎": "引擎",
@@ -1136,9 +1136,9 @@ const i18n = {
     "反向提示词": "反向提示词",
     "⚡ 提交任务": "提交任务",
     
-    "📸 上传截图": "上传截图",
-    "点击上传截图 (PNG/JPG/WebP)": "点击上传截图 (PNG/JPG/WebP)",
-    "✨ 复刻为 HTML": "复刻为 HTML",
+    "📸 上传图片": "上传图片",
+    "点击上传图片 (PNG/JPG/WebP)": "点击上传图片 (PNG/JPG/WebP)",
+    "复刻为 HTML": "复刻为 HTML",
     "用法说明": "用法说明",
     "原理:": "原理:",
     "截图 → Base64 → LLM Vision API": "截图 → Base64 → LLM Vision API",
@@ -1154,7 +1154,7 @@ const i18n = {
     "做演示": "Present",
     "做视频": "Video",
     "提交 Forge": "Forge",
-    "截图复刻": "Reimagine",
+    "图片复刻": "Reimagine",
     
     "引擎": "Engine",
     "模板": "Templates",
@@ -1195,9 +1195,9 @@ const i18n = {
     "反向提示词": "Negative Prompt",
     "⚡ 提交任务": "Submit Task",
     
-    "📸 上传截图": "Upload Screenshot",
-    "点击上传截图 (PNG/JPG/WebP)": "Click to Upload Screenshot (PNG/JPG/WebP)",
-    "✨ 复刻为 HTML": "Reimagine to HTML",
+    "📸 上传图片": "Upload Image",
+    "点击上传图片 (PNG/JPG/WebP)": "Click to Upload Image (PNG/JPG/WebP)",
+    "复刻为 HTML": "Reimagine to HTML",
     "用法说明": "Usage Instructions",
     "原理:": "How it works:",
     "截图 → Base64 → LLM Vision API": "Screenshot → Base64 → LLM Vision API",
@@ -1213,7 +1213,7 @@ const i18n = {
     "做演示": "プレゼン",
     "做视频": "ビデオ",
     "提交 Forge": "Forge送信",
-    "截图复刻": "画面復刻",
+    "图片复刻": "画像復刻",
     
     "引擎": "エンジン",
     "模板": "テンプレート",
@@ -1254,9 +1254,9 @@ const i18n = {
     "反向提示词": "ネガティブプロンプト",
     "⚡ 提交任务": "タスク送信",
     
-    "📸 上传截图": "スクリーンショット送信",
-    "点击上传截图 (PNG/JPG/WebP)": "スクリーンショットをアップロード (PNG/JPG/WebP)",
-    "✨ 复刻为 HTML": "HTMLに復刻",
+    "📸 上传图片": "画像送信",
+    "点击上传图片 (PNG/JPG/WebP)": "画像をアップロード (PNG/JPG/WebP)",
+    "复刻为 HTML": "HTMLに復刻",
     "用法说明": "使用方法",
     "原理:": "仕組み:",
     "截图 → Base64 → LLM Vision API": "スクリーンショット ➜ Base64 ➜ LLM Vision API",
@@ -1299,9 +1299,9 @@ i18n.zh["Slide Presenter"] = "演示文稿";
 i18n.en["Slide Presenter"] = "Slide Presenter";
 i18n.jp["Slide Presenter"] = "プレゼンテーション";
 
-i18n.zh["Reimagine Code"] = "截图复刻";
-i18n.en["Reimagine Code"] = "Reimagine Code";
-i18n.jp["Reimagine Code"] = "画面復刻";
+i18n.zh["Image Replicate"] = "图片复刻";
+i18n.en["Image Replicate"] = "Image Replicate";
+i18n.jp["Image Replicate"] = "画像復刻";
 
 i18n.zh["Prompt Editor"] = "提示词编译";
 i18n.en["Prompt Editor"] = "Prompt Editor";
@@ -1664,6 +1664,48 @@ document.addEventListener('DOMContentLoaded', () => {
   setLanguage(currentLang);
   setThemeMode(currentThemeMode);
 });
+
+  i18n.zh["layout-hint-default"] = "布局提示: 默认自适应";
+  i18n.en["layout-hint-default"] = "Layout: Default";
+  i18n.jp["layout-hint-default"] = "レイアウト: デフォルト";
+  i18n.zh["layout-hint-hero"] = "布局提示: Aurum Minimalist";
+  i18n.en["layout-hint-hero"] = "Layout: Aurum Minimalist";
+  i18n.jp["layout-hint-hero"] = "レイアウト: Aurum Minimalist";
+  i18n.zh["layout-hint-bento"] = "布局提示: Bento Grid 2x2";
+  i18n.en["layout-hint-bento"] = "Layout: Bento Grid 2x2";
+  i18n.jp["layout-hint-bento"] = "レイアウト: Bento Grid 2x2";
+  i18n.zh["layout-hint-waterfall"] = "布局提示: Gallery Waterfall";
+  i18n.en["layout-hint-waterfall"] = "Layout: Gallery Waterfall";
+  i18n.jp["layout-hint-waterfall"] = "レイアウト: Gallery Waterfall";
+
+  i18n.zh["color-hint-default"] = "配色提示: 默认自适应";
+  i18n.en["color-hint-default"] = "Color Theme: Default";
+  i18n.jp["color-hint-default"] = "配色: デフォルト";
+  i18n.zh["color-hint-gold"] = "配色提示: Obsidian Gold";
+  i18n.en["color-hint-gold"] = "Color Theme: Obsidian Gold";
+  i18n.jp["color-hint-gold"] = "配色: 漆黒金箔";
+  i18n.zh["color-hint-blue"] = "配色提示: Terminal Blue";
+  i18n.en["color-hint-blue"] = "Color Theme: Terminal Blue";
+  i18n.jp["color-hint-blue"] = "配色: ターミナル青";
+  i18n.zh["color-hint-ink"] = "配色提示: Ink Wash";
+  i18n.en["color-hint-ink"] = "Color Theme: Ink Wash";
+  i18n.jp["color-hint-ink"] = "配色: 水墨画風";
+  i18n.zh["color-hint-neon"] = "配色提示: Cyber Neon";
+  i18n.en["color-hint-neon"] = "Color Theme: Cyber Neon";
+  i18n.jp["color-hint-neon"] = "配色: サイバーネオン";
+
+  i18n.zh["font-hint-default"] = "字体提示: 默认自适应";
+  i18n.en["font-hint-default"] = "Font: Default";
+  i18n.jp["font-hint-default"] = "フォント: デフォルト";
+  i18n.zh["font-hint-sans"] = "字体提示: Outfit (Sans)";
+  i18n.en["font-hint-sans"] = "Font: Outfit (Sans)";
+  i18n.jp["font-hint-sans"] = "フォント: Outfit (Sans)";
+  i18n.zh["font-hint-serif"] = "字体提示: Cormorant (Serif)";
+  i18n.en["font-hint-serif"] = "Font: Cormorant (Serif)";
+  i18n.jp["font-hint-serif"] = "フォント: Cormorant (Serif)";
+  i18n.zh["font-hint-mono"] = "字体提示: JetBrains Mono";
+  i18n.en["font-hint-mono"] = "Font: JetBrains Mono";
+  i18n.jp["font-hint-mono"] = "フォント: JetBrains Mono";
 
 // Setup sidebar tab navigation visual state swap and reset sandbox designer mode
 document.addEventListener('click', function(e) {
