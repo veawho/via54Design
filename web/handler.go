@@ -83,6 +83,7 @@ func Handler(bd string) http.Handler {
 
 	// ── HTMX endpoints (return HTML fragments, no JS) ──
 	mux.HandleFunc("/api/local-fonts", handleLocalFonts)
+	mux.HandleFunc("/api/presets", handlePresets)
 	mux.HandleFunc("/api/htmx/pattern", handleHTMXPattern)
 	mux.HandleFunc("/api/htmx/quality", handleHTMXQuality)
 	mux.HandleFunc("/api/htmx/list", handleHTMXList)
@@ -1039,6 +1040,13 @@ func handleHTMXPane(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+var (
+	activeLayout = "hero-split-16-9"
+	activeColor  = "rinpa-gold"
+	activeFont   = "display-sans-bold"
+	activeMode   = "presentation"
+)
+
 func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		htmxError(w, "use POST")
@@ -1072,6 +1080,18 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 		font = "display-sans-bold"
 	}
 	pres := mode == "presentation"
+
+	// Save active selection variables
+	if layout != "" {
+		activeLayout = layout
+	}
+	if color != "" {
+		activeColor = color
+	}
+	if font != "" {
+		activeFont = font
+	}
+	activeMode = mode
 
 	// If the chosen font is a local system font rather than preset ID, fallback to display-sans-bold for compiler
 	originalFont := font
@@ -1578,6 +1598,17 @@ func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
 	layoutHint := r.FormValue("layout_hint")
 	colorHint := r.FormValue("color_hint")
 	fontHint := r.FormValue("font_hint")
+
+	// Save active selection variables
+	if layoutHint != "" {
+		activeLayout = layoutHint
+	}
+	if colorHint != "" {
+		activeColor = colorHint
+	}
+	if fontHint != "" {
+		activeFont = fontHint
+	}
 	
 	// Custom config parameters sent from UI
 	customColorVars := r.FormValue("custom_color_vars")
@@ -2061,4 +2092,28 @@ func handleHTMXTrace(w http.ResponseWriter, r *http.Request) {
 </div>`, svgContent, svgFilename, strings.ReplaceAll(strings.ReplaceAll(svgContent, "<", "&lt;"), ">", "&gt;"))
 
 	htmxWrite(w, html)
+}
+
+
+func handlePresets(w http.ResponseWriter, r *http.Request) {
+	reg, err := vt.NewRegistry(baseDir)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	
+	resp := map[string]interface{}{
+		"layouts":       reg.Data.Layouts,
+		"color_schemes": reg.Data.ColorSchemes,
+		"typography":    reg.Data.Typography,
+		"active": map[string]string{
+			"layout": activeLayout,
+			"color":  activeColor,
+			"font":   activeFont,
+			"mode":   activeMode,
+		},
+	}
+	_ = json.NewEncoder(w).Encode(resp)
 }

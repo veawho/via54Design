@@ -228,11 +228,12 @@ func TraceImage(input string, opts *TraceImageOpts) (string, error) {
 	args := []string{
 		"--input", input,
 		"--output", output,
-		"--hierarchical", fmt.Sprintf("%d", opts.Hierarchical),
-		"--threshold", fmt.Sprintf("%d", opts.Threshold),
-		"--pre_denoise", fmt.Sprintf("%d", opts.PreDenoise),
+		"--mode", "spline",
+		"--colormode", "color",
+		"--hierarchical", "stacked",
 		"--color_precision", fmt.Sprintf("%d", opts.ColorPrecision),
 		"--corner_threshold", fmt.Sprintf("%d", opts.CornerThreshold),
+		"--filter_speckle", fmt.Sprintf("%d", opts.PreDenoise),
 	}
 
 	cmd := exec.Command(vtracer, args...)
