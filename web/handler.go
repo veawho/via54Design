@@ -1157,7 +1157,30 @@ func handleHTMXGenerate(w http.ResponseWriter, r *http.Request) {
 	var narrativeJSONPath string
 	if combinedDesc != "" {
 		scaffold := vision.BuildNarrativeScaffold(nil, "three-act", 30, combinedDesc)
-		scaffoldBytes, err := json.Marshal(scaffold)
+		
+		// Map vision scaffold to the format expected by generate.go
+		var beatsList []map[string]interface{}
+		for _, b := range scaffold.Beats {
+			beatsList = append(beatsList, map[string]interface{}{
+				"act":        b.Name,
+				"start_time": b.StartTime,
+				"duration":   b.Duration,
+				"event":      b.VisualContext,
+				"voiceover":  b.Voiceover,
+				"mood":       b.Mood,
+			})
+		}
+		
+		narrativeMap := map[string]interface{}{
+			"seed":            combinedDesc,
+			"model_id":        "three-act",
+			"model_name":      scaffold.ModelName,
+			"description":     scaffold.ModelName,
+			"target_duration": scaffold.TotalDuration,
+			"beats":           beatsList,
+		}
+		
+		scaffoldBytes, err := json.Marshal(narrativeMap)
 		if err == nil {
 			tmpFile := filepath.Join(uploadDir(), fmt.Sprintf("narrative_%d.json", time.Now().UnixNano()))
 			_ = os.WriteFile(tmpFile, scaffoldBytes, 0644)
@@ -2071,6 +2094,9 @@ func handleHTMXReimagine(w http.ResponseWriter, r *http.Request) {
 		htmlBytes = []byte(injectCustomStyles(string(htmlBytes), customColorVars, customFontImport, customFontFamily))
 		_ = os.WriteFile(outPath, htmlBytes, 0644)
 	}
+
+	// Copy to CWD/output.html for preview frame reload
+	_ = os.WriteFile(filepath.Join(baseDir, "output.html"), htmlBytes, 0644)
 
 	htmlPreview := string(htmlBytes)
 	if len(htmlPreview) > 8000 {
