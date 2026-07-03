@@ -1,37 +1,111 @@
 <div class="flow-steps">
-  <div class="flow-step-card">
-    <span class="step-badge">1</span>
-    <h3>🎨 生成 HTML 设计</h3>
-    <form hx-post="/api/htmx/generate" hx-target="#dOutput" hx-indicator="#dSpin">
-      <input type="text" name="title" placeholder="标题（可选）" style="margin-bottom:6px">
-      <select name="mode" style="margin-bottom:6px">
-        <option value="">网页模式（自适应）</option>
-        <option value="presentation">演示文稿（16:9 锁定）</option>
-      </select>
-      <div style="display:flex;gap:6px">
-        <button type="submit" class="btn-primary">🎨 生成 HTML</button>
-        <span id="dSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 生成中...</span>
+  <!-- Active Template card -->
+  <form hx-post="/api/htmx/generate" hx-target="#dOutput" hx-indicator="#dSpin">
+    <div class="template-card">
+      <div class="template-card-header" data-i18n-key="active-template">Active Template</div>
+      <div class="template-card-title">
+        <select name="layout" class="custom-select" style="font-size:18px;font-weight:700;background:transparent;border:none;padding:0;text-align:left;min-width:200px;color:var(--text-primary)">
+          <option value="hero-split-16-9">Aurum Minimalist</option>
+          <option value="bento-grid-2x2">Bento Grid 2x2</option>
+          <option value="gallery-waterfall">Gallery Waterfall</option>
+        </select>
       </div>
-    </form>
-    <div id="dOutput" style="margin-top:8px"></div>
+      
+      <div class="form-row">
+        <span class="form-label" data-i18n-key="responsive-design">Responsive Design</span>
+        <div class="control-right">
+          <span style="font-size:11px;color:var(--accent)" data-i18n-key="active">Active</span>
+          <label class="switch">
+            <input type="checkbox" checked disabled>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <span class="form-label" data-i18n-key="layout-mode">Layout Mode</span>
+        <div class="control-right">
+          <select name="mode" class="custom-select">
+            <option value="presentation" data-i18n-key="presentation-16-9">16:9 Presentation</option>
+            <option value="" data-i18n-key="web-responsive">Web Responsive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lovart Style Tabs -->
+    <div class="lovart-tabs">
+      <span class="lovart-tab" data-i18n-key="tab-details">Details</span>
+      <span class="lovart-tab active" data-i18n-key="tab-styles">Styles</span>
+      <span class="lovart-tab" data-i18n-key="tab-content">Content</span>
+      <span class="lovart-tab" data-i18n-key="tab-settings">Settings</span>
+    </div>
+    
+    <!-- Style settings -->
+    <div class="template-card" style="margin-bottom: 16px">
+      <div class="form-row">
+        <span class="form-label" data-i18n-key="title-input">Design Title</span>
+        <div class="control-right">
+          <input type="text" name="title" value="Aurum Homes" placeholder="Title" style="width:160px;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:4px 8px;font-size:12px">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <span class="form-label" data-i18n-key="base-color">Theme Palette</span>
+        <div class="control-right">
+          <select name="color" class="custom-select">
+            <option value="rinpa-gold">⚜️ Obsidian Gold</option>
+            <option value="dark-terminal-blue">💙 Terminal Blue</option>
+            <option value="ink-wash">🤍 Ink Wash</option>
+            <option value="cinematic-neon">💜 Cyber Neon</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <span class="form-label" data-i18n-key="font-family">Font Family</span>
+        <div class="control-right">
+          <select name="font" class="custom-select">
+            <option value="display-sans-bold">Outfit (Sans)</option>
+            <option value="cormorant-elegant">Cormorant (Serif)</option>
+            <option value="mono-terminal">JetBrains Mono</option>
+          </select>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px">
+        <button type="submit" class="btn-outline-gold" data-i18n-key="save-changes">Save Changes</button>
+      </div>
+    </div>
+  </form>
+  
+  <div style="display:flex;justify-content:center;margin-bottom:12px">
+    <span id="dSpin" class="htmx-indicator" style="font-size:12px;color:var(--accent)">⏳ <span data-i18n-key="compiling">Compiling design pipeline...</span></span>
   </div>
+  
+  <div id="dOutput"></div>
 
-  <div class="flow-step-card">
-    <span class="step-badge">2</span>
-    <h3>📄 文档 → PPT 框架</h3>
-    <form hx-post="/api/htmx/story2ppt" hx-target="#dDocOutput" hx-indicator="#dDocSpin" hx-encoding="multipart/form-data">
-      <label for="dDocFile" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;margin-bottom:6px;cursor:pointer">
-        📎 点击上传文档
+  <!-- Document converter panel -->
+  <div class="template-card">
+    <div class="template-card-header" data-i18n-key="doc-to-ppt">Document Converter</div>
+    <div class="template-card-title" style="font-size:15px" data-i18n-key="story2ppt-outline">📄 Doc to PPT Scaffold</div>
+    
+    <form hx-post="/api/htmx/story2ppt" hx-target="#dDocOutput" hx-indicator="#dDocSpin" hx-encoding="multipart/form-data" style="margin-top:12px">
+      <label for="dDocFile" class="upload-mini" style="border:1px dashed var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;margin-bottom:12px;cursor:pointer;display:block">
+        📎 <span data-i18n-key="click-upload-doc">Click to Upload Document</span>
       </label>
       <input type="file" id="dDocFile" name="file" accept=".docx,.pptx,.txt,.md,.pdf" style="display:none"
              hx-post="/api/htmx/upload" hx-target="#dDocUploadResult" hx-encoding="multipart/form-data">
       <div id="dDocUploadResult"></div>
-      <input type="text" name="seed" placeholder="故事种子（可选）" style="margin-bottom:6px">
-      <div style="display:flex;gap:6px">
-        <button type="submit" class="btn-primary">📊 生成框架</button>
-        <span id="dDocSpin" class="htmx-indicator" style="font-size:12px;color:var(--text-dim)">⏳ 分析中...</span>
-      </div>
+      
+      <input type="text" name="seed" placeholder="Story Seed (Optional)" style="width:100%;background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:8px 12px;font-size:12px;margin-bottom:12px" data-i18n-key="story-seed-ph">
+      
+      <button type="submit" class="btn-outline-gold" style="border-color:var(--text-secondary);color:var(--text-primary)" data-i18n-key="generate-scaffold">📊 Generate Outline</button>
     </form>
+    
+    <div style="display:flex;justify-content:center;margin-top:10px">
+      <span id="dDocSpin" class="htmx-indicator" style="font-size:12px;color:var(--accent)">⏳ <span data-i18n-key="analyzing">Analyzing document semantics...</span></span>
+    </div>
     <div id="dDocOutput" style="margin-top:8px"></div>
   </div>
 </div>

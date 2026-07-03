@@ -444,7 +444,7 @@ body::before {
   display: flex;
   flex: 1;
   overflow: hidden;
-  height: calc(100vh - 210px); /* 100vh minus hero and navigation height */
+  height: calc(100vh - 64px); /* 100vh minus top-bar height */
 }
 .left-pane {
   width: 40%;
@@ -460,7 +460,200 @@ body::before {
   flex-direction: column;
   background: #020203;
   position: relative;
+  transition: background 0.3s;
 }
+
+/* Template Card & Forms corresponding to Lovart UI mockup */
+.template-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.template-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.1);
+}
+.template-card-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.template-card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+.form-row:last-child {
+  border-bottom: none;
+}
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.control-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Color input field styling */
+.color-field-container {
+  display: flex;
+  align-items: center;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  width: 140px;
+}
+.color-hex-input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  padding: 2px !important;
+  width: 90px !important;
+}
+.color-preview-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+/* Custom Select Dropdown */
+.custom-select {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  padding: 6px 12px;
+  outline: none;
+  min-width: 120px;
+  text-align: right;
+  cursor: pointer;
+}
+
+/* Toggle Switch Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255,255,255,0.1);
+  transition: .3s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-primary);
+  transition: .3s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--accent);
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+  background-color: #000;
+}
+
+/* Tab row corresponding to Details Styles Content Settings */
+.lovart-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+}
+.lovart-tab {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  position: relative;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.lovart-tab:hover {
+  color: var(--text-primary);
+}
+.lovart-tab.active {
+  color: var(--accent);
+}
+.lovart-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Save changes button */
+.btn-outline-gold {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+  transition: all 0.2s;
+}
+.btn-outline-gold:hover {
+  background: var(--accent-subtle);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+  transform: translateY(-1px);
+}
+
 .preview-header {
   display: flex;
   align-items: center;
@@ -737,33 +930,33 @@ body::before {
   <nav class="sidebar-nav" role="tablist">
     <a href="#" class="nav-item active" role="tab"
        hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">🎨</span>
-      <span class="nav-label" data-i18n-key="做设计">做设计</span>
-    </a>
-    <a href="#" class="nav-item" role="tab"
-       hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">📝</span>
-      <span class="nav-label" data-i18n-key="写提示词">写提示词</span>
+      <span class="nav-icon">🎛️</span>
+      <span class="nav-label" data-i18n-key="Dashboard">Dashboard</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=present" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">📊</span>
-      <span class="nav-label" data-i18n-key="做演示">做演示</span>
+      <span class="nav-icon">📁</span>
+      <span class="nav-label" data-i18n-key="Projects">Projects</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=design" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">📄</span>
+      <span class="nav-label" data-i18n-key="Templates">Templates</span>
+    </a>
+    <a href="#" class="nav-item" role="tab"
+       hx-get="/api/htmx/pane?intent=prompt" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
+      <span class="nav-icon">✏️</span>
+      <span class="nav-label" data-i18n-key="Editor">Editor</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=video" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">🎬</span>
-      <span class="nav-label" data-i18n-key="做视频">做视频</span>
+      <span class="nav-icon">🖼️</span>
+      <span class="nav-label" data-i18n-key="Assets">Assets</span>
     </a>
     <a href="#" class="nav-item" role="tab"
        hx-get="/api/htmx/pane?intent=forge" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">⚡</span>
-      <span class="nav-label" data-i18n-key="提交 Forge">提交 Forge</span>
-    </a>
-    <a href="#" class="nav-item" role="tab"
-       hx-get="/api/htmx/pane?intent=reimagine" hx-target="#pane-container" hx-trigger="click" hx-swap="innerHTML">
-      <span class="nav-icon">📸</span>
-      <span class="nav-label" data-i18n-key="截图复刻">截图复刻</span>
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label" data-i18n-key="Settings">Settings</span>
     </a>
   </nav>
   
@@ -1035,6 +1228,116 @@ i18n.jp["theme-blue"] = "💙 ターミナル青";
 i18n.zh["theme-ink"] = "🤍 Ink Wash";
 i18n.en["theme-ink"] = "🤍 Ink Wash";
 i18n.jp["theme-ink"] = "🤍 水墨画风";
+
+i18n.zh["Dashboard"] = "控制台";
+i18n.en["Dashboard"] = "Dashboard";
+i18n.jp["Dashboard"] = "ダッシュボード";
+
+i18n.zh["Projects"] = "项目";
+i18n.en["Projects"] = "Projects";
+i18n.jp["Projects"] = "プロジェクト";
+
+i18n.zh["Templates"] = "模板";
+i18n.en["Templates"] = "Templates";
+i18n.jp["Templates"] = "テンプレート";
+
+i18n.zh["Editor"] = "编辑器";
+i18n.en["Editor"] = "Editor";
+i18n.jp["Editor"] = "エディタ";
+
+i18n.zh["Assets"] = "资产";
+i18n.en["Assets"] = "Assets";
+i18n.jp["Assets"] = "アセット";
+
+i18n.zh["Settings"] = "设置";
+i18n.en["Settings"] = "Settings";
+i18n.jp["Settings"] = "設定";
+
+// Lovart UI mockup form card labels translation keys
+i18n.zh["active-template"] = "当前激活模板";
+i18n.en["active-template"] = "Active Template";
+i18n.jp["active-template"] = "有効なテンプレート";
+
+i18n.zh["responsive-design"] = "自适应响应设计";
+i18n.en["responsive-design"] = "Responsive Design";
+i18n.jp["responsive-design"] = "レスポンシブデザイン";
+
+i18n.zh["active"] = "激活";
+i18n.en["active"] = "Active";
+i18n.jp["active"] = "有効";
+
+i18n.zh["layout-mode"] = "画布模式";
+i18n.en["layout-mode"] = "Layout Mode";
+i18n.jp["layout-mode"] = "キャンバスモード";
+
+i18n.zh["presentation-16-9"] = "16:9 演示文稿";
+i18n.en["presentation-16-9"] = "16:9 Presentation";
+i18n.jp["presentation-16-9"] = "16:9 プレゼン";
+
+i18n.zh["web-responsive"] = "自适应网页";
+i18n.en["web-responsive"] = "Web Responsive";
+i18n.jp["web-responsive"] = "レスポンシブWeb";
+
+i18n.zh["tab-details"] = "详情";
+i18n.en["tab-details"] = "Details";
+i18n.jp["tab-details"] = "詳細";
+
+i18n.zh["tab-styles"] = "样式";
+i18n.en["tab-styles"] = "Styles";
+i18n.jp["tab-styles"] = "スタイル";
+
+i18n.zh["tab-content"] = "内容";
+i18n.en["tab-content"] = "Content";
+i18n.jp["tab-content"] = "コンテンツ";
+
+i18n.zh["tab-settings"] = "设置";
+i18n.en["tab-settings"] = "Settings";
+i18n.jp["tab-settings"] = "設定";
+
+i18n.zh["title-input"] = "设计标题";
+i18n.en["title-input"] = "Design Title";
+i18n.jp["title-input"] = "デザインタイトル";
+
+i18n.zh["base-color"] = "配色主题";
+i18n.en["base-color"] = "Theme Palette";
+i18n.jp["base-color"] = "テーマカラー";
+
+i18n.zh["font-family"] = "字体方案";
+i18n.en["font-family"] = "Font Family";
+i18n.jp["font-family"] = "フォントファミリー";
+
+i18n.zh["save-changes"] = "编译并保存修改";
+i18n.en["save-changes"] = "Save Changes";
+i18n.jp["save-changes"] = "変更を保存";
+
+i18n.zh["compiling"] = "正在编译设计管线...";
+i18n.en["compiling"] = "Compiling design pipeline...";
+i18n.jp["compiling"] = "デザインをコンパイル中...";
+
+i18n.zh["doc-to-ppt"] = "文档大纲转换";
+i18n.en["doc-to-ppt"] = "Document Converter";
+i18n.jp["doc-to-ppt"] = "ドキュメント変換";
+
+i18n.zh["story2ppt-outline"] = "📄 文档转 PPT 框架大纲";
+i18n.en["story2ppt-outline"] = "📄 Doc to PPT Outline";
+i18n.jp["story2ppt-outline"] = "📄 ドキュメントからPPT構成";
+
+i18n.zh["click-upload-doc"] = "点击上传文档 (.docx, .txt, .pdf)";
+i18n.en["click-upload-doc"] = "Click to Upload Document (.docx, .txt, .pdf)";
+i18n.jp["click-upload-doc"] = "ドキュメントをアップロード (.docx, .txt, .pdf)";
+
+i18n.zh["story-seed-ph"] = "故事种子说明（可选）";
+i18n.en["story-seed-ph"] = "Story Seed (Optional)";
+i18n.jp["story-seed-ph"] = "ストーリーの種 (任意)";
+
+i18n.zh["generate-scaffold"] = "📊 生成大纲";
+i18n.en["generate-scaffold"] = "📊 Generate Outline";
+i18n.jp["generate-scaffold"] = "📊 構成案を生成";
+
+i18n.zh["analyzing"] = "正在解析文档语义结构...";
+i18n.en["analyzing"] = "Analyzing document semantics...";
+i18n.jp["analyzing"] = "ドキュメントを分析中...";
+
 
 
 function setLanguage(lang) {
