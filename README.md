@@ -10,6 +10,8 @@
 
 [**🇨🇳 中文**](#) · [**🇬🇧 English**](./README_EN.md)
 
+![via54Design Cinematic Storyboard Showcase](./docs/images/cinematic_storyboard.jpg)
+
 </div>
 
 >
@@ -88,6 +90,9 @@ via54 export json scaffold.json --output scenes.json      # 结构化数据
 ### 第二部分：故事 → 演示能力
 
 同一个叙事脚手架，可以导出多种演示格式，无需重新创作。
+
+![via54Design Design Layout Templates Showcase](./docs/images/design_showcase.jpg)
+
 
 **叙事种子 → PPTX 演示文稿**
 

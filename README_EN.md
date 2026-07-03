@@ -10,6 +10,8 @@
 [![Layouts: 10](https://img.shields.io/badge/Layouts-10-purple.svg)](templates/layouts/)
 [![Color Schemes: 37](https://img.shields.io/badge/Color_Schemes-37-orange.svg)](templates/color-schemes/)
 
+![via54Design Cinematic Storyboard Showcase](./docs/images/cinematic_storyboard.jpg)
+
 ---
 
 ## 🧠 Transform One-Line Inspiration into Cinematic Masterpieces
@@ -51,6 +53,9 @@ The narrative engine maps your seed to the selected structure and outputs:
 ### Part 2: Story → Multi-Layout Aesthetic Presentation
 
 Render visual pages utilizing the generated narrative structure or manually compose layouts with color schemes.
+
+![via54Design Design Layout Templates Showcase](./docs/images/design_showcase.jpg)
+
 
 ```bash
 via54 generate --layout landing-pricing --color cinematic-neon --font sans-geometric-tech \
