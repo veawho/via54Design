@@ -7,7 +7,7 @@ module github.com/veawho/via54Design
 go 1.26.2
 
 require (
-	github.com/mark3labs/mcp-go v0.54.1
+	github.com/mark3labs/mcp-go v0.56.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
