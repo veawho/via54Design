@@ -1,16 +1,17 @@
-// via54Design — MCP Server 独立入口
+// via54Design — MCP Server 独立入口 (Independent entry point for MCP Server)
 // Copyright (C) 2026  via54 (veawho)
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-// via54-mcp — Model Context Protocol Server
+// [CN] via54-mcp — Model Context Protocol 服务端。
+// [EN] via54-mcp — Model Context Protocol Server.
 // 独立二进制，供 Claude Desktop / Cursor / Copilot / VS Code / Hermes 调用
 //
-// 用法:
-//   via54-mcp                    # 启动 stdio 模式
-//   via54-mcp --http :8080      # 启动 HTTP 模式 (开发用)
+// 用法 (Usage):
+//   via54-mcp                    # 启动 stdio 模式 (Start stdio mode)
+//   via54-mcp --http :8080      # 启动 HTTP 模式 (开发用) (Start HTTP mode for dev)
 //
-// MCP 配置:
+// MCP 配置 (MCP Configuration):
 //   Claude Desktop:
 //     { "mcpServers": { "via54Design": { "command": "via54-mcp" } } }
 

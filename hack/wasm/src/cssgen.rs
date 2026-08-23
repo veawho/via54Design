@@ -70,7 +70,9 @@ pub fn generate_font_imports(font: &Typography) -> String {
         seen.push(primary.to_string());
         let weight = if primary == "Noto Serif SC" { "400;600;700;900" } else { "400;500;600;700" };
         return format!(
-            "<link rel="preconnect" href="https://fonts.googleapis.com">\n             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n             <link href="https://fonts.googleapis.com/css2?family={}:wght@{}&display=swap" rel="stylesheet">",
+            r#"<link rel="preconnect" href="https://fonts.googleapis.com">
+             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+             <link href="https://fonts.googleapis.com/css2?family={}:wght@{}&display=swap" rel="stylesheet">"#,
             primary.replace(' ', "+"), weight
         );
     }

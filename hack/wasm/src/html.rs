@@ -21,7 +21,7 @@ use crate::types::{DesignSystem, GenerationResult};
 /// 将设计系统组装为完整 HTML
 pub fn assemble_html(ds: &DesignSystem, title: &str) -> GenerationResult {
     let html = format!(
-        r#"<!DOCTYPE html>
+        r##"<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -52,7 +52,7 @@ pub fn assemble_html(ds: &DesignSystem, title: &str) -> GenerationResult {
 </section>
 </main>
 </body>
-</html>"#,
+</html>"##,
         title = title,
         font_imports = ds.font_imports,
         css_vars = ds.css_variables,
